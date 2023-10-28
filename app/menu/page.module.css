@@ -1,0 +1,14 @@
+.ContainerMenu {
+    /* background-color: blueviolet; */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.ItemsList_Rewards {
+    margin-top: 20px;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}

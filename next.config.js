@@ -7,6 +7,15 @@ const nextConfig = {
       transform: "@mui/icons-material/{{member}}",
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 't4.ftcdn.net'
+      }
+    ]
+  },
+  allowImportingTsExtensions: true,
 };
 
 module.exports = nextConfig;

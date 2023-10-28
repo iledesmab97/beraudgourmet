@@ -1,0 +1,32 @@
+.testimonial {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.container-image-testimonio {
+    position: relative;
+    height: 6.4rem;
+    width: 6.4rem;
+    aspect-ratio: 1/1;
+}
+
+.testimonial-img {
+    border-radius: 50%;
+    margin-bottom: 1.6rem;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+}
+  
+.gallery-item img {
+    display: block;
+    width: 100%;
+    transition: all 0.4s;
+}
+  
+.gallery-item img:hover {
+    transform: scale(1.1);
+}

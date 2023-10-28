@@ -1,0 +1,17 @@
+.NavBarContainer {
+    height: 135px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.NavBar {
+    height: 50px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
+}

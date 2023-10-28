@@ -1,0 +1,23 @@
+.container-delivered-imgs {
+    display: flex;
+}
+
+.delivered-imgs {
+    position: relative;
+    height: 7.2rem;
+    width: 7.2rem;
+    margin-right: -1.6rem;
+    flex-shrink: 0;
+}
+
+.delivered-imgs:last-child {
+
+}
+
+.delivered-imgs img {
+    border-radius: 50%;
+    border: 3px solid #fdf2e9;
+}
+.delivered-imgs img:last-child {
+    margin: 0;
+}

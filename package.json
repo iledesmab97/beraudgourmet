@@ -1,5 +1,5 @@
 {
-  "name": "next13-and-muiv5-example",
+  "name": "beraudgourmet3",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
     "@types/react-dom": "18.2.5",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
-    "next": "13.4.5",
+    "next": "^13.5.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.3"

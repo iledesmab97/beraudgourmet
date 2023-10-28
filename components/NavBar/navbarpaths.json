@@ -1,0 +1,48 @@
+[
+    {
+        "title": "Menú",
+        "path": "/menu",
+        "subNav": [
+            {
+                "title": "Promosciones",
+                "path": "/menu/promociones"
+            },
+            {
+                "title": "Pizzas",
+                "path": "/menu/pizzas"
+            },
+            {
+                "title": "Complementos",
+                "path": "/menu/complementos"
+            },
+            {
+                "title": "Extras",
+                "path": "/menu/extras"
+            },
+            {
+                "title": "Postres",
+                "path": "/menu/postres"
+            },
+            {
+                "title": "Bebidas",
+                "path": "/menu/bebidas"
+            }
+        ]
+    },
+    {
+        "title": "Promociones",
+        "path": "/promotions"
+    },
+    {
+        "title": "Papa Talk",
+        "path": "/talk"
+    },
+    {
+        "title": "Papa Rewards",
+        "path": "/rewards"
+    },
+    {
+        "title": "Acerca de nosotros",
+        "path": "/about"
+    }
+]

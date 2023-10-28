@@ -2,33 +2,44 @@
 
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
-import { Roboto } from "next/font/google";
+import { createStyles, createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
 import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
 
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
+const fontFamily = "Amiri, Montserrat";
+
+const mediaQueries = {
+  "@media (min-width:320px)": {
+    fontSize: "2.4rem",
+  },
+  "@media (min-width:480px)": {
+    fontSize: "2.6rem",
+  },
+  "@media (min-width:600px)": {
+    fontSize: "2.8rem",
+  },
+  "@media (min-width:801px)": {
+    fontSize: "3.0rem",
+  },
+  "@media (min-width:1025px)": {
+    fontSize: "3.2rem",
+  },
+};
+
 
 const themeOptions: ThemeOptions = {
   typography: {
-    fontSize: 12,
-    fontFamily: roboto.style.fontFamily,
+    fontFamily,
   },
   palette: {
-    background: {
-      // pink
-      default: "#f8bbd0",
-    },
     primary: {
-      main: "#1976d2",
+      main: "#fff",
     },
-    text: {
-      primary: "#300000",
+    secondary: {
+      main: "#4e5762",
     },
+
   },
+
 };
 
 const theme = createTheme(themeOptions);
