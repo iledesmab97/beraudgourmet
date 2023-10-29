@@ -1,5 +1,5 @@
 import ThemeRegistry from "@/theme/ThemeRegistry";
-
+import Header from "@/components/Header/Header"
 
 export const metadata = {
   title: 'Berautgourmet',
@@ -14,6 +14,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <ThemeRegistry>
+        <Header />
         {children}
       </ThemeRegistry>
     </html>
