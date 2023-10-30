@@ -17,8 +17,8 @@ function ContainerItems () {
       </h1>
       <Grid container spacing={4}>
         {
-          items.slice(0,5).map(item => (
-            <Grid item key={item.name} xs={12} sm={6} md={4}>
+          items.slice(0,5).map((item, index) => (
+            <Grid item key={item.name + index} xs={12} sm={6} md={4}>
               <Card
                 sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
               >  
