@@ -1,12 +1,11 @@
 'use client'
 
 import Image from 'next/image'
-import AppBar from '@mui/material/AppBar';
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
-// import { AppBar, Toolbar, Container, Typography, Button, List, ListItem, ListItemIcon } from '@mui/material';
+import AppBar from '@mui/material/AppBar'
+import Container from '@mui/material/Container'
+import Toolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
 
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
 import links from '../NavBar/navbarpaths.json'
@@ -17,9 +16,9 @@ function Header() {
     <AppBar>
       <Container maxWidth="lg">
         <Toolbar sx={{borderBottom: 1, borderColor: 'divider'}}>
-          <IconButton>
+          <Box>
             <Image src={logoBeraund} alt={'logoBeraund'} width={130}/>
-          </IconButton>
+          </Box>
         </Toolbar>
         <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
           {
