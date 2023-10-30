@@ -8,8 +8,14 @@ import OrderRewards from '../../components/OrderRewards/OrderRewards'
 
 function Menu () {
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={5}>
+    <Container maxWidth="lg" sx={{ mt: '40px'}}>
+      <Grid
+        container
+        spacing={5}
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'auto 350px',
+          pb: 3}}>
         <ContainerItems />
         <OrderRewards />
       </Grid>
