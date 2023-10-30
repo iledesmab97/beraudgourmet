@@ -11,7 +11,7 @@ import style from './ContainerItems.module.css'
 
 function ContainerItems () {
   return (
-    <Grid item xs={12} md={8.5}>
+    <Grid item xs={12} md={12}>
       <h1 className={style.ContainerItemsTitle}>
         <strong>Pizzas</strong>
       </h1>
