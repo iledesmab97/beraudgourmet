@@ -1,5 +1,6 @@
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import Header from "@/components/Header/Header"
+import style from './page.module.css'
 
 export const metadata = {
   title: 'Berautgourmet',
@@ -15,7 +16,9 @@ export default function RootLayout({
     <html lang="es">
       <ThemeRegistry>
         <Header />
-        {children}
+        <main className={style.primaryMain}>
+          {children}
+        </main>
       </ThemeRegistry>
     </html>
   );
