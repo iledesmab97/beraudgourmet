@@ -67,7 +67,8 @@ function OrderRewards () {
               margin='dense'
               helperText=''
               error={false}
-              onChange={event => setEmail(event.target.value)}/>
+              onChange={event => setEmail(event.target.value)}
+              variant='standard'/>
 
             <TextField
               id="name"

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createStyles, createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
 import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
 
 const fontFamily = "Amiri, Montserrat";
@@ -64,30 +64,31 @@ const themeOptions = {
       // },
     },
   },
-  // components: {
-  //   MuiTextField: {
-  //     variants: [
-  //       {
-  //         props: { variant: "standard" },
-  //         style: {
-  //           root: {
-  //             borderRadius: "4px",
-  //           },
-  //           input: {
-  //             width: "242px",
-  //             padding: "1.2rem",
-  //             fontSize: "1.8rem",
-  //             fontFamily: "inherit",
-  //             border: "none",
-  //             backgroundColor: "#fff",
-  //             borderRadius: "9px",
-  //             boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
-  //           },
-  //         },
-  //       }
-  //     ]
-  //   }
-  // },
+  components: {
+    MuiTextField: {
+      variants: [
+       {
+        props: {
+          variant: 'standard'
+        },
+        style: {
+          root: {
+            borderRadius: "4px",
+          },
+          input: {
+            width: "242px",
+            fontSize: "1.8rem",
+            fontFamily: "inherit",
+            border: "none",
+            backgroundColor: "#CCC",
+            borderRadius: "2px",
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+          },
+        }
+       } 
+      ],
+    }
+  },
   palette: {
     primary: {
       main: "#295386",
@@ -121,8 +122,6 @@ const theme = createTheme( themeOptions );
 
 export default function ThemeRegistry({
   children,
-}: {
-  children: React.ReactNode;
 }) {
   return (
     <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
