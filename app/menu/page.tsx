@@ -1,12 +1,19 @@
 'use client'
 
+
+import { useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import ContainerItems from '../../components/ContainerItems/ContainerItems'
 import OrderRewards from '../../components/OrderRewards/OrderRewards'
+import ModalChooseProduct from '../../components/ModalChooseProduct/ModalChooseProduct'
 // import style from './page.module.css'
 
 function Menu () {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Container maxWidth="lg" sx={{ mt: '40px'}}>
       <Grid
@@ -19,6 +26,7 @@ function Menu () {
         <ContainerItems />
         <OrderRewards />
       </Grid>
+      <ModalChooseProduct />
     </Container>
   )
 }
