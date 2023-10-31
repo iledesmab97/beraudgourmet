@@ -7,14 +7,14 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 
 import items from './menuStore.json'
-import style from './ContainerItems.module.css'
+// import style from './ContainerItems.module.css'
 
 function ContainerItems () {
   return (
     <Grid item xs={12} md={12}>
-      <h1 className={style.ContainerItemsTitle}>
-        <strong>Pizzas</strong>
-      </h1>
+      <Typography variant='encabezado'>
+        Pizzas
+      </Typography>
       <Grid container spacing={4}>
         {
           items.slice(0,5).map(item => (
@@ -30,13 +30,14 @@ function ContainerItems () {
                   image={item.image}
                 />
                 <CardContent sx={{ flexGrow: 1}}>
-                  <Typography gutterBottom variant='h5' component='h2'>
+                  <Typography gutterBottom variant='title' component='h2'>
                     {item.name}
                   </Typography>
-                  <Typography>
+                  <Typography variant='texto'>
                     ${item.price}
                   </Typography>
-                  <Typography>
+                  <br/>
+                  <Typography variant='texto'>
                     {item.text}
                   </Typography>
                 </CardContent>

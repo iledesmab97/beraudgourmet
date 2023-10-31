@@ -26,21 +26,72 @@ const mediaQueries = {
 };
 
 
-const themeOptions: ThemeOptions = {
+const themeOptions = {
   typography: {
     fontFamily,
+    encabezado: {
+      fontFamily: "Montserrat",
+      fontWeight: "bold",
+      color: "#295386",
+      fontSize: "2.8rem",
+    },
+    title: {
+      fontFamily: "Montserrat",
+      fontWeight: "bold",
+      color: "#4e5762",
+      fontSize: "1.2rem",
+    },
+    p: {
+      fontFamily: "Montserrat",
+      fontWeight: 400,
+      lineHeight: 1,
+      padding: 9,
+      fontSize: "1rem",
+      // "@media (min-width:320px)": {
+      //   fontSize: "1.4rem",
+      // },
+      // "@media (min-width:480px)": {
+      //   fontSize: "1.6rem",
+      // },
+      // "@media (min-width:600px)": {
+      //   fontSize: "1.8rem",
+      // },
+      // "@media (min-width:801px)": {
+      //   fontSize: "2.0rem",
+      // },
+      // "@media (min-width:1025px)": {
+      //   fontSize: "2.2rem",
+      // },
+    },
   },
   palette: {
     primary: {
-      main: "#fff",
+      main: "#295386",
     },
     secondary: {
       main: "#4e5762",
     },
+    default: {
+      main: "#FFFFFF"
+    },
+    // import { makeStyles } from "@material-ui/core/styles";
 
+    // const useStyles = makeStyles((theme) => ({
+    //   customAppBar: {
+    //     backgroundColor: theme.palette.colors.customColor1,
+    //   },
+    // }));
+    
+    // function UseColors() {
+    //   const classes = useStyles();
+    //   return ();
+    // }
+    // colors: {
+    //   customColor1: "#FFA500",
+    // },
   },
-
 };
+
 
 const theme = createTheme(themeOptions);
 
