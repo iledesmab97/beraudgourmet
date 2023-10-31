@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -67,7 +67,7 @@ const INGREDIENTES = [
 ]
 
 export default function ModalChooseProduct() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -120,6 +120,7 @@ export default function ModalChooseProduct() {
                   flexDirection: 'column'
                 }}>
                 <Button
+                  onClick={handleClose}
                   size='large'
                   sx={{
                     color: 'black',
