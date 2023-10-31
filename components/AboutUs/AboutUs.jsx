@@ -11,7 +11,7 @@ function AboutUs () {
     <div>
       <Box color={"none"} style={{ paddingTop: '34px', paddingBottom: '30px', backgroundImage: 'transparent' }}>
         <Stack spacing={2} justifyContent='center' alignItems='center'>
-          <Typography variant='h1' color='primary' fontSize={28}>
+          <Typography variant='bold' color='primary' fontSize={28}>
             Grupo BÉRAUD
           </Typography>
 

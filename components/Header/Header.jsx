@@ -6,6 +6,7 @@ import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
+import { Typography } from '@mui/material'
 
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
 import links from '../NavBar/navbarpaths.json'
@@ -13,7 +14,7 @@ import links from '../NavBar/navbarpaths.json'
 
 function Header() {
   return (
-    <AppBar>
+    <AppBar color='default'>
       <Container maxWidth="lg">
         <Toolbar sx={{borderBottom: 1, borderColor: 'divider'}}>
           <Box>
@@ -28,7 +29,7 @@ function Header() {
                 color='#000'
                 key={link.title}
                 sx={{textDecoration: 'none'}}
-              >{link.title}</Link>
+              ><Typography variant='title'>{link.title}</Typography></Link>
             ))
           }
         </Toolbar>
@@ -40,7 +41,7 @@ function Header() {
                 color='#000'
                 key={link.title}
                 sx={{textDecoration: 'none'}}
-              >{link.title}</Link>
+              ><Typography variant='title'>{link.title}</Typography></Link>
             ))
           }
         </Toolbar>

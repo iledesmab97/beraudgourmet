@@ -52,7 +52,7 @@ function OrderRewards () {
           <FormControl sx={{ display: 'flex', flexDirection: 'column' }}>
 
             <Typography
-              variant='h7'
+              variant='title'
               gutterBottom>
               Iniciar Sesión / Registrarse
             </Typography>
@@ -101,7 +101,7 @@ function OrderRewards () {
           }}>
 
             <Typography
-              variant='h7'
+              variant='title'
               gutterBottom>
               Tienda
             </Typography>
@@ -119,12 +119,12 @@ function OrderRewards () {
           <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
 
             <Typography
-              variant='h7'
+              variant='title'
               gutterBottom>
               Pedido
             </Typography>
-
-            <Typography variant='body2'>
+            <br/>
+            <Typography variant='p'>
               Su pedído está vacio
             </Typography>
 
@@ -144,7 +144,7 @@ function OrderRewards () {
           </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: 1, borderColor: 'divider'}}>
-            <Typography component='h1'>
+            <Typography variant='title'>
               Total
             </Typography>
             <Typography variant='button' display='block' gutterBottom>
