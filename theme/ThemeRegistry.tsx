@@ -64,6 +64,30 @@ const themeOptions = {
       // },
     },
   },
+  // components: {
+  //   MuiTextField: {
+  //     variants: [
+  //       {
+  //         props: { variant: "standard" },
+  //         style: {
+  //           root: {
+  //             borderRadius: "4px",
+  //           },
+  //           input: {
+  //             width: "242px",
+  //             padding: "1.2rem",
+  //             fontSize: "1.8rem",
+  //             fontFamily: "inherit",
+  //             border: "none",
+  //             backgroundColor: "#fff",
+  //             borderRadius: "9px",
+  //             boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+  //           },
+  //         },
+  //       }
+  //     ]
+  //   }
+  // },
   palette: {
     primary: {
       main: "#295386",
@@ -93,7 +117,7 @@ const themeOptions = {
 };
 
 
-const theme = createTheme(themeOptions);
+const theme = createTheme( themeOptions );
 
 export default function ThemeRegistry({
   children,
