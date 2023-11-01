@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import ContainerItems from '../../components/ContainerItems/ContainerItems'
 import OrderRewards from '../../components/OrderRewards/OrderRewards'
 import ModalChooseProduct from '../../components/ModalChooseProduct/ModalChooseProduct'
+import ModalStoreDelivery from '../../components/ModalStoreDelivery/ModalStoreDelivery'
 // import style from './page.module.css'
 
 function Menu () {
@@ -27,6 +28,7 @@ function Menu () {
         <OrderRewards />
       </Grid>
       <ModalChooseProduct />
+      <ModalStoreDelivery />
     </Container>
   )
 }
