@@ -73,7 +73,7 @@ export default function ModalChooseProduct() {
 
   return (
     <div>
-      <Button onClick={handleOpen} color='success' variant='contained'>Open modal</Button>
+      <Button onClick={handleOpen} color='success' variant='contained'>Product</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -133,7 +133,10 @@ export default function ModalChooseProduct() {
                   X
                 </Button>
 
-                <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Typography
+                  id="modal-modal-title"
+                  variant='title'
+                  component="h2">
                   All The Meats
                 </Typography>
 
@@ -151,7 +154,10 @@ export default function ModalChooseProduct() {
                   {/* <Button>{"18''"}</Button> */}
                 </ButtonGroup>
 
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <Typography
+                  id="modal-modal-description"
+                  variant='title'
+                  sx={{ mt: 2 }}>
                   ELIGE LA MASA
                 </Typography>
                 <FormControl>
@@ -168,8 +174,11 @@ export default function ModalChooseProduct() {
                   </RadioGroup>
                 </FormControl>
                 
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  QUITA INGREDIENTES
+                <Typography
+                  id="modal-modal-description"
+                  variant='title'
+                  sx={{ mt: 2 }}>
+                  QUITAR INGREDIENTES
                 </Typography>
                 <FormGroup>
                   <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 1'/>
@@ -178,8 +187,11 @@ export default function ModalChooseProduct() {
                   <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 4'/>
                 </FormGroup>
 
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  AGREGA INGREDIENTES
+                <Typography
+                  id="modal-modal-description"
+                  variant='title'
+                  sx={{ mt: 2 }}>
+                  AGREGAR INGREDIENTES
                 </Typography>
                 <Grid container direction='row'>
                   <Grid item xs={12}>

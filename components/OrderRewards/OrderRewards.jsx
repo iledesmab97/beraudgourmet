@@ -61,20 +61,18 @@ function OrderRewards () {
               id="email"
               label='Email'
               type='email'
-              InputLabelProps={{ shrink: true }}
               fullWidth
               size='small'
               margin='dense'
               helperText=''
               error={false}
-              onChange={event => setEmail(event.target.value)}
+              onChange={handleChange}
               variant='standard'/>
 
             <TextField
               id="name"
               label="Nombre"
               type='text'
-              InputLabelProps={{ shrink: true }}
               size='small'
               margin='dense'
               fullWidth
@@ -86,7 +84,6 @@ function OrderRewards () {
               label="Número de teléfono"
               type='text'
               inputProps={{ inputMode: 'numeric', pattern: '[0-9]*'}}
-              InputLabelProps={{ shrink: true }}
               size='small'
               margin='dense'
               fullWidth
@@ -136,7 +133,6 @@ function OrderRewards () {
                 id="cupon"
                 label="Cupon"
                 type='text'
-                InputLabelProps={{ shrink: true }}
                 size='small'
                 margin='dense'
                 fullWidth
