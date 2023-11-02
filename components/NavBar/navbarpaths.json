@@ -4,7 +4,7 @@
         "path": "/menu",
         "subNav": [
             {
-                "title": "Promosciones",
+                "title": "Promociones",
                 "path": "/menu/promociones"
             },
             {
