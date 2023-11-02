@@ -7,17 +7,8 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-import Grid from '@mui/material/Grid';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-// import TextareaAutosize from '@mui/material/TextareaAutosize';
-// import Input from '@mui/material/Input';
-// import { TextareaAutosize } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import TextArea from '../TextArea/TextArea'
 import FormModalDeliveryPlace from './FormModalDeliveryPlace'
 
 const style = {
@@ -43,10 +34,6 @@ export default function ModalDeliveryPlace() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  function handlePlace (event) {
-    setPlace(places[event.target.value])
-  }
 
   return (
     <div>
