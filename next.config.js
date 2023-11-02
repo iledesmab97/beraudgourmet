@@ -15,7 +15,7 @@ const nextConfig = {
       }
     ]
   },
-  allowImportingTsExtensions: true,
+  // allowImportingTsExtensions: true,
 };
 
 module.exports = nextConfig;
