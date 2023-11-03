@@ -10,6 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
 import FormModalDeliveryPlace from './FormModalDeliveryPlace'
+import PlaceFinder from '../PlaceFinder/PlaceFinder'
 
 const style = {
   position: 'absolute',
@@ -65,24 +66,8 @@ export default function ModalDeliveryPlace() {
                 >
                     Dirección de entrega
                 </Typography>
-
-                <TextField
-                    id="location"
-                    label="Dirección"
-                    type='text'
-                    size='small'
-                    margin='dense'
-                    fullWidth
-                    placeholder='Buscar dirección'
-                    error={false}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position='start'>
-                                <SearchIcon />
-                            </InputAdornment>
-                        )
-                    }}
-                />
+                
+                <PlaceFinder />
 
                 <FormModalDeliveryPlace />
                 
