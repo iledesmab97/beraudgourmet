@@ -1,62 +1,56 @@
-'use client'
+import React, { useState, useEffect } from 'react';
+import usePlacesAutocomplete from 'use-places-autocomplete';
+import { useLoadScript } from "@react-google-maps/api";
 
-// import { useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
-import { useJsApiLoader, Autocomplete, GoogleMap } from '@react-google-maps/api';
+function AutocompleteAddress() {
+  const [address, setAddress] = useState('');
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 
-const setups = {
-    // googleMapsApiKey: process.env.GOOGLE_MAP_API_KEY2,
-    googleMapsApiKey: 'AIzaSyBypEW2ANDQ1OXtY4_uKZjjaOTwhM2dhkU',
-    libraries: ['places']
+  // Configura usePlacesAutocomplete
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  const handleInputChange = (e) => {
+    setValue(e.target.value);
+    setAddress(e.target.value);
+  };
+
+  const handleSelect = (suggestion) => {
+    setAddress(suggestion.description);
+    setSelectedSuggestion(suggestion);
+    setValue(suggestion.description, false); // false para no borrar el valor del campo
+    clearSuggestions();
+  };
+
+  return (
+    <div>
+      <input
+        value={address}
+        onChange={handleInputChange}
+        placeholder="Enter an address"
+      />
+      <ul>
+        {status === 'OK' &&
+          data.map((suggestion, index) => (
+            <li key={index} onClick={() => handleSelect(suggestion)}>
+              {suggestion.description}
+            </li>
+          ))}
+      </ul>
+      {selectedSuggestion && (
+        <div>
+          <h2>Selected Address:</h2>
+          <p>{selectedSuggestion.description}</p>
+          <button onClick={() => setSelectedSuggestion(null)}>Clear Selection</button>
+        </div>
+      )}
+    </div>
+  );
 }
 
-const beraudGourmetPlace = { lat: 19.4307, lng: -99.2385 }
-
-export default function PlaceFinder() {
-
-    const { isLoaded } = useJsApiLoader(setups)
-
-    return (
-        <>
-            <Box sx={{ width: '100%'}}>
-                {
-                    isLoaded
-                    ? (
-                        <>
-                            <Autocomplete>
-                                <TextField
-                                    id="location"
-                                    label="Dirección"
-                                    type='text'
-                                    size='small'
-                                    margin='dense'
-                                    fullWidth
-                                    placeholder='Buscar dirección'
-                                    error={false}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position='start'>
-                                                <SearchIcon />
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-                            </Autocomplete>
-                            <GoogleMap
-                                center={beraudGourmetPlace}
-                                zoom={15}
-                                mapContainerStyle={{ width: '100%', height: '500px'}}
-                            />
-                        </>
-                    )
-                    : null
-                }
-            </Box>
-            {/* <Box sx={{ width: '100%' }}>
-            </Box> */}
-        </>
-    )
-}
+export default AutocompleteAddress;
