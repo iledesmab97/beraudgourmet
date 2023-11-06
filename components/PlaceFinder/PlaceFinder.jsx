@@ -1,6 +1,9 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
+// import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import usePlacesAutocomplete from 'use-places-autocomplete';
-import { useLoadScript } from "@react-google-maps/api";
 
 function AutocompleteAddress() {
   const [address, setAddress] = useState('');
@@ -29,10 +32,15 @@ function AutocompleteAddress() {
 
   return (
     <div>
-      <input
+      {/* <input
         value={address}
         onChange={handleInputChange}
         placeholder="Enter an address"
+      /> */}
+      <TextField
+        value={address}
+        onChange={handleInputChange}
+        placeholder='Enter an address'
       />
       <ul>
         {status === 'OK' &&
