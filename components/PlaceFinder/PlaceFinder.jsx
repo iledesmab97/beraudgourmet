@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import usePlacesAutocomplete from 'use-places-autocomplete';
-import { useLoadScript } from "@react-google-maps/api";
+'use client'
+
+import React, { useState } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import usePlacesAutocomplete from 'use-places-autocomplete'
+import ItemPlace from './ItemPlace'
 
 function AutocompleteAddress() {
   const [address, setAddress] = useState('');
@@ -15,41 +19,37 @@ function AutocompleteAddress() {
     clearSuggestions,
   } = usePlacesAutocomplete();
 
-  const handleInputChange = (e) => {
+  function handleInputChange (e) {
+    if (!e) return
     setValue(e.target.value);
     setAddress(e.target.value);
   };
 
-  const handleSelect = (suggestion) => {
-    setAddress(suggestion.description);
+  function handleSelect (event) {
+    const suggestion = event.target.textContent
+    setAddress(suggestion);
     setSelectedSuggestion(suggestion);
-    setValue(suggestion.description, false); // false para no borrar el valor del campo
+    setValue(suggestion, false); // false para no borrar el valor del campo
     clearSuggestions();
   };
 
   return (
-    <div>
-      <input
-        value={address}
-        onChange={handleInputChange}
-        placeholder="Enter an address"
-      />
-      <ul>
-        {status === 'OK' &&
-          data.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSelect(suggestion)}>
-              {suggestion.description}
-            </li>
-          ))}
-      </ul>
-      {selectedSuggestion && (
-        <div>
-          <h2>Selected Address:</h2>
-          <p>{selectedSuggestion.description}</p>
-          <button onClick={() => setSelectedSuggestion(null)}>Clear Selection</button>
-        </div>
+    <Autocomplete
+      fullWidth
+      disablePortal
+      id='autocomplete-PlaceFinder'
+      options={data}
+      getOptionLabel={option => option.description ? option.description : option}
+      renderOption={
+        (props, option) => (
+          <ItemPlace {...props} key={option.description} place={option.description}/>
       )}
-    </div>
+      value={selectedSuggestion}
+      onChange={handleSelect}
+      inputValue={address}
+      onInputChange={handleInputChange}
+      renderInput={(params) => <TextField {...params} label='Place' />}
+    />
   );
 }
 
