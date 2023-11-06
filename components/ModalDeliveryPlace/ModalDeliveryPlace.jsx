@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
-import { useLoadScript } from "@react-google-maps/api";
 
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -37,19 +36,6 @@ export default function ModalDeliveryPlace() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDc8oY7zb9QuGqlkM4kJoOui0lxPv6sOAg',
-    libraries: ['places'],
-  });
-
-  if (loadError) {
-    return <div>Error al cargar la API de Google Places</div>;
-  }
-
-  if (!isLoaded) {
-    return <div>Cargando la API de Google Places...</div>;
-  }
 
   return (
     <div>
