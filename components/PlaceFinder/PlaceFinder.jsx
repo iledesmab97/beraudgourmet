@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 // import { GoogleMap } from '@react-google-maps/api'
@@ -12,10 +12,11 @@ const center = {
   lng: -99.2385
 };
 
-function AutocompleteAddress() {
+function PlaceFinder({ changeWithinLimit, withinLimit }) {
   const [address, setAddress] = useState('');
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [distance, setDistance] = useState('')
+  
   // const [duration, setDuration] = useState('')
 
   // Configura usePlacesAutocomplete
@@ -30,6 +31,15 @@ function AutocompleteAddress() {
       componentRestrictions: { country: 'MX' }
     }
   });
+
+  useEffect(() => {
+    if (!distance) return
+    if (distance > 15) {
+      changeWithinLimit(false)
+    } else {
+      changeWithinLimit(true)
+    }
+  }, [distance])
 
   function handleInputChange (e) {
     if (!e) return
@@ -47,6 +57,7 @@ function AutocompleteAddress() {
   };
 
   async function calculateRoute(address) {
+    if (!address) return
     const directionService = new google.maps.DirectionsService()
     const results = await directionService.route({
       origin: center,
@@ -54,8 +65,17 @@ function AutocompleteAddress() {
       // travelMode: google.maps.TravelMode.DRIVING
       travelMode: 'DRIVING'
     })
-    setDistance(results.routes[0].legs[0].distance.text.split('km')[0].trim())
-    console.log('distancia:', results.routes[0].legs[0].distance.text.split('km')[0].trim())
+    let newDistance = results.routes[0].legs[0].distance.text
+    setDistance(() => {
+      if (newDistance.includes('.')) {
+        newDistance = newDistance.replaceAll('.', '')
+      }
+      if (newDistance.includes('.')) {
+        newDistance = newDistance.replace(',', '.')
+      }
+      return newDistance.split('km')[0].trim()
+    })
+    console.log('distancia:', newDistance)
   }
 
   function clearRoute() {
@@ -70,7 +90,7 @@ function AutocompleteAddress() {
       fullWidth
       disablePortal
       id='autocomplete-PlaceFinder'
-      options={data}
+      options={ address ? data : []}
       getOptionLabel={option => option.description ? option.description : option}
       renderOption={
         (props, option) => (
@@ -89,8 +109,8 @@ function AutocompleteAddress() {
         <TextField
           {...params}
           label='Place'
-          error={distance > 15 ? true : false}
-          helperText={ distance > 15 ? 'Maxima destancia 15 km' : '' } 
+          error={withinLimit === null ? false : !withinLimit}
+          helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 15 km. Distancia actual: ${distance} km` } 
         />)}
     />
     {/* <GoogleMap center={center} zoom={15} mapContainerStyle={{width: '100%', height: '500px'}}/> */}
@@ -98,4 +118,4 @@ function AutocompleteAddress() {
   );
 }
 
-export default AutocompleteAddress;
+export default PlaceFinder;
