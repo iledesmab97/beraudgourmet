@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 // import { GoogleMap } from '@react-google-maps/api'
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import ItemPlace from './ItemPlace'
+import DebouncedInput from '../DebounceInput/DebouncedInput'
 
 const center = {
   lat: 19.4307,
@@ -17,6 +18,8 @@ function PlaceFinder({ changeWithinLimit, withinLimit }) {
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [distance, setDistance] = useState('')
   
+  const timerRef = useRef()
+
   // const [duration, setDuration] = useState('')
 
   // Configura usePlacesAutocomplete
@@ -41,9 +44,19 @@ function PlaceFinder({ changeWithinLimit, withinLimit }) {
     }
   }, [distance])
 
+  function debounceSetValue (value, time) {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = window.setTimeout(() => {
+      setValue(value);
+    }, time);
+  }
+
   function handleInputChange (e) {
     if (!e) return
-    setValue(e.target.value);
+    debounceSetValue(e.target.value, 500);
     setAddress(e.target.value);
   };
 
@@ -108,6 +121,7 @@ function PlaceFinder({ changeWithinLimit, withinLimit }) {
       renderInput={(params) => (
         <TextField
           {...params}
+          // waitTime={500}
           label='Place'
           error={withinLimit === null ? false : !withinLimit}
           helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 15 km. Distancia actual: ${distance} km` } 
