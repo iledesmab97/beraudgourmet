@@ -70,7 +70,7 @@ function PlaceFinder({ changeWithinLimit, withinLimit }) {
       if (newDistance.includes('.')) {
         newDistance = newDistance.replaceAll('.', '')
       }
-      if (newDistance.includes('.')) {
+      if (newDistance.includes(',')) {
         newDistance = newDistance.replace(',', '.')
       }
       return newDistance.split('km')[0].trim()
