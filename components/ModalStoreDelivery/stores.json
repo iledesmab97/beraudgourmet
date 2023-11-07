@@ -1,0 +1,51 @@
+{
+    "Ciudad de México": [
+        {
+          "name": "Acoxpa",
+          "place": "aca viene la dirección de la tienda",
+          "phone": "55546153545",
+          "open": true,
+          "closeTime": "cierra a las 11:00pm"
+        },
+        {
+          "name": "Ajusco",
+          "place": "aca viene la dirección de la tienda",
+          "phone": "55546153545",
+          "open": true,
+          "closeTime": "cierra a las 11:00pm"
+        },
+        {
+          "name": "Anaxagoras",
+          "place": "aca viene la dirección de la tienda",
+          "phone": "55546153545",
+          "open": true,
+          "closeTime": "cierra a las 11:00pm"
+        }
+    ],
+    "Cancún": [
+      {
+        "name": "Copilco",
+        "place": "aca viene la dirección de la tienda",
+        "phone": "55546153545",
+        "open": true,
+        "closeTime": "cierra a las 11:00pm"
+      },
+      {
+        "name": "Destino Azcapotzalco",
+        "place": "aca viene la dirección de la tienda",
+        "phone": "55546153545",
+        "open": true,
+        "closeTime": "cierra a las 11:00pm"
+      }
+    ],
+    "Córdoba": [
+      {
+        "name": "Euro Ten",
+        "place": "aca viene la dirección de la tienda",
+        "phone": "55546153545",
+        "open": true,
+        "closeTime": "cierra a las 11:00pm"
+      }
+    ]
+
+}

@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField'
+import Autocomplete from '@mui/material/Autocomplete';
 import InputAdornment from '@mui/material/InputAdornment'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -11,53 +13,17 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import SearchIcon from '@mui/icons-material/Search';
-
-const STORES = [
-    {
-      name: 'Acoxpa',
-      place: 'aca viene la dirección de la tienda',
-      phone: '55546153545',
-      open: true,
-      closeTime: 'cierra a las 11:00pm'
-    },
-    {
-      name: 'Ajusco',
-      place: 'aca viene la dirección de la tienda',
-      phone: '55546153545',
-      open: true,
-      closeTime: 'cierra a las 11:00pm'
-    },
-    {
-      name: 'Anaxagoras',
-      place: 'aca viene la dirección de la tienda',
-      phone: '55546153545',
-      open: true,
-      closeTime: 'cierra a las 11:00pm'
-    },
-    {
-      name: 'Copilco',
-      place: 'aca viene la dirección de la tienda',
-      phone: '55546153545',
-      open: true,
-      closeTime: 'cierra a las 11:00pm'
-    },
-    {
-      name: 'Destino Azcapotzalco',
-      place: 'aca viene la dirección de la tienda',
-      phone: '55546153545',
-      open: true,
-      closeTime: 'cierra a las 11:00pm'
-    },
-    {
-      name: 'Euro Ten',
-      place: 'aca viene la dirección de la tienda',
-      phone: '55546153545',
-      open: true,
-      closeTime: 'cierra a las 11:00pm'
-    },
-]
+import ItemPlace from '../PlaceFinder/ItemPlace'
+import stores from './stores.json'
 
 export default function StorePickup() {
+
+    const [currentCity, setCurrentCity] = useState('')
+
+    function handleSelect(event) {
+        setCurrentCity(event.target.textContent)
+    }
+
     return (
         <>
             <Box sx={{ width: '100%'}}>    
@@ -70,21 +36,43 @@ export default function StorePickup() {
                 BUSCAR
                 </Typography>
 
-                <TextField
-                    id="location"
-                    label="Escriba su pueblo o ciudad"
-                    type='text'
+                <Autocomplete
+                    disablePortal
+                    id='autocomplete-StorePickup'
                     size='small'
-                    margin='dense'
                     fullWidth
-                    error={false}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position='start'>
-                                <SearchIcon />
-                            </InputAdornment>
-                        )
-                    }}
+                    options={Object.keys(stores)}
+                    getOptionLabel={option => option}
+                    renderOption={
+                        (props, option) => (
+                        <ItemPlace
+                            {...props}
+                            place={option}
+                            key={option}
+                            // onClick={() => {calculateRoute}}
+                        />
+                    )}
+                    // value={currentCity}
+                    onChange={handleSelect}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            id="location"
+                            label="Escriba su pueblo o ciudad"
+                            type='text'
+                            size='small'
+                            margin='dense'
+                            fullWidth
+                            // error={false}
+                            // InputProps={{
+                            //     startAdornment: (
+                            //         <InputAdornment position='start'>
+                            //             <SearchIcon />
+                            //         </InputAdornment>
+                            //     )
+                            // }}
+                        />
+                    )}
                 />
             </Box>
             
@@ -92,7 +80,7 @@ export default function StorePickup() {
                 sx={{
                     width:'100%',
                     height: 370,
-                    overflow: 'hidden'
+                    overflow: 'scroll'
                 }}
             >
                 <Typography
@@ -101,7 +89,7 @@ export default function StorePickup() {
                     alignSelf: 'flex-start'
                 }}
                 >
-                CIUDAD DE MEXICO
+                {currentCity.toUpperCase()}
                 </Typography>
                 <List
                 sx={{
@@ -112,7 +100,7 @@ export default function StorePickup() {
                 }}
                 >
                 {
-                    STORES.map((store, index) => (
+                    stores[currentCity || 'Ciudad de México'].map((store, index) => (
                     <ListItem
                         key={store.name + index}
                         alignItems='flex-start'
