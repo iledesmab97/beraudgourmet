@@ -37,6 +37,12 @@ export default function ModalDeliveryPlace() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [withinLimit, setWidthinLimit] = useState(null)
+
+  function changeWithinLimit(value) {
+    setWidthinLimit(value)
+  }
+
   return (
     <div>
       <Button onClick={handleOpen} color='success' variant='contained'>Lugar de entrega</Button>
@@ -49,6 +55,7 @@ export default function ModalDeliveryPlace() {
         <Box sx={style}>
             <Box
                 sx={{
+                    width: '100%',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -68,9 +75,13 @@ export default function ModalDeliveryPlace() {
                     Dirección de entrega
                 </Typography>
                 
-                <PlaceFinder />
-
-                <FormModalDeliveryPlace />
+                <PlaceFinder changeWithinLimit={changeWithinLimit} withinLimit={withinLimit} />
+                
+                {
+                  withinLimit
+                    ? <FormModalDeliveryPlace />
+                    : null
+                }
                 
             </Box>
             <Button
