@@ -1,7 +1,9 @@
 'use client'
 
-import Image from 'next/image'
 import { useState } from 'react';
+import useGetModal from '../../hooks/useGetModal'
+
+import Image from 'next/image'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -67,16 +69,38 @@ const INGREDIENTES = [
 ]
 
 export default function ModalChooseProduct() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const {open, handleOpenModal, handleCloseModal} = useGetModal({modaltype:'order'})
+
+  // const [open, setOpen] = useState(false)
+  // {
+    // if (!modal) {
+    //   console.log('entre aquí')
+    //   return false
+    // }
+    // console.log('modal:', modal)
+    // console.log('open:', modal === 'order')
+  //   modal === 'order'
+  //   false
+  // })
+
+  function handleOpen () {
+    setOpen(true)
+  }
+  function handleClose () {
+    setOpen(false)
+  }
+
+  function showOpen () {
+    console.log('open:', open)
+  }
 
   return (
     <div>
-      <Button onClick={handleOpen} color='success' variant='contained'>Product</Button>
+      <Button onClick={() => {handleOpenModal('order')}} color='success' variant='contained'>Product</Button>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
