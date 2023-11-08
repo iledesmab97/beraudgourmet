@@ -1,5 +1,7 @@
 'use client'
 
+import useGetModal from '@/hooks/useGetModal'
+
 import Image from 'next/image'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
@@ -13,6 +15,8 @@ import style from './OrderRewards.module.css'
 import logoBeraud from '@/public/images/homeimg/homeimgberaud/logoBeraud.png'
 
 function OrderRewards () {
+
+  const {handleOpenModal} = useGetModal({modaltype:'stores-places'})
 
   function handleChange (event) {
 
@@ -108,7 +112,9 @@ function OrderRewards () {
               variant='contained'
               color='secondary'
               sx={{ my:1 }}
-              fullWidth>
+              fullWidth
+              onClick={handleOpenModal}
+            >
                 Ver la lista de tiendas
             </Button>
 
