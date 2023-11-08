@@ -1,6 +1,8 @@
 'use client'
 
-import useGetModal from '@/hooks/useGetModal'
+import UserSection from './UserSection'
+import OrderSection from './OrderSection'
+import StoreSection from './StoreSection'
 
 import Image from 'next/image'
 import Grid from '@mui/material/Grid'
@@ -15,12 +17,6 @@ import style from './OrderRewards.module.css'
 import logoBeraud from '@/public/images/homeimg/homeimgberaud/logoBeraud.png'
 
 function OrderRewards () {
-
-  const {handleOpenModal} = useGetModal({modaltype:'stores-places'})
-
-  function handleChange (event) {
-
-  }
 
   function handleSubmit() {
 
@@ -53,86 +49,11 @@ function OrderRewards () {
           }
           }}
         >
-          <FormControl sx={{ display: 'flex', flexDirection: 'column' }}>
+          <UserSection />
 
-            <Typography
-              variant='title'
-              gutterBottom>
-              Iniciar Sesión / Registrarse
-            </Typography>
+          <StoreSection />
 
-            <TextField
-              id="email"
-              label='Email'
-              type='email'
-              fullWidth
-              size='small'
-              margin='dense'
-              helperText=''
-              error={false}
-              onChange={handleChange}
-              variant='standard'/>
-
-            <TextField
-              id="name"
-              label="Nombre"
-              type='text'
-              size='small'
-              margin='dense'
-              fullWidth
-              helperText=''
-              error={false}/>
-
-            <TextField
-              id="number"
-              label="Número de teléfono"
-              type='text'
-              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*'}}
-              size='small'
-              margin='dense'
-              fullWidth
-              helperText=''
-              error={false}/>
-
-          </FormControl>
-
-          <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start'
-          }}>
-
-            <Typography
-              variant='title'
-              gutterBottom>
-              Tienda
-            </Typography>
-
-            <Button
-              variant='contained'
-              color='secondary'
-              sx={{ my:1 }}
-              fullWidth
-              onClick={handleOpenModal}
-            >
-                Ver la lista de tiendas
-            </Button>
-
-          </Box>
-
-          <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-
-            <Typography
-              variant='title'
-              gutterBottom>
-              Pedido
-            </Typography>
-            <br/>
-            <Typography variant='p'>
-              Su pedído está vacio
-            </Typography>
-
-          </Box>
+          <OrderSection />
 
           <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
             <TextField
