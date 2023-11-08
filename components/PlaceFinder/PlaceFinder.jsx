@@ -49,14 +49,14 @@ function PlaceFinder({ changeWithinLimit, withinLimit }) {
     }
 
     timerRef.current = window.setTimeout(() => {
-      setValue(value);
+      setValue(value)
     }, time);
   }
 
   function handleInputChange (e) {
     if (!e) return
-    debounceSetValue(e.target.value, 500);
-    setAddress(e.target.value);
+    debounceSetValue(e.target.value, 500)
+    setAddress(e.target.value)
   };
 
   function handleSelect (event) {
@@ -78,16 +78,13 @@ function PlaceFinder({ changeWithinLimit, withinLimit }) {
       travelMode: 'DRIVING'
     })
     let newDistance = results.routes[0].legs[0].distance.text
-    setDistance(() => {
-      if (newDistance.includes('.')) {
-        newDistance = newDistance.replaceAll('.', '')
-      }
-      if (newDistance.includes(',')) {
-        newDistance = newDistance.replace(',', '.')
-      }
-      return newDistance.split('km')[0].trim()
-    })
-    console.log('distancia:', newDistance)
+    if (newDistance.includes('.')) {
+      newDistance = newDistance.replaceAll('.', '')
+    }
+    if (newDistance.includes(',')) {
+      newDistance = newDistance.replace(',', '.')
+    }
+    setDistance(newDistance.split('km')[0].trim())
   }
 
   function clearRoute() {

@@ -1,5 +1,7 @@
 'use client'
 
+import useGetModal from '@/hooks/useGetModal'
+
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
@@ -11,6 +13,9 @@ import items from './menuStore.json'
 // import style from './ContainerItems.module.css'
 
 function ContainerItems () {
+
+  const {handleOpenModal} = useGetModal({modaltype:'order'})
+
   return (
     <Grid item xs={12} md={12}>
       <Typography variant='encabezado'>
@@ -20,7 +25,7 @@ function ContainerItems () {
         {
           items.slice(0,5).map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
-              <CardActionArea onClick={() => {}}>
+              <CardActionArea onClick={handleOpenModal}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
