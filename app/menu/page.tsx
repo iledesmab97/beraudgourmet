@@ -35,7 +35,7 @@ function Menu () {
       </Grid>
       <ModalChooseProduct />
       <ModalStoreDelivery />
-      <ModalDeliveryPlace />
+      {/* <ModalDeliveryPlace /> */}
     </Container>
   )
 }

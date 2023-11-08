@@ -119,19 +119,6 @@ export default function ModalChooseProduct() {
                   display: 'flex',
                   flexDirection: 'column'
                 }}>
-                <Button
-                  onClick={handleCloseModal}
-                  size='large'
-                  sx={{
-                    color: 'black',
-                    alignSelf: 'flex-end',
-                    position: 'absolute',
-                    top: 0,
-                    right: -10
-                  }}
-                >
-                  X
-                </Button>
 
                 <Typography
                   id="modal-modal-title"

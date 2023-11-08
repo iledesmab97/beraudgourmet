@@ -26,7 +26,8 @@ export default function HomeDelivery() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    gap: 2
+                    gap: 2,
+                    overflow: 'scroll'
                 }}
             >    
                 <Typography

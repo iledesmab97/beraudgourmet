@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react';
+import useGetModal from '@/hooks/useGetModal'
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -30,11 +32,10 @@ const style = {
 };
 
 export default function ModalStoreDelivery() {
-  const [open, setOpen] = useState(false);
-  const [delivery, setDelivery] = useState('store')
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const {open, handleCloseModal} = useGetModal({modaltype:'stores-places'})
+
+  const [delivery, setDelivery] = useState('store')
 
   function handlePlace (place) {
     setDelivery(place)
@@ -42,10 +43,9 @@ export default function ModalStoreDelivery() {
 
   return (
     <div>
-      <Button onClick={handleOpen} color='success' variant='contained'>Delivery</Button>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
