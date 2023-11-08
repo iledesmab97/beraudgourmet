@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import useGetModal from '../../hooks/useGetModal'
+import useGetModal from '@/hooks/useGetModal'
 
 import Image from 'next/image'
 import Box from '@mui/material/Box';
@@ -70,34 +70,10 @@ const INGREDIENTES = [
 
 export default function ModalChooseProduct() {
 
-  const {open, handleOpenModal, handleCloseModal} = useGetModal({modaltype:'order'})
-
-  // const [open, setOpen] = useState(false)
-  // {
-    // if (!modal) {
-    //   console.log('entre aquí')
-    //   return false
-    // }
-    // console.log('modal:', modal)
-    // console.log('open:', modal === 'order')
-  //   modal === 'order'
-  //   false
-  // })
-
-  function handleOpen () {
-    setOpen(true)
-  }
-  function handleClose () {
-    setOpen(false)
-  }
-
-  function showOpen () {
-    console.log('open:', open)
-  }
+  const {open, handleCloseModal} = useGetModal({modaltype:'order'})
 
   return (
     <div>
-      <Button onClick={() => {handleOpenModal('order')}} color='success' variant='contained'>Product</Button>
       <Modal
         open={open}
         onClose={handleCloseModal}
@@ -144,7 +120,7 @@ export default function ModalChooseProduct() {
                   flexDirection: 'column'
                 }}>
                 <Button
-                  onClick={handleClose}
+                  onClick={handleCloseModal}
                   size='large'
                   sx={{
                     color: 'black',
