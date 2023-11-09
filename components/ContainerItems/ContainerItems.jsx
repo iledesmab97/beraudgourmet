@@ -9,7 +9,8 @@ import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 
-import items from './menuStore.json'
+import items from '@/menuStore.json'
+
 // import style from './ContainerItems.module.css'
 
 function ContainerItems () {
