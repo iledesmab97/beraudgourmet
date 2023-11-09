@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 
 export default function StoreSection () {
 
-    const {handleOpenModal} = useGetModal({modaltype:'stores-places'})
+    const {handleOpenModalPlace} = useGetModal({modalType: 'place'})
 
     return (
         <Box sx={{
@@ -28,7 +28,7 @@ export default function StoreSection () {
               color='secondary'
               sx={{ my:1 }}
               fullWidth
-              onClick={handleOpenModal}
+              onClick={handleOpenModalPlace}
             >
                 Ver la lista de tiendas
             </Button>

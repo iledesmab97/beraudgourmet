@@ -71,14 +71,14 @@ const INGREDIENTES = [
 
 export default function ModalChooseProduct() {
 
-  const {open, handleCloseModal} = useGetModal({modaltype:'order'})
+  const {open, handleCloseModalOrder} = useGetModal({modalType:'order'})
   const { orders, handleAddOrder } = useGetOrders()
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={handleCloseModal}
+        onClose={handleCloseModalOrder}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
