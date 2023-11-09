@@ -12,7 +12,27 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 't4.ftcdn.net'
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'us.123rf.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'pizzeriacherokee.es'
+      },
+      {
+        protocol: 'https',
+        hostname: 'ilpappardelle.files.wordpress.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cicciopizza.ro'
+      },
     ]
   },
   // allowImportingTsExtensions: true,
