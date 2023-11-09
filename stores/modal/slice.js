@@ -40,13 +40,16 @@ export const modalSlice = createSlice({
             }
         },
         openModalOrder: (state, action) => {
-            return {
+            const newState = {
                 ...state,
                 order: {
                     ...state.order,
-                    open: true
+                    [action.payload.name]: action.payload,
+                    open: true,
+                    currentProduct: action.payload
                 }
             }
+            return newState
         },
         closeModalOrder: (state, action) => {
             return {
