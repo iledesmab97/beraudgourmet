@@ -1,0 +1,70 @@
+[
+    {
+        "name": "Carne de res",
+        "price": "$15"
+    },
+    {
+        "name": "Chorizo",
+        "price": "$15"
+    },
+    {
+        "name": "Jamón",
+        "price": "$15"
+    },
+    {
+        "name": "Piña",
+        "price": "$15"
+    },
+    {
+        "name": "Salchciha de puerco",
+        "price": "$15"
+    },
+    {
+        "name": "Jalapeño",
+        "price": "$15"
+    },
+    {
+        "name": "Jitomate",
+        "price": "$15"
+    },
+    {
+        "name": "Tocino",
+        "price": "$15"
+    },
+    {
+        "name": "Peperoni",
+        "price": "$15"
+    },
+    {
+        "name": "Champiñon",
+        "price": "$15"
+    },
+    {
+        "name": "Pimiento verde",
+        "price": "$15"
+    },
+    {
+        "name": "Salchicha Italiana",
+        "price": "$15"
+    },
+    {
+        "name": "Cebolla",
+        "price": "$15"
+    },
+    {
+        "name": "Aceituna",
+        "price": "$15"
+    },
+    {
+        "name": "Mezcla de 2 quesos",
+        "price": "$15"
+    },
+    {
+        "name": "Mezcla de 3 quesos",
+        "price": "$15"
+    },
+    {
+        "name": "Queso extra mozzarella",
+        "price": "$15"
+    }
+]
