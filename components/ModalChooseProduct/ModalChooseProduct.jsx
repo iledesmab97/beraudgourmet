@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import useGetModal from '@/hooks/useGetModal'
+import AboutPizza from './AboutPizza'
+import CustomizePizza from './CustomizePizza'
 
 import Image from 'next/image'
 import Box from '@mui/material/Box';
@@ -24,8 +26,6 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
-
-import items from '../ContainerItems/menuStore.json'
 
 const style = {
   position: 'absolute',
@@ -94,139 +94,10 @@ export default function ModalChooseProduct() {
               marginLeft: 0,
             }}>
 
-            <Grid item xs={5} sx={{ height: '85%'}}>
-              <Box
-                sx={{
-                  position: 'relative',
-                  width: '100%',
-                  aspectRatio: 3/2
-                }}
-              >
-                <Image src={items[0].image} alt='Pizza Margarita' fill/>
-              </Box>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Acá viene todo el texto relacionado con la pizza, como su procedencia, los ingredientes, la receta, etc.
-              </Typography>
+            <AboutPizza />
 
-            </Grid>
+            <CustomizePizza />
 
-            <Grid item xs={7} sx={{ height: '85%'}}>
-              <Box
-                sx={{
-                  height: '100%',
-                  width: '100%',
-                  overflowY: 'scroll',
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}>
-
-                <Typography
-                  id="modal-modal-title"
-                  variant='title'
-                  component="h2">
-                  All The Meats
-                </Typography>
-
-                <ButtonGroup
-                  size='large'
-                  variant='contained'
-                  aria-label="contained large button group"
-                  sx={{
-                    width: 216
-                  }}
-                >
-                  <Button>{"12''"}</Button>
-                  <Button>{"14''"}</Button>
-                  <Button>{"16''"}</Button>
-                  {/* <Button>{"18''"}</Button> */}
-                </ButtonGroup>
-
-                <Typography
-                  id="modal-modal-description"
-                  variant='title'
-                  sx={{ mt: 2 }}>
-                  ELIGE LA MASA
-                </Typography>
-                <FormControl>
-                  {/* <FormLabel id="demo-radio-buttons-group-label">ELIGE LA MASA</FormLabel> */}
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="female"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel value="Masa Tradicional" control={<Radio />} label="Masa Tradicional" />
-                    <FormControlLabel value="Masa Orilla de Queso" control={<Radio />} label="Masa Orilla de Queso" />
-                    <FormControlLabel value="Masa Estilo New York" control={<Radio />} label="Masa Estilo New York" />
-                    <FormControlLabel value="Masa Costra de Queso" control={<Radio />} label="Masa Costra de Queso" />
-                  </RadioGroup>
-                </FormControl>
-                
-                <Typography
-                  id="modal-modal-description"
-                  variant='title'
-                  sx={{ mt: 2 }}>
-                  QUITAR INGREDIENTES
-                </Typography>
-                <FormGroup>
-                  <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 1'/>
-                  <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 2'/>
-                  <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 3'/>
-                  <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 4'/>
-                </FormGroup>
-
-                <Typography
-                  id="modal-modal-description"
-                  variant='title'
-                  sx={{ mt: 2 }}>
-                  AGREGAR INGREDIENTES
-                </Typography>
-                <Grid container direction='row'>
-                  <Grid item xs={12}>
-                    <TableContainer component={Paper}>
-                      <Table
-                        size='small'
-                        // dense={true}
-                        // table
-                      >
-                        {/* <TableHead>
-                          <TableRow>
-                            <TableCell>Cantidad</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Precio</TableCell>
-                          </TableRow>
-                        </TableHead> */}
-                        <TableBody>
-                          {
-                            INGREDIENTES.map(ingrediente => {
-                              return (
-                                <TableRow
-                                  key={ingrediente.name}
-                                >
-                                  <TableCell sx={{ display: 'flex', gap: 1 }}>
-                                    <Button size='small' variant='contained'>-</Button>
-                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                      0
-                                    </Typography>
-                                    <Button size='small' variant='contained'>+</Button>
-                                  </TableCell>
-                                  <TableCell>
-                                    {ingrediente.name}
-                                  </TableCell>
-                                  <TableCell>
-                                    {ingrediente.price}
-                                  </TableCell>                                
-                                </TableRow>
-                              )
-                            })
-                          }
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Grid>
-                </Grid>
-              </Box>
-
-            </Grid>
             <Grid
               container
               direction='row'
