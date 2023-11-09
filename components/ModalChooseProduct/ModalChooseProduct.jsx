@@ -74,6 +74,18 @@ export default function ModalChooseProduct() {
   const {open, product, handleCloseModalOrder} = useGetModal({modalType:'order'})
   const { orders, handleAddOrder } = useGetOrders()
 
+  const [quantity, setQuantity] = useState(1)
+  const totalPrice = quantity*product.price
+
+  function handleQuantity (event) {
+    const operation = event.target.name
+    if (operation === '+') {
+      setQuantity(prevQuantity => prevQuantity+=1)
+    } else if (operation === '-' && quantity > 1) {
+      setQuantity(prevQuantity => prevQuantity-=1)
+    }
+  }
+
   return (
     <div>
       <Modal
@@ -112,13 +124,27 @@ export default function ModalChooseProduct() {
               }}
             >
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}>
-                <Button size='small' variant='contained'>-</Button>
+                <Button
+                  size='small'
+                  variant='contained'
+                  name='-'
+                  onClick={handleQuantity}
+                >
+                  -
+                </Button>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  0
+                  {quantity}
                 </Typography>
-                <Button size='small' variant='contained'>+</Button>
+                <Button
+                  size='small'
+                  variant='contained'
+                  name='+'
+                  onClick={handleQuantity}
+                >
+                  +
+                </Button>
                 <Typography id="modal-modal-description" sx={{ ml: 5 }}>
-                  $0
+                  ${totalPrice}
                 </Typography>
               </Box>
               <Button variant='contained' onClick={handleAddOrder}>Agregar</Button>
