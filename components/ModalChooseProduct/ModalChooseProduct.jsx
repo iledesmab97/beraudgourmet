@@ -71,7 +71,7 @@ const INGREDIENTES = [
 
 export default function ModalChooseProduct() {
 
-  const {open, handleCloseModalOrder} = useGetModal({modalType:'order'})
+  const {open, product, handleCloseModalOrder} = useGetModal({modalType:'order'})
   const { orders, handleAddOrder } = useGetOrders()
 
   return (
@@ -96,9 +96,9 @@ export default function ModalChooseProduct() {
               marginLeft: 0,
             }}>
 
-            <AboutPizza />
+            <AboutPizza product={product} />
 
-            <CustomizePizza />
+            <CustomizePizza product={product}/>
 
             <Grid
               container
