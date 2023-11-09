@@ -8,21 +8,18 @@ const order = {
     notifications: ''
 }
 
-const initialState = [
-    {
-        pizza: 'margarita',
-        quatity: 2,
-        price: 10,
-        totalPrice: 20
-    }
-]
+const initialState = []
 
 export const ordersSlice = createSlice({
     name: 'orders',
     initialState,
-    reducers: {}
+    reducers: {
+        addOrder: (state, action) => {
+            return [...state, action.payload]
+        }
+    }
 })
 
 export default ordersSlice.reducer
 
-// export const {increment, decrement} = usersSlice.actions
+export const { addOrder } = ordersSlice.actions
