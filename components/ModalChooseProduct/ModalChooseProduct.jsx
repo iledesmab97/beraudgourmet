@@ -4,6 +4,7 @@ import { useState } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import AboutPizza from './AboutPizza'
 import CustomizePizza from './CustomizePizza'
+import useGetOrders from '@/hooks/useGetOrders';
 
 import Image from 'next/image'
 import Box from '@mui/material/Box';
@@ -71,6 +72,7 @@ const INGREDIENTES = [
 export default function ModalChooseProduct() {
 
   const {open, handleCloseModal} = useGetModal({modaltype:'order'})
+  const { orders, handleAddOrder } = useGetOrders()
 
   return (
     <div>
@@ -119,7 +121,7 @@ export default function ModalChooseProduct() {
                   $0
                 </Typography>
               </Box>
-              <Button variant='contained'>Agregar</Button>
+              <Button variant='contained' onClick={handleAddOrder}>Agregar</Button>
             </Grid>
           </Grid>
         </Box>
