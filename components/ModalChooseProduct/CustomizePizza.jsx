@@ -20,6 +20,8 @@ import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 
+import ingredients from '@/ingredients.json'
+
 const INGREDIENTES = [
     {
       name: 'Aceitunas',
@@ -47,7 +49,7 @@ const INGREDIENTES = [
     },
   ]
 
-export default function CustomizePizza () {
+export default function CustomizePizza ({ product }) {
     return (
         <Grid item xs={7} sx={{ height: '85%'}}>
             <Box
@@ -63,7 +65,7 @@ export default function CustomizePizza () {
                 id="modal-modal-title"
                 variant='title'
                 component="h2">
-                All The Meats
+                {product.name}
             </Typography>
 
             <ButtonGroup
@@ -108,10 +110,11 @@ export default function CustomizePizza () {
                 QUITAR INGREDIENTES
             </Typography>
             <FormGroup>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 1'/>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 2'/>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 3'/>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 4'/>
+                {
+                    product.ingredients.map((ingredient, index) => (
+                        <FormControlLabel key={ingredient + index} control={<Checkbox defaultChecked/>} label={ingredient} />        
+                    ))
+                }
             </FormGroup>
 
             <Typography
@@ -128,19 +131,12 @@ export default function CustomizePizza () {
                     // dense={true}
                     // table
                     >
-                    {/* <TableHead>
-                        <TableRow>
-                        <TableCell>Cantidad</TableCell>
-                        <TableCell>Nombre</TableCell>
-                        <TableCell>Precio</TableCell>
-                        </TableRow>
-                    </TableHead> */}
                     <TableBody>
                         {
-                        INGREDIENTES.map(ingrediente => {
+                        ingredients.map(ingredient => {
                             return (
                             <TableRow
-                                key={ingrediente.name}
+                                key={ingredient.name}
                             >
                                 <TableCell sx={{ display: 'flex', gap: 1 }}>
                                 <Button size='small' variant='contained'>-</Button>
@@ -150,10 +146,10 @@ export default function CustomizePizza () {
                                 <Button size='small' variant='contained'>+</Button>
                                 </TableCell>
                                 <TableCell>
-                                {ingrediente.name}
+                                {ingredient.name}
                                 </TableCell>
                                 <TableCell>
-                                {ingrediente.price}
+                                {ingredient.price}
                                 </TableCell>                                
                             </TableRow>
                             )
