@@ -1,8 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '@/hooks/store'
+import { addOrder } from '@/stores/order/slice'
 
 export default function useGetOrders () {
 
-    const orders = useSelector(state => state.orders)
+    const orders = useAppSelector(state => state.orders)
+    const dispatch = useAppDispatch()
+
+    function handleAddOrder() {
+        dispatch(addOrder({name: 'añadiendo una nueva orden'}))
+    }
     
-    return {orders}
+    return {orders, handleAddOrder}
 }

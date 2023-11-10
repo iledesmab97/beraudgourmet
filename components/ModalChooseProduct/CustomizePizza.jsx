@@ -20,34 +20,19 @@ import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 
-const INGREDIENTES = [
-    {
-      name: 'Aceitunas',
-      price: '$25'
-    },
-    {
-      name: 'Champiñon',
-      price: '$25'
-    },
-    {
-      name: 'Jalapeño',
-      price: '$25'
-    },
-    {
-      name: 'Cebolla',
-      price: '$25'
-    },
-    {
-      name: 'Chorizo',
-      price: '$25'
-    },
-    {
-      name: 'Jamón',
-      price: '$25'
-    },
-  ]
+import totalIngredients from '@/ingredients.json'
 
-export default function CustomizePizza () {
+export default function CustomizePizza ({ name, ingredientsProduct, customizePizza }) {
+
+    const {
+        mass,
+        handleMass,
+        ingredients,
+        handleIngredients,
+        extra,
+        handleExtra
+      } = customizePizza
+
     return (
         <Grid item xs={7} sx={{ height: '85%'}}>
             <Box
@@ -63,7 +48,7 @@ export default function CustomizePizza () {
                 id="modal-modal-title"
                 variant='title'
                 component="h2">
-                All The Meats
+                {name}
             </Typography>
 
             <ButtonGroup
@@ -91,8 +76,9 @@ export default function CustomizePizza () {
                 {/* <FormLabel id="demo-radio-buttons-group-label">ELIGE LA MASA</FormLabel> */}
                 <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
+                defaultValue="Masa Tradicional"
                 name="radio-buttons-group"
+                onChange={handleMass}
                 >
                 <FormControlLabel value="Masa Tradicional" control={<Radio />} label="Masa Tradicional" />
                 <FormControlLabel value="Masa Orilla de Queso" control={<Radio />} label="Masa Orilla de Queso" />
@@ -108,10 +94,11 @@ export default function CustomizePizza () {
                 QUITAR INGREDIENTES
             </Typography>
             <FormGroup>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 1'/>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 2'/>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 3'/>
-                <FormControlLabel control={<Checkbox defaultChecked/>} label='Ingrediente 4'/>
+                {
+                    ingredientsProduct.map((ingredient, index) => (
+                        <FormControlLabel key={ingredient + index} control={<Checkbox defaultChecked/>} label={ingredient} />        
+                    ))
+                }
             </FormGroup>
 
             <Typography
@@ -128,19 +115,12 @@ export default function CustomizePizza () {
                     // dense={true}
                     // table
                     >
-                    {/* <TableHead>
-                        <TableRow>
-                        <TableCell>Cantidad</TableCell>
-                        <TableCell>Nombre</TableCell>
-                        <TableCell>Precio</TableCell>
-                        </TableRow>
-                    </TableHead> */}
                     <TableBody>
                         {
-                        INGREDIENTES.map(ingrediente => {
+                        totalIngredients.map(ingredient => {
                             return (
                             <TableRow
-                                key={ingrediente.name}
+                                key={ingredient.name}
                             >
                                 <TableCell sx={{ display: 'flex', gap: 1 }}>
                                 <Button size='small' variant='contained'>-</Button>
@@ -150,10 +130,10 @@ export default function CustomizePizza () {
                                 <Button size='small' variant='contained'>+</Button>
                                 </TableCell>
                                 <TableCell>
-                                {ingrediente.name}
+                                {ingredient.name}
                                 </TableCell>
                                 <TableCell>
-                                {ingrediente.price}
+                                {ingredient.price}
                                 </TableCell>                                
                             </TableRow>
                             )

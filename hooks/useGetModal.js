@@ -1,26 +1,39 @@
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { openModal, closeModal } from '@/stores/modal/slice'
+import { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } from '@/stores/modal/slice'
 
-export default function useGetUser({modaltype}) {
+export default function useGetUser({modalType}) {
 
-    const modal = useAppSelector(state => state.modal)
+    const modal = useAppSelector(state => state.modal[modalType])
     const dispatch = useAppDispatch()
 
-    const open = useMemo(() => {
-        if (!modal || modal !== modaltype) {
-            return false
-        } else if (modal === modaltype)
-            return true
-    }, [modal])
-
-    function handleOpenModal() {
-        dispatch(openModal(modaltype))
+    function handleOpenModalPlace() {
+        dispatch(openModalPlace())
     }
 
-    function handleCloseModal() {
-        dispatch(closeModal())
+    function handleCloseModalPlace() {
+        dispatch(closeModalPlace())
     }
 
-    return {open, handleOpenModal, handleCloseModal}
+    function handleOpenModalOrder(product) {
+        dispatch(openModalOrder(product))
+    }
+
+    function handleCloseModalOrder() {
+        dispatch(closeModalOrder())
+    }
+
+    function handleUpdateModalOrder(newProduct) {
+        dispatch(updateModalOrder(newProduct))
+    }
+
+    return {
+        open: modal.open,
+        product: modal[modal.currentProduct],
+        handleOpenModalPlace,
+        handleCloseModalPlace,
+        handleOpenModalOrder,
+        handleCloseModalOrder,
+        handleUpdateModalOrder
+    }
 } 

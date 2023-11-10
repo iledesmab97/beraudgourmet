@@ -15,7 +15,7 @@ import items from '@/menuStore.json'
 
 function ContainerItems () {
 
-  const {handleOpenModal} = useGetModal({modaltype:'order'})
+  const {handleOpenModalOrder} = useGetModal({modalType:'order'})
 
   return (
     <Grid item xs={12} md={12}>
@@ -26,7 +26,7 @@ function ContainerItems () {
         {
           items.slice(0,5).map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
-              <CardActionArea onClick={handleOpenModal}>
+              <CardActionArea onClick={() => {handleOpenModalOrder(item)}}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >

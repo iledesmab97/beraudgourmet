@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 
 import items from '@/menuStore.json'
 
-export default function AboutPizza () {
+export default function AboutPizza ({ product }) {
     return (
         <Grid item xs={5} sx={{ height: '85%'}}>
             <Box
@@ -17,10 +17,10 @@ export default function AboutPizza () {
                 aspectRatio: 3/2
             }}
             >
-            <Image src={items[0].image} alt='Pizza Margarita' fill/>
+            <Image src={product.image} alt={product.name} fill/>
             </Box>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-            Acá viene todo el texto relacionado con la pizza, como su procedencia, los ingredientes, la receta, etc.
+            {product.text}
             </Typography>
 
         </Grid>

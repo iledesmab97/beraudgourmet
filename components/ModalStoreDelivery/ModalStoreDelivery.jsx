@@ -33,7 +33,7 @@ const style = {
 
 export default function ModalStoreDelivery() {
 
-  const {open, handleCloseModal} = useGetModal({modaltype:'stores-places'})
+  const {open, handleCloseModalPlace} = useGetModal({modalType: 'place'})
 
   const [delivery, setDelivery] = useState('store')
 
@@ -45,7 +45,7 @@ export default function ModalStoreDelivery() {
     <div>
       <Modal
         open={open}
-        onClose={handleCloseModal}
+        onClose={handleCloseModalPlace}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
