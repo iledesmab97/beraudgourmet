@@ -20,36 +20,19 @@ import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 
-import ingredients from '@/ingredients.json'
+import totalIngredients from '@/ingredients.json'
 
-const INGREDIENTES = [
-    {
-      name: 'Aceitunas',
-      price: '$25'
-    },
-    {
-      name: 'Champiñon',
-      price: '$25'
-    },
-    {
-      name: 'Jalapeño',
-      price: '$25'
-    },
-    {
-      name: 'Cebolla',
-      price: '$25'
-    },
-    {
-      name: 'Chorizo',
-      price: '$25'
-    },
-    {
-      name: 'Jamón',
-      price: '$25'
-    },
-  ]
+export default function CustomizePizza ({ name, ingredientsProduct, customizePizza }) {
 
-export default function CustomizePizza ({ product }) {
+    const {
+        mass,
+        handleMass,
+        ingredients,
+        handleIngredients,
+        extra,
+        handleExtra
+      } = customizePizza
+
     return (
         <Grid item xs={7} sx={{ height: '85%'}}>
             <Box
@@ -65,7 +48,7 @@ export default function CustomizePizza ({ product }) {
                 id="modal-modal-title"
                 variant='title'
                 component="h2">
-                {product.name}
+                {name}
             </Typography>
 
             <ButtonGroup
@@ -93,8 +76,9 @@ export default function CustomizePizza ({ product }) {
                 {/* <FormLabel id="demo-radio-buttons-group-label">ELIGE LA MASA</FormLabel> */}
                 <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
+                defaultValue="Masa Tradicional"
                 name="radio-buttons-group"
+                onChange={handleMass}
                 >
                 <FormControlLabel value="Masa Tradicional" control={<Radio />} label="Masa Tradicional" />
                 <FormControlLabel value="Masa Orilla de Queso" control={<Radio />} label="Masa Orilla de Queso" />
@@ -111,7 +95,7 @@ export default function CustomizePizza ({ product }) {
             </Typography>
             <FormGroup>
                 {
-                    product.ingredients.map((ingredient, index) => (
+                    ingredientsProduct.map((ingredient, index) => (
                         <FormControlLabel key={ingredient + index} control={<Checkbox defaultChecked/>} label={ingredient} />        
                     ))
                 }
@@ -133,7 +117,7 @@ export default function CustomizePizza ({ product }) {
                     >
                     <TableBody>
                         {
-                        ingredients.map(ingredient => {
+                        totalIngredients.map(ingredient => {
                             return (
                             <TableRow
                                 key={ingredient.name}
