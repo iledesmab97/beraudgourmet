@@ -40,23 +40,43 @@ export const modalSlice = createSlice({
             }
         },
         openModalOrder: (state, action) => {
-            const newState = {
+            if (state.order[action.payload.name]) {
+                return {
+                    ...state,
+                    order: {
+                        ...state.order,
+                        open:true,
+                        currentProduct: action.payload.name
+                    }
+                }
+            }
+            return {
                 ...state,
                 order: {
                     ...state.order,
                     [action.payload.name]: action.payload,
                     open: true,
-                    currentProduct: action.payload
+                    currentProduct: action.payload.name
+                }
+            }
+        },
+        closeModalOrder: (state, action) => {
+            const newState = {
+                ...state,
+                order: {
+                    ...state.order,
+                    open: false,
                 }
             }
             return newState
         },
-        closeModalOrder: (state, action) => {
+        updateModalOrder: (state, action) => {
+            const nameProduct = state.order.currentProduct
             return {
                 ...state,
                 order: {
                     ...state.order,
-                    open: false
+                    [nameProduct]: action.payload
                 }
             }
         }
@@ -65,4 +85,4 @@ export const modalSlice = createSlice({
 
 export default modalSlice.reducer
 
-export const { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder } = modalSlice.actions
+export const { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } = modalSlice.actions
