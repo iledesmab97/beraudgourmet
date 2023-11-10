@@ -3,7 +3,6 @@ import useGetModal from '@/hooks/useGetModal'
 
 export default function useHandleOrder({ product }) {
 
-    // const [currentProduct, setCurrentProduct] = useState(product)
     const currentProduct = useRef(product)
     const [inputs, setInputs] = useState({
         quantity: product?.quantity ? product.quantity : 1,
@@ -22,14 +21,9 @@ export default function useHandleOrder({ product }) {
     }
 
     useEffect(() => {
-        console.log('el valor de currentProduct es:', currentProduct.current)
-    }, [currentProduct])
-
-    useEffect(() => {
         if (firstLoad) {
             firstLoad.current = false
             return () => {
-                console.log('antes de salir, el valor de curentProduct es:', currentProduct.current)
                 handleUpdateModalOrder(currentProduct.current)
             }
         }
@@ -54,7 +48,7 @@ export default function useHandleOrder({ product }) {
             } else if (operation === '-' && inputs.quantity > 1) {
               newValue = prevInput.quantity-=1
             } else {
-                newValue = prevInput
+                newValue = prevInput.quantity
             }
             return {
                 ...prevInput,
