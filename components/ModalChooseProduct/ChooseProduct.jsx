@@ -27,12 +27,12 @@ const style = {
 
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
-    // console.log('props:', props)
     const { product } = useGetModal({modalType:'order' })
 
     const {
       totalPrice,
       inputs,
+      handleSize,
       handleQuantity,
       handleMass,
       handleIngredients,
@@ -60,12 +60,14 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 name={product?.information?.name}
                 ingredientsProduct={product?.ingredients}
                 customizePizza = {{
-                mass: inputs.mass,
-                handleMass,
-                ingredients: inputs.ingredients,
-                handleIngredients,
-                extra: inputs.extra,
-                handleExtra
+                    size: inputs.size,
+                    handleSize,
+                    mass: inputs.mass,
+                    handleMass,
+                    ingredients: inputs.ingredients,
+                    handleIngredients,
+                    extra: inputs.extra,
+                    handleExtra
                 }}
             />
 
