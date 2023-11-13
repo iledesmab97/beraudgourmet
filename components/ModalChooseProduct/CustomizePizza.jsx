@@ -25,10 +25,12 @@ import totalIngredients from '@/ingredients.json'
 export default function CustomizePizza ({ name, ingredientsProduct, customizePizza }) {
 
     const {
+        size,
+        handleSize,
         mass,
         handleMass,
-        ingredients,
-        handleIngredients,
+        ingredientsModal,
+        handleIngredientsModal,
         extra,
         handleExtra
       } = customizePizza
@@ -59,10 +61,10 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 width: 216
                 }}
             >
-                <Button>{"12''"}</Button>
-                <Button>{"14''"}</Button>
-                <Button>{"16''"}</Button>
-                {/* <Button>{"18''"}</Button> */}
+                <Button onClick={handleSize} value={'12"'}>{'12"'}</Button>
+                <Button onClick={handleSize} value={'14"'}>{'14"'}</Button>
+                <Button onClick={handleSize} value={'16"'}>{'16"'}</Button>
+                {/* <Button onClick={handleSize} value={'18"'}>{'18"'}</Button> */}
             </ButtonGroup>
 
             <Typography
@@ -76,14 +78,14 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 {/* <FormLabel id="demo-radio-buttons-group-label">ELIGE LA MASA</FormLabel> */}
                 <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="Masa Tradicional"
+                // defaultValue="Masa Tradicional"
                 name="radio-buttons-group"
                 onChange={handleMass}
                 >
-                <FormControlLabel value="Masa Tradicional" control={<Radio />} label="Masa Tradicional" />
-                <FormControlLabel value="Masa Orilla de Queso" control={<Radio />} label="Masa Orilla de Queso" />
-                <FormControlLabel value="Masa Estilo New York" control={<Radio />} label="Masa Estilo New York" />
-                <FormControlLabel value="Masa Costra de Queso" control={<Radio />} label="Masa Costra de Queso" />
+                <FormControlLabel value="Masa Tradicional" control={<Radio checked={mass === "Masa Tradicional" ? true : false} />} label="Masa Tradicional" />
+                <FormControlLabel value="Masa Orilla de Queso" control={<Radio checked={mass === "Masa Orilla de Queso" ? true : false} />} label="Masa Orilla de Queso" />
+                <FormControlLabel value="Masa Estilo New York" control={<Radio checked={mass === "Masa Estilo New York" ? true : false} />} label="Masa Estilo New York" />
+                <FormControlLabel value="Masa Costra de Queso" control={<Radio checked={mass === "Masa Costra de Queso" ? true : false} />} label="Masa Costra de Queso" />
                 </RadioGroup>
             </FormControl>
             
@@ -93,10 +95,18 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 sx={{ mt: 2 }}>
                 QUITAR INGREDIENTES
             </Typography>
-            <FormGroup>
+            <FormGroup onChange={handleIngredientsModal}>
                 {
                     ingredientsProduct.map((ingredient, index) => (
-                        <FormControlLabel key={ingredient + index} control={<Checkbox defaultChecked/>} label={ingredient} />        
+                        <FormControlLabel
+                            key={ingredient + index}
+                            control={
+                                <Checkbox
+                                    checked={ ingredientsModal.includes(ingredient) ? false : true} 
+                                />
+                            }
+                            label={ingredient}
+                        />        
                     ))
                 }
             </FormGroup>
@@ -117,23 +127,23 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     >
                     <TableBody>
                         {
-                        totalIngredients.map(ingredient => {
+                        Object.values(totalIngredients).map(ingredient => {
                             return (
                             <TableRow
                                 key={ingredient.name}
                             >
                                 <TableCell sx={{ display: 'flex', gap: 1 }}>
-                                <Button size='small' variant='contained'>-</Button>
+                                <Button size='small' variant='contained' onClick={handleExtra} name='-' value={ingredient.name}>-</Button>
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    0
+                                    { extra[ingredient.name] ? extra[ingredient.name] : 0 }
                                 </Typography>
-                                <Button size='small' variant='contained'>+</Button>
+                                <Button size='small' variant='contained' onClick={handleExtra} name='+' value={ingredient.name}>+</Button>
                                 </TableCell>
                                 <TableCell>
                                 {ingredient.name}
                                 </TableCell>
                                 <TableCell>
-                                {ingredient.price}
+                                {'$' + ingredient.price}
                                 </TableCell>                                
                             </TableRow>
                             )

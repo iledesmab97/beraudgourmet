@@ -1,70 +1,70 @@
-[
-    {
+{
+    "Carne de res": {
         "name": "Carne de res",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Chorizo": {
         "name": "Chorizo",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Jamón": {
         "name": "Jamón",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Piña": {
         "name": "Piña",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Salchciha de puerco": {
         "name": "Salchciha de puerco",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Jalapeño": {
         "name": "Jalapeño",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Jitomate": {
         "name": "Jitomate",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Tocino": {
         "name": "Tocino",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Peperoni": {
         "name": "Peperoni",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Champiñon": {
         "name": "Champiñon",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Pimiento verde": {
         "name": "Pimiento verde",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Salchicha Italiana": {
         "name": "Salchicha Italiana",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Cebolla": {
         "name": "Cebolla",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Aceituna": {
         "name": "Aceituna",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Mezcla de 2 quesos": {
         "name": "Mezcla de 2 quesos",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Mezcla de 3 quesos": {
         "name": "Mezcla de 3 quesos",
-        "price": "$15"
+        "price": 0.85
     },
-    {
+    "Queso extra mozzarella": {
         "name": "Queso extra mozzarella",
-        "price": "$15"
+        "price": 0.85
     }
-]
+}

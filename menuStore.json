@@ -3,7 +3,7 @@
         "name": "Margarita",
         "text": "texto de la pizza margarita",
         "image": "https://us.123rf.com/450wm/radionphoto/radionphoto1702/radionphoto170200628/72031659-pizza-margarita-mozzarella-aislado-en-el-fondo-blanco.jpg",
-        "price": "20",
+        "price": 20,
         "ingredients": [
             "Albahaca",
             "Ajo",
@@ -16,7 +16,7 @@
         "name": "Prosciutto",
         "text": "texto de la pizza prosciutto",
         "image": "https://t4.ftcdn.net/jpg/01/25/88/25/360_F_125882534_sVS3JQO3sefFDJk9c6Wiabn0WNplzSeh.jpg",
-        "price": "25",
+        "price": 25,
         "ingredients": [
             "Jamón",
             "Oregano",
@@ -30,7 +30,7 @@
         "name": "Cuatro estaciones",
         "text": "texto de la pizza cuatro estaciones",
         "image": "https://us.123rf.com/450wm/aksakalko/aksakalko1702/aksakalko170200238/71848943-deliciosa-pizza-italiana-cl%C3%A1sica-cuatro-estaciones-con-pollo-picante-champi%C3%B1ones-y-queso.jpg",
-        "price": "30",
+        "price": 30,
         "ingredients": [
             "Alcachofa",
             "Aceituna negra",
@@ -45,7 +45,7 @@
         "name": "Cuatro quesos",
         "text": "texto de la pizza cuatro quesos",
         "image": "https://img.freepik.com/fotos-premium/pizza-4-quesos-salsa-blanca-lados-crujientes-aislado-sobre-fondo-blanco_207126-7195.jpg",
-        "price": "15",
+        "price": 15,
         "ingredients": [
             "Oregano",
             "Queso fontina",
@@ -58,7 +58,7 @@
         "name": "Carbonara",
         "text": "texto de la pizza carbonara",
         "image": "https://pizzeriacherokee.es/wp-content/uploads/2019/03/carbonara.jpg",
-        "price": "22",
+        "price": 22,
         "ingredients": [
             "Beicon",
             "Campiñones",
@@ -71,7 +71,7 @@
         "name": "Hawai",
         "text": "texto de la pizza Hawai",
         "image": "https://ilpappardelle.files.wordpress.com/2013/05/a846f-especialidades_hawaiana.png",
-        "price": "27",
+        "price": 27,
         "ingredients": [
             "Tomate",
             "Piña",
@@ -84,7 +84,7 @@
         "name": "Diavola",
         "text": "texto de la pizza diavola",
         "image": "https://cicciopizza.ro/452-large_default/pizza-diavola.jpg",
-        "price": "31",
+        "price": 31,
         "ingredients": [
             "Tomate",
             "Guindillas",
