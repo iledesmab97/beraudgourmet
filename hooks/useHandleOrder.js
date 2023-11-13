@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import useGetModal from '@/hooks/useGetModal'
+import totalIngredients from '@/ingredients.json'
 
 export default function useHandleOrder({ product }) {
 
@@ -7,13 +8,19 @@ export default function useHandleOrder({ product }) {
     const [inputs, setInputs] = useState({
         size: '14"',
         quantity: product?.quantity ? product.quantity : 1,
-        mass: 'Masa Tradicional',
-        ingredients: [],
-        extra: {}
+        mass: product?.mass ? product.mass : 'Masa Tradicional',
+        ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
+        extra: product?.extra ? product.extra : {}
     })
     const {handleUpdateModalOrder} = useGetModal({modalType:'order'})
 
-    const totalPrice = product?.price ? inputs.quantity*product.price : 0
+    const totalPrice = useMemo(() => {
+        const price = product.price ? product.price : 0
+        const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
+            return acc + inputs.extra[cur] * totalIngredients[cur].price
+        }, 0)
+        return inputs.quantity * (price + totalExtras)
+    }, [inputs])
     const updateValue = useRef(null)
     const firstLoad = useRef(true)
 
@@ -79,20 +86,20 @@ export default function useHandleOrder({ product }) {
         updateValue.current = {name: 'mass'}
     }
 
-    function handleIngredients (event) {
+    function handleIngredientsModal (event) {
         const ingredient = event.target.labels[0].textContent
         const isChecked = event.target.checked
         const newInput = {...inputs}
-        const index = newInput.ingredients.indexOf(ingredient)
+        const index = newInput.ingredientsModal.indexOf(ingredient)
         if (isChecked) {
             if (index === -1) return
-            newInput.ingredients.splice(index, 1)
+            newInput.ingredientsModal.splice(index, 1)
         } else {
             if (index !== -1) return
-            newInput.ingredients.push(ingredient)
+            newInput.ingredientsModal.push(ingredient)
         }
         setInputs(newInput)
-        updateValue.current = {name: 'ingredients'}
+        updateValue.current = {name: 'ingredientsModal'}
     }
 
     function handleExtra (event) {
@@ -105,7 +112,7 @@ export default function useHandleOrder({ product }) {
             if (newInputs.extra[extraName] && newInputs.extra[extraName] >= 2) {
                 newInputs.extra[extraName] -=1
             } else if (newInputs.extra[extraName] && newInputs.extra[extraName] === 1) {
-                newInputs.extra[extraName] = undefined
+                newInputs.extra[extraName] = 0
             } else return
         } else return
         setInputs(newInputs)
@@ -119,7 +126,7 @@ export default function useHandleOrder({ product }) {
         handleSize,
         handleQuantity,
         handleMass,
-        handleIngredients,
+        handleIngredientsModal,
         handleExtra
     }
 }
