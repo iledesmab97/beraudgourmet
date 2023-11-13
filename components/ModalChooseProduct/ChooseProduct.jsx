@@ -4,7 +4,9 @@ import { forwardRef } from 'react'
 import AboutPizza from './AboutPizza'
 import CustomizePizza from './CustomizePizza'
 import useGetModal from '@/hooks/useGetModal'
+import useGetOrder from '@/hooks/useGetOrders'
 import useHandleOrder from '@/hooks/useHandleOrder'
+import { accept } from '@/genericFunctions/modal'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -27,16 +29,18 @@ const style = {
 
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
-    const { product } = useGetModal({modalType:'order' })
+    const { product, handleCloseModalOrder } = useGetModal({modalType:'order' })
+    const { handleAddOrder } = useGetOrder()
 
     const {
-      totalPrice,
-      inputs,
-      handleSize,
-      handleQuantity,
-      handleMass,
-      handleIngredientsModal,
-      handleExtra
+        currentProduct,
+        totalPrice,
+        inputs,
+        handleSize,
+        handleQuantity,
+        handleMass,
+        handleIngredientsModal,
+        handleExtra
     } = useHandleOrder({ product })
 
     return (
@@ -106,7 +110,15 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                     ${totalPrice}
                 </Typography>
                 </Box>
-                <Button variant='contained' onClick={() => {}}>Agregar</Button>
+                <Button
+                    variant='contained'
+                    onClick={() => accept({
+                        action: handleAddOrder,
+                        value: currentProduct
+                    }, handleCloseModalOrder)}
+                >
+                    Agregar
+                </Button>
             </Grid>
             </Grid>
         </Box>

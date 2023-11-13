@@ -116,7 +116,7 @@ export default function useHandleOrder({ product }) {
     }
 
     return {
-        // updateCurrentProduct,
+        currentProduct: currentProduct.current,
         totalPrice,
         inputs,
         handleSize,

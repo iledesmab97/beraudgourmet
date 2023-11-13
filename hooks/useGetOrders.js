@@ -6,8 +6,8 @@ export default function useGetOrders () {
     const orders = useAppSelector(state => state.orders)
     const dispatch = useAppDispatch()
 
-    function handleAddOrder() {
-        dispatch(addOrder({name: 'añadiendo una nueva orden'}))
+    function handleAddOrder(newOrder) {
+        dispatch(addOrder(newOrder))
     }
     
     return {orders, handleAddOrder}
