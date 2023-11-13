@@ -29,10 +29,6 @@ export default function useHandleOrder({ product }) {
     }
 
     useEffect(() => {
-        console.log('inputs:', inputs)
-    }, [inputs])
-
-    useEffect(() => {
         if (firstLoad) {
             firstLoad.current = false
             return () => {
