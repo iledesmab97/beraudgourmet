@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 import AboutPizza from './AboutPizza'
 import CustomizePizza from './CustomizePizza'
 import useGetModal from '@/hooks/useGetModal'
-import useHandleOder from '@/hooks/useHandleOrder'
+import useHandleOrder from '@/hooks/useHandleOrder'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -35,9 +35,9 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
       handleSize,
       handleQuantity,
       handleMass,
-      handleIngredients,
+      handleIngredientsModal,
       handleExtra
-    } = useHandleOder({ product })
+    } = useHandleOrder({ product })
 
     return (
         <Box {...props} ref={ref} sx={style}>
@@ -64,8 +64,8 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                     handleSize,
                     mass: inputs.mass,
                     handleMass,
-                    ingredients: inputs.ingredients,
-                    handleIngredients,
+                    ingredientsModal: inputs.ingredientsModal,
+                    handleIngredientsModal,
                     extra: inputs.extra,
                     handleExtra
                 }}
