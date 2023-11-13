@@ -29,8 +29,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         handleSize,
         mass,
         handleMass,
-        ingredients,
-        handleIngredients,
+        ingredientsModal,
+        handleIngredientsModal,
         extra,
         handleExtra
       } = customizePizza
@@ -78,14 +78,14 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 {/* <FormLabel id="demo-radio-buttons-group-label">ELIGE LA MASA</FormLabel> */}
                 <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="Masa Tradicional"
+                // defaultValue="Masa Tradicional"
                 name="radio-buttons-group"
                 onChange={handleMass}
                 >
-                <FormControlLabel value="Masa Tradicional" control={<Radio />} label="Masa Tradicional" />
-                <FormControlLabel value="Masa Orilla de Queso" control={<Radio />} label="Masa Orilla de Queso" />
-                <FormControlLabel value="Masa Estilo New York" control={<Radio />} label="Masa Estilo New York" />
-                <FormControlLabel value="Masa Costra de Queso" control={<Radio />} label="Masa Costra de Queso" />
+                <FormControlLabel value="Masa Tradicional" control={<Radio checked={mass === "Masa Tradicional" ? true : false} />} label="Masa Tradicional" />
+                <FormControlLabel value="Masa Orilla de Queso" control={<Radio checked={mass === "Masa Orilla de Queso" ? true : false} />} label="Masa Orilla de Queso" />
+                <FormControlLabel value="Masa Estilo New York" control={<Radio checked={mass === "Masa Estilo New York" ? true : false} />} label="Masa Estilo New York" />
+                <FormControlLabel value="Masa Costra de Queso" control={<Radio checked={mass === "Masa Costra de Queso" ? true : false} />} label="Masa Costra de Queso" />
                 </RadioGroup>
             </FormControl>
             
@@ -95,10 +95,18 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 sx={{ mt: 2 }}>
                 QUITAR INGREDIENTES
             </Typography>
-            <FormGroup onChange={handleIngredients}>
+            <FormGroup onChange={handleIngredientsModal}>
                 {
                     ingredientsProduct.map((ingredient, index) => (
-                        <FormControlLabel key={ingredient + index} control={<Checkbox defaultChecked/>} label={ingredient} />        
+                        <FormControlLabel
+                            key={ingredient + index}
+                            control={
+                                <Checkbox
+                                    checked={ ingredientsModal.includes(ingredient) ? false : true} 
+                                />
+                            }
+                            label={ingredient}
+                        />        
                     ))
                 }
             </FormGroup>
@@ -119,7 +127,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     >
                     <TableBody>
                         {
-                        totalIngredients.map(ingredient => {
+                        Object.values(totalIngredients).map(ingredient => {
                             return (
                             <TableRow
                                 key={ingredient.name}
@@ -135,7 +143,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                 {ingredient.name}
                                 </TableCell>
                                 <TableCell>
-                                {ingredient.price}
+                                {'$' + ingredient.price}
                                 </TableCell>                                
                             </TableRow>
                             )
