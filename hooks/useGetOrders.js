@@ -7,7 +7,6 @@ export default function useGetOrders () {
     const dispatch = useAppDispatch()
 
     function handleAddOrder(newOrder) {
-        console.log('despachando la nueva orden:', newOrder)
         dispatch(addOrder(newOrder))
     }
     
