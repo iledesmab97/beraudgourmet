@@ -25,6 +25,8 @@ import totalIngredients from '@/ingredients.json'
 export default function CustomizePizza ({ name, ingredientsProduct, customizePizza }) {
 
     const {
+        size,
+        handleSize,
         mass,
         handleMass,
         ingredients,
@@ -59,10 +61,10 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 width: 216
                 }}
             >
-                <Button>{"12''"}</Button>
-                <Button>{"14''"}</Button>
-                <Button>{"16''"}</Button>
-                {/* <Button>{"18''"}</Button> */}
+                <Button onClick={handleSize} value={'12"'}>{'12"'}</Button>
+                <Button onClick={handleSize} value={'14"'}>{'14"'}</Button>
+                <Button onClick={handleSize} value={'16"'}>{'16"'}</Button>
+                {/* <Button onClick={handleSize} value={'18"'}>{'18"'}</Button> */}
             </ButtonGroup>
 
             <Typography
@@ -93,7 +95,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 sx={{ mt: 2 }}>
                 QUITAR INGREDIENTES
             </Typography>
-            <FormGroup>
+            <FormGroup onChange={handleIngredients}>
                 {
                     ingredientsProduct.map((ingredient, index) => (
                         <FormControlLabel key={ingredient + index} control={<Checkbox defaultChecked/>} label={ingredient} />        
@@ -123,11 +125,11 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                 key={ingredient.name}
                             >
                                 <TableCell sx={{ display: 'flex', gap: 1 }}>
-                                <Button size='small' variant='contained'>-</Button>
+                                <Button size='small' variant='contained' onClick={handleExtra} name='-' value={ingredient.name}>-</Button>
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    0
+                                    { extra[ingredient.name] ? extra[ingredient.name] : 0 }
                                 </Typography>
-                                <Button size='small' variant='contained'>+</Button>
+                                <Button size='small' variant='contained' onClick={handleExtra} name='+' value={ingredient.name}>+</Button>
                                 </TableCell>
                                 <TableCell>
                                 {ingredient.name}
