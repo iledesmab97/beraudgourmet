@@ -223,6 +223,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                 />
                             }
                             label={ingredient}
+                            sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
                         />        
                     ))
                 }
