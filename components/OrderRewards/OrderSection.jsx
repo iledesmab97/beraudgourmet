@@ -5,24 +5,16 @@ import CrossTet from '@/components/CrossText/CrossText'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText'
 import IconButton from '@mui/material/IconButton'
-import Avatar from '@mui/material/Avatar';
-import DeleteIcon from '@mui/icons-material/Delete'
 import CloseIcon from '@mui/icons-material/Close';
 
 export default function OrderSection () {
 
-  const {orders} = useGetOrder()
-
-  function showOrder() {
-    console.log(orders)
-  }
+  const {orders, handleRemoveOrder} = useGetOrder()
 
   return (
       <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
@@ -62,6 +54,7 @@ export default function OrderSection () {
                                 variant='text'
                                 color='error'
                                 // endIcon={<DeleteIcon />}
+                                onClick={() => {handleRemoveOrder(index)}}
                                 sx={{
                                   position: 'absolute',
                                   top: '0px'
@@ -98,7 +91,6 @@ export default function OrderSection () {
                   )
             }
           </List>
-          <Button variant='contained' onClick={showOrder}>Mostrar pedido</Button>
         </Box>
   )
 }
