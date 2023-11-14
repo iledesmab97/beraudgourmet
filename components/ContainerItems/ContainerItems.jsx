@@ -41,9 +41,6 @@ function ContainerItems () {
                     <Typography gutterBottom variant='title' component='h2'>
                       {item.name}
                     </Typography>
-                    <Typography variant='texto'>
-                      ${item.price}
-                    </Typography>
                     <br/>
                     <Typography variant='texto'>
                       {item.text}

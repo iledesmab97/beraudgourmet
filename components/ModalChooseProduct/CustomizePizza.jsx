@@ -21,8 +21,10 @@ import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 
 import totalIngredients from '@/ingredients.json'
+import menuStore from '@/menuStore.json'
+import masses from '@/masses.json'
 
-export default function CustomizePizza ({ name, ingredientsProduct, customizePizza }) {
+export default function CustomizePizza ({ name, ingredientsProduct, customizePizza, currentProduct }) {
 
     const {
         size,
@@ -58,12 +60,40 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 variant='contained'
                 aria-label="contained large button group"
                 sx={{
-                width: 216
+                    // width: 216
+                    width: 'fit-content'
                 }}
             >
-                <Button onClick={handleSize} value={'12"'}>{'12"'}</Button>
-                <Button onClick={handleSize} value={'14"'}>{'14"'}</Button>
-                <Button onClick={handleSize} value={'16"'}>{'16"'}</Button>
+                <Button
+                    onClick={handleSize}
+                    value={'12"'}
+                    sx={size === '12"'
+                        ? {
+                            backgroundColor: 'rgb(28, 58, 93)'
+                        } : {}}
+                >
+                    {'12"'}
+                </Button>
+                <Button
+                    onClick={handleSize}
+                    value={'14"'}
+                    sx={size === '14"'
+                        ? {
+                            backgroundColor: 'rgb(28, 58, 93)'
+                        } : {}}
+                >
+                    {'14"'}
+                </Button>
+                <Button
+                    onClick={handleSize}
+                    value={'16"'}
+                    sx={size === '16"'
+                        ? {
+                            backgroundColor: 'rgb(28, 58, 93)'
+                        } : {}}
+                >
+                    {'16"'}
+                </Button>
                 {/* <Button onClick={handleSize} value={'18"'}>{'18"'}</Button> */}
             </ButtonGroup>
 
@@ -81,11 +111,98 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 // defaultValue="Masa Tradicional"
                 name="radio-buttons-group"
                 onChange={handleMass}
-                >
-                <FormControlLabel value="Masa Tradicional" control={<Radio checked={mass === "Masa Tradicional" ? true : false} />} label="Masa Tradicional" />
-                <FormControlLabel value="Masa Orilla de Queso" control={<Radio checked={mass === "Masa Orilla de Queso" ? true : false} />} label="Masa Orilla de Queso" />
-                <FormControlLabel value="Masa Estilo New York" control={<Radio checked={mass === "Masa Estilo New York" ? true : false} />} label="Masa Estilo New York" />
-                <FormControlLabel value="Masa Costra de Queso" control={<Radio checked={mass === "Masa Costra de Queso" ? true : false} />} label="Masa Costra de Queso" />
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1
+                }}
+            >
+                    {
+                        Object.keys(currentProduct.price[size]).map((typeMass, index) => (
+                            <FormControlLabel
+                                key={typeMass + index}
+                                value={typeMass}
+                                control={
+                                    <Radio
+                                        checked={mass === typeMass ? true : false}
+                                    />}
+                                label={
+                                    <Box
+                                        component={'div'}
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            width: '100%'
+                                        }}
+                                    >
+                                        <Box
+                                            component={'div'}
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                // alignItems: ''
+                                            }}
+                                        >
+                                            <Typography
+                                                id="modal-modal-description"
+                                                // variant='title'
+                                                sx={{
+                                                    width: 'inline'
+                                                }}
+                                            >
+                                                {typeMass}
+                                            </Typography>
+                                            <Typography
+                                                id="modal-modal-description"
+                                                // variant='title'
+                                                sx={{
+                                                    width: 'inline'
+                                                }}
+                                            >
+                                                ${currentProduct.price[size][typeMass]}
+                                            </Typography>
+                                        </Box>
+                                        <Typography
+                                            id="modal-modal-description"
+                                            // variant='title'
+                                            sx={{
+                                                width: '100%'
+                                            }}
+                                        >
+                                            {masses[typeMass].text}
+                                        </Typography>
+                                    </Box>
+                                }
+                                sx={ mass === typeMass
+                                    ? {
+                                        mt: 1,
+                                        borderRadius: '10px',
+                                        margin: 0,
+                                        width: 'fit-content',
+                                        // width: '100%',
+                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                        px: 2,
+                                        pl: 0,
+                                        py: 1,
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(0,0,0,0.1)'
+                                        }   
+                                    } : {
+                                        mt: 1,
+                                        borderRadius: '10px',
+                                        margin: 0,
+                                        width: 'fit-content',
+                                        px: 2,
+                                        pl: 0,
+                                        py: 1,
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(0,0,0,0.1)'
+                                        }   
+                                    }
+                                }
+                            />
+                        ))    
+                    }
                 </RadioGroup>
             </FormControl>
             
@@ -117,41 +234,82 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 sx={{ mt: 2 }}>
                 AGREGAR INGREDIENTES
             </Typography>
-            <Grid container direction='row'>
-                <Grid item xs={12}>
-                <TableContainer component={Paper}>
-                    <Table
-                    size='small'
-                    // dense={true}
-                    // table
-                    >
-                    <TableBody>
-                        {
-                        Object.values(totalIngredients).map(ingredient => {
-                            return (
-                            <TableRow
-                                key={ingredient.name}
-                            >
-                                <TableCell sx={{ display: 'flex', gap: 1 }}>
-                                <Button size='small' variant='contained' onClick={handleExtra} name='-' value={ingredient.name}>-</Button>
-                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    { extra[ingredient.name] ? extra[ingredient.name] : 0 }
-                                </Typography>
-                                <Button size='small' variant='contained' onClick={handleExtra} name='+' value={ingredient.name}>+</Button>
-                                </TableCell>
-                                <TableCell>
-                                {ingredient.name}
-                                </TableCell>
-                                <TableCell>
-                                {'$' + ingredient.price}
-                                </TableCell>                                
-                            </TableRow>
-                            )
-                        })
-                        }
-                    </TableBody>
-                    </Table>
-                </TableContainer>
+            <Grid
+                container
+                direction='row'
+                sx={{
+                    justifyContent: 'start'
+                }}
+            >
+                <Grid
+                    item
+                    xs={11}
+                >
+                    <TableContainer component={Paper}>
+                        <Table
+                        size='small'
+                        // dense={true}
+                        // table
+                        >
+                        <TableBody>
+                            {
+                            Object.values(totalIngredients).map(ingredient => {
+                                return (
+                                <TableRow
+                                    key={ingredient.name}
+                                    // sx={{
+                                    //     display: 'flex',
+                                    //     alignItems: 'center' 
+                                    // }}
+                                >
+                                    <TableCell
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 1,
+                                            alignItems: 'center' 
+                                        }}
+                                    >
+                                        <Button
+                                            size='small'
+                                            variant='contained'
+                                            onClick={handleExtra}
+                                            name='-'
+                                            value={ingredient.name}
+                                            disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
+                                            // sx={{
+                                            //     width: '10px',
+                                            //     height: '20px',
+                                            //     borderRadius: '50%'
+                                            // }}
+                                        >
+                                            -
+                                        </Button>
+                                        <Typography id="modal-modal-description">
+                                            { extra[ingredient.name] ? extra[ingredient.name] : 0 }
+                                        </Typography>
+                                        <Button
+                                            size='small'
+                                            variant='contained'
+                                            onClick={handleExtra}
+                                            name='+'
+                                            value={ingredient.name}
+                                        >
+                                            +
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        {ingredient.name}
+                                    </TableCell>
+                                    <TableCell>
+                                        {'$' + ingredient.price}
+                                    </TableCell>                                
+                                </TableRow>
+                                )
+                            })
+                            }
+                        </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
             </Grid>
             </Box>
