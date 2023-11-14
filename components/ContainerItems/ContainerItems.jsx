@@ -18,7 +18,7 @@ function ContainerItems () {
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
 
   return (
-    <Grid item xs={12} md={12}>
+    <Grid item xs={12}>
       <Typography variant='encabezado'>
         Pizzas
       </Typography>
@@ -26,7 +26,12 @@ function ContainerItems () {
         {
           items.slice(0,5).map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
-              <CardActionArea onClick={() => {handleOpenModalOrder(item)}}>
+              <CardActionArea
+                onClick={() => {handleOpenModalOrder(item)}}
+                sx={{
+                  height: '100%'
+                }}
+              >
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >

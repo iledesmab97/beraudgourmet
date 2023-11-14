@@ -16,10 +16,13 @@ export const ordersSlice = createSlice({
     reducers: {
         addOrder: (state, action) => {
             return [...state, action.payload]
+        },
+        removeOrder: (state, action) => {
+            return state.filter((order, index) => index !== action.payload)
         }
     }
 })
 
 export default ordersSlice.reducer
 
-export const { addOrder } = ordersSlice.actions
+export const { addOrder, removeOrder } = ordersSlice.actions
