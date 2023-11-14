@@ -86,7 +86,7 @@ export default function useHandleOrder({ product }) {
     function handleIngredientsModal (event) {
         const ingredient = event.target.labels[0].textContent
         const isChecked = event.target.checked
-        const newInput = {...inputs}
+        const newInput = structuredClone(inputs)
         const index = newInput.ingredientsModal.indexOf(ingredient)
         if (isChecked) {
             if (index === -1) return
@@ -102,7 +102,7 @@ export default function useHandleOrder({ product }) {
     function handleExtra (event) {
         const operation = event.target.name
         const extraName = event.target.value
-        const newInputs = {...inputs}
+        const newInputs = structuredClone(inputs)
         if (operation === '+') {
             newInputs.extra[extraName] = newInputs.extra[extraName] ? newInputs.extra[extraName] +=1 : 1
         } else if (operation === '-') {
