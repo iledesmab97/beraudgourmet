@@ -1,10 +1,17 @@
 'use client'
 
 import useGetOrder from '@/hooks/useGetOrders'
+import CrossTet from '@/components/CrossText/CrossText'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
 
 export default function OrderSection () {
 
@@ -21,10 +28,61 @@ export default function OrderSection () {
             gutterBottom>
             Pedido
           </Typography>
-          <br/>
-          <Typography variant='p'>
-            Su pedído está vacio
-          </Typography>
+          <List
+            sx={{
+              width: '100%',
+              // maxWidth: 360,
+              // bgcolor: 'background.paper'
+            }}
+          >
+            {
+              orders.length > 0
+                ? orders.map((order, index) => (
+                  <Box key={order.name + order.totalPrice + ' ' + index}>
+                    <Divider />
+                    <ListItem
+                    >
+                      <ListItemText
+                        primary={
+                          <Box
+                            component={'div'}
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between'
+                            }}
+                          >
+                            { order.quantity + ' x ' + order.name + ` (${order.size})`}
+                            <Typography>
+                              ${order.totalPrice}
+                            </Typography>
+                          </Box>
+                        }
+                        secondary={
+                          <>
+                            {`${order.mass}${Object.keys(order.extra).map(ingredient => {
+                              return `, ${order.extra[ingredient]}x ${ingredient}`
+                            }).join('')
+                            }`}
+                            {
+                              order.ingredientsModal.map((ingredient, index) => (
+                                <Box key={ingredient + index} component={'label'}>, <CrossTet component={'span'}>{ingredient}</CrossTet></Box>
+                              ))
+                            }
+                          </>
+                        }
+                      >
+
+                      </ListItemText>
+                    </ListItem>
+                    <Divider />
+                  </Box>
+                )): (
+                    <Typography variant='p'>
+                      Su pedído está vacio
+                    </Typography>
+                  )
+            }
+          </List>
           <Button variant='contained' onClick={showOrder}>Mostrar pedido</Button>
         </Box>
   )
