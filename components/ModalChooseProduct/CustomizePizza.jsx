@@ -21,9 +21,10 @@ import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 
 import totalIngredients from '@/ingredients.json'
+import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
 
-export default function CustomizePizza ({ name, ingredientsProduct, customizePizza }) {
+export default function CustomizePizza ({ name, ingredientsProduct, customizePizza, currentProduct }) {
 
     const {
         size,
@@ -117,13 +118,13 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 }}
             >
                     {
-                        Object.values(masses).map((typeMass, index) => (
+                        Object.keys(currentProduct.price[size]).map((typeMass, index) => (
                             <FormControlLabel
-                                key={typeMass.text + index}
-                                value={typeMass.name}
+                                key={typeMass + index}
+                                value={typeMass}
                                 control={
                                     <Radio
-                                        checked={mass === typeMass.name ? true : false}
+                                        checked={mass === typeMass ? true : false}
                                     />}
                                 label={
                                     <Box
@@ -149,7 +150,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                                     width: 'inline'
                                                 }}
                                             >
-                                                {typeMass.name}
+                                                {typeMass}
                                             </Typography>
                                             <Typography
                                                 id="modal-modal-description"
@@ -158,7 +159,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                                     width: 'inline'
                                                 }}
                                             >
-                                                ${typeMass.price}
+                                                ${currentProduct.price[size][typeMass]}
                                             </Typography>
                                         </Box>
                                         <Typography
@@ -168,11 +169,11 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                                 width: '100%'
                                             }}
                                         >
-                                            {typeMass.text}
+                                            {masses[typeMass].text}
                                         </Typography>
                                     </Box>
                                 }
-                                sx={ mass === typeMass.name
+                                sx={ mass === typeMass
                                     ? {
                                         mt: 1,
                                         borderRadius: '10px',
