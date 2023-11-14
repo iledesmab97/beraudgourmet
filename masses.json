@@ -1,0 +1,22 @@
+{
+    "Masa Tradicional": {
+        "name": "Masa Tradicional",
+        "text": "Aquí va todo el texto de la masa tradicional",
+        "price": 319
+    },
+    "Masa Orilla de Queso": {
+        "name": "Masa Orilla de Queso",
+        "text": "Aquí va todo el texto de la masa tradicional",
+        "price": 359
+    },
+    "Masa Estilo New York": {
+        "name": "Masa Estilo New York",
+        "text": "Aquí va todo el texto de la masa tradicional",
+        "price": 309
+    },
+    "Masa Costra de Queso": {
+        "name": "Masa Costra de Queso",
+        "text": "Aquí va todo el texto de la masa tradicional",
+        "price": 189
+    }
+}
