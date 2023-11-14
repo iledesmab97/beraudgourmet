@@ -11,7 +11,10 @@ import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
+import IconButton from '@mui/material/IconButton'
 import Avatar from '@mui/material/Avatar';
+import DeleteIcon from '@mui/icons-material/Delete'
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function OrderSection () {
 
@@ -54,6 +57,18 @@ export default function OrderSection () {
                             { order.quantity + ' x ' + order.name + ` (${order.size})`}
                             <Typography>
                               ${order.totalPrice}
+                              <IconButton
+                                size='small'
+                                variant='text'
+                                color='error'
+                                // endIcon={<DeleteIcon />}
+                                sx={{
+                                  position: 'absolute',
+                                  top: '0px'
+                                }}
+                              >
+                                <CloseIcon />
+                              </IconButton>
                             </Typography>
                           </Box>
                         }
