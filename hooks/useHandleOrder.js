@@ -4,7 +4,7 @@ import totalIngredients from '@/ingredients.json'
 
 export default function useHandleOrder({ product }) {
 
-    const currentProduct = useRef(product)
+    const [currentProduct, setCurrentProduct] = useState(product)
     const [inputs, setInputs] = useState({
         size: product.size ? product.size : '14"',
         quantity: product?.quantity ? product.quantity : 1,
@@ -26,14 +26,27 @@ export default function useHandleOrder({ product }) {
     const firstLoad = useRef(true)
 
     function handleCurrentProduct(newProduct) {
-        currentProduct.current = newProduct
+        setCurrentProduct(newProduct)
     }
+
+    useEffect(() => {
+        const newCurrentProduct = {
+            ...currentProduct,
+            size: inputs.size,
+            quantity: inputs.quantity,
+            mass: inputs.mass,
+            ingredientsModal: inputs.ingredientsModal,
+            extra: inputs.extra,
+            totalPrice
+        }
+        handleCurrentProduct(newCurrentProduct)
+    }, [])
 
     useEffect(() => {
         if (firstLoad) {
             firstLoad.current = false
             return () => {
-                handleUpdateModalOrder(currentProduct.current)
+                handleUpdateModalOrder(currentProduct)
             }
         }
     }, [])
@@ -42,8 +55,9 @@ export default function useHandleOrder({ product }) {
         if (!updateValue.current) return
         const { name } = updateValue.current
         const newCurrentProduct = {
-            ...currentProduct.current,
-            [name]: inputs[name]
+            ...currentProduct,
+            [name]: inputs[name],
+            totalPrice
         }
         handleCurrentProduct(newCurrentProduct)
     }, [inputs])
@@ -117,7 +131,7 @@ export default function useHandleOrder({ product }) {
     }
 
     return {
-        currentProduct: currentProduct.current,
+        currentProduct,
         totalPrice,
         inputs,
         handleSize,
