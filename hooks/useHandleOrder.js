@@ -6,7 +6,7 @@ export default function useHandleOrder({ product }) {
 
     const currentProduct = useRef(product)
     const [inputs, setInputs] = useState({
-        size: '14"',
+        size: product.size ? product.size : '14"',
         quantity: product?.quantity ? product.quantity : 1,
         mass: product?.mass ? product.mass : 'Masa Tradicional',
         ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
@@ -15,12 +15,13 @@ export default function useHandleOrder({ product }) {
     const {handleUpdateModalOrder} = useGetModal({modalType:'order'})
 
     const totalPrice = useMemo(() => {
-        const price = product.price ? product.price : 0
+        const price = product.price[inputs.size][inputs.mass]
         const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
             return acc + inputs.extra[cur] * totalIngredients[cur].price
         }, 0)
         return inputs.quantity * (price + totalExtras)
     }, [inputs])
+
     const updateValue = useRef(null)
     const firstLoad = useRef(true)
 
