@@ -61,6 +61,7 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
             <AboutPizza product={product} />
 
             <CustomizePizza
+                currentProduct={currentProduct}
                 name={product?.information?.name}
                 ingredientsProduct={product?.ingredients}
                 customizePizza = {{
