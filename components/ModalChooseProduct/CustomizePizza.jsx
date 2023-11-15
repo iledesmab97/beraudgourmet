@@ -1,5 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { scrollToSection, showScrollPosition } from '@/genericFunctions/modal'
+
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -19,12 +22,31 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
+import IconButton from '@mui/material/IconButton'
+import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
+import Link from '@mui/material/Link';
 
 import totalIngredients from '@/ingredients.json'
 import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
 
 export default function CustomizePizza ({ name, ingredientsProduct, customizePizza, currentProduct }) {
+
+    const [visibilityArrow, setVisibilityArrow] = useState(true) 
+
+    useEffect(() => {
+        const container = document.querySelector('#modal-container-customizePizza')
+        container.addEventListener('scroll', handleVisibilityArrow)
+
+        return () => {
+            container.removeEventListener('scroll', handleVisibilityArrow)
+        }
+    }, [])
+
+    function handleVisibilityArrow() {
+        const { vertical } = showScrollPosition('#modal-container-customizePizza')
+        setVisibilityArrow(vertical === 0 ? true : false)
+    }
 
     const {
         size,
@@ -44,9 +66,12 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
             // xs
             // xs={12}
             pr={4}
-            sx={{ height: '85%'}}
+            sx={{
+                height: '85%'
+            }}
         >
             <Box
+                id='modal-container-customizePizza'
                 sx={{
                     height: '100%',
                     width: '100%',
@@ -284,7 +309,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 </FormGroup>
 
                 <Typography
-                    id="modal-modal-description"
+                    id="modal-subtitle-AGREGAR_INGREDIENTES"
                     variant='title'
                     sx={{ mt: 2 }}>
                     AGREGAR INGREDIENTES
@@ -368,8 +393,23 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                         </TableContainer>
                     </Grid>
                 </Grid>
+                {
+                    visibilityArrow
+                    ? (
+                        <IconButton
+                            onClick={() => {scrollToSection('modal-subtitle-AGREGAR_INGREDIENTES')}}
+                            sx={{
+                                position: 'fixed',
+                                bottom: '50px',
+                                right: '30px',
+                                width: 'fit-content'
+                            }}
+                        >
+                            <ArrowDropDownCircleIcon />
+                        </IconButton>
+                    ): null
+                }
             </Box>
-
         </Grid>
     )
 }
