@@ -34,10 +34,18 @@ function OrderRewards () {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-around'}}>
-        <Box component='div' sx={{ width: '100%', position: 'relative', aspectRatio: 16/9}}>
-          <Image src={logoBeraud} alt={'logoBeraud'} fill style={{ objectFit: 'contain'}}/>
-        </Box>
+          justifyContent: 'space-around'}}
+      >
+        <Image
+          src={logoBeraud}
+          alt={'logoBeraud'}
+          style={{
+            width: '100%',
+            height: 'auto',
+            objectFit: 'contain',
+            aspectRatio: 3/2
+          }}
+        />
         <Box
           component='form'
           onSubmit={handleSubmit}
