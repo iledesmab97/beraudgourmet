@@ -43,13 +43,11 @@ export default function useHandleOrder({ product }) {
     }, [])
 
     useEffect(() => {
-        if (firstLoad) {
-            firstLoad.current = false
-            return () => {
-                handleUpdateModalOrder(currentProduct)
-            }
+        firstLoad.current = false
+        return () => {
+            handleUpdateModalOrder(currentProduct)
         }
-    }, [])
+    }, [currentProduct])
 
     useEffect(() => {
         if (!updateValue.current) return

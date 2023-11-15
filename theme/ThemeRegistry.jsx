@@ -27,6 +27,12 @@ const mediaQueries = {
 
 
 const themeOptions = {
+  // breakpoints: {
+  //   values: {
+  //     phone: 600,
+  //     computer: 1000
+  //   }
+  // },
   typography: {
     fontFamily,
     encabezado: {
@@ -63,6 +69,13 @@ const themeOptions = {
       //   fontSize: "2.2rem",
       // },
     },
+    miniature: {
+      fontFamily: "Montserrat",
+      fontWeight: 300,
+      lineHeight: 1,
+      padding: 9,
+      fontSize: "0.8rem",
+    }
   },
   components: {
     MuiTextField: {
@@ -84,6 +97,33 @@ const themeOptions = {
             borderRadius: "2px",
             boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
           },
+        }
+       } 
+      ],
+    },
+    MuiGrid: {
+      variants: [
+       {
+        props: {
+          variant: 'modal'
+        },
+        styleOverrides: {
+          root: {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: 0,
+            marginLeft: 0,
+            padding: 4,
+            paddingBottom: 0,
+            paddingRight: 0,
+            transform: 'translate(-50%, -50%)',
+            height: 600,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            borderRadius: 5,
+            overflow: 'hidden'
+          }
         }
        } 
       ],
