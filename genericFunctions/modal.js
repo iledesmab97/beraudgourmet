@@ -4,7 +4,7 @@ export function accept (addInformation, closeModal ) {
 }
 
 export function scrollToSection (ideSection) {
-    const section = document.querySelector(`#${ideSection}`)
+    const section = document.querySelector(ideSection)
     section.scrollIntoView({ behavior: 'smooth' })
 }
 
