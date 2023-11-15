@@ -133,7 +133,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 </ButtonGroup>
 
                 <Typography
-                    id="modal-modal-description"
+                    id="modal-subtitle-ELIGE_LA_MASA"
                     variant='title'
                     sx={{ mt: 2 }}>
                     ELIGE LA MASA
@@ -195,33 +195,15 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                                         checked={mass === typeMass ? true : false}
                                                     />}
                                                 label={
-                                                    // <Box
-                                                    //     component={'div'}
-                                                    //     sx={{
-                                                    //         display: 'flex',
-                                                    //         flexDirection: 'column',
-                                                    //         width: '100%'
-                                                    //     }}
-                                                    // >
-                                                        // <Box
-                                                        //     // component={'div'}
-                                                        //     sx={{
-                                                        //         width: '100%',
-                                                        //         display: 'flex',
-                                                        //         justifyContent: 'space-between',
-                                                        //         // alignItems: ''
-                                                        //     }}
-                                                        // >
-                                                            <Typography
-                                                                variant='p'
-                                                                sx={{
-                                                                    width: 'inline',
-                                                                    fontWeight: 400
-                                                                }}
-                                                            >
-                                                                {typeMass}
-                                                            </Typography>
-                                                        // </Box>
+                                                    <Typography
+                                                        variant='p'
+                                                        sx={{
+                                                            width: 'inline',
+                                                            fontWeight: 400
+                                                        }}
+                                                    >
+                                                        {typeMass}
+                                                    </Typography>
                                                 }
                                                 sx={ mass === typeMass
                                                     ? {
@@ -230,9 +212,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                                         mt: 1,
                                                         borderRadius: '10px',
                                                         margin: 0,
-                                                        // width: 'fit-content',
-                                                        // width: '100%',
-                                                        // backgroundColor: 'rgba(0,0,0,0.1)',
                                                         px: 2,
                                                         pl: 0,
                                                         py: 1,
@@ -397,7 +376,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     visibilityArrow
                     ? (
                         <IconButton
-                            onClick={() => {scrollToSection('modal-subtitle-AGREGAR_INGREDIENTES')}}
+                            onClick={() => {scrollToSection('#modal-subtitle-ELIGE_LA_MASA')}}
                             sx={{
                                 position: 'fixed',
                                 bottom: '50px',
@@ -405,7 +384,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                 width: 'fit-content'
                             }}
                         >
-                            <ArrowDropDownCircleIcon />
+                            <ArrowDropDownCircleIcon color='primary' />
                         </IconButton>
                     ): null
                 }
