@@ -3,6 +3,7 @@
 import { forwardRef } from 'react'
 import AboutPizza from './AboutPizza'
 import CustomizePizza from './CustomizePizza'
+import FooterModalChooseProduct from './FooterModalChooseProduct'
 import useGetModal from '@/hooks/useGetModal'
 import useGetOrder from '@/hooks/useGetOrders'
 import useHandleOrder from '@/hooks/useHandleOrder'
@@ -12,20 +13,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 960,
-    height: 600,
-    bgcolor: 'background.paper',
-    // border: '2px solid #000',
-    boxShadow: 24,
-    // p: 4,
-    borderRadius: 5
-}
+import { useTheme } from '@mui/material/styles'
+import { useMediaQuery } from '@mui/material'
 
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
@@ -43,86 +32,100 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
         handleExtra
     } = useHandleOrder({ product })
 
+    const theme = useTheme()
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+    
+    let width = ''
+
+    if (isSmallScreen) {
+        width = '500px'
+    } else if (isLargeScreen) {
+        width = '860px'
+    }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: 0,
+        marginLeft: 0,
+        padding: 4,
+        paddingBottom: 0,
+        paddingRight: 0,
+        transform: 'translate(-50%, -50%)',
+        width,
+        height: 600,
+        bgcolor: 'background.paper',
+        // border: '2px solid #000',
+        boxShadow: 24,
+        // p: 3,
+        borderRadius: 5,
+        overflow: 'hidden'
+    }
+
     return (
-        <Box {...props} ref={ref} sx={style}>
-            <Grid
-            container
+        <Grid
+            id='container-modal-order'
+            {...props}
+            ref={ref}
+            variant='modal'
+            sx={style}
             direction='row'
             justifyContent='center'
             alignItems='stretch'
-            spacing={4}
-            sx={{
-                width: '100%',
-                height: '100%',
-                marginTop: 0,
-                marginLeft: 0,
-            }}>
-
-            <AboutPizza product={product} />
-
-            <CustomizePizza
-                currentProduct={currentProduct}
-                name={product?.information?.name}
-                ingredientsProduct={product?.ingredients}
-                customizePizza = {{
-                    size: inputs.size,
-                    handleSize,
-                    mass: inputs.mass,
-                    handleMass,
-                    ingredientsModal: inputs.ingredientsModal,
-                    handleIngredientsModal,
-                    extra: inputs.extra,
-                    handleExtra
-                }}
-            />
-
+            container
+            item
+            // xs={10}
+            // sm={9}
+            // md={9}
+            // lg={9}
+            // xl={8}
+        >
             <Grid
                 container
-                direction='row'
-                justifyContent='space-between'
-                alignItems="center"
                 sx={{
-                height: '15%',
-                py: 1,
-                px: 5
+                    height: '90%',
+                    overflow: 'scroll'
                 }}
             >
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}>
-                <Button
-                    size='small'
-                    variant='contained'
-                    name='-'
-                    onClick={handleQuantity}
+                <Grid
+                    item
+                    xs={12}
                 >
-                    -
-                </Button>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    {inputs.quantity}
-                </Typography>
-                <Button
-                    size='small'
-                    variant='contained'
-                    name='+'
-                    onClick={handleQuantity}
-                >
-                    +
-                </Button>
-                <Typography id="modal-modal-description" sx={{ ml: 5 }}>
-                    ${totalPrice}
-                </Typography>
-                </Box>
-                <Button
-                    variant='contained'
-                    onClick={() => accept({
-                        action: handleAddOrder,
-                        value: currentProduct
-                    }, handleCloseModalOrder)}
-                >
-                    Agregar
-                </Button>
+                    <Typography variant='encabezado'>
+                        {product.name}
+                    </Typography>
+                </Grid>
+                <AboutPizza product={product} />
+
+                <CustomizePizza
+                    currentProduct={currentProduct}
+                    name={product?.information?.name}
+                    ingredientsProduct={product?.ingredients}
+                    customizePizza = {{
+                        size: inputs.size,
+                        handleSize,
+                        mass: inputs.mass,
+                        handleMass,
+                        ingredientsModal: inputs.ingredientsModal,
+                        handleIngredientsModal,
+                        extra: inputs.extra,
+                        handleExtra
+                    }}
+                />
             </Grid>
-            </Grid>
-        </Box>
+
+            <FooterModalChooseProduct
+                handleQuantity={handleQuantity}
+                quantity={inputs.quantity}
+                totalPrice={totalPrice}
+                handleAddOrder={handleAddOrder}
+                currentProduct={currentProduct}
+                handleCloseModalOrder={handleCloseModalOrder}
+            />
+
+        </Grid>
     )
 })
 
