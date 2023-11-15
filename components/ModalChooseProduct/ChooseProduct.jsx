@@ -7,7 +7,6 @@ import FooterModalChooseProduct from './FooterModalChooseProduct'
 import useGetModal from '@/hooks/useGetModal'
 import useGetOrder from '@/hooks/useGetOrders'
 import useHandleOrder from '@/hooks/useHandleOrder'
-import { accept } from '@/genericFunctions/modal'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
