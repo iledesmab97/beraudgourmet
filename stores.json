@@ -18,7 +18,7 @@
           "name": "Anaxagoras",
           "place": "aca viene la dirección de la tienda",
           "phone": "55546153545",
-          "open": true,
+          "open": false,
           "closeTime": "cierra a las 11:00pm"
         }
     ],
@@ -27,7 +27,7 @@
         "name": "Copilco",
         "place": "aca viene la dirección de la tienda",
         "phone": "55546153545",
-        "open": true,
+        "open": false,
         "closeTime": "cierra a las 11:00pm"
       },
       {
