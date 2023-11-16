@@ -8,20 +8,21 @@ const place = {
     notifications: ''
 }
 
-const initialState = {
-    direction: 'Ciudad de México',
-    marker: {
-        lat: 4678,
-        lg: 5462,
-    }
-}
+const initialState = {}
 
 export const placeSlice = createSlice({
     name: 'place',
     initialState,
-    reducers: {}
+    reducers: {
+        addPlace: (state, action) => {
+            return action.payload
+        },
+        removePlace: (state, action) => {
+            return {}
+        }
+    }
 })
 
 export default placeSlice.reducer
 
-// export const {increment, decrement} = usersSlice.actions
+export const { addPlace, removePlace} = placeSlice.actions
