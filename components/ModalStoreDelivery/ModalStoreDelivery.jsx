@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import useGetModal from '@/hooks/useGetModal'
+import useHandlePlace from '@/hooks/useHandlePlace';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -36,6 +37,8 @@ export default function ModalStoreDelivery() {
   const {open, handleCloseModalPlace} = useGetModal({modalType: 'place'})
 
   const [delivery, setDelivery] = useState('store')
+
+  const { inputsStore, handleInputsStore , handleInputsHome } = useHandlePlace()
 
   function handlePlace (place) {
     setDelivery(place)
@@ -72,18 +75,31 @@ export default function ModalStoreDelivery() {
           >
             <Button
               onClick={() => handlePlace('store')}
+              sx={delivery === 'store'
+                ? {
+                  backgroundColor: 'rgb(28, 58, 93)'
+                }: {}
+              }
             >
               Recoger en la tienda
             </Button>
             <Button
               onClick={() => handlePlace('home')}
+              sx={delivery === 'home'
+                ? {
+                  backgroundColor: 'rgb(28, 58, 93)'
+                }: {}
+              }
             >
               Entrega a domicilio
             </Button>
           </ButtonGroup>
           {
             delivery === 'store'
-            ? <StorePickup />
+            ? <StorePickup
+                inputsStore={inputsStore}
+                handleInputsStore={handleInputsStore}
+              />
             : <HomeDelivery />
           }
         </Box>
