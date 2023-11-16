@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react';
+import useGetPlace from '@/hooks/useGetPlace'
+import useHandlePlace from '@/hooks/useHandlePlace'
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -14,15 +17,12 @@ import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import SearchIcon from '@mui/icons-material/Search';
 import ItemPlace from '../PlaceFinder/ItemPlace'
-import stores from './stores.json'
+import stores from '@/stores.json'
 
-export default function StorePickup() {
+export default function StorePickup({ handleInputsStore, inputsStore }) {
 
-    const [currentCity, setCurrentCity] = useState('')
-
-    function handleSelect(event) {
-        setCurrentCity(event.target.textContent)
-    }
+    const { handleAddPlace } = useGetPlace()
+    // const { } = useHandlePlace()
 
     return (
         <>
@@ -52,8 +52,10 @@ export default function StorePickup() {
                             // onClick={() => {calculateRoute}}
                         />
                     )}
-                    // value={currentCity}
-                    onChange={handleSelect}
+                    // value={inputsStore.currentCity}
+                    onChange={handleInputsStore}
+                    // inputValue={inputsStore.inputText}
+                    // onInputChange={handleInputsStoreText}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -63,14 +65,6 @@ export default function StorePickup() {
                             size='small'
                             margin='dense'
                             fullWidth
-                            // error={false}
-                            // InputProps={{
-                            //     startAdornment: (
-                            //         <InputAdornment position='start'>
-                            //             <SearchIcon />
-                            //         </InputAdornment>
-                            //     )
-                            // }}
                         />
                     )}
                 />
@@ -84,120 +78,122 @@ export default function StorePickup() {
                 }}
             >
                 <Typography
-                variant='title'
-                sx={{
-                    alignSelf: 'flex-start'
-                }}
+                    variant='title'
+                    sx={{
+                        alignSelf: 'flex-start'
+                    }}
                 >
-                {currentCity.toUpperCase()}
+                {inputsStore.toUpperCase()}
                 </Typography>
                 <List
-                sx={{
-                    width: '100%',
-                    position: 'static',
-                    height: '450px',
-                    overflowY: 'scroll'
-                }}
+                    sx={{
+                        width: '100%',
+                        position: 'static',
+                        height: '450px',
+                        overflowY: 'scroll'
+                    }}
                 >
-                {
-                    stores[currentCity || 'Ciudad de México'].map((store, index) => (
-                    <ListItem
-                        key={store.name + index}
-                        alignItems='flex-start'
-                        sx={{
-                        borderTop: 1,
-                        borderColor: 'divider',
-                        p: 0,
-                        py: 2
-                        }}
-                    >
-
-                            <Box
+                    {
+                        stores[inputsStore || 'Ciudad de México'].map((store, index) => (
+                        <ListItem
+                            key={store.name + index}
+                            alignItems='flex-start'
                             sx={{
-                                width: '100%',
-                                display: 'flex',
-                                justifyContent: 'space-between',
+                            borderTop: 1,
+                            borderColor: 'divider',
+                            p: 0,
+                            py: 2
                             }}
-                            >
+                        >
+
                             <Box
                                 sx={{
-                                display: 'flex'
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
                                 }}
                             >
-                                <ListItemIcon
-                                sx={{
-                                    minWidth: '28px'
-                                }}
-                                >
-                                <PlaceIcon />
-                                </ListItemIcon>
-
                                 <Box
-                                sx={{
+                                    sx={{
+                                        display: 'flex'
+                                    }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: '28px'
+                                        }}
+                                    >
+                                        <PlaceIcon />
+                                    </ListItemIcon>
+
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'flex-start'
+                                        }}
+                                    >
+                                        <Typography
+                                            variant='title'  
+                                        >
+                                            {store.name}
+                                        </Typography>
+                                        <Typography
+                                            variant='p'
+                                            component='p'
+                                            sx={{
+                                            px: 0
+                                            }}
+                                        >
+                                            {store.place}
+                                        </Typography>
+                                        <Box
+                                            sx={{
+                                            display: 'flex',
+                                            alignItems: 'center'
+                                            }}
+                                        >
+                                            <LocalPhoneIcon />
+                                            <Typography
+                                                variant='p'
+                                            >
+                                                {store.phone}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box
+                                    sx={{
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    justifyContent: 'flex-start'
-                                }}
-                                >
-                                <Typography
-                                    variant='title'  
-                                >
-                                    {store.name}
-                                </Typography>
-                                <Typography
-                                    variant='p'
-                                    component='p'
-                                    sx={{
-                                    px: 0
+                                    alignItems: 'flex-end',
+                                    mr: 1
                                     }}
                                 >
-                                    {store.place}
-                                </Typography>
-                                <Box
-                                    sx={{
-                                    display: 'flex',
-                                    alignItems: 'center'
-                                    }}
-                                >
-                                    <LocalPhoneIcon />
                                     <Typography
-                                    variant='p'
+                                        variant='title'
                                     >
-                                    {store.phone}
+                                        {store.open ? 'Abierto': 'Cerrado'}
                                     </Typography>
+                                    <Typography>
+                                        {store.closeTime}
+                                    </Typography>
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        sx={{
+                                            mt: 2
+                                        }}
+                                        onClick={() => {handleAddPlace(store)}}
+                                        disabled={!store.open}
+                                    >
+                                        Haga su pedido ahora
+                                    </Button>
                                 </Box>
-                                </Box>
                             </Box>
-                            <Box
-                                sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-end',
-                                mr: 1
-                                }}
-                            >
-                                <Typography
-                                    variant='title'
-                                >
-                                    {store.open ? 'Abierto': 'Cerrado'}
-                                </Typography>
-                                <Typography>
-                                    {store.closeTime}
-                                </Typography>
-                                <Button
-                                    variant='contained'
-                                    size='small'
-                                    sx={{
-                                    mt: 2
-                                    }}
-                                >
-                                    Pedir para más tarde
-                                </Button>
-                            </Box>
-                            </Box>
-                    </ListItem>
-                    ))
-                }
+                        </ListItem>
+                        ))
+                    }
                 </List>
             </Box>
         </>
