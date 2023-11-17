@@ -38,7 +38,16 @@ export default function ModalStoreDelivery() {
 
   const [delivery, setDelivery] = useState('store')
 
-  const { inputsStore, inputsHome, handleInputsStore , handleInputsAddress } = useHandlePlace()
+  const {
+    inputsStore,
+    inputsHome,
+    withinLimitSaved,
+    distanceSaved,
+    changeWithinLimitSaved,
+    handleInputsStore,
+    handleInputsAddress,
+    handleDistanceSaved
+  } = useHandlePlace()
 
   function handlePlace (place) {
     setDelivery(place)
@@ -103,6 +112,10 @@ export default function ModalStoreDelivery() {
             : <HomeDelivery
                 handleInputsAddress={handleInputsAddress}
                 inputsHome={inputsHome}
+                withinLimitSaved={withinLimitSaved}
+                distanceSaved={distanceSaved}
+                changeWithinLimitSaved={changeWithinLimitSaved}
+                handleDistanceSaved={handleDistanceSaved}
               />
           }
         </Box>
