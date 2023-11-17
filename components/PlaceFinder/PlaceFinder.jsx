@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import usePlaceFinder from '@/hooks/usePlaceFinder'
 
@@ -9,25 +9,41 @@ import TextField from '@mui/material/TextField';
 // import { GoogleMap } from '@react-google-maps/api'
 import ItemPlace from './ItemPlace'
 
-function PlaceFinder({ changeWithinLimit, withinLimit, handleInputsAddress, inputAddress }) {
+function PlaceFinder({
+  changeWithinLimitSaved,
+  withinLimitSaved,
+  handleInputsAddress,
+  inputAddress,
+  distanceSaved,
+  handleDistanceSaved
+}) {
 
   const {
     address,
     data,
     selectedSuggestion,
     distance,
+    withinLimit,
     handleSelect,
     handleInputChange 
-  } = usePlaceFinder()
+  } = usePlaceFinder({ inputAddress, distanceSaved })
 
   useEffect(() => {
-    if (!distance) return changeWithinLimit(null)
-    if (distance > 15) {
-      changeWithinLimit(false)
-    } else {
-      changeWithinLimit(true)
+    if (address === inputAddress) return
+    return () => {
+      handleInputsAddress(address)
     }
+  }, [address])
+
+  useEffect(() => {
+    if (distance === distanceSaved) return
+    handleDistanceSaved(distance)
   }, [distance])
+
+  useEffect(() => {
+    if (withinLimit === withinLimitSaved) return
+    changeWithinLimitSaved(withinLimit)
+  }, [withinLimit])
 
   return (
     <>

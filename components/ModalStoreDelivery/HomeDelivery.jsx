@@ -9,25 +9,28 @@ import SearchIcon from '@mui/icons-material/Search';
 import PlaceFinder from '../PlaceFinder/PlaceFinder';
 import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
 
-export default function HomeDelivery({ handleInputsAddress, inputsHome }) {
-    
-    const [withinLimit, setWidthinLimit] = useState(null)
-
-    function changeWithinLimit(value) {
-        setWidthinLimit(value)
-    }
+export default function HomeDelivery({
+    handleInputsAddress,
+    inputsHome,
+    withinLimitSaved,
+    changeWithinLimitSaved,
+    distanceSaved,
+    handleDistanceSaved
+}) {
 
     return (
         <>
             <Box
                 sx={{
                     width: '100%',
+                    maxHeight: '430px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     gap: 2,
-                    overflow: 'scroll'
+                    overflow: 'scroll',
+                    pr: 1
                 }}
             >    
                 <Typography
@@ -40,13 +43,15 @@ export default function HomeDelivery({ handleInputsAddress, inputsHome }) {
                 </Typography>
 
                 <PlaceFinder
-                    changeWithinLimit={changeWithinLimit}
-                    withinLimit={withinLimit}
+                    changeWithinLimitSaved={changeWithinLimitSaved}
+                    withinLimitSaved={withinLimitSaved}
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
+                    distanceSaved={distanceSaved}
+                    handleDistanceSaved={handleDistanceSaved}
                 />
                 {
-                    withinLimit
+                    withinLimitSaved
                         ? <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                         />
