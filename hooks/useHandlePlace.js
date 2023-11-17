@@ -4,7 +4,9 @@ import useGetPlace from './useGetPlace'
 function useHandlePlace() {
 
     const [inputsStore, setInputsStore] = useState('')
-    const [inputsHome, setInputsHome] = useState({})
+    const [inputsHome, setInputsHome] = useState({
+        inputAddress: ''
+    })
     const {} = useGetPlace()
 
     useEffect(() =>{
@@ -20,11 +22,11 @@ function useHandlePlace() {
         setInputsStore(newValue)
     }
 
-    function handleInputsHome(event) {
-        console.log(event.target.value)
+    function handleInputsAddress(value) {
+        console.log(value)
     }
 
-    return { inputsStore, inputsHome, handleInputsStore , handleInputsHome }
+    return { inputsStore, inputsHome, handleInputsStore , handleInputsAddress }
 }
 
 export default useHandlePlace
