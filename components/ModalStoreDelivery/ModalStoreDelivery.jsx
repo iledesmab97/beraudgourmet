@@ -38,7 +38,7 @@ export default function ModalStoreDelivery() {
 
   const [delivery, setDelivery] = useState('store')
 
-  const { inputsStore, handleInputsStore , handleInputsHome } = useHandlePlace()
+  const { inputsStore, inputsHome, handleInputsStore , handleInputsAddress } = useHandlePlace()
 
   function handlePlace (place) {
     setDelivery(place)
@@ -100,7 +100,10 @@ export default function ModalStoreDelivery() {
                 inputsStore={inputsStore}
                 handleInputsStore={handleInputsStore}
               />
-            : <HomeDelivery />
+            : <HomeDelivery
+                handleInputsAddress={handleInputsAddress}
+                inputsHome={inputsHome}
+              />
           }
         </Box>
       </Modal>
