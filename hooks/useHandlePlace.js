@@ -7,6 +7,8 @@ function useHandlePlace() {
     const [inputsHome, setInputsHome] = useState({
         inputAddress: ''
     })
+    const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
+    const [distanceSaved, setDistanceSaved] = useState(null)
     const {} = useGetPlace()
 
     useEffect(() =>{
@@ -16,6 +18,14 @@ function useHandlePlace() {
     // }, [inputsStore])
     }, [])
 
+    function changeWithinLimitSaved(value) {
+        setWidthinLimitSaved(value)
+    }
+
+    function handleDistanceSaved(value) {
+        setDistanceSaved(value)
+    }
+
     function handleInputsStore(event) {
         // console.log(event.target.textContent)
         const newValue = event.target.textContent
@@ -23,10 +33,22 @@ function useHandlePlace() {
     }
 
     function handleInputsAddress(value) {
-        console.log(value)
-    }
+        setInputsHome(prevInputsHome => ({
+            ...prevInputsHome,
+            inputAddress: value
+        }))
+    }   
 
-    return { inputsStore, inputsHome, handleInputsStore , handleInputsAddress }
+    return {
+        inputsStore,
+        inputsHome,
+        withinLimitSaved,
+        distanceSaved,
+        changeWithinLimitSaved,
+        handleInputsStore,
+        handleInputsAddress,
+        handleDistanceSaved
+    }
 }
 
 export default useHandlePlace
