@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PlaceFinder from '../PlaceFinder/PlaceFinder';
 import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
 
-export default function HomeDelivery() {
+export default function HomeDelivery({ handleInputsAddress, inputsHome }) {
     
     const [withinLimit, setWidthinLimit] = useState(null)
 
@@ -39,10 +39,17 @@ export default function HomeDelivery() {
                     DIRECCIÓN DE ENTREGA
                 </Typography>
 
-                <PlaceFinder changeWithinLimit={changeWithinLimit} withinLimit={withinLimit}/>
+                <PlaceFinder
+                    changeWithinLimit={changeWithinLimit}
+                    withinLimit={withinLimit}
+                    handleInputsAddress={handleInputsAddress}
+                    inputAddress={inputsHome.inputAddress}
+                />
                 {
                     withinLimit
-                        ? <FormModalDeliveryPlace />
+                        ? <FormModalDeliveryPlace
+                            inputsHome={inputsHome}
+                        />
                         : null
                 }
             </Box>
