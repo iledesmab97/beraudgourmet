@@ -9,13 +9,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import PlaceFinder from '../PlaceFinder/PlaceFinder';
 import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
 
-export default function HomeDelivery({ handleInputsAddress, inputsHome }) {
-    
-    const [withinLimit, setWidthinLimit] = useState(null)
-
-    function changeWithinLimit(value) {
-        setWidthinLimit(value)
-    }
+export default function HomeDelivery({
+    handleInputsAddress,
+    inputsHome,
+    withinLimitSaved,
+    changeWithinLimitSaved,
+    distanceSaved,
+    handleDistanceSaved
+}) {
 
     return (
         <>
@@ -42,13 +43,15 @@ export default function HomeDelivery({ handleInputsAddress, inputsHome }) {
                 </Typography>
 
                 <PlaceFinder
-                    changeWithinLimit={changeWithinLimit}
-                    withinLimit={withinLimit}
+                    changeWithinLimitSaved={changeWithinLimitSaved}
+                    withinLimitSaved={withinLimitSaved}
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
+                    distanceSaved={distanceSaved}
+                    handleDistanceSaved={handleDistanceSaved}
                 />
                 {
-                    withinLimit
+                    withinLimitSaved
                         ? <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                         />
