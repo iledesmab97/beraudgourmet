@@ -22,12 +22,14 @@ export default function HomeDelivery({ handleInputsAddress, inputsHome }) {
             <Box
                 sx={{
                     width: '100%',
+                    maxHeight: '430px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     gap: 2,
-                    overflow: 'scroll'
+                    overflow: 'scroll',
+                    pr: 1
                 }}
             >    
                 <Typography
