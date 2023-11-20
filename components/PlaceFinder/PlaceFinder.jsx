@@ -30,10 +30,8 @@ function PlaceFinder({
 
   useEffect(() => {
     if (address === inputAddress) return
-    return () => {
-      handleInputsAddress(address)
-    }
-  }, [address])
+    handleInputsAddress(address)
+  }, [address, selectedSuggestion])
 
   useEffect(() => {
     if (distance === distanceSaved) return

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import useGetPlace from '@/hooks/useGetPlace'
+import places from '@/typePlaces.json'
 
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
@@ -11,190 +12,12 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-
 import TextArea from '../TextArea/TextArea'
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
-const places = {
-    home: {
-        name: 'home',
-        street: [
-            {
-                name: 'Unidad',
-                width: 20
-            },
-            {
-                name: 'Numero',
-                width: 20
-            },
-            {
-                name: 'Nombre de la calle',
-                width: 60
-            }
-        ],
-        city: {
-            postal: 'Código postal'
-        }
-    },
-    work: {
-        name: 'work',
-        street: [
-            {
-                name: 'Numero',
-                width: 25
-            },
-            {
-                name: 'Nombre de la calle',
-                width: 75
-            }
-        ],
-        city: {
-            postal: 'Código postal'
-        },
-        other: {
-            name: 'Negocio',
-            inputs: [
-                {
-                    name: 'Negocio',
-                    width: 75
-                },
-                {
-                    name: 'Piso',
-                    width: 25
-                }
-            ]
-        }
-    },
-    building: {
-        name: 'building',
-        street: [
-            {
-                name: 'Numero',
-                width: 25
-            },
-            {
-                name: 'Nombre de la calle',
-                width: 75
-            }
-        ],
-        city: {
-            postal: 'Código postal'
-        },
-        other: {
-            name: 'Edificio',
-            inputs: [
-                {
-                    name: 'Edificio',
-                    width: 75
-                },
-                {
-                    name: 'Depto.',
-                    width: 25
-                }
-            ]
-        }
-    },
-    other: {
-        name: 'other',
-        street: [
-            {
-                name: 'Numero',
-                width: 25
-            },
-            {
-                name: 'Nombre de la calle',
-                width: 75
-            }
-        ],
-        city: {
-            postal: 'Código postal'
-        },
-        other: {
-            name: 'Edificio',
-            inputs: [
-                {
-                    name: 'Edificio',
-                    width: 75
-                },
-                {
-                    name: 'Habitación',
-                    width: 25
-                }
-            ]
-        }
-    }
-}
+export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, place, handlePlaceType }) {
 
-export default function FormModalDeliveryPlace () {
-
-    const [place, setPlace] = useState(places.home)
-    const [inputs, setInputs] = useState({
-        street: {
-            ['unidad']: '',
-            ['numero']: '',
-            ['nombre de la calle']: ''
-        },
-        city: '',
-        postalCode: '',
-        note: ''
-    })
     const { handleAddPlace } = useGetPlace()
-
-    useEffect(() => {
-        const newStreet = {}
-        let newOther
-        place.street.forEach(item => {
-            if (inputs.street[item.name.toLowerCase()]) {
-                newStreet[item.name.toLowerCase()] = inputs.street[item.name.toLowerCase()]
-            } else {
-                newStreet[item.name.toLowerCase()] = ''
-            }
-        })
-        if (place.other) {
-            newOther = {}
-            place.other.inputs.forEach(item => {
-                newOther[item.name.toLowerCase()] = ''
-            })
-        }
-        setInputs({
-            ...inputs,
-            street: newStreet,
-            other: newOther
-        })
-    }, [place])
-
-    function handlePlace (event) {
-        setPlace(places[event.target.value])
-    }
-
-    function handleInputs(event) {
-        const {value, name } = event.target
-        if (name === 'nombre de la calle' || name === 'numero' || name === 'unidad') {
-            const newInputs = {
-                ...inputs,
-                street: {
-                    ...inputs.street,
-                    [name]: value
-                }
-            }
-            setInputs(newInputs)
-        } else if (name === 'city' || name === 'postalCode' || name === 'note') {
-            const newInputs = {
-                ...inputs,
-                [name]: value
-            }
-            setInputs(newInputs)
-        } else {
-            const newInputs = {
-                ...inputs,
-                other: {
-                    ...inputs.other,
-                    [name]: value
-                }
-            }
-            setInputs(newInputs)
-        }
-    }
 
     return (
         <Grid
@@ -225,7 +48,7 @@ export default function FormModalDeliveryPlace () {
                             id='type-place-select'
                             value={place.name}
                             label='Tipo de residencia'
-                            onChange={handlePlace}
+                            onChange={handlePlaceType}
                         >
                             <MenuItem value='home'>Casa: Dirección residencial</MenuItem>
                             <MenuItem value='work'>Trabajo: Dirección comercial</MenuItem>
@@ -237,7 +60,7 @@ export default function FormModalDeliveryPlace () {
             </Grid>
 
             {
-                place.other
+                Object.keys(inputsHome.other).length
                     ? (
                         <Grid container item alignItems='center'>
                             <Grid item md={3}>    
@@ -250,24 +73,25 @@ export default function FormModalDeliveryPlace () {
                                         pr: 3
                                     }}
                                 >
-                                    {place.other.name}
+                                    {places[inputsHome.type.name].other.name}
                                 </Typography>
                             </Grid>
 
                             {
-                                place.other && (
+                                Object.keys(inputsHome.other).length && (
                                     <Grid item md>
                                         {
-                                            place.other.inputs.map(input => (
+                                            Object.keys(inputsHome.other).map((input, index) => (
                                                 <TextField
                                                     id='input-unidad'
                                                     variant='outlined'
-                                                    placeholder={input.name}
-                                                    key={input.name}
-                                                    name={input.name.toLowerCase()}
-                                                    onChange={handleInputs}
+                                                    placeholder={places[inputsHome.type.name].other.inputs[index].nameES}
+                                                    key={input + index}
+                                                    name={input}
+                                                    value={inputsHome.other[input]}
+                                                    onChange={handleInputsHome}
                                                     sx={{
-                                                        width: `${input.width}%`
+                                                        width: `${places[inputsHome.type.name].other.inputs[index].width}%`
                                                     }}
                                                 />        
                                             ))
@@ -279,7 +103,6 @@ export default function FormModalDeliveryPlace () {
                     )
                     : null
             }
-
 
             <Grid container item alignItems='center'>
                 <Grid item md={3}>    
@@ -298,17 +121,18 @@ export default function FormModalDeliveryPlace () {
 
                 <Grid item md>
                     {
-                        place.street.map(input => (
+                        Object.keys(inputsHome.street).map((input, index) => (
                             <TextField
                                 id='input-unidad'
                                 variant='outlined'
-                                placeholder={input.name}
-                                name={input.name.toLowerCase()}
-                                onChange={handleInputs}
+                                placeholder={places[inputsHome.type.name].street[index].nameES}
+                                name={input}
+                                onChange={handleInputsHome}
+                                value={inputsHome.street[input]}
                                 sx={{
-                                    width: `${input.width}%`
+                                    width: `${places[inputsHome.type.name].street[index].width}%`
                                 }}
-                                key={input.name}
+                                key={input + index}
                             />
                         ))
                     }
@@ -335,7 +159,8 @@ export default function FormModalDeliveryPlace () {
                         id='input-unidad'
                         variant='outlined'
                         name='city'
-                        onChange={handleInputs}
+                        onChange={handleInputsHome}
+                        value={inputsHome.city}
                         sx={{
                             width: '70%'
                         }}
@@ -345,7 +170,8 @@ export default function FormModalDeliveryPlace () {
                         variant='outlined'
                         placeholder={place.city.postal}
                         name='postalCode'
-                        onChange={handleInputs}
+                        onChange={handleInputsHome}
+                        value={inputsHome.postalCode}
                         sx={{
                             width: '30%'
                         }}
@@ -374,14 +200,15 @@ export default function FormModalDeliveryPlace () {
                         maxRows={3}
                         // placeholder='Minimun 3 rows'
                         aria-label='minimum height'
-                        onChange={handleInputs}
+                        onChange={handleInputsHome}
+                        value={inputsHome.note}
                         name='note'
                     />
                 </Grid>
             </Grid>
             <Button
                 variant='contained'
-                onClick={() => handleAddPlace(inputs)}
+                onClick={() => handleAddPlace(inputsHome)}
                 sx={{
                     position: 'fixed',
                     bottom: 16,

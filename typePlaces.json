@@ -1,0 +1,128 @@
+{
+    "home": {
+        "name": "home",
+        "totalName": "Casa: Dirección residencial",
+        "street": [
+            {
+                "name": "unity",
+                "nameES": "Unidad",
+                "width": 20
+            },
+            {
+                "name": "number",
+                "nameES": "Numero",
+                "width": 20
+            },
+            {
+                "name": "streetName",
+                "nameES": "Nombre de la calle",
+                "width": 60
+            }
+        ],
+        "city": {
+            "postal": "Código postal"
+        }
+    },
+    "work": {
+        "name": "work",
+        "totalName": "Trabajo: Dirección comercial",
+        "street": [
+            {
+                "name": "number",
+                "nameES": "Numero",
+                "width": 25
+            },
+            {
+                "name": "streetName",
+                "nameES": "Nombre de la calle",
+                "width": 75
+            }
+        ],
+        "city": {
+            "postal": "Código postal"
+        },
+        "other": {
+            "name": "Negocio",
+            "inputs": [
+                {
+                    "name": "business",
+                    "nameES": "Negocio",
+                    "width": 75
+                },
+                {
+                    "name": "floor",
+                    "nameES": "Piso",
+                    "width": 25
+                }
+            ]
+        }
+    },
+    "building": {
+        "name": "building",
+        "totalName": "Casa: Departament",
+        "street": [
+            {
+                "name": "number",
+                "nameES": "Numero",
+                "width": 25
+            },
+            {
+                "name": "streetName",
+                "nameES": "Nombre de la calle",
+                "width": 75
+            }
+        ],
+        "city": {
+            "postal": "Código postal"
+        },
+        "other": {
+            "name": "Edificio",
+            "inputs": [
+                {
+                    "name": "building",
+                    "nameES": "Edificio",
+                    "width": 75
+                },
+                {
+                    "name": "department",
+                    "nameES": "Depto.",
+                    "width": 25
+                }
+            ]
+        }
+    },
+    "other": {
+        "name": "other",
+        "totalName": "Hotel",
+        "street": [
+            {
+                "name": "number",
+                "nameES": "Numero",
+                "width": 25
+            },
+            {
+                "name": "streetName",
+                "nameES": "Nombre de la calle",
+                "width": 75
+            }
+        ],
+        "city": {
+            "postal": "Código postal"
+        },
+        "other": {
+            "name": "Edificio",
+            "inputs": [
+                {
+                    "name": "building",
+                    "nameES": "Edificio",
+                    "width": 75
+                },
+                {
+                    "name": "room",
+                    "nameES": "Habitación",
+                    "width": 25
+                }
+            ]
+        }
+    }
+}
