@@ -3,8 +3,8 @@ import usePlacesAutocomplete from 'use-places-autocomplete'
 import useDebounce from "./useDebounce"
 
 const center = {
-    lat: 19.4307,
-    lng: -99.2385
+    lat: 19.43174631841264,
+    lng: -99.23890595340924
   }
 
 export default function usePlaceFinder({ inputAddress , distanceSaved}) {

@@ -3,6 +3,7 @@
 import UserSection from './UserSection'
 import OrderSection from './OrderSection'
 import StoreSection from './StoreSection'
+import TotalPriceSection from './TotalPriceSection'
 
 import Image from 'next/image'
 import Grid from '@mui/material/Grid'
@@ -75,14 +76,7 @@ function OrderRewards () {
                 error={false}/>
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: 1, borderColor: 'divider'}}>
-            <Typography variant='title'>
-              Total
-            </Typography>
-            <Typography variant='button' display='block' gutterBottom>
-              $0.00
-            </Typography>
-          </Box>
+          <TotalPriceSection />
 
           <Box>
             <Button
