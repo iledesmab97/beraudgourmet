@@ -1,22 +1,59 @@
 import { useState, useEffect } from 'react'
 import useGetPlace from './useGetPlace'
+import places from '@/typePlaces.json'
 
 function useHandlePlace() {
 
     const [inputsStore, setInputsStore] = useState('')
+    const [place, setPlace] = useState(places.home)
     const [inputsHome, setInputsHome] = useState({
-        inputAddress: ''
+        inputAddress: '',
+        street: {
+            ['unity']: '',
+            ['number']: '',
+            ['streetName']: ''
+        },
+        city: '',
+        postalCode: '',
+        note: '',
+        type: {
+            name: place.name,
+            totalName: place.totalName
+        }
     })
     const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
     const [distanceSaved, setDistanceSaved] = useState(null)
     const {} = useGetPlace()
 
-    useEffect(() =>{
-        return () => {
-            console.log('se esta cerrando ModalStoreDelivery')
+    useEffect(() => {
+        const newStreet = {}
+        const newOther = {}
+        place.street.forEach(item => {
+            if (inputsHome.street[item.name]) {
+                newStreet[item.name] = inputsHome.street[item.name]
+            } else {
+                newStreet[item.name] = ''
+            }
+        })
+        if (place.other) {
+            place.other.inputs.forEach(item => {
+                newOther[item.name] = ''
+            })
         }
-    // }, [inputsStore])
-    }, [])
+        setInputsHome(prevInputsHome => ({
+            ...prevInputsHome,
+            street: newStreet,
+            other: newOther,
+            type: {
+                name: place.name,
+                totalName: place.totalName
+            }
+        }))
+    }, [place])
+
+    function handlePlaceType(event) {
+        setPlace(places[event.target.value])
+    }
 
     function changeWithinLimitSaved(value) {
         setWidthinLimitSaved(value)
@@ -27,7 +64,6 @@ function useHandlePlace() {
     }
 
     function handleInputsStore(event) {
-        // console.log(event.target.textContent)
         const newValue = event.target.textContent
         setInputsStore(newValue)
     }
@@ -37,17 +73,49 @@ function useHandlePlace() {
             ...prevInputsHome,
             inputAddress: value
         }))
-    }   
+    }
+
+    function handleInputsHome(event) {
+        const {value, name } = event.target
+        if (name === 'streetName' || name === 'number' || name === 'unity') {
+            const newInputs = {
+                ...inputsHome,
+                street: {
+                    ...inputsHome.street,
+                    [name]: value
+                }
+            }
+            setInputsHome(newInputs)
+        } else if (name === 'city' || name === 'postalCode' || name === 'note') {
+            const newInputs = {
+                ...inputsHome,
+                [name]: value
+            }
+            setInputsHome(newInputs)
+        } else {
+            const newInputs = {
+                ...inputsHome,
+                other: {
+                    ...inputsHome.other,
+                    [name]: value
+                }
+            }
+            setInputsHome(newInputs)
+        }
+    }
 
     return {
         inputsStore,
         inputsHome,
+        place,
         withinLimitSaved,
         distanceSaved,
         changeWithinLimitSaved,
         handleInputsStore,
         handleInputsAddress,
-        handleDistanceSaved
+        handleDistanceSaved,
+        handleInputsHome,
+        handlePlaceType
     }
 }
 
