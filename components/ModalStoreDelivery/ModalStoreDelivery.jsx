@@ -111,6 +111,7 @@ export default function ModalStoreDelivery() {
             ? <StorePickup
                 inputsStore={inputsStore}
                 handleInputsStore={handleInputsStore}
+                handleCloseModalPlace={handleCloseModalPlace}
               />
             : <HomeDelivery
                 handleInputsAddress={handleInputsAddress}
