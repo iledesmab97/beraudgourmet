@@ -19,7 +19,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ItemPlace from '../PlaceFinder/ItemPlace'
 import stores from '@/stores.json'
 
-export default function StorePickup({ handleInputsStore, inputsStore }) {
+export default function StorePickup({ handleInputsStore, inputsStore, handleCloseModalPlace }) {
 
     const { handleAddPlace } = useGetPlace()
     // const { } = useHandlePlace()
@@ -184,7 +184,10 @@ export default function StorePickup({ handleInputsStore, inputsStore }) {
                                         sx={{
                                             mt: 2
                                         }}
-                                        onClick={() => {handleAddPlace(store)}}
+                                        onClick={() => {
+                                            handleAddPlace(store)
+                                            handleCloseModalPlace()
+                                        }}
                                         disabled={!store.open}
                                     >
                                         Haga su pedido ahora
