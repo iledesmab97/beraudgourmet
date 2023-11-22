@@ -20,7 +20,7 @@ export default function TimePickerViewRenderers() {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
-                <TimePicker
+                {/* <TimePicker
                     label="Hora"
                     value={hour}
                     onChange={handleHour}
@@ -32,7 +32,8 @@ export default function TimePickerViewRenderers() {
                     // viewRenderers={
                     //     <StaticTimePicker orientation="landscape" />
                     // }
-                />
+                /> */}
+                <TimePicker label="Hora" />
         </DemoContainer>
         {/* <StaticTimePicker orientation="landscape" /> */}
         </LocalizationProvider>
