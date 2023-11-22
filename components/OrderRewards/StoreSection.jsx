@@ -118,14 +118,6 @@ export default function StoreSection () {
                 item
               >
                 <DateChoose />
-                {/* <Grid item xs={6}>
-                  <Button
-                    variant='contained'
-                    fullWidth
-                  >
-                    {'Hora'}
-                  </Button>
-                </Grid> */}
               </Grid>
               <Grid
                 item
