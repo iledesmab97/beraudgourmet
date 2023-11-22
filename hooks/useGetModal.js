@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } from '@/stores/modal/slice'
+import { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder, openModalStoresDetail, closeModalStoresDetail } from '@/stores/modal/slice'
 
 export default function useGetUser({modalType}) {
 
@@ -27,6 +27,14 @@ export default function useGetUser({modalType}) {
         dispatch(updateModalOrder(newProduct))
     }
 
+    function handleOpenModalStoresDetail() {
+        dispatch(openModalStoresDetail())
+    }
+
+    function handleCloseModalStoresDetail() {
+        dispatch(closeModalStoresDetail())
+    }
+
     return {
         open: modal.open,
         product: modal[modal.currentProduct],
@@ -34,6 +42,8 @@ export default function useGetUser({modalType}) {
         handleCloseModalPlace,
         handleOpenModalOrder,
         handleCloseModalOrder,
-        handleUpdateModalOrder
+        handleUpdateModalOrder,
+        handleOpenModalStoresDetail,
+        handleCloseModalStoresDetail
     }
 } 
