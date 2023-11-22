@@ -14,10 +14,12 @@ import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
+import ItemPlace from '../PlaceFinder/ItemPlace'
 
 export default function StoreSection () {
 
   const { handleOpenModalPlace } = useGetModal({modalType: 'place'})
+  const { handleOpenModalStoresDetail } = useGetModal({ modalType: 'storesDetail' })
   const { place } = useGetPlace()
   const [isTherePlace, setIsTherePlace] = useState(false)
   const [whereDelivery, setWhereDelivery] = useState('')
@@ -90,8 +92,25 @@ export default function StoreSection () {
                 <Button
                   fullWidth
                   variant='contained'
+                  onClick={handleOpenModalStoresDetail}
+                  startIcon={
+                    <ItemPlace
+                      sx={{
+                        width: '60px',
+                        position: 'absolute',
+                        left: '0px',
+                        top: '0px'
+                      }}
+                    />
+                  }
+                  sx={{
+                    // display: 'flex',
+                    // justifyContent: 'flex-start',
+                  }}
                 >
-                  Modal nuevo
+                  <Typography>
+                    {place.name}
+                  </Typography>
                 </Button>
               </Grid>
               <Grid
