@@ -14,6 +14,9 @@ const initialState = {
     },
     place: {
         open: false
+    },
+    storesDetail: {
+        open: false
     }
 }
 
@@ -79,10 +82,36 @@ export const modalSlice = createSlice({
                     [nameProduct]: action.payload
                 }
             }
-        }
+        },
+        openModalStoresDetail: (state, action) => {
+            return {
+                ...state,
+                storesDetail: {
+                    ...state.storesDetail,
+                    open: true
+                }
+            }
+        },
+        closeModalStoresDetail: (state, action) => {
+            return {
+                ...state,
+                storesDetail: {
+                    ...state.storesDetail,
+                    open: false
+                }
+            }
+        },
     }
 })
 
 export default modalSlice.reducer
 
-export const { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } = modalSlice.actions
+export const {
+    openModalPlace,
+    closeModalPlace,
+    openModalOrder,
+    closeModalOrder,
+    updateModalOrder,
+    openModalStoresDetail,
+    closeModalStoresDetail
+} = modalSlice.actions
