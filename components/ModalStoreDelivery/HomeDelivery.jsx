@@ -53,6 +53,7 @@ export default function HomeDelivery({
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
                     distanceSaved={distanceSaved}
+                    closerStore={closerStore}
                     handleDistanceSaved={handleDistanceSaved}
                     handleCloserStore={handleCloserStore}
                 />
