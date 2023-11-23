@@ -94,7 +94,7 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                     }}
                 >
                     {
-                        stores[inputsStore || 'Ciudad de México'].map((store, index) => (
+                        stores[inputsStore].map((store, index) => (
                         <ListItem
                             key={store.name + index}
                             alignItems='flex-start'
