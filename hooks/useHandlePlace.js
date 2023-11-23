@@ -21,7 +21,7 @@ function useHandlePlace() {
             totalName: place.totalName
         }
     })
-    const [closerStore, setCloserStore] = useState({})
+    const [closerStore, setCloserStore] = useState(null)
     const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
     const [distanceSaved, setDistanceSaved] = useState(null)
     const {} = useGetPlace()
