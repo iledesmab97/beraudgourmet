@@ -1,8 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetPlace from '@/hooks/useGetPlace'
+import ListStores from './ListStores'
+import DetailStore from './DetailStore'
+import useHandleStoresDetail from '@/hooks/useHandleStoresDetail'
+import { accept } from '@/genericFunctions/modal'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -15,19 +19,6 @@ import ListItemButton from '@mui/material/ListItemButton'
 import Divider from '@mui/material/Divider'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import CircleIcon from '@mui/icons-material/Circle'
-import PlaceIcon from '@mui/icons-material/Place'
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
-import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-
-import stores from '@/stores.json'
 
 const style = {
     position: 'absolute',
@@ -51,7 +42,9 @@ const style = {
 function ModalStoresDetail() {
 
     const { open, handleCloseModalStoresDetail } = useGetModal({ modalType: 'storesDetail' })
-    const { place } = useGetPlace()
+    const { place, handleAddPlace } = useGetPlace()
+    const {currentStore, handleCurrentStoreDetail} = useHandleStoresDetail({place})
+
     if (!place.name) return
 
     return (
@@ -88,224 +81,10 @@ function ModalStoresDetail() {
                         height: '85%'
                     }}
                 >
-                    <Grid
-                        item
-                        xs={4}
-                        sx={{
-                            overflow: 'scroll',
-                            height: '100%'
-                        }}
-                    >
-                        {
-                            Object.keys(stores).map(city => (
-                                <Box key={city}>
-                                    <Typography>
-                                        {city.toUpperCase()}
-                                    </Typography>
-                                    <List>
-                                        {
-                                            stores[city].map((store, index) => (
-                                                <ListItem
-                                                    key={store.name + index}
-                                                    sx={{
-                                                        p: '0px'
-                                                    }}
-                                                >
-                                                    <ListItemButton>
-                                                        <Typography>
-                                                            {store.name}
-                                                        </Typography>
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            ))
-                                        }
-                                    </List>
-                                    <Divider/>
-                                </Box>
-                            ))
-                        }
-                    </Grid>
-                    <Grid
-                        item
-                        xs={8}
-                        sx={{
-                            height: '100%',
-                            overflow: 'scroll'
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: '95%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'flex-start',
-                                alignItems: 'flex-start'
-                            }}
-                        >
-                            <Typography
-                                variant='title'
-                            >
-                                {place.name}
-                            </Typography>
-                            <List>
-                                <ListItem
-                                    // disablePadding
-                                    component={'li'}
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column'
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <CircleIcon
-                                            color='primary'
-                                            sx={{
-                                                mr: '8px'
-                                            }}
-                                        />
-                                        <Typography
-                                            component={'span'}
-                                        >
-                                            {place.open ? 'Abierto' : 'Cerrado'}
-                                        </Typography>
-                                    </Box>
-                                    <Typography>
-                                        {place.closeTime}
-                                    </Typography>
-                                </ListItem>
-                                <ListItem
-                                    component={'li'}
-                                    // disablePadding
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'row'
-                                    }}
-                                >
-                                    <PlaceIcon sx={{ mt: '8px', mr: '8px' }} />
 
-                                    <ListItemText
-                                        primary='Dirección'
-                                        secondary={
-                                            <>
-                                                <Typography
-                                                    sx={{ display: 'inline'}}
-                                                    component={'span'}
-                                                    variant='body2'
-                                                    color='text.primary'
-                                                >
-                                                    {place.place}
-                                                </Typography>
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                                <ListItem
-                                    component={'li'}
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'row'
-                                    }}
-                                >
-                                    <LocalPhoneIcon sx={{ mt: '8px', mr: '8px' }} />
+                    <ListStores handleCurrentStoreDetail={handleCurrentStoreDetail} place={place}/>
+                    <DetailStore currentStore={currentStore}/>
 
-                                    <ListItemText
-                                        primary='Telefono'
-                                        secondary={
-                                            <>
-                                                <Typography
-                                                    sx={{ display: 'inline'}}
-                                                    component={'span'}
-                                                    variant='body2'
-                                                    color='text.primary'
-                                                >
-                                                    {place.phone}
-                                                </Typography>
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                            </List>
-                            <Box
-                                sx={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-                                    gap: '8px'
-                                }}
-                            >
-                                <Typography
-                                    variant='title'
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <AccessTimeIcon />
-                                    Horario para recoger
-                                </Typography>
-                                <TableContainer
-                                    component={Paper}
-                                    // sx={{
-                                    //     width: '100%'
-                                    // }}
-                                >
-                                    <Table>
-                                        <TableBody>
-                                            {
-                                                place.pickUpSchedule.map(hour => (
-                                                    <TableRow
-                                                        key={hour.days + hour.hours}
-                                                    >
-                                                        <TableCell>{hour.days}</TableCell>
-                                                        <TableCell>{hour.hours}</TableCell>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                                <Typography
-                                    variant='title'
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <AccessTimeIcon />
-                                    Horario de entrega
-                                </Typography>
-                                <TableContainer
-                                    component={Paper}
-                                    // sx={{
-                                    //     width: '100%'
-                                    // }}
-                                >
-                                    <Table>
-                                        <TableBody>
-                                            {
-                                                place.deliverySchedule.map(hour => (
-                                                    <TableRow
-                                                        key={hour.days + hour.hours}
-                                                    >
-                                                        <TableCell>{hour.days}</TableCell>
-                                                        <TableCell>{hour.hours}</TableCell>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
-                        </Box>
-
-                    </Grid>
                 </Grid>
                 <Grid item
                     sx={{
@@ -315,6 +94,8 @@ function ModalStoresDetail() {
                 >
                     <Button
                         variant='contained'
+                        disabled={currentStore.open ? false : true}
+                        onClick={() => { accept({action: handleAddPlace, value: currentStore}, handleCloseModalStoresDetail) }}
                     >
                         <Typography>
                             Pedir a la tienda
