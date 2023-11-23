@@ -65,6 +65,7 @@ function useHandlePlace() {
 
     function handleInputsStore(event) {
         const newValue = event.target.textContent
+        if (!newValue) return
         setInputsStore(newValue)
     }
 
