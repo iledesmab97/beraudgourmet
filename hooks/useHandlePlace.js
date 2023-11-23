@@ -4,7 +4,7 @@ import places from '@/typePlaces.json'
 
 function useHandlePlace() {
 
-    const [inputsStore, setInputsStore] = useState('')
+    const [inputsStore, setInputsStore] = useState('Ciudad de México')
     const [place, setPlace] = useState(places.home)
     const [inputsHome, setInputsHome] = useState({
         inputAddress: '',
@@ -65,6 +65,7 @@ function useHandlePlace() {
 
     function handleInputsStore(event) {
         const newValue = event.target.textContent
+        if (!newValue) return
         setInputsStore(newValue)
     }
 
