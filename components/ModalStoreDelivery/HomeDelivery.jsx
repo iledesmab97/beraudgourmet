@@ -16,9 +16,11 @@ export default function HomeDelivery({
     withinLimitSaved,
     changeWithinLimitSaved,
     distanceSaved,
+    closerStore,
     handleDistanceSaved,
     handleInputsHome,
-    handlePlaceType
+    handlePlaceType,
+    handleCloserStore
 }) {
 
     return (
@@ -51,13 +53,16 @@ export default function HomeDelivery({
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
                     distanceSaved={distanceSaved}
+                    closerStore={closerStore}
                     handleDistanceSaved={handleDistanceSaved}
+                    handleCloserStore={handleCloserStore}
                 />
                 {
                     withinLimitSaved
                         ? <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                             place={place}
+                            closerStore={closerStore}
                             handleInputsHome={handleInputsHome}
                             handlePlaceType={handlePlaceType}
                         />

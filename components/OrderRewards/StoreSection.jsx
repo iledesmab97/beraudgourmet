@@ -20,7 +20,9 @@ export default function StoreSection () {
 
   const { handleOpenModalPlace } = useGetModal({modalType: 'place'})
   const { handleOpenModalStoresDetail } = useGetModal({ modalType: 'storesDetail' })
-  const { place } = useGetPlace()
+  // const { place } = useGetPlace()
+  const dataPlace = useGetPlace()
+  const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
   const [isTherePlace, setIsTherePlace] = useState(false)
   const [whereDelivery, setWhereDelivery] = useState('')
 

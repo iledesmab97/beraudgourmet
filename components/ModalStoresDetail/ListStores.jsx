@@ -29,7 +29,7 @@ function ListStores({ handleCurrentStoreDetail , place }) {
                         </Typography>
                         <List>
                             {
-                                stores[city].map((store, index) => (
+                                stores[city].stores.map((store, index) => (
                                     <ListItem
                                         key={store.name + index}
                                         sx={{
@@ -37,7 +37,7 @@ function ListStores({ handleCurrentStoreDetail , place }) {
                                         }}
                                     >
                                         <ListItemButton
-                                            onClick={() => {handleCurrentStoreDetail(stores[city][index])}}
+                                            onClick={() => {handleCurrentStoreDetail(stores[city].stores[index])}}
                                             className={ place.name === store.name ? 'Mui-selected' : null }
                                             // sx={{
                                             //     backgroundColor: 'primary',
