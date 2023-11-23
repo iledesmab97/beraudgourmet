@@ -1,6 +1,7 @@
 import { useState } from "react"
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import useDebounce from "./useDebounce"
+import stores from '@/stores.json'
 
 const center = {
     lat: 19.43174631841264,
@@ -18,6 +19,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved}) {
       if (distance <= 15) return true
       return null
     })
+    const [storeMoreClose, setStoreMoreClose] = useState(null)
 
     const {
         ready,
@@ -61,21 +63,44 @@ export default function usePlaceFinder({ inputAddress , distanceSaved}) {
     async function calculateRoute(address) {
       if (!address) return setDistance(null)
       const directionService = new google.maps.DirectionsService()
-      const results = await directionService.route({
-        origin: center,
-        destination: address,
-        // travelMode: google.maps.TravelMode.DRIVING
-        travelMode: 'DRIVING'
-      })
-      let newDistance = results.routes[0].legs[0].distance.text
-      if (newDistance.includes('.')) {
-        newDistance = newDistance.replaceAll('.', '')
+      let newDistance = Infinity
+      let cityStore
+      let closerStore 
+      const arrayCitys = Object.values(stores)
+      for (const city of arrayCitys) {
+        // cityStore = city.name
+        if (cityStore && cityStore !== city.name) break
+        for (const store of city.stores) {
+          const results = await directionService.route({
+            // origin: center,
+            origin: store.coordinates,
+            destination: address,
+            // travelMode: google.maps.TravelMode.DRIVING
+            travelMode: 'DRIVING'
+          })
+          let currentDistance = results.routes[0].legs[0].distance.text
+          if (currentDistance.includes('.')) {
+            currentDistance = currentDistance.replaceAll('.', '')
+          }
+          if (currentDistance.includes(',')) {
+            currentDistance = currentDistance.replace(',', '.')
+          }
+          if (currentDistance.includes('km')) {
+            currentDistance = currentDistance.split('km')[0].trim()
+          } else if (currentDistance.includes('m')) {
+            currentDistance = currentDistance.split('m')[0].trim()/1000
+          }
+          if (currentDistance < newDistance) {
+            newDistance = currentDistance
+            closerStore = store
+            if (newDistance <= 15) cityStore = city.name
+            if (newDistance < 1) break
+          }
+        }
       }
-      if (newDistance.includes(',')) {
-        newDistance = newDistance.replace(',', '.')
-      }
-      setDistance(newDistance.split('km')[0].trim())
-      changeWithinLimit(newDistance.split('km')[0].trim())
+      setDistance(newDistance)
+      changeWithinLimit(newDistance)
+      setStoreMoreClose(closerStore)
     }
 
     function changeWithinLimit (value) {
@@ -97,6 +122,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved}) {
         selectedSuggestion,
         distance,
         withinLimit,
+        storeMoreClose,
         handleSetAddress,
         handleSelect,
         handleInputChange
