@@ -21,6 +21,7 @@ function useHandlePlace() {
             totalName: place.totalName
         }
     })
+    const [closerStore, setCloserStore] = useState({})
     const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
     const [distanceSaved, setDistanceSaved] = useState(null)
     const {} = useGetPlace()
@@ -50,6 +51,10 @@ function useHandlePlace() {
             }
         }))
     }, [place])
+
+    function handleCloserStore(newCloserStore) {
+        setCloserStore(newCloserStore)
+    }
 
     function handlePlaceType(event) {
         setPlace(places[event.target.value])
@@ -111,12 +116,14 @@ function useHandlePlace() {
         place,
         withinLimitSaved,
         distanceSaved,
+        closerStore,
         changeWithinLimitSaved,
         handleInputsStore,
         handleInputsAddress,
         handleDistanceSaved,
         handleInputsHome,
-        handlePlaceType
+        handlePlaceType,
+        handleCloserStore
     }
 }
 
