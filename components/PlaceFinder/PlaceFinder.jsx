@@ -15,6 +15,7 @@ function PlaceFinder({
   handleInputsAddress,
   inputAddress,
   distanceSaved,
+  closerStore,
   handleDistanceSaved,
   handleCloserStore
 }) {
@@ -28,7 +29,7 @@ function PlaceFinder({
     storeMoreClose,
     handleSelect,
     handleInputChange 
-  } = usePlaceFinder({ inputAddress, distanceSaved })
+  } = usePlaceFinder({ inputAddress, distanceSaved, closerStore })
 
   useEffect(() => {
     if (address === inputAddress) return
