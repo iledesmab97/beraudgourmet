@@ -43,7 +43,7 @@ function ModalStoresDetail() {
 
     const { open, handleCloseModalStoresDetail } = useGetModal({ modalType: 'storesDetail' })
     const dataPlace = useGetPlace()
-    const inputsHome = dataPlace.inputsHome
+    const inputsHome = dataPlace.place.inputsHome
     const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
     const handleAddPlace = dataPlace.handleAddPlace
     const {currentStore, handleCurrentStoreDetail} = useHandleStoresDetail({place})
@@ -97,9 +97,9 @@ function ModalStoresDetail() {
                 >
                     <Button
                         variant='contained'
-                        disabled={( currentStore.open ? false : true ) || inputsHome }
+                        disabled={( currentStore.open ? false : true ) || Boolean(inputsHome) }
                         onClick={() => { 
-                            accept({action: handleAddPlace, value: {currentStore}}, handleCloseModalStoresDetail) }}
+                            accept({action: handleAddPlace, value: currentStore}, handleCloseModalStoresDetail) }}
                     >
                         <Typography>
                             Pedir a la tienda
