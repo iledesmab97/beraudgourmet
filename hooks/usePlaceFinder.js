@@ -8,7 +8,7 @@ const center = {
     lng: -99.23890595340924
   }
 
-export default function usePlaceFinder({ inputAddress , distanceSaved}) {
+export default function usePlaceFinder({ inputAddress , distanceSaved, closerStore}) {
 
     const [address, setAddress] = useState(() => inputAddress ? inputAddress : '')
     const [selectedSuggestion, setSelectedSuggestion] = useState(null)
@@ -19,7 +19,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved}) {
       if (distance <= 15) return true
       return null
     })
-    const [storeMoreClose, setStoreMoreClose] = useState(null)
+    const [storeMoreClose, setStoreMoreClose] = useState(closerStore)
 
     const {
         ready,
@@ -90,7 +90,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved}) {
           } else if (currentDistance.includes('m')) {
             currentDistance = currentDistance.split('m')[0].trim()/1000
           }
-          if (currentDistance < newDistance) {
+          if (Number(currentDistance) < Number(newDistance)) {
             newDistance = currentDistance
             closerStore = store
             if (newDistance <= 15) cityStore = city.name
