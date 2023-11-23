@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import useGetPlace from '@/hooks/useGetPlace'
 import useHandlePlace from '@/hooks/useHandlePlace'
+import { accept } from '@/genericFunctions/modal';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -94,7 +95,7 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                     }}
                 >
                     {
-                        stores[inputsStore].map((store, index) => (
+                        stores[inputsStore].stores.map((store, index) => (
                         <ListItem
                             key={store.name + index}
                             alignItems='flex-start'
@@ -184,9 +185,9 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                                         sx={{
                                             mt: 2
                                         }}
-                                        onClick={() => {
-                                            handleAddPlace(store)
-                                            handleCloseModalPlace()
+                                        onClick={() => { accept({action:handleAddPlace, value:store}, handleCloseModalPlace)
+                                            // handleAddPlace(store)
+                                            // handleCloseModalPlace()
                                         }}
                                         disabled={!store.open}
                                     >
