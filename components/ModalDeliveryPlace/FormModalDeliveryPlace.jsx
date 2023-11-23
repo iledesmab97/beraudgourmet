@@ -17,7 +17,7 @@ import Button from '@mui/material/Button'
 import TextArea from '../TextArea/TextArea'
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
-export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, place, handlePlaceType }) {
+export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, place, handlePlaceType, closerStore }) {
 
     const {handleCloseModalPlace} = useGetModal({modalType: 'place'})
     const { handleAddPlace } = useGetPlace()
@@ -211,7 +211,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
             </Grid>
             <Button
                 variant='contained'
-                onClick={() => { accept({action: handleAddPlace, value: inputsHome}, handleCloseModalPlace) }}
+                onClick={() => { accept({action: handleAddPlace, value: {inputsHome, closerStore}}, handleCloseModalPlace) }}
                 sx={{
                     position: 'fixed',
                     bottom: 16,
