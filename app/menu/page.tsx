@@ -9,6 +9,7 @@ import OrderRewards from '../../components/OrderRewards/OrderRewards'
 import ModalChooseProduct from '../../components/ModalChooseProduct/ModalChooseProduct'
 import ModalStoreDelivery from '../../components/ModalStoreDelivery/ModalStoreDelivery'
 import ModalDeliveryPlace from '../../components/ModalDeliveryPlace/ModalDeliveryPlace'
+import ModalStoresDetail from '@/components/ModalStoresDetail/ModalStoresDetail'
 import { useLoadScript } from "@react-google-maps/api"
 // import style from './page.module.css'
 
@@ -36,6 +37,7 @@ function Menu () {
       <ModalChooseProduct />
       <ModalStoreDelivery />
       {/* <ModalDeliveryPlace /> */}
+      <ModalStoresDetail />
     </Container>
   )
 }

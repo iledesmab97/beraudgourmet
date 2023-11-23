@@ -5,21 +5,224 @@
       "place": "aca viene la dirección de la tienda",
       "phone": "55546153545",
       "open": true,
-      "closeTime": "cierra a las 11:00pm"
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
     },
     {
       "name": "Ajusco",
       "place": "aca viene la dirección de la tienda",
       "phone": "55546153545",
       "open": true,
-      "closeTime": "cierra a las 11:00pm"
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
     },
     {
       "name": "Anaxagoras",
       "place": "aca viene la dirección de la tienda",
       "phone": "55546153545",
       "open": false,
-      "closeTime": "cierra a las 11:00pm"
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
+    },
+    {
+      "name": "Destino",
+      "place": "aca viene la dirección de la tienda",
+      "phone": "55546153545",
+      "open": true,
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
+    },
+    {
+      "name": "Feliz Cuevas 621",
+      "place": "aca viene la dirección de la tienda",
+      "phone": "55546153545",
+      "open": true,
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
+    },
+    {
+      "name": "Florida",
+      "place": "aca viene la dirección de la tienda",
+      "phone": "55546153545",
+      "open": true,
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
+    },
+    {
+      "name": "Bellavista",
+      "place": "aca viene la dirección de la tienda",
+      "phone": "55546153545",
+      "open": true,
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
     }
   ],
   "Cancún": [
@@ -28,14 +231,64 @@
       "place": "aca viene la dirección de la tienda",
       "phone": "55546153545",
       "open": false,
-      "closeTime": "cierra a las 11:00pm"
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
     },
     {
       "name": "Destino Azcapotzalco",
       "place": "aca viene la dirección de la tienda",
       "phone": "55546153545",
       "open": true,
-      "closeTime": "cierra a las 11:00pm"
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
     }
   ],
   "Córdoba": [
@@ -44,7 +297,66 @@
       "place": "aca viene la dirección de la tienda",
       "phone": "55546153545",
       "open": true,
-      "closeTime": "cierra a las 11:00pm"
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
+    }
+  ],
+  "Nuevo León": [
+    {
+      "name": "Cumbres",
+      "place": "aca viene la dirección de la tienda",
+      "phone": "55546153545",
+      "open": true,
+      "closeTime": "Cierra a las 11:00pm",
+      "openTime": "Abre a las 10:00am",
+      "pickUpSchedule": [
+        {
+          "days": "Mon-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 11:00 PM"
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "days": "Mon-Thu",
+          "hours": "11:00 AM - 10:00 PM"
+        },
+        {
+          "days": "Fri-Sat",
+          "hours": "11:00 AM - 11:00 PM"
+        },
+        {
+          "days": "Sun",
+          "hours": "10:00 AM - 10:00 PM"
+        }
+      ]
     }
   ]
 
