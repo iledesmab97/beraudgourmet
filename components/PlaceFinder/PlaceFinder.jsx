@@ -15,7 +15,8 @@ function PlaceFinder({
   handleInputsAddress,
   inputAddress,
   distanceSaved,
-  handleDistanceSaved
+  handleDistanceSaved,
+  handleCloserStore
 }) {
 
   const {
@@ -24,6 +25,7 @@ function PlaceFinder({
     selectedSuggestion,
     distance,
     withinLimit,
+    storeMoreClose,
     handleSelect,
     handleInputChange 
   } = usePlaceFinder({ inputAddress, distanceSaved })
@@ -42,6 +44,10 @@ function PlaceFinder({
     if (withinLimit === withinLimitSaved) return
     changeWithinLimitSaved(withinLimit)
   }, [withinLimit])
+
+  useEffect(() => {
+    handleCloserStore(storeMoreClose)
+  },[storeMoreClose])
 
   return (
     <>
