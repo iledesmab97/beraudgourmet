@@ -44,36 +44,6 @@ function UserNew({ inputs, handleChange, errors, currentUser, handleChangeNumber
         
             {
                 !currentUser && (
-                // <>
-                //     <TextField
-                //     name='name'
-                //     label="Nombre"
-                //     type='text'
-                //     size='small'
-                //     margin='dense'
-                //     fullWidth
-                //     helperText=''
-                //     value={inputs.name}
-                //     error={false}
-                //     onChange={handleChange}
-                //     InputProps={{
-                //         startAdornment: (
-                //         <InputAdornment position="start">
-                //             <PersonIcon />
-                //         </InputAdornment>
-                //         ),
-                //     }}
-                //     />
-                    
-                //     <MuiTelInput
-                //         value={inputs.numberPhone}
-                //         onChange={handleChangeNumberPhone}
-                //         margin='dense'
-                //         size='small'
-                //     />
-        
-                //     {/* <CountryTelephoneCode /> */}
-                // </>
                     <UserLoged
                         userLoged={currentUser}
                         handleChange={handleChange}
