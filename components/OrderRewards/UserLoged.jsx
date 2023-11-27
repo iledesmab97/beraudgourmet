@@ -1,5 +1,7 @@
 'use client'
 
+import useGetModal from '@/hooks/useGetModal'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
@@ -7,6 +9,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 
 function UserLoged({ userLoged }) {
+
+    const {handleOpenModalUser} = useGetModal({modalType: 'user'})
+
     return (
         <Box
             component={'div'}
@@ -33,6 +38,7 @@ function UserLoged({ userLoged }) {
                     alignItems: 'center',
                     textTransform: 'none',
                 }}
+                onClick={handleOpenModalUser}
             >
                 <Typography
                     variant='p'
@@ -55,6 +61,7 @@ function UserLoged({ userLoged }) {
                     alignItems: 'center',
                     textTransform: 'none',
                 }}
+                onClick={handleOpenModalUser}
             >
                 <Typography
                     variant='p'
