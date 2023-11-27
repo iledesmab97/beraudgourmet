@@ -19,15 +19,15 @@ function searchUser(email) {
 function useHandleUser() {
 
     const { user, handleAddUser,  } = useGetUser()
-    const [inputs, setInputs] = useState({
+    const [userLoged, setUserLoged] = useState( user.email ? user : null)
+    const [inputs, setInputs] = useState(() => userLoged ? userLoged : {
         email: '',
         name: '',
         password: '',
-        phoneNumber: '+52'
+        numberPhone: '+52'
     })
     const [errors, setErrors] = useState(validation(inputs))
     const [currentUser, setCurrentUser] = useState(() => searchUser(inputs.email))
-    const [userLoged, setUserLoged] = useState( user.email ? user : null)
     const { debounceSetValue } = useDebounce()
 
     useEffect(() => {
@@ -37,6 +37,17 @@ function useHandleUser() {
         }, 500)
     }, [inputs])
 
+    useEffect(() => {
+        if (!user.name) return
+        const setAgain = !userLoged || Object.keys(user).some(property => {
+            userLoged[property] !== inputs[property]
+        })
+        if (setAgain) {
+            setUserLoged(user)
+            setInputs(user)
+        }
+    }, [user])
+
     function handleChange(event) {
         const { name, value } = event.target
         setInputs(prevInputs => ({
@@ -45,29 +56,32 @@ function useHandleUser() {
         }))
     }
 
-    function handleChangePhoneNumber(newPhoneNumber) {
+    function handleChangeNumberPhone(newNumberPhone) {
         setInputs(prevInputs => ({
             ...prevInputs,
-            phoneNumber: newPhoneNumber
+            numberPhone: newNumberPhone
         }))
     }
 
     function verifyUser() {
         if (currentUser.password === inputs.password) {
-            console.log('verificación exitosa')
             handleAddUser(currentUser)
             setUserLoged(currentUser)
+            setInputs(currentUser)
             return setErrors({})   
         }
-        console.log('verificación erronea')
         setErrors({password: 'Contraseña incorrecta'})
     }
 
-    // function changeUser(newUser) {
-    //     setUser(newUser)
-    // }
-
-    return { inputs, handleChange, errors, currentUser, userLoged, handleChangePhoneNumber, verifyUser}
+    return {
+        inputs,
+        handleChange,
+        errors,
+        currentUser,
+        userLoged,
+        handleChangeNumberPhone,
+        verifyUser
+    }
 }
 
 export default useHandleUser
