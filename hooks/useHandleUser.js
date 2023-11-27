@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
+import useGetUser from '@/hooks/useGetUser'
 import users from '@/users.json'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
@@ -16,6 +17,7 @@ function searchUser(email) {
 
 function useHandleUser() {
 
+    const { user, handleAddUser } = useGetUser()
     const [inputs, setInputs] = useState({
         email: '',
         name: '',
@@ -23,7 +25,7 @@ function useHandleUser() {
         phoneNumber: '+52'
     })
     const [errors, setErrors] = useState(validation(inputs))
-    const [userLoged, setUserLoged] = useState(null)
+    const [userLoged, setUserLoged] = useState( user.email ? user : null)
 
     useEffect(() => {
         setErrors(validation(inputs))
@@ -51,6 +53,7 @@ function useHandleUser() {
     function verifyUser() {
         if (currentUser.password === inputs.password) {
             console.log('verificación exitosa')
+            handleAddUser(currentUser)
             setUserLoged(currentUser)
             return setErrors({})   
         }
@@ -58,9 +61,9 @@ function useHandleUser() {
         setErrors({password: 'Contraseña incorrecta'})
     }
 
-    function changeUser(newUser) {
-        setUser(newUser)
-    }
+    // function changeUser(newUser) {
+    //     setUser(newUser)
+    // }
 
     return { inputs, handleChange, errors, currentUser, userLoged, handleChangePhoneNumber, verifyUser}
 }
