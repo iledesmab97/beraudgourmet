@@ -17,6 +17,9 @@ const initialState = {
     },
     storesDetail: {
         open: false
+    },
+    user: {
+        open: false
     }
 }
 
@@ -101,6 +104,24 @@ export const modalSlice = createSlice({
                 }
             }
         },
+        openModalUser: (state, action) => {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    open: true
+                }
+            }
+        },
+        closeModalUser: (state, action) => {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    open: false
+                }
+            }
+        }
     }
 })
 
@@ -113,5 +134,7 @@ export const {
     closeModalOrder,
     updateModalOrder,
     openModalStoresDetail,
-    closeModalStoresDetail
+    closeModalStoresDetail,
+    openModalUser,
+    closeModalUser
 } = modalSlice.actions
