@@ -112,30 +112,30 @@ function UserNew({ inputs, handleChange, errors, currentUser, handleChangePhoneN
                     }}
                 >
                     <Button
-                    fullWidth
-                    variant='contained'
-                    margin='dense'
-                    // size='small'
-                    sx={styleButtons}
-                    onClick={verifyUser}
+                        fullWidth
+                        variant='contained'
+                        margin='dense'
+                        // size='small'
+                        sx={styleButtons}
+                        onClick={verifyUser}
                     >
-                    Iniciar seción
+                        Iniciar seción
                     </Button>
                     <Button
-                    fullWidth
-                    sx={styleButtons}
-                    variant='outlined'
-                    color='secondary'
+                        fullWidth
+                        sx={styleButtons}
+                        variant='outlined'
+                        color='secondary'
                     >
-                    ¿Olvidó la contraseña?  
+                        ¿Olvidó la contraseña?  
                     </Button>
                     <Button
-                    fullWidth
-                    variant='outlined'
-                    sx={styleButtons}
-                    color='secondary'
+                        fullWidth
+                        variant='outlined'
+                        sx={styleButtons}
+                        color='secondary'
                     >
-                    Crear cuenta nueva
+                        Crear cuenta nueva
                     </Button>
                 </Box>
             )
