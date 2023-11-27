@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react"
 import useGetUser from '@/hooks/useGetUser'
+import useDebounce from "./useDebounce"
 import users from '@/users.json'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
@@ -17,7 +18,7 @@ function searchUser(email) {
 
 function useHandleUser() {
 
-    const { user, handleAddUser } = useGetUser()
+    const { user, handleAddUser,  } = useGetUser()
     const [inputs, setInputs] = useState({
         email: '',
         name: '',
@@ -25,15 +26,16 @@ function useHandleUser() {
         phoneNumber: '+52'
     })
     const [errors, setErrors] = useState(validation(inputs))
+    const [currentUser, setCurrentUser] = useState(() => searchUser(inputs.email))
     const [userLoged, setUserLoged] = useState( user.email ? user : null)
+    const { debounceSetValue } = useDebounce()
 
     useEffect(() => {
-        setErrors(validation(inputs))
+        debounceSetValue(() => {
+            setErrors(validation(inputs))
+            setCurrentUser(searchUser(inputs.email))
+        }, 500)
     }, [inputs])
-
-    const currentUser = useMemo(() => {
-        return searchUser(inputs.email)
-    }, [inputs.email])
 
     function handleChange(event) {
         const { name, value } = event.target
