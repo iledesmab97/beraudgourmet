@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder, openModalStoresDetail, closeModalStoresDetail, openModalUser, closeModalUser } from '@/stores/modal/slice'
+import { openModalPlace, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder, openModalStoresDetail, closeModalStoresDetail, openModalUser, closeModalUser, openModalChangePassword, closeModalChangePassword, openModalChangeEmail, closeModalChangeEmail } from '@/stores/modal/slice'
 
 export default function useGetUser({modalType}) {
 
@@ -43,6 +42,22 @@ export default function useGetUser({modalType}) {
         dispatch(closeModalUser())
     }
 
+    function handleOpenModalChangePassword() {
+        dispatch(openModalChangePassword())
+    }
+
+    function handleCloseModalChangePassword() {
+        dispatch(closeModalChangePassword())
+    }
+
+    function handleOpenModalChangeEmail() {
+        dispatch(openModalChangeEmail())
+    }
+
+    function handleCloseModalChangeEmail() {
+        dispatch(closeModalChangeEmail())
+    }
+
     return {
         open: modal.open,
         product: modal[modal.currentProduct],
@@ -54,6 +69,10 @@ export default function useGetUser({modalType}) {
         handleOpenModalStoresDetail,
         handleCloseModalStoresDetail,
         handleOpenModalUser,
-        handleCloseModalUser
+        handleCloseModalUser,
+        handleOpenModalChangePassword,
+        handleCloseModalChangePassword,
+        handleOpenModalChangeEmail,
+        handleCloseModalChangeEmail
     }
 } 

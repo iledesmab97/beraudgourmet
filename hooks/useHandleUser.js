@@ -5,10 +5,23 @@ import users from '@/users.json'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 
+const initialInputs = {
+    email: '',
+    name: '',
+    password: '',
+    numberPhone: '+52',
+    passwordConfimation: '',
+    newPassword: ''
+}
+
 function validation(inputs) {
     const errors = {}
     if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese el correo electrónico'
     return errors
+}
+
+function correctPassword(inputs, currentUser) {
+    if (currentUser.password === inputs.password) return true
 }
 
 function searchUser(email) {
@@ -20,12 +33,14 @@ function useHandleUser() {
 
     const { user, handleAddUser,  } = useGetUser()
     const [userLoged, setUserLoged] = useState( user.email ? user : null)
-    const [inputs, setInputs] = useState(() => userLoged ? userLoged : {
-        email: '',
-        name: '',
-        password: '',
-        numberPhone: '+52'
-    })
+    const [inputs, setInputs] = useState(() => userLoged ? {
+        email: userLoged.email,
+        name: userLoged.name,
+        password: userLoged.password,
+        numberPhone: userLoged.numberPhone,
+        passwordConfimation: '',
+        newPassword: ''
+    } : initialInputs)
     const [errors, setErrors] = useState(validation(inputs))
     const [currentUser, setCurrentUser] = useState(() => searchUser(inputs.email))
     const { debounceSetValue } = useDebounce()
@@ -38,13 +53,19 @@ function useHandleUser() {
     }, [inputs])
 
     useEffect(() => {
-        if (!user.name) return
-        const setAgain = !userLoged || Object.keys(user).some(property => {
-            userLoged[property] !== inputs[property]
-        })
-        if (setAgain) {
+        if (user.name) {
             setUserLoged(user)
-            setInputs(user)
+            setInputs({
+                email: user.email,
+                name: user.name,
+                password: user.password,
+                numberPhone: user.numberPhone,
+                passwordConfimation: '',
+                newPassword: ''
+            })
+        } else if (userLoged) {
+            setUserLoged(null)
+            setInputs(initialInputs)
         }
     }, [user])
 
@@ -73,6 +94,20 @@ function useHandleUser() {
         setErrors({password: 'Contraseña incorrecta'})
     }
 
+    function changePassword() {
+        if (user.password === inputs.passwordConfimation) {
+            const newInputs = {
+                ...inputs,
+                password: inputs.newPassword,
+                newPassword: '',
+                passwordConfimation: ''
+            }
+            handleAddUser(newInputs)
+            return setInputs(initialInputs)
+        }
+        return setErrors({passwordConfimation: 'Contraseña incorrecta'})
+    }
+
     return {
         inputs,
         handleChange,
@@ -80,7 +115,8 @@ function useHandleUser() {
         currentUser,
         userLoged,
         handleChangeNumberPhone,
-        verifyUser
+        verifyUser,
+        changePassword
     }
 }
 

@@ -20,6 +20,12 @@ const initialState = {
     },
     user: {
         open: false
+    },
+    changePassword: {
+        open: false
+    },
+    changeEmail: {
+        open: false
     }
 }
 
@@ -121,6 +127,42 @@ export const modalSlice = createSlice({
                     open: false
                 }
             }
+        },
+        openModalChangePassword: (state, action) => {
+            return {
+                ...state,
+                changePassword: {
+                    ...state.changePassword,
+                    open: true
+                }
+            }
+        },
+        closeModalChangePassword: (state, action) => {
+            return {
+                ...state,
+                changePassword: {
+                    ...state.changePassword,
+                    open: false
+                }
+            }
+        },
+        openModalChangeEmail: (state, action) => {
+            return {
+                ...state,
+                changeEmail: {
+                    ...state.changeEmail,
+                    open: true
+                }
+            }
+        },
+        closeModalChangeEmail: (state, action) => {
+            return {
+                ...state,
+                changeEmail: {
+                    ...state.changeEmail,
+                    open: false
+                }
+            }
         }
     }
 })
@@ -136,5 +178,9 @@ export const {
     openModalStoresDetail,
     closeModalStoresDetail,
     openModalUser,
-    closeModalUser
+    closeModalUser,
+    openModalChangePassword,
+    closeModalChangePassword,
+    openModalChangeEmail,
+    closeModalChangeEmail
 } = modalSlice.actions
