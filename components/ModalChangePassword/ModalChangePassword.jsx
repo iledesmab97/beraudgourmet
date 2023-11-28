@@ -30,7 +30,7 @@ const style = {
 
 function ModalChangePassword() {
 
-    const { open, handleCloseModal, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
+    const { open, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
     const { inputs, errors, handleChange, changePassword } = useHandleUser()
 
     return (
@@ -69,9 +69,8 @@ function ModalChangePassword() {
                         alignSelf: 'flex-end'
                     }}
                     onClick={() => {
-                        if (changePassword() === 'password changed') handleCloseModal('changePassword')
-                    }
-                    }
+                        if (changePassword() === 'password changed') handleChangeModal('changePassword', 'user')
+                    }}
                 >
                     Cabiar contraeña
                 </Button>
