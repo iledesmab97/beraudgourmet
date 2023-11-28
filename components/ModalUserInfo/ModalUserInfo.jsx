@@ -36,7 +36,7 @@ const style = {
 
 function ModalUserInfo() {
 
-    const {open, handleCloseModalUser} = useGetModal({modalType: 'user'})
+    const {open, handleCloseModalUser, handleOpenModalChangePassword} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
     const { inputs, handleChange, userLoged, handleChangeNumberPhone} = useHandleUser()
 
@@ -98,7 +98,7 @@ function ModalUserInfo() {
                     />
                 </RadioGroup>
                 <Button
-                    onClick={ () => {}}
+                    onClick={handleOpenModalChangePassword}
                 >
                     Cambiar su contraseña
                 </Button>
@@ -119,7 +119,7 @@ function ModalUserInfo() {
                         textAlign: 'center'
                     }}
                 >
-                    {userLoged.email}
+                    {userLoged?.email}
                 </Typography>
                 <Button
                     onClick={ () => {accept({action: handleRemoveUser}, handleCloseModalUser)}}
