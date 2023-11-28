@@ -1,6 +1,8 @@
 'use client'
 
 import useGetModal from '@/hooks/useGetModal'
+import useHandleUser from '@/hooks/useHandleUser'
+import { accept } from '@/genericFunctions/modal'
 
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
@@ -29,6 +31,7 @@ const style = {
 function ModalChangePassword() {
 
     const { open, handleCloseModalChangePassword } = useGetModal({ modalType: 'changePassword' })
+    const { inputs, errors, handleChange, changePassword } = useHandleUser()
 
     return (
         <Modal
@@ -46,19 +49,26 @@ function ModalChangePassword() {
                     fullWidth
                     label='Contraseña actual'
                     type='password'
-                    // margin='dense'
+                    name='passwordConfimation'
+                    value={inputs.passwordConfimation}
+                    onChange={handleChange}
+                    error={errors.passwordConfimation ? true : false}
+                    helperText={errors.passwordConfimation ? errors.passwordConfimation : ''}
                 />
                 <TextField
                     fullWidth
                     label='Nueva contraseña'
                     type='password'
-                    // margin='dense'
+                    name='newPassword'
+                    value={inputs.newPassword}
+                    onChange={handleChange}
                 />
                 <Button
                     variant='contained'
                     sx={{
                         alignSelf: 'flex-end'
                     }}
+                    onClick={() => {accept({action: changePassword}, handleCloseModalChangePassword)}}
                 >
                     Cabiar contraeña
                 </Button>
