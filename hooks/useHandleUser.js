@@ -38,13 +38,17 @@ function useHandleUser() {
     }, [inputs])
 
     useEffect(() => {
-        if (!user.name) return
-        const setAgain = !userLoged || Object.keys(user).some(property => {
-            userLoged[property] !== inputs[property]
-        })
-        if (setAgain) {
+        if (user.name) {
             setUserLoged(user)
             setInputs(user)
+        } else if (userLoged) {
+            setUserLoged(null)
+            setInputs({
+                email: '',
+                name: '',
+                password: '',
+                numberPhone: '+52'
+            })
         }
     }, [user])
 
