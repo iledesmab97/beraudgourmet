@@ -12,6 +12,9 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Radio from '@mui/material/Radio'
 
 const style = {
     position: 'absolute',
@@ -60,6 +63,64 @@ function ModalUserInfo() {
                     handleChangeNumberPhone={handleChangeNumberPhone}
                     type={'text'}
                 />
+                <Typography
+                    variant='p'
+                    gutterBottom
+                    sx={{
+                        textAlign: 'center'
+                    }}
+                >
+                    ¿Le gustaría recibir correos electrónicos promocionales?
+                </Typography>
+                <RadioGroup
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <FormControlLabel
+                        value='y'
+                        control={<Radio />}
+                        label='Sí'
+                        sx={{
+                            width: 'fit-content'
+                        }}
+                    />
+                    <FormControlLabel
+                        value='n'
+                        control={<Radio />}
+                        label='No'
+                        sx={{
+                            width: 'fit-content'
+                        }}
+                    />
+                </RadioGroup>
+                <Button
+                    onClick={ () => {}}
+                >
+                    Cambiar su contraseña
+                </Button>
+                <Button
+                    onClick={ () => {}}
+                >
+                    ¿Cambiar de correo electrónico?
+                </Button>
+                <Button
+                    onClick={ () => {}}
+                >
+                    Borrar mi cuenta
+                </Button>
+                <Typography
+                    variant='p'
+                    gutterBottom
+                    sx={{
+                        textAlign: 'center'
+                    }}
+                >
+                    {userLoged.email}
+                </Typography>
                 <Button
                     onClick={ () => {accept({action: handleRemoveUser}, handleCloseModalUser)}}
                 >
