@@ -10,8 +10,12 @@ const initialInputs = {
     name: '',
     password: '',
     numberPhone: '+52',
-    passwordConfimation: '',
-    newPassword: ''
+}
+
+const initialInputsEdit = {
+    email: '',
+    password: '',
+    passwordConfirmation: ''
 }
 
 function validation(inputs) {
@@ -27,16 +31,19 @@ function searchUser(email) {
 
 function useHandleUser() {
 
-    const { user, handleAddUser,  } = useGetUser()
+    const { user, handleAddUser, handleUpdateUser } = useGetUser()
     const [userLoged, setUserLoged] = useState( user.email ? user : null)
     const [inputs, setInputs] = useState(() => userLoged ? {
         email: userLoged.email,
         name: userLoged.name,
         password: userLoged.password,
-        numberPhone: userLoged.numberPhone,
-        passwordConfimation: '',
-        newPassword: ''
+        numberPhone: userLoged.numberPhone
     } : initialInputs)
+    const [inputsEdit, setInputsEdit] = useState({
+        email: '',
+        password: '',
+        passwordConfirmation: ''
+    })
     const [errors, setErrors] = useState(validation(inputs))
     const [currentUser, setCurrentUser] = useState(() => searchUser(inputs.email))
     const { debounceSetValue } = useDebounce()
@@ -47,6 +54,12 @@ function useHandleUser() {
             setCurrentUser(searchUser(inputs.email))
         }, 500)
     }, [inputs])
+
+    useEffect(() => {
+        debounceSetValue(() => {
+            setErrors(validation(inputsEdit))
+        }, 500)
+    }, [inputsEdit.email])
 
     useEffect(() => {
         if (user.name) {
@@ -73,6 +86,14 @@ function useHandleUser() {
         }))
     }
 
+    function handleChangeEdit(event) {
+        const { name, value } = event.target
+        setInputsEdit(prevInputs => ({
+            ...prevInputs,
+            [name]: value
+        }))
+    }
+
     function handleChangeNumberPhone(newNumberPhone) {
         setInputs(prevInputs => ({
             ...prevInputs,
@@ -91,30 +112,34 @@ function useHandleUser() {
     }
 
     function changePassword() {
-        if (user.password === inputs.passwordConfimation) {
-            const newInputs = {
-                ...inputs,
-                password: inputs.newPassword,
-                newPassword: '',
-                passwordConfimation: ''
-            }
-            handleAddUser(newInputs)
-            setInputs(initialInputs)
+        if (user.password === inputsEdit.passwordConfirmation) {
+            handleUpdateUser({data:'password', value: inputsEdit.password})
+            setInputsEdit(initialInputsEdit)
             return 'password changed'
         }
-        setErrors({ passwordConfimation: 'Contraseña incorrecta' })
+        setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
         return 'password no changed'
+    }
+
+    function changeEmail() {
+        if (errors.email) return
+        handleUpdateUser({ data: 'email', value: inputsEdit.email })
+        handleUpdateUser({ data: 'password', value: inputsEdit.password })
+        setInputsEdit(initialInputsEdit)
     }
 
     return {
         inputs,
+        inputsEdit,
         handleChange,
+        handleChangeEdit,
         errors,
         currentUser,
         userLoged,
         handleChangeNumberPhone,
         verifyUser,
-        changePassword
+        changePassword,
+        changeEmail
     }
 }
 
