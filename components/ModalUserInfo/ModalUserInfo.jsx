@@ -103,7 +103,7 @@ function ModalUserInfo() {
                     Cambiar su contraseña
                 </Button>
                 <Button
-                    onClick={ () => {}}
+                    onClick={() => { handleChangeModal('user', 'changeEmail') }}
                 >
                     ¿Cambiar de correo electrónico?
                 </Button>
