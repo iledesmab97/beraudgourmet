@@ -10,7 +10,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 
 function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, type }) {
 
-    const {handleOpenModalUser} = useGetModal({modalType: 'user'})
+    const { handleOpenModal } = useGetModal({modalType: 'user'})
 
     return (
         <>
@@ -42,7 +42,7 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, t
                 }}
                 onClick={() => {
                     if(!userLoged) return
-                    handleOpenModalUser()
+                    handleOpenModal('user')
                 }}
             />
 
