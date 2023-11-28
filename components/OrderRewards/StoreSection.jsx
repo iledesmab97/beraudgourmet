@@ -18,9 +18,7 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 
 export default function StoreSection () {
 
-  const { handleOpenModalPlace } = useGetModal({modalType: 'place'})
-  const { handleOpenModalStoresDetail } = useGetModal({ modalType: 'storesDetail' })
-  // const { place } = useGetPlace()
+  const { handleOpenModal } = useGetModal({modalType: 'place'})
   const dataPlace = useGetPlace()
   const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
   const [isTherePlace, setIsTherePlace] = useState(false)
@@ -74,7 +72,7 @@ export default function StoreSection () {
                   textDecoration: 'underline',
                   cursor: 'pointer'
                 }}
-                onClick={handleOpenModalPlace}
+                onClick={() => {handleOpenModal('place')}}
               >
                 cambiar
               </Typography>
@@ -94,7 +92,7 @@ export default function StoreSection () {
                 <Button
                   fullWidth
                   variant='contained'
-                  onClick={handleOpenModalStoresDetail}
+                  onClick={() => {handleOpenModal('storesDetail')}}
                   startIcon={
                     <ItemPlace
                       sx={{
@@ -153,7 +151,7 @@ export default function StoreSection () {
                 color='secondary'
                 sx={{ my:1 }}
                 fullWidth
-                onClick={handleOpenModalPlace}
+                onClick={() => {handleOpenModal('place')}}
               >
                   Ver la lista de tiendas
               </Button>
