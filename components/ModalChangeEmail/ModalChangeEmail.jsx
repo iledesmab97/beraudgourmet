@@ -2,7 +2,6 @@
 
 import useGetModal from '@/hooks/useGetModal'
 import useHandleUser from '@/hooks/useHandleUser'
-import { accept } from '@/genericFunctions/modal'
 
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
@@ -28,32 +27,32 @@ const style = {
     gap: 2,
 }
 
-function ModalChangePassword() {
+function ModalChangeEmail() {
 
-    const { open, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
-    const { inputsEdit, errors, handleChangeEdit, changePassword } = useHandleUser()
+    const { open, handleChangeModal } = useGetModal({ modalType: 'changeEmail' })
+    const { inputsEdit, errors, handleChangeEdit, changeEmail } = useHandleUser()
 
     return (
         <Modal
             open={open}
-            onClose={() => { handleChangeModal('changePassword', 'user') }}
+            onClose={() => { handleChangeModal('changeEmail', 'user') }}
         >
             <Box sx={style}>
                 <Typography
                     variant='title'
                     gutterBottom
                 >
-                    Definir contraseña
+                    Cabiar la dirección de correo electrónico
                 </Typography>
                 <TextField
                     fullWidth
-                    label='Contraseña actual'
-                    type='password'
-                    name='passwordConfirmation'
-                    value={inputsEdit.passwordConfirmation}
+                    label='Nuevo correo'
+                    type='text'
+                    name='email'
+                    value={inputsEdit.email}
                     onChange={handleChangeEdit}
-                    error={errors.passwordConfirmation ? true : false}
-                    helperText={errors.passwordConfirmation ? errors.passwordConfimation : ''}
+                    error={errors.email ? true : false}
+                    helperText={errors.email ? errors.email : ''}
                 />
                 <TextField
                     fullWidth
@@ -69,7 +68,8 @@ function ModalChangePassword() {
                         alignSelf: 'flex-end'
                     }}
                     onClick={() => {
-                        if (changePassword() === 'password changed') handleChangeModal('changePassword', 'user')
+                        changeEmail()
+                        handleChangeModal('changeEmail', 'user')
                     }}
                 >
                     Cabiar contraeña
@@ -79,4 +79,4 @@ function ModalChangePassword() {
     )
 }
 
-export default ModalChangePassword
+export default ModalChangeEmail

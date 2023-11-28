@@ -29,10 +29,16 @@ export const userSlice = createSlice({
         },
         removeUser: (state, action) => {
             return initialState
+        },
+        updateUser: (state, action) => {
+            return {
+                ...state,
+                [action.payload.data]: action.payload.value
+            }
         }
     }
 })
 
 export default userSlice.reducer
 
-export const { addUser, removeUser } = userSlice.actions
+export const { addUser, removeUser, updateUser } = userSlice.actions

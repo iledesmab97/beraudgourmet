@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { addUser, removeUser } from '@/stores/user/slice'
+import { addUser, removeUser, updateUser } from '@/stores/user/slice'
 
 export default function useGetUser() {
 
@@ -14,5 +14,9 @@ export default function useGetUser() {
         dispatch(removeUser())
     }
 
-    return {user, handleAddUser, handleRemoveUser}
+    function handleUpdateUser(newData) {
+        dispatch(updateUser(newData))
+    }
+
+    return {user, handleAddUser, handleRemoveUser, handleUpdateUser}
 } 
