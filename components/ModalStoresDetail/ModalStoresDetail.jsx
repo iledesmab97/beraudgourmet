@@ -41,7 +41,7 @@ const style = {
 
 function ModalStoresDetail() {
 
-    const { open, handleCloseModalStoresDetail } = useGetModal({ modalType: 'storesDetail' })
+    const { open, handleCloseModal } = useGetModal({ modalType: 'storesDetail' })
     const dataPlace = useGetPlace()
     const inputsHome = dataPlace.place.inputsHome
     const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
@@ -53,7 +53,7 @@ function ModalStoresDetail() {
     return (
         <Modal
             open={open}
-            onClose={handleCloseModalStoresDetail}
+            onClose={() => { handleCloseModal('storesDetail')}}
         >
             <Grid
                 sx={style}
@@ -99,7 +99,9 @@ function ModalStoresDetail() {
                         variant='contained'
                         disabled={( currentStore.open ? false : true ) || Boolean(inputsHome) }
                         onClick={() => { 
-                            accept({action: handleAddPlace, value: currentStore}, handleCloseModalStoresDetail) }}
+                            handleAddPlace(currentStore)
+                            handleCloseModal('storesDetail')
+                        }}
                     >
                         <Typography>
                             Pedir a la tienda
