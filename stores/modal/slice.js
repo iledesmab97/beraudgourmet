@@ -33,12 +33,22 @@ export const modalSlice = createSlice({
     name: 'modal',
     initialState,
     reducers: {
-        openModalPlace: (state, action) => {
+
+        openModal: (state, action) => {
             return {
                 ...state,
-                place: {
-                    ...state.place,
+                [action.payload]: {
+                    ...state[action.payload],
                     open: true
+                }
+            }
+        },
+        closeModal: (state, action) => {
+            return {
+                ...state,
+                [action.payload]: {
+                    ...state[action.payload],
+                    open: false
                 }
             }
         },
@@ -91,78 +101,6 @@ export const modalSlice = createSlice({
                     [nameProduct]: action.payload
                 }
             }
-        },
-        openModalStoresDetail: (state, action) => {
-            return {
-                ...state,
-                storesDetail: {
-                    ...state.storesDetail,
-                    open: true
-                }
-            }
-        },
-        closeModalStoresDetail: (state, action) => {
-            return {
-                ...state,
-                storesDetail: {
-                    ...state.storesDetail,
-                    open: false
-                }
-            }
-        },
-        openModalUser: (state, action) => {
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    open: true
-                }
-            }
-        },
-        closeModalUser: (state, action) => {
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    open: false
-                }
-            }
-        },
-        openModalChangePassword: (state, action) => {
-            return {
-                ...state,
-                changePassword: {
-                    ...state.changePassword,
-                    open: true
-                }
-            }
-        },
-        closeModalChangePassword: (state, action) => {
-            return {
-                ...state,
-                changePassword: {
-                    ...state.changePassword,
-                    open: false
-                }
-            }
-        },
-        openModalChangeEmail: (state, action) => {
-            return {
-                ...state,
-                changeEmail: {
-                    ...state.changeEmail,
-                    open: true
-                }
-            }
-        },
-        closeModalChangeEmail: (state, action) => {
-            return {
-                ...state,
-                changeEmail: {
-                    ...state.changeEmail,
-                    open: false
-                }
-            }
         }
     }
 })
@@ -170,17 +108,10 @@ export const modalSlice = createSlice({
 export default modalSlice.reducer
 
 export const {
-    openModalPlace,
+    openModal,
+    closeModal,
     closeModalPlace,
     openModalOrder,
     closeModalOrder,
-    updateModalOrder,
-    openModalStoresDetail,
-    closeModalStoresDetail,
-    openModalUser,
-    closeModalUser,
-    openModalChangePassword,
-    closeModalChangePassword,
-    openModalChangeEmail,
-    closeModalChangeEmail
+    updateModalOrder
 } = modalSlice.actions
