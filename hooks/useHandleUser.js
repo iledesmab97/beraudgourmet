@@ -20,10 +20,6 @@ function validation(inputs) {
     return errors
 }
 
-function correctPassword(inputs, currentUser) {
-    if (currentUser.password === inputs.password) return true
-}
-
 function searchUser(email) {
     const user = users.filter(user => email === user.email)[0]
     return user
@@ -103,9 +99,11 @@ function useHandleUser() {
                 passwordConfimation: ''
             }
             handleAddUser(newInputs)
-            return setInputs(initialInputs)
+            setInputs(initialInputs)
+            return 'password changed'
         }
-        return setErrors({passwordConfimation: 'Contraseña incorrecta'})
+        setErrors({ passwordConfimation: 'Contraseña incorrecta' })
+        return 'password no changed'
     }
 
     return {

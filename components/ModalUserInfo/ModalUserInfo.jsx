@@ -36,14 +36,14 @@ const style = {
 
 function ModalUserInfo() {
 
-    const {open, handleCloseModalUser, handleOpenModalChangePassword} = useGetModal({modalType: 'user'})
+    const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
     const { inputs, handleChange, userLoged, handleChangeNumberPhone} = useHandleUser()
 
     return (
         <Modal
             open={open}
-            onClose={handleCloseModalUser}
+            onClose={() => { handleCloseModal('user') }}
         >
             <Grid
                 container
@@ -98,7 +98,7 @@ function ModalUserInfo() {
                     />
                 </RadioGroup>
                 <Button
-                    onClick={handleOpenModalChangePassword}
+                    onClick={() => { handleChangeModal('user', 'changePassword') }}
                 >
                     Cambiar su contraseña
                 </Button>
@@ -122,7 +122,10 @@ function ModalUserInfo() {
                     {userLoged?.email}
                 </Typography>
                 <Button
-                    onClick={ () => {accept({action: handleRemoveUser}, handleCloseModalUser)}}
+                    onClick={ () => {
+                        handleRemoveUser()
+                        handleCloseModal('user')
+                    }}
                 >
                     Cerrar Cesión
                 </Button>

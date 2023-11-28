@@ -30,13 +30,13 @@ const style = {
 
 function ModalChangePassword() {
 
-    const { open, handleCloseModalChangePassword } = useGetModal({ modalType: 'changePassword' })
+    const { open, handleCloseModal, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
     const { inputs, errors, handleChange, changePassword } = useHandleUser()
 
     return (
         <Modal
             open={open}
-            onClose={handleCloseModalChangePassword}
+            onClose={() => { handleChangeModal('changePassword', 'user') }}
         >
             <Box sx={style}>
                 <Typography
@@ -68,7 +68,10 @@ function ModalChangePassword() {
                     sx={{
                         alignSelf: 'flex-end'
                     }}
-                    onClick={() => {accept({action: changePassword}, handleCloseModalChangePassword)}}
+                    onClick={() => {
+                        if (changePassword() === 'password changed') handleCloseModal('changePassword')
+                    }
+                    }
                 >
                     Cabiar contraeña
                 </Button>

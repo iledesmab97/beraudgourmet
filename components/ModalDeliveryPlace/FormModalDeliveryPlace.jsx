@@ -19,7 +19,7 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 
 export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, place, handlePlaceType, closerStore }) {
 
-    const {handleCloseModalPlace} = useGetModal({modalType: 'place'})
+    const { handleCloseModal } = useGetModal({modalType: 'place'})
     const { handleAddPlace } = useGetPlace()
 
     return (
@@ -211,7 +211,10 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
             </Grid>
             <Button
                 variant='contained'
-                onClick={() => { accept({action: handleAddPlace, value: {inputsHome, closerStore}}, handleCloseModalPlace) }}
+                onClick={() => {
+                    handleAddPlace({inputsHome, closerStore})
+                    handleCloseModal('place')
+                }}
                 sx={{
                     position: 'fixed',
                     bottom: 16,
