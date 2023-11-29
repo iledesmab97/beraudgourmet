@@ -34,7 +34,7 @@ export default function UserSection () {
 
       {
         userLoged ? (
-          <UserLoged userLoged={userLoged} inputs={inputs} />
+          <UserLoged userLoged={userLoged} inputs={inputs} errors={errors} />
         ) : (
           <UserNew
             inputs={inputs}
