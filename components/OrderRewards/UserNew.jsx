@@ -49,6 +49,7 @@ function UserNew({ inputs, handleChange, errors, currentUser, handleChangeNumber
                         handleChange={handleChange}
                         handleChangeNumberPhone={handleChangeNumberPhone}
                         inputs={inputs}
+                        errors={errors}
                     />
                 )
             }

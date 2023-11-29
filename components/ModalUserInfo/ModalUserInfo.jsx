@@ -38,7 +38,7 @@ function ModalUserInfo() {
 
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
-    const { inputs, handleChange, userLoged, handleChangeNumberPhone} = useHandleUser()
+    const { inputs, errors, handleChange, userLoged, handleChangeNumberPhone} = useHandleUser()
 
     return (
         <Modal
@@ -59,6 +59,7 @@ function ModalUserInfo() {
                 <UserLoged
                     userLoged={userLoged}
                     inputs={inputs}
+                    errors={errors}
                     handleChange={handleChange}
                     handleChangeNumberPhone={handleChangeNumberPhone}
                     type={'text'}
