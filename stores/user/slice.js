@@ -31,10 +31,7 @@ export const userSlice = createSlice({
             return initialState
         },
         updateUser: (state, action) => {
-            return {
-                ...state,
-                [action.payload.data]: action.payload.value
-            }
+            return action.payload
         }
     }
 })
