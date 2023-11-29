@@ -8,7 +8,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 
-function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, type }) {
+function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, errors, type }) {
 
     const { handleOpenModal } = useGetModal({modalType: 'user'})
 
@@ -19,6 +19,8 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, t
                 variant='outlined'
                 color='secondary'
                 type={ userLoged && !type ? 'button' : 'text'}
+                error={ errors.name ? true : false }
+                helperText={ errors.name ? errors.name : ''}
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position='start'>
@@ -28,7 +30,7 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, t
                 }}
                 sx={{
                     width: '100%',
-                    height: '40px',
+                    // height: '40px',
                     m: '0px'
                 }}
                 onChange={handleChange}
@@ -51,6 +53,8 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, t
                 value={ inputs.numberPhone}
                 onChange={handleChangeNumberPhone}
                 size='small'
+                error={ errors.numberPhone ? true : false }
+                helperText={ errors.numberPhone ? errors.numberPhone : ''}
                 sx={{
                     width: '100%',
                     m: '0px',
