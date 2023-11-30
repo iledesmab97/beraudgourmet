@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useHandleUser from '@/hooks/useHandleUser'
 import { accept } from '@/genericFunctions/modal'
@@ -53,7 +54,7 @@ function ModalChangePassword() {
                     value={inputsEdit.passwordConfirmation}
                     onChange={handleChangeEdit}
                     error={errors.passwordConfirmation ? true : false}
-                    helperText={errors.passwordConfirmation ? errors.passwordConfimation : ''}
+                    helperText={errors.passwordConfirmation ? errors.passwordConfirmation : ''}
                 />
                 <TextField
                     fullWidth
@@ -62,6 +63,8 @@ function ModalChangePassword() {
                     name='password'
                     value={inputsEdit.password}
                     onChange={handleChangeEdit}
+                    error={errors.password ? true : false}
+                    helperText={errors.password ? errors.password : ''}
                 />
                 <Button
                     variant='contained'
