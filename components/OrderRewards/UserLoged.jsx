@@ -2,6 +2,7 @@
 
 import useGetModal from '@/hooks/useGetModal'
 
+import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import { MuiTelInput } from 'mui-tel-input'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -13,7 +14,15 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
     const { handleOpenModal } = useGetModal({modalType: 'user'})
 
     return (
-        <>
+        <Grid
+            item
+            sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+            }}
+        >
             <TextField
                 name='name'
                 variant='outlined'
@@ -39,7 +48,8 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                     sx: {
                         height:'23px',
                         padding: '8.5px 14px 8.5px 0px',
-                        textAlign: 'left'
+                        textAlign: 'left',
+                        cursor: userLoged && !type ? 'pointer' : ''
                     }
                 }}
                 onClick={() => {
@@ -67,7 +77,7 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                     }
                 }}
             />
-        </>
+        </Grid>
     )
 }
 
