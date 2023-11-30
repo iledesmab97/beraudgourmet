@@ -39,7 +39,7 @@ function ModalUserInfo() {
 
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
-    const { inputs, errors, handleChange, userLoged, user, handleChangeNumberPhone, signOff} = useHandleUser()
+    const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
 
     return (
         <Modal
@@ -64,6 +64,9 @@ function ModalUserInfo() {
                     handleChange={handleChange}
                     handleChangeNumberPhone={handleChangeNumberPhone}
                     type={'text'}
+                    editing={editing}
+                    handleEditing={handleEditing}
+                    open={open}
                 />
                 <Grid
                     item
