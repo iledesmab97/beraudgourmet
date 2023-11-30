@@ -70,6 +70,7 @@ function useHandleUser() {
         passwordConfirmation: ''
     })
     const [errors, setErrors] = useState(validation(inputs))
+    const [editing, setEditing] = useState(false)
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
 
@@ -79,9 +80,9 @@ function useHandleUser() {
         debounceSetValue(() => {
             setErrors(validation(inputs))
             if (!userLoged) currentUser.current = searchUser(inputs.email)
-            if (userLoged && user[lastDataSet.current] !== inputs[lastDataSet.current]) {
-                handleUpdateUser(inputs)
-            }
+            // if (userLoged && user[lastDataSet.current] !== inputs[lastDataSet.current]) {
+            //     handleUpdateUser(inputs)
+            // }
         }, 500)
     }, [inputs])
 
@@ -180,6 +181,16 @@ function useHandleUser() {
         handleRemoveUser()
     }
 
+    function handleEditing() {
+        if (Object.keys(errors).length) return
+        const newErrors = lastValidation(inputs)
+        if (Object.keys(newErrors).length) return setErrors(newErrors)
+        if (editing) {
+            handleUpdateUser(inputs)
+        }
+        setEditing(!editing)
+    }
+
     return {
         inputs,
         inputsEdit,
@@ -189,11 +200,13 @@ function useHandleUser() {
         currentUser: currentUser.current,
         userLoged,
         user,
+        editing,
         handleChangeNumberPhone,
         verifyUser,
         changePassword,
         changeEmail,
-        signOff
+        signOff,
+        handleEditing
     }
 }
 
