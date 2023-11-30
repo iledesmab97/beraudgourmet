@@ -1,15 +1,19 @@
 'use client'
 
+import { useEffect } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import { MuiTelInput } from 'mui-tel-input'
 import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
+import BorderColorIcon from '@mui/icons-material/BorderColor'
+import CheckIcon from '@mui/icons-material/Check'
 
-function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, errors, type }) {
+function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, errors, type, editing, handleEditing, open }) {
 
     const { handleOpenModal } = useGetModal({modalType: 'user'})
 
@@ -35,7 +39,23 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                         <InputAdornment position='start'>
                             <AccountCircle />
                         </InputAdornment>
-                    )
+                    ),
+                    endAdornment: ( open
+                        ? (
+                            <IconButton
+                                position='end'
+                                onClick={handleEditing}
+                                disabled={errors.name ? true : false}    
+                            >
+                                {
+                                    editing
+                                    ? <CheckIcon />
+                                    : <BorderColorIcon />
+                                }
+                            </IconButton>
+                        ): null
+                    ),
+                    readOnly: editing ? false : true
                 }}
                 sx={{
                     width: '100%',
@@ -54,7 +74,7 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                 }}
                 onClick={() => {
                     if(!userLoged) return
-                    handleOpenModal('user')
+                    if (!open) handleOpenModal('user')
                 }}
             />
 
