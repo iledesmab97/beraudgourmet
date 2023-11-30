@@ -61,6 +61,8 @@ function ModalChangeEmail() {
                     name='password'
                     value={inputsEdit.password}
                     onChange={handleChangeEdit}
+                    error={errors.password ? true : false}
+                    helperText={errors.password ? errors.password : ''}
                 />
                 <Button
                     variant='contained'
@@ -68,8 +70,7 @@ function ModalChangeEmail() {
                         alignSelf: 'flex-end'
                     }}
                     onClick={() => {
-                        changeEmail()
-                        handleChangeModal('changeEmail', 'user')
+                        if(changeEmail() === 'successful') handleChangeModal('changeEmail', 'user')
                     }}
                 >
                     Cabiar contraeña
