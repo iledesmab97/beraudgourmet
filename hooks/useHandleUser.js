@@ -70,7 +70,7 @@ function useHandleUser() {
         passwordConfirmation: ''
     })
     const [errors, setErrors] = useState(validation(inputs))
-    const [editing, setEditing] = useState(false)
+    const [editing, setEditing] = useState({name: false, number: false})
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
 
@@ -167,13 +167,18 @@ function useHandleUser() {
             setErrors(newErors)
             return 'failed'
         }
-        handleUpdateUser({
-            ...user,
-            email: inputsEdit.email,
-            password: inputsEdit.password
-        })
-        setInputsEdit(initialInputsEdit)
-        return 'successful'
+        if (user.password === inputsEdit.password) {
+            handleUpdateUser({
+                ...user,
+                email: inputsEdit.email,
+                password: inputsEdit.password
+            })
+            setInputsEdit(initialInputsEdit)
+            return 'successful'
+        } else {
+            setErrors({password: 'Contraseña incorrecta'})
+            return 'failed'
+        }
     }
 
     function signOff() {
@@ -181,14 +186,18 @@ function useHandleUser() {
         handleRemoveUser()
     }
 
-    function handleEditing() {
+    function handleEditing(event) {
+        const { name } = event.currentTarget
         if (Object.keys(errors).length) return
         const newErrors = lastValidation(inputs)
         if (Object.keys(newErrors).length) return setErrors(newErrors)
-        if (editing) {
+        if (editing[name]) {
             handleUpdateUser(inputs)
         }
-        setEditing(!editing)
+        setEditing((prevEdit) => ({
+            ...prevEdit,
+            [name]: !editing[name]
+        }))
     }
 
     return {
