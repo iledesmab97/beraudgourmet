@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
+import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import users from '@/users.json'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
@@ -26,7 +27,7 @@ function validation(inputs) {
         if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
         const [code, place, number] = inputs.numberPhone.split(" ")
         if (!code) errors.numberPhone = 'Coloca el código del país'
-        if (!(!place || (place && number && (place.length + number.length === 10)))) errors.numberPhone = 'Número de teléfono inválido'
+        if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
     } else {
         if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
         if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
