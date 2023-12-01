@@ -7,14 +7,6 @@ function InputPhoneNumber({ numberPhone, errorsNumberPhone, userLoged, type, han
 
     const [open, setOpen] = useState(false)
 
-    function handleClick(){
-        setOpen(true)
-    }
-
-    function handleClose() {
-        setOpen(false)
-    }
-
     return ( 
         <MuiTelInput
             // open={open}
