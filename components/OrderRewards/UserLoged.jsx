@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
 import useGetModal from '@/hooks/useGetModal'
+import InputPhoneNumber from '@/components/InputPhoneNumber/InputPhoneNumber'
 
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
-import { MuiTelInput } from 'mui-tel-input'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
@@ -43,19 +42,20 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                     endAdornment: ( open
                         ? (
                             <IconButton
+                                name='name'
                                 position='end'
                                 onClick={handleEditing}
                                 disabled={errors.name ? true : false}    
                             >
                                 {
-                                    editing
+                                    editing.name
                                     ? <CheckIcon />
                                     : <BorderColorIcon />
                                 }
                             </IconButton>
                         ): null
                     ),
-                    readOnly: editing ? false : true
+                    readOnly: !editing.name && open ? true : false
                 }}
                 sx={{
                     width: '100%',
@@ -78,23 +78,30 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                 }}
             />
 
-            <MuiTelInput
-                type={ userLoged && !type ? 'button' : 'text'}
-                value={ inputs.numberPhone}
-                onChange={handleChangeNumberPhone}
-                size='small'
-                error={ errors.numberPhone ? true : false }
-                helperText={ errors.numberPhone ? errors.numberPhone : ''}
-                sx={{
-                    width: '100%',
-                    m: '0px',
-                    textAlign: 'left'
-                }}
-                disabled={ userLoged && !type ? true : false}
-                inputProps={{
-                    sx: {
-                        textAlign: 'left'
-                    }
+            <InputPhoneNumber
+                numberPhone={inputs.numberPhone}
+                errorsNumberPhone={errors.numberPhone}
+                userLoged={userLoged}
+                type={type}
+                handleChangeNumberPhone={handleChangeNumberPhone}
+                InputProps={{
+                    endAdornment: ( open
+                        ? (
+                            <IconButton
+                                name='number'
+                                position='end'
+                                onClick={handleEditing}
+                                disabled={errors.name ? true : false}    
+                            >
+                                {
+                                    editing.number
+                                    ? <CheckIcon />
+                                    : <BorderColorIcon />
+                                }
+                            </IconButton>
+                        ): null
+                    ),
+                    readOnly: !editing.number && open ? true : false
                 }}
             />
         </Grid>
