@@ -56,7 +56,7 @@ function ModalChangeEmail() {
                 />
                 <TextField
                     fullWidth
-                    label='Nueva contraseña'
+                    label='Contraseña'
                     type='password'
                     name='password'
                     value={inputsEdit.password}
