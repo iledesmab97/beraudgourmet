@@ -28,25 +28,41 @@ function validation(inputs) {
         if (!code) errors.numberPhone = 'Coloca el código del país'
         if (!(!place || (place && number && (place.length + number.length === 10)))) errors.numberPhone = 'Número de teléfono inválido'
     } else {
-        if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese el correo electrónico'
+        if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
+        if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
+    }
+    return errors
+}
+
+function lastValidation(inputs) {
+    const errors = {}
+    if (inputs.numberPhone !== undefined) {
+        if ( !inputs.email ) errors.name = 'Este campo no puede estar vacio'
+        if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
+        if ( !inputs.password ) errors.name = 'Este campo no puede estar vacio'
+        if ( !inputs.numberPhone ) errors.name = 'Este campo no puede estar vacio'
+    } else {
+        if ( !inputs.email ) errors.email = 'Este campo no puede estar vacio'
+        if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
+        if ( !inputs.passwordConfirmation ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
     }
     return errors
 }
 
 function searchUser(email) {
     const user = users.filter(user => email === user.email)[0]
-    return user
+    return user ? user : null
 }
 
 function useHandleUser() {
 
-    const { user, handleAddUser, handleUpdateUser } = useGetUser()
-    const [userLoged, setUserLoged] = useState( user.email ? user : null)
+    const { user, handleAddUser, handleUpdateUser, handleRemoveUser } = useGetUser()
+    const userLoged = user.name ? true : false
     const [inputs, setInputs] = useState(() => userLoged ? {
-        email: userLoged.email,
-        name: userLoged.name,
-        password: userLoged.password,
-        numberPhone: userLoged.numberPhone
+        email: user.email,
+        name: user.name,
+        password: user.password,
+        numberPhone: user.numberPhone
     } : initialInputs)
     const [inputsEdit, setInputsEdit] = useState({
         email: '',
@@ -54,33 +70,37 @@ function useHandleUser() {
         passwordConfirmation: ''
     })
     const [errors, setErrors] = useState(validation(inputs))
-    const [currentUser, setCurrentUser] = useState(() => searchUser(inputs.email))
+    const [editing, setEditing] = useState({name: false, number: false})
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
+
+    const currentUser = useRef(searchUser(inputs.email))
 
     useEffect(() => {
         debounceSetValue(() => {
             setErrors(validation(inputs))
-            if (!userLoged) setCurrentUser(searchUser(inputs.email))
-            if (userLoged && user[lastDataSet.current] !== inputs[lastDataSet.current]) {
-                handleUpdateUser(inputs)
-            }
+            if (!userLoged) currentUser.current = searchUser(inputs.email)
+            // if (userLoged && user[lastDataSet.current] !== inputs[lastDataSet.current]) {
+            //     handleUpdateUser(inputs)
+            // }
         }, 500)
     }, [inputs])
 
     useEffect(() => {
-        if (user.name) {
-            setUserLoged(user)
+        debounceSetValue(() => {
+            setErrors(validation(inputsEdit))
+        }, 500)
+    }, [inputsEdit])
+
+    useEffect(() => {
+        if (userLoged) {
             setInputs({
                 email: user.email,
                 name: user.name,
                 password: user.password,
-                numberPhone: user.numberPhone,
-                passwordConfimation: '',
-                newPassword: ''
+                numberPhone: user.numberPhone
             })
-        } else if (userLoged) {
-            setUserLoged(null)
+        } else {
             setInputs(initialInputs)
         }
     }, [user])
@@ -111,7 +131,7 @@ function useHandleUser() {
     }
 
     function verifyUser() {
-        if (currentUser.password === inputs.password) {
+        if (currentUser.current.password === inputs.password) {
             logInUser()
         }
         else {
@@ -120,15 +140,17 @@ function useHandleUser() {
     }
 
     function logInUser() {
-        handleAddUser(currentUser)
-        setUserLoged(currentUser)
-        setInputs(currentUser)
+        handleAddUser(currentUser.current)
+        setInputs(currentUser.current)
+        currentUser.current = null
     }
 
     function changePassword() {
+        const newErors = lastValidation(inputsEdit)
+        if (newErors.password || newErors.passwordConfirmation) return setErrors(newErors)
         if (user.password === inputsEdit.passwordConfirmation) {
             handleUpdateUser({
-                ...userLoged,
+                ...user,
                 password: inputsEdit.password
             })
             setInputsEdit(initialInputsEdit)
@@ -140,12 +162,42 @@ function useHandleUser() {
 
     function changeEmail() {
         if (errors.email) return
-        handleUpdateUser({
-            ...userLoged,
-            email: inputsEdit.email,
-            password: inputsEdit.password
-        })
-        setInputsEdit(initialInputsEdit)
+        const newErors = lastValidation(inputsEdit)
+        if (!inputsEdit.email || !inputsEdit.password) {
+            setErrors(newErors)
+            return 'failed'
+        }
+        if (user.password === inputsEdit.password) {
+            handleUpdateUser({
+                ...user,
+                email: inputsEdit.email,
+                password: inputsEdit.password
+            })
+            setInputsEdit(initialInputsEdit)
+            return 'successful'
+        } else {
+            setErrors({password: 'Contraseña incorrecta'})
+            return 'failed'
+        }
+    }
+
+    function signOff() {
+        setInputs(initialInputs)
+        handleRemoveUser()
+    }
+
+    function handleEditing(event) {
+        const { name } = event.currentTarget
+        if (Object.keys(errors).length) return
+        const newErrors = lastValidation(inputs)
+        if (Object.keys(newErrors).length) return setErrors(newErrors)
+        if (editing[name]) {
+            handleUpdateUser(inputs)
+        }
+        setEditing((prevEdit) => ({
+            ...prevEdit,
+            [name]: !editing[name]
+        }))
     }
 
     return {
@@ -154,12 +206,16 @@ function useHandleUser() {
         handleChange,
         handleChangeEdit,
         errors,
-        currentUser,
+        currentUser: currentUser.current,
         userLoged,
+        user,
+        editing,
         handleChangeNumberPhone,
         verifyUser,
         changePassword,
-        changeEmail
+        changeEmail,
+        signOff,
+        handleEditing
     }
 }
 

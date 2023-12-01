@@ -30,7 +30,8 @@ const style = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     gap: 2,
   };
 
@@ -38,7 +39,7 @@ function ModalUserInfo() {
 
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
-    const { inputs, errors, handleChange, userLoged, handleChangeNumberPhone} = useHandleUser()
+    const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
 
     return (
         <Modal
@@ -63,73 +64,103 @@ function ModalUserInfo() {
                     handleChange={handleChange}
                     handleChangeNumberPhone={handleChangeNumberPhone}
                     type={'text'}
+                    editing={editing}
+                    handleEditing={handleEditing}
+                    open={open}
                 />
-                <Typography
-                    variant='p'
-                    gutterBottom
+                <Grid
+                    item
                     sx={{
-                        textAlign: 'center'
-                    }}
-                >
-                    ¿Le gustaría recibir correos electrónicos promocionales?
-                </Typography>
-                <RadioGroup
-                    sx={{
-                        width: '100%',
                         display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center'
+                        flexDirection: 'column',
+                        alignItmens: 'center'
                     }}
                 >
-                    <FormControlLabel
-                        value='y'
-                        control={<Radio />}
-                        label='Sí'
+                    <Typography
+                        variant='p'
+                        gutterBottom
                         sx={{
-                            width: 'fit-content'
+                            textAlign: 'center'
                         }}
-                    />
-                    <FormControlLabel
-                        value='n'
-                        control={<Radio />}
-                        label='No'
+                    >
+                        ¿Le gustaría recibir correos electrónicos promocionales?
+                    </Typography>
+                    <RadioGroup
                         sx={{
-                            width: 'fit-content'
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center'
                         }}
-                    />
-                </RadioGroup>
-                <Button
-                    onClick={() => { handleChangeModal('user', 'changePassword') }}
-                >
-                    Cambiar su contraseña
-                </Button>
-                <Button
-                    onClick={() => { handleChangeModal('user', 'changeEmail') }}
-                >
-                    ¿Cambiar de correo electrónico?
-                </Button>
-                <Button
-                    onClick={ () => {}}
-                >
-                    Borrar mi cuenta
-                </Button>
-                <Typography
-                    variant='p'
-                    gutterBottom
+                    >
+                        <FormControlLabel
+                            value='y'
+                            control={<Radio />}
+                            label='Sí'
+                            sx={{
+                                width: 'fit-content'
+                            }}
+                        />
+                        <FormControlLabel
+                            value='n'
+                            control={<Radio />}
+                            label='No'
+                            sx={{
+                                width: 'fit-content'
+                            }}
+                        />
+                    </RadioGroup>
+                </Grid>
+                <Grid
+                    item
                     sx={{
-                        textAlign: 'center'
+                        display:'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
                     }}
                 >
-                    {userLoged?.email}
-                </Typography>
-                <Button
-                    onClick={ () => {
-                        handleRemoveUser()
-                        handleCloseModal('user')
+                    <Button
+                        onClick={() => { handleChangeModal('user', 'changePassword') }}
+                    >
+                        Cambiar su contraseña
+                    </Button>
+                    <Button
+                        onClick={() => { handleChangeModal('user', 'changeEmail') }}
+                    >
+                        ¿Cambiar de correo electrónico?
+                    </Button>
+                    <Button
+                        onClick={ () => {}}
+                    >
+                        Borrar mi cuenta
+                    </Button>
+                </Grid>
+                <Grid
+                    item
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
                     }}
                 >
-                    Cerrar Cesión
-                </Button>
+                    <Typography
+                        variant='p'
+                        gutterBottom
+                        sx={{
+                            textAlign: 'center'
+                        }}
+                    >
+                        {user.email}
+                    </Typography>
+                    <Button
+                        onClick={ () => {
+                            signOff()
+                            handleCloseModal('user')
+                        }}
+                    >
+                        Cerrar Cesión
+                    </Button>
+                </Grid>
             </Grid>
 
         </Modal>        
