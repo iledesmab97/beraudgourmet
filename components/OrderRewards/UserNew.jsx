@@ -16,7 +16,7 @@ const styleButtons = {
     marginBottom: '4px'
 }
 
-function UserNew({ inputs, handleChange, errors, currentUser, handleChangeNumberPhone, verifyUser }) {
+function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, verifyUser }) {
     return (
         <>    
             <TextField
@@ -50,6 +50,7 @@ function UserNew({ inputs, handleChange, errors, currentUser, handleChangeNumber
                         handleChangeNumberPhone={handleChangeNumberPhone}
                         inputs={inputs}
                         errors={errors}
+                        editing={editing}
                     />
                 )
             }
