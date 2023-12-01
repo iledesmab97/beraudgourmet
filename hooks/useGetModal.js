@@ -1,7 +1,7 @@
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
 import { openModal, closeModal, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } from '@/stores/modal/slice'
 
-export default function useGetUser({modalType}) {
+export default function useGetModal({modalType}) {
 
     const modal = useAppSelector(state => state.modal[modalType])
     const dispatch = useAppDispatch()
