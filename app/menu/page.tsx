@@ -41,7 +41,7 @@ function Menu () {
       <WhatsappButton />
       <ModalChooseProduct />
       <ModalStoreDelivery />
-      {/* <ModalDeliveryPlace /> */}
+      <ModalDeliveryPlace />
       <ModalStoresDetail />
       <ModalUserInfo />
       <ModalChangePassword />
