@@ -4,27 +4,33 @@ import places from '@/typePlaces.json'
 
 function useHandlePlace() {
 
+    const placeGlobalStore = useGetPlace().place
     const [inputsStore, setInputsStore] = useState('Ciudad de México')
-    const [place, setPlace] = useState(places.home)
-    const [inputsHome, setInputsHome] = useState({
-        inputAddress: '',
-        street: {
-            ['unity']: '',
-            ['number']: '',
-            ['streetName']: ''
-        },
-        city: '',
-        postalCode: '',
-        note: '',
-        type: {
-            name: place.name,
-            totalName: place.totalName
+    const [place, setPlace] = useState(() => {
+        if (placeGlobalStore.inputsHome) return places[placeGlobalStore.inputsHome.type.name]
+        return places.home
+    })
+    const [inputsHome, setInputsHome] = useState(() => {
+        if (placeGlobalStore.inputsHome) return placeGlobalStore.inputsHome
+        return {
+            inputAddress: '',
+            street: {
+                ['unity']: '',
+                ['number']: '',
+                ['streetName']: ''
+            },
+            city: '',
+            postalCode: '',
+            note: '',
+            type: {
+                name: place.name,
+                totalName: place.totalName
+            }
         }
     })
     const [closerStore, setCloserStore] = useState(null)
     const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
     const [distanceSaved, setDistanceSaved] = useState(null)
-    const {} = useGetPlace()
 
     useEffect(() => {
         const newStreet = {}
@@ -117,6 +123,7 @@ function useHandlePlace() {
         withinLimitSaved,
         distanceSaved,
         closerStore,
+        placeGlobalStore,
         changeWithinLimitSaved,
         handleInputsStore,
         handleInputsAddress,
