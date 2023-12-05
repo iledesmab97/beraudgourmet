@@ -19,20 +19,10 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 export default function StoreSection () {
 
   const { handleOpenModal } = useGetModal({modalType: 'place'})
-  const dataPlace = useGetPlace()
-  const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
-  const [isTherePlace, setIsTherePlace] = useState(false)
+  const {place} = useGetPlace()
+  const closerStore = place.closerStore
+  const inputsHome = place.inputsHome
   const [whereDelivery, setWhereDelivery] = useState('')
-
-  useEffect(() => {
-    if (Object.keys(place).length) {
-      setIsTherePlace(true)
-      setWhereDelivery(() => {
-        if (place.name) return 'store'
-        return 'home'
-      })
-    }
-  }, [place])
 
   function handleChange(event) {
     setWhereDelivery(event.target.value)
@@ -64,7 +54,7 @@ export default function StoreSection () {
             Tienda
           </Typography>
           {
-            isTherePlace
+            closerStore
             ? (
               <Typography
                 variant='p'
@@ -80,7 +70,7 @@ export default function StoreSection () {
           }
         </Grid>
         {
-          isTherePlace
+          closerStore
           ? (
             <>
               <Grid
@@ -109,7 +99,7 @@ export default function StoreSection () {
                   }}
                 >
                   <Typography>
-                    {place.name}
+                    {closerStore.name}
                   </Typography>
                 </Button>
               </Grid>
@@ -133,6 +123,40 @@ export default function StoreSection () {
                   </Select>
                 </FormControl>
               </Grid>
+              {
+                whereDelivery === 'home'
+                ? (
+                  <>
+                    <Grid
+                      item
+                    >
+                      <Typography
+                        variant='title'
+                        gutterBottom
+                      >
+                        Entregar a
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      item
+                      sx={{
+                        width: '100%'
+                      }}
+                    >
+                      <Button
+                        variant='outlined'
+                        color='secondary'
+                        sx={{
+                          width: '100%',
+                          textTransform: 'none'
+                        }}
+                      >
+                        {`${inputsHome.street.unity}/${inputsHome.street.number} ${inputsHome.street.streetName}, ${inputsHome.inputAddress.split(",")[0]}`}
+                      </Button>
+                    </Grid>
+                  </>
+                ) : null
+              }
               <Grid
                 item
               >
