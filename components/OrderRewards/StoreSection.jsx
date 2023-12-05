@@ -150,6 +150,7 @@ export default function StoreSection () {
                           width: '100%',
                           textTransform: 'none'
                         }}
+                        onClick={() => {handleOpenModal('deliveryPlace')}}
                       >
                         {`${inputsHome.street.unity}/${inputsHome.street.number} ${inputsHome.street.streetName}, ${inputsHome.inputAddress.split(",")[0]}`}
                       </Button>
