@@ -18,6 +18,9 @@ const initialState = {
     storesDetail: {
         open: false
     },
+    deliveryPlace: {
+        open: false
+    },
     user: {
         open: false
     },
