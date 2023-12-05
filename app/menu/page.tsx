@@ -13,6 +13,7 @@ import ModalStoresDetail from '@/components/ModalStoresDetail/ModalStoresDetail'
 import ModalUserInfo from '@/components/ModalUserInfo/ModalUserInfo'
 import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePassword'
 import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
+import ModalPay from '@/components/ModalPay/ModalPay'
 import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
 // import style from './page.module.css'
@@ -46,6 +47,7 @@ function Menu () {
       <ModalUserInfo />
       <ModalChangePassword />
       <ModalChangeEmail />
+      <ModalPay />
     </Container>
   )
 }
