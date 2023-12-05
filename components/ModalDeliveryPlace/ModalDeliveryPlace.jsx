@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react';
+import useGetModal from '@/hooks/useGetModal'
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -32,10 +34,8 @@ const style = {
 };
 
 export default function ModalDeliveryPlace() {
-  const [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const { open, handleCloseModal } = useGetModal({modalType: 'deliveryPlace'})
 
   const [withinLimit, setWidthinLimit] = useState(null)
 
@@ -44,56 +44,51 @@ export default function ModalDeliveryPlace() {
   }
 
   return (
-    <div>
-      <Button onClick={handleOpen} color='success' variant='contained'>Lugar de entrega</Button>
-      <Modal
+    <Modal
         open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-            <Box
-                sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    gap: 2
-                }}
-            >
-                <Typography
-                    id="modal-modal-title"
-                    variant='title'
-                    component="h2"
-                    align='center'
-                    sx={{
-                        mb: 5
-                    }}
-                >
-                    Dirección de entrega
-                </Typography>
-                
-                <PlaceFinder changeWithinLimit={changeWithinLimit} withinLimit={withinLimit} />
-                
-                {
-                  withinLimit
-                    ? <FormModalDeliveryPlace />
-                    : null
-                }
-                
-            </Box>
-            <Button
-                variant='contained'
-                sx={{
-                    alignSelf: 'flex-end'
-                }}
-            >
-                Aceptar
-            </Button>
-        </Box>
-      </Modal>
-    </div>
+        onClose={handleCloseModal}
+    >
+      <Box sx={style}>
+          <Box
+              sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  gap: 2
+              }}
+          >
+              <Typography
+                  id="modal-modal-title"
+                  variant='title'
+                  component="h2"
+                  align='center'
+                  sx={{
+                      mb: 5
+                  }}
+              >
+                  Dirección de entrega
+              </Typography>
+              
+              {/* <PlaceFinder changeWithinLimit={changeWithinLimit} withinLimit={withinLimit} />
+              
+              {
+                withinLimit
+                  ? <FormModalDeliveryPlace />
+                  : null
+              } */}
+              
+          </Box>
+          <Button
+              variant='contained'
+              sx={{
+                  alignSelf: 'flex-end'
+              }}
+          >
+              Aceptar
+          </Button>
+      </Box>
+    </Modal>
   );
 }
