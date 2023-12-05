@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import useGetModal from '@/hooks/useGetModal'
+import FormModalDeliveryPlace from './FormModalDeliveryPlace'
+import PlaceFinder from '../PlaceFinder/PlaceFinder'
+import useHandlePlace from '@/hooks/useHandlePlace';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,15 +15,12 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-import FormModalDeliveryPlace from './FormModalDeliveryPlace'
-import PlaceFinder from '../PlaceFinder/PlaceFinder'
-
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 700,
+  width: 600,
   height: 700,
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -36,12 +36,21 @@ const style = {
 export default function ModalDeliveryPlace() {
 
   const { open, handleCloseModal } = useGetModal({modalType: 'deliveryPlace'})
-
-  const [withinLimit, setWidthinLimit] = useState(null)
-
-  function changeWithinLimit(value) {
-    setWidthinLimit(value)
-  }
+  const {
+    withinLimitSaved,
+    inputAddress,
+    distanceSaved,
+    closerStore,
+    inputsHome,
+    place,
+    placeGlobalStore,
+    changeWithinLimitSaved,
+    handleInputsAddress,
+    handleDistanceSaved,
+    handleCloserStore,
+    handleInputsHome,
+    handlePlaceType
+  } = useHandlePlace()
 
   return (
     <Modal
@@ -71,19 +80,38 @@ export default function ModalDeliveryPlace() {
                   Dirección de entrega
               </Typography>
               
-              {/* <PlaceFinder changeWithinLimit={changeWithinLimit} withinLimit={withinLimit} />
+              <PlaceFinder
+                  withinLimitSaved={withinLimitSaved}
+                  inputAddress={inputAddress}
+                  distanceSaved={distanceSaved}
+                  closerStore={closerStore}
+                  changeWithinLimitSaved={changeWithinLimitSaved}
+                  handleInputsAddress={handleInputsAddress}
+                  handleDistanceSaved={handleDistanceSaved}
+                  handleCloserStore={handleCloserStore}
+              />
               
               {
-                withinLimit
-                  ? <FormModalDeliveryPlace />
+                withinLimitSaved
+                  ? <FormModalDeliveryPlace
+                    inputsHome={inputsHome}
+                    place={place}
+                    closerStore={closerStore}
+                    handleInputsHome={handleInputsHome}
+                    handlePlaceType={handlePlaceType}
+                  />
                   : null
-              } */}
+              }
               
           </Box>
           <Button
               variant='contained'
               sx={{
                   alignSelf: 'flex-end'
+              }}
+              onClick={() => {
+                console.log('placeGlobalStore:', placeGlobalStore)
+                console.log('inputsHome:', inputsHome)
               }}
           >
               Aceptar
