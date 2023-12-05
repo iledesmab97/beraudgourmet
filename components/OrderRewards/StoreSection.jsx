@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState} from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetPlace from '@/hooks/useGetPlace'
 import DateChoose from '@/components/DateChoose/DateChoose'
@@ -22,7 +22,17 @@ export default function StoreSection () {
   const {place} = useGetPlace()
   const closerStore = place.closerStore
   const inputsHome = place.inputsHome
-  const [whereDelivery, setWhereDelivery] = useState('')
+  const [whereDelivery, setWhereDelivery] = useState(() => {
+    if (inputsHome) return 'home'
+    else if (closerStore) return 'store'
+    else return ''
+  })
+
+  useEffect(() => {
+    if (inputsHome) setWhereDelivery('home')
+    else if (closerStore) setWhereDelivery('store')
+    else return setWhereDelivery('')
+  }, [place])
 
   function handleChange(event) {
     setWhereDelivery(event.target.value)
