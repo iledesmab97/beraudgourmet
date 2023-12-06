@@ -65,6 +65,7 @@ export default function HomeDelivery({
                             closerStore={closerStore}
                             handleInputsHome={handleInputsHome}
                             handleTypeLocation={handleTypeLocation}
+                            currentModal='place'
                         />
                         : null
                 }
