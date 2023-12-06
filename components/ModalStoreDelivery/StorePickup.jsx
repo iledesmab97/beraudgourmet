@@ -20,7 +20,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ItemPlace from '../PlaceFinder/ItemPlace'
 import stores from '@/stores.json'
 
-export default function StorePickup({ handleInputsStore, inputsStore, handleCloseModalPlace }) {
+export default function StorePickup({ handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace } = useGetPlace()
     // const { } = useHandlePlace()
@@ -185,9 +185,9 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                                         sx={{
                                             mt: 2
                                         }}
-                                        onClick={() => { accept({action:handleAddPlace, value:{closerStore: store}}, handleCloseModalPlace)
-                                            // handleAddPlace(store)
-                                            // handleCloseModalPlace()
+                                        onClick={() => {
+                                            handleAddPlace({closerStore: store})
+                                            handleCloseModal('place')
                                         }}
                                         disabled={!store.open}
                                     >
