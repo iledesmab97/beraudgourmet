@@ -37,14 +37,9 @@ function PlaceFinder({
   }, [address, selectedSuggestion])
 
   useEffect(() => {
-    if (distance === distanceSaved) return
-    handleDistanceSaved(distance)
+    if (distance !== distanceSaved) handleDistanceSaved(distance)
+    if (withinLimit !== withinLimitSaved) changeWithinLimitSaved(withinLimit)
   }, [distance])
-
-  useEffect(() => {
-    if (withinLimit === withinLimitSaved) return
-    changeWithinLimitSaved(withinLimit)
-  }, [withinLimit])
 
   useEffect(() => {
     handleCloserStore(storeMoreClose)
