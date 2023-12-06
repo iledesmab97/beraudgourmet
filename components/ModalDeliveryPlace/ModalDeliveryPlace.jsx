@@ -4,7 +4,8 @@ import { useState } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import FormModalDeliveryPlace from './FormModalDeliveryPlace'
 import PlaceFinder from '../PlaceFinder/PlaceFinder'
-import useHandlePlace from '@/hooks/useHandlePlace';
+import useHandlePlace from '@/hooks/useHandlePlace'
+import typeLocations from '@/typePlaces.json'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -38,24 +39,22 @@ export default function ModalDeliveryPlace() {
   const { open, handleCloseModal } = useGetModal({modalType: 'deliveryPlace'})
   const {
     withinLimitSaved,
-    inputAddress,
     distanceSaved,
     closerStore,
     inputsHome,
-    place,
-    placeGlobalStore,
+    typeLocation,
     changeWithinLimitSaved,
     handleInputsAddress,
     handleDistanceSaved,
     handleCloserStore,
     handleInputsHome,
-    handlePlaceType
+    handleTypeLocation
   } = useHandlePlace()
 
   return (
     <Modal
         open={open}
-        onClose={handleCloseModal}
+        onClose={() => {handleCloseModal('deliveryPlace')}}
     >
       <Box sx={style}>
           <Box
@@ -82,8 +81,8 @@ export default function ModalDeliveryPlace() {
               
               <PlaceFinder
                   withinLimitSaved={withinLimitSaved}
-                  inputAddress={inputAddress}
-                  distanceSaved={distanceSaved}
+                  inputAddress={inputsHome.inputAddress}
+                  distanceSaved={inputsHome.distanceSaved}
                   closerStore={closerStore}
                   changeWithinLimitSaved={changeWithinLimitSaved}
                   handleInputsAddress={handleInputsAddress}
@@ -95,10 +94,10 @@ export default function ModalDeliveryPlace() {
                 withinLimitSaved
                   ? <FormModalDeliveryPlace
                     inputsHome={inputsHome}
-                    place={place}
+                    typeLocation={typeLocations[inputsHome.type.name]}
                     closerStore={closerStore}
                     handleInputsHome={handleInputsHome}
-                    handlePlaceType={handlePlaceType}
+                    handleTypeLocation={handleTypeLocation}
                   />
                   : null
               }
@@ -110,7 +109,6 @@ export default function ModalDeliveryPlace() {
                   alignSelf: 'flex-end'
               }}
               onClick={() => {
-                console.log('placeGlobalStore:', placeGlobalStore)
                 console.log('inputsHome:', inputsHome)
               }}
           >
