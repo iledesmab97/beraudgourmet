@@ -91,7 +91,8 @@ export default function DateChoose() {
           // slots={{ textField: 'input'}}
           slotProps={{
             textField: {
-              helperText: textDate
+              helperText: textDate,
+              size:'small'
             }
           }}
           // maxDate={dayjs().add(1, 'week').subtract(1, 'day')}
