@@ -29,6 +29,9 @@ const initialState = {
     },
     changeEmail: {
         open: false
+    },
+    pay: {
+        open: false
     }
 }
 
