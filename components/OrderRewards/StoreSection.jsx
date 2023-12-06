@@ -24,8 +24,7 @@ export default function StoreSection () {
   const inputsHome = place.inputsHome
   const [whereDelivery, setWhereDelivery] = useState(() => {
     if (inputsHome) return 'home'
-    else if (closerStore) return 'store'
-    else return ''
+    return 'store'
   })
 
   useEffect(() => {
@@ -35,6 +34,9 @@ export default function StoreSection () {
   }, [place])
 
   function handleChange(event) {
+    if (event.target.value === 'home' && !inputsHome) {
+      return handleOpenModal('deliveryPlace')
+    }
     setWhereDelivery(event.target.value)
   }
 
@@ -135,7 +137,7 @@ export default function StoreSection () {
                 </FormControl>
               </Grid>
               {
-                whereDelivery === 'home'
+                inputsHome && whereDelivery === 'home'
                 ? (
                   <>
                     <Grid
