@@ -63,7 +63,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
             </Grid>
 
             {
-                Object.keys(inputsHome.other).length
+                inputsHome.other && Object.keys(inputsHome.other).length
                     ? (
                         <Grid container item alignItems='center'>
                             <Grid item md={3}>    
