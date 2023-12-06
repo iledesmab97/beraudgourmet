@@ -17,7 +17,7 @@ import Button from '@mui/material/Button'
 import TextArea from '../TextArea/TextArea'
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
-export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, place, handlePlaceType, closerStore }) {
+export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, typeLocation, handleTypeLocation, closerStore }) {
 
     const { handleCloseModal } = useGetModal({modalType: 'place'})
     const { handleAddPlace } = useGetPlace()
@@ -49,9 +49,9 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                         <Select
                             labelId='type-place'
                             id='type-place-select'
-                            value={place.name}
+                            value={typeLocation.name}
                             label='Tipo de residencia'
-                            onChange={handlePlaceType}
+                            onChange={handleTypeLocation}
                         >
                             <MenuItem value='home'>Casa: Dirección residencial</MenuItem>
                             <MenuItem value='work'>Trabajo: Dirección comercial</MenuItem>
@@ -171,7 +171,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                     <TextField
                         id='input-unidad'
                         variant='outlined'
-                        placeholder={place.city.postal}
+                        placeholder={typeLocation.city.postal}
                         name='postalCode'
                         onChange={handleInputsHome}
                         value={inputsHome.postalCode}
