@@ -98,22 +98,12 @@ export default function ModalDeliveryPlace() {
                     closerStore={closerStore}
                     handleInputsHome={handleInputsHome}
                     handleTypeLocation={handleTypeLocation}
+                    currentModal='deliveryPlace'
                   />
                   : null
               }
               
           </Box>
-          <Button
-              variant='contained'
-              sx={{
-                  alignSelf: 'flex-end'
-              }}
-              onClick={() => {
-                console.log('inputsHome:', inputsHome)
-              }}
-          >
-              Aceptar
-          </Button>
       </Box>
     </Modal>
   );
