@@ -125,6 +125,7 @@ export default function StoreSection () {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={whereDelivery}
+                    size='small'
                     // label="Age"
                     onChange={handleChange}
                   >
