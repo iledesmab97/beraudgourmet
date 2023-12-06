@@ -33,7 +33,15 @@ export default function TimePickerViewRenderers() {
                     //     <StaticTimePicker orientation="landscape" />
                     // }
                 /> */}
-                <TimePicker label="Hora" />
+                <TimePicker
+                    label="Hora"
+                    slotProps={{
+                        textField: {
+                        //   helperText: textDate,
+                          size:'small'
+                        }
+                    }}
+                />
         </DemoContainer>
         {/* <StaticTimePicker orientation="landscape" /> */}
         </LocalizationProvider>
