@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
 import useGetPlace from './useGetPlace'
-import places from '@/typePlaces.json'
+import typeLocations from '@/typePlaces.json'
 
 function useHandlePlace() {
 
-    const placeGlobalStore = useGetPlace().place
+    const {place} = useGetPlace()
     const [inputsStore, setInputsStore] = useState('Ciudad de México')
-    const [place, setPlace] = useState(() => {
-        if (placeGlobalStore.inputsHome) return places[placeGlobalStore.inputsHome.type.name]
-        return places.home
+    const [typeLocation, setTypeLocation] = useState(() => {
+        if (place.inputsHome) return typeLocations[place.inputsHome.type.name]
+        return typeLocations.home
     })
+    const [closerStore, setCloserStore] = useState(null)
+    const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
     const [inputsHome, setInputsHome] = useState(() => {
-        if (placeGlobalStore.inputsHome) return placeGlobalStore.inputsHome
+        if (place.inputsHome) return place.inputsHome
         return {
             inputAddress: '',
             street: {
@@ -23,27 +25,44 @@ function useHandlePlace() {
             postalCode: '',
             note: '',
             type: {
-                name: place.name,
-                totalName: place.totalName
-            }
+                name: typeLocation.name,
+                totalName: typeLocation.totalName
+            },
+            distanceSaved: null
         }
     })
-    const [closerStore, setCloserStore] = useState(null)
-    const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
-    const [distanceSaved, setDistanceSaved] = useState(null)
+    const [distanceSaved, setDistanceSaved] = useState(() => {
+        if (place.inputsHome) return place.inputsHome.distanceSaved
+        return null
+    })
+
+    useEffect(() => {
+        if ((place.inputsHome && place.inputsHome.inputAddress) !== (inputsHome.inputAddress)) setInputsHome(place.inputsHome)
+        if ((place.closerStore && place.closerStore.name) !== (closerStore && closerStore.name))
+        setCloserStore(place.closerStore)
+    }, [place])
+
+    useEffect(() => {
+        if (inputsHome.distanceSaved !== distanceSaved) {
+            setInputsHome((prevInputsHome) => ({
+                ...prevInputsHome,
+                distanceSaved: distanceSaved
+            }))
+        }
+    }, [distanceSaved])
 
     useEffect(() => {
         const newStreet = {}
         const newOther = {}
-        place.street.forEach(item => {
+        typeLocation.street.forEach(item => {
             if (inputsHome.street[item.name]) {
                 newStreet[item.name] = inputsHome.street[item.name]
             } else {
                 newStreet[item.name] = ''
             }
         })
-        if (place.other) {
-            place.other.inputs.forEach(item => {
+        if (typeLocation.other) {
+            typeLocation.other.inputs.forEach(item => {
                 newOther[item.name] = ''
             })
         }
@@ -52,18 +71,18 @@ function useHandlePlace() {
             street: newStreet,
             other: newOther,
             type: {
-                name: place.name,
-                totalName: place.totalName
+                name: typeLocation.name,
+                totalName: typeLocation.totalName
             }
         }))
-    }, [place])
+    }, [typeLocation])
 
     function handleCloserStore(newCloserStore) {
         setCloserStore(newCloserStore)
     }
 
-    function handlePlaceType(event) {
-        setPlace(places[event.target.value])
+    function handleTypeLocation(event) {
+        setTypeLocation(typeLocations[event.target.value])
     }
 
     function changeWithinLimitSaved(value) {
@@ -119,17 +138,16 @@ function useHandlePlace() {
     return {
         inputsStore,
         inputsHome,
-        place,
+        typeLocation,
         withinLimitSaved,
         distanceSaved,
         closerStore,
-        placeGlobalStore,
         changeWithinLimitSaved,
         handleInputsStore,
         handleInputsAddress,
         handleDistanceSaved,
         handleInputsHome,
-        handlePlaceType,
+        handleTypeLocation,
         handleCloserStore
     }
 }
