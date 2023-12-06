@@ -5,6 +5,7 @@ import UserSection from './UserSection'
 import OrderSection from './OrderSection'
 import StoreSection from './StoreSection'
 import TotalPriceSection from './TotalPriceSection'
+import ButtonPay from '@/components/ButtonPay/ButtonPay'
 
 import Image from 'next/image'
 import Grid from '@mui/material/Grid'
@@ -77,14 +78,16 @@ function OrderRewards () {
           <TotalPriceSection />
 
           <Box>
-            <Button
+            {/* <Button
               variant='contained'
               color='secondary'
               sx={{ my:1 }}
               fullWidth
               onClick={() => {handleOpenModal('pay')}}
             >
-              Siguiente paso</Button>
+              Siguiente paso
+            </Button> */}
+            <ButtonPay />
           </Box>
           
         </Box>
