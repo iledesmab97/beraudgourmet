@@ -11,7 +11,6 @@ function useHandlePlace() {
         return typeLocations.home
     })
     const [closerStore, setCloserStore] = useState(null)
-    const [withinLimitSaved, setWidthinLimitSaved] = useState(null)
     const [inputsHome, setInputsHome] = useState(() => {
         if (place.inputsHome) return place.inputsHome
         return {
@@ -28,41 +27,55 @@ function useHandlePlace() {
                 name: typeLocation.name,
                 totalName: typeLocation.totalName
             },
-            distanceSaved: null
+            distanceSaved: null,
+            withinLimitSaved: null
         }
-    })
-    const [distanceSaved, setDistanceSaved] = useState(() => {
-        if (place.inputsHome) return place.inputsHome.distanceSaved
-        return null
     })
 
     useEffect(() => {
-        if ((place.inputsHome && place.inputsHome.inputAddress) !== (inputsHome.inputAddress)) setInputsHome(place.inputsHome)
-        if ((place.closerStore && place.closerStore.name) !== (closerStore && closerStore.name))
+        if (place.inputsHome && (place.inputsHome.inputAddress !== inputsHome?.inputAddress)) setInputsHome(place.inputsHome)
+        else if (!place.inputsHome && inputsHome?.inputAddress) {
+            setInputsHome({
+                inputAddress: '',
+                street: {
+                    ['unity']: '',
+                    ['number']: '',
+                    ['streetName']: ''
+                },
+                city: '',
+                postalCode: '',
+                note: '',
+                type: {
+                    name: typeLocation.name,
+                    totalName: typeLocation.totalName
+                },
+                distanceSaved: null,
+                withinLimitSaved: null
+            })
+        }
+        if ( place.closerStore && (place.closerStore.name !== closerStore?.name))
         setCloserStore(place.closerStore)
     }, [place])
 
-    useEffect(() => {
-        if (inputsHome.distanceSaved !== distanceSaved) {
-            setInputsHome((prevInputsHome) => ({
-                ...prevInputsHome,
-                distanceSaved: distanceSaved
-            }))
-        }
-    }, [distanceSaved])
+    function handleCloserStore(newCloserStore) {
+        setCloserStore(newCloserStore)
+    }
 
-    useEffect(() => {
+    function handleTypeLocation(event) {
+        const { value } = event.target
+        const newTypeLocation = typeLocations[value]
+        setTypeLocation(newTypeLocation)
         const newStreet = {}
         const newOther = {}
-        typeLocation.street.forEach(item => {
+        newTypeLocation.street.forEach(item => {
             if (inputsHome.street[item.name]) {
                 newStreet[item.name] = inputsHome.street[item.name]
             } else {
                 newStreet[item.name] = ''
             }
         })
-        if (typeLocation.other) {
-            typeLocation.other.inputs.forEach(item => {
+        if (newTypeLocation.other) {
+            newTypeLocation.other.inputs.forEach(item => {
                 newOther[item.name] = ''
             })
         }
@@ -71,26 +84,24 @@ function useHandlePlace() {
             street: newStreet,
             other: newOther,
             type: {
-                name: typeLocation.name,
-                totalName: typeLocation.totalName
+                name: newTypeLocation.name,
+                totalName: newTypeLocation.totalName
             }
         }))
-    }, [typeLocation])
-
-    function handleCloserStore(newCloserStore) {
-        setCloserStore(newCloserStore)
-    }
-
-    function handleTypeLocation(event) {
-        setTypeLocation(typeLocations[event.target.value])
     }
 
     function changeWithinLimitSaved(value) {
-        setWidthinLimitSaved(value)
+        setInputsHome((prevInputsHome) => ({
+            ...prevInputsHome,
+            withinLimitSaved: value
+        }))
     }
 
     function handleDistanceSaved(value) {
-        setDistanceSaved(value)
+        setInputsHome((prevInputsHome) => ({
+            ...prevInputsHome,
+            distanceSaved: value
+        }))
     }
 
     function handleInputsStore(event) {
@@ -139,8 +150,6 @@ function useHandlePlace() {
         inputsStore,
         inputsHome,
         typeLocation,
-        withinLimitSaved,
-        distanceSaved,
         closerStore,
         changeWithinLimitSaved,
         handleInputsStore,
