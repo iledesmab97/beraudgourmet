@@ -38,8 +38,6 @@ export default function ModalDeliveryPlace() {
 
   const { open, handleCloseModal } = useGetModal({modalType: 'deliveryPlace'})
   const {
-    withinLimitSaved,
-    distanceSaved,
     closerStore,
     inputsHome,
     typeLocation,
@@ -80,7 +78,7 @@ export default function ModalDeliveryPlace() {
               </Typography>
               
               <PlaceFinder
-                  withinLimitSaved={withinLimitSaved}
+                  withinLimitSaved={inputsHome.withinLimitSaved}
                   inputAddress={inputsHome.inputAddress}
                   distanceSaved={inputsHome.distanceSaved}
                   closerStore={closerStore}
@@ -91,10 +89,10 @@ export default function ModalDeliveryPlace() {
               />
               
               {
-                withinLimitSaved
+                inputsHome.withinLimitSaved
                   ? <FormModalDeliveryPlace
                     inputsHome={inputsHome}
-                    typeLocation={typeLocations[inputsHome.type.name]}
+                    typeLocation={typeLocation}
                     closerStore={closerStore}
                     handleInputsHome={handleInputsHome}
                     handleTypeLocation={handleTypeLocation}
