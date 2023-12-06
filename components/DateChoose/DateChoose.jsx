@@ -99,6 +99,10 @@ export default function DateChoose() {
           // minDate={currentDate}
           disablePast={true}
           slots={{ actionBar: NoteCalendar}}
+          // sx={{
+          //   width:'100%',
+          //   minWidth: '0px !important'
+          // }}
         />
       </DemoContainer>
     </LocalizationProvider>

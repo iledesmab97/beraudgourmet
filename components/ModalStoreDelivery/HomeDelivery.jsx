@@ -12,14 +12,14 @@ import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace
 export default function HomeDelivery({
     handleInputsAddress,
     inputsHome,
-    place,
+    typeLocation,
     withinLimitSaved,
     changeWithinLimitSaved,
     distanceSaved,
     closerStore,
     handleDistanceSaved,
     handleInputsHome,
-    handlePlaceType,
+    handleTypeLocation,
     handleCloserStore
 }) {
 
@@ -61,10 +61,11 @@ export default function HomeDelivery({
                     withinLimitSaved
                         ? <FormModalDeliveryPlace
                             inputsHome={inputsHome}
-                            place={place}
+                            typeLocation={typeLocation}
                             closerStore={closerStore}
                             handleInputsHome={handleInputsHome}
-                            handlePlaceType={handlePlaceType}
+                            handleTypeLocation={handleTypeLocation}
+                            currentModal='place'
                         />
                         : null
                 }

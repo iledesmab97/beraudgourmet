@@ -42,13 +42,12 @@ const style = {
 function ModalStoresDetail() {
 
     const { open, handleCloseModal } = useGetModal({ modalType: 'storesDetail' })
-    const dataPlace = useGetPlace()
-    const inputsHome = dataPlace.place.inputsHome
-    const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
-    const handleAddPlace = dataPlace.handleAddPlace
-    const {currentStore, handleCurrentStoreDetail} = useHandleStoresDetail({place})
+    const {place, handleAddPlace} = useGetPlace()
+    const inputsHome = place.inputsHome
+    const closerStore = place.closerStore
+    const {currentStore, handleCurrentStoreDetail} = useHandleStoresDetail({place: closerStore})
 
-    if (!place.name) return
+    if ( !currentStore ) return
 
     return (
         <Modal
@@ -85,7 +84,7 @@ function ModalStoresDetail() {
                     }}
                 >
 
-                    <ListStores handleCurrentStoreDetail={handleCurrentStoreDetail} place={place}/>
+                    <ListStores handleCurrentStoreDetail={handleCurrentStoreDetail} place={closerStore}/>
                     <DetailStore currentStore={currentStore}/>
 
                 </Grid>

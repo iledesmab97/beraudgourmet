@@ -185,7 +185,7 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                                         sx={{
                                             mt: 2
                                         }}
-                                        onClick={() => { accept({action:handleAddPlace, value:store}, handleCloseModalPlace)
+                                        onClick={() => { accept({action:handleAddPlace, value:{closerStore: store}}, handleCloseModalPlace)
                                             // handleAddPlace(store)
                                             // handleCloseModalPlace()
                                         }}

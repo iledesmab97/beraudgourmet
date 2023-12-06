@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState} from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetPlace from '@/hooks/useGetPlace'
 import DateChoose from '@/components/DateChoose/DateChoose'
@@ -19,19 +19,19 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 export default function StoreSection () {
 
   const { handleOpenModal } = useGetModal({modalType: 'place'})
-  const dataPlace = useGetPlace()
-  const place = dataPlace.place.closerStore ? dataPlace.place.closerStore : dataPlace.place
-  const [isTherePlace, setIsTherePlace] = useState(false)
-  const [whereDelivery, setWhereDelivery] = useState('')
+  const {place} = useGetPlace()
+  const closerStore = place.closerStore
+  const inputsHome = place.inputsHome
+  const [whereDelivery, setWhereDelivery] = useState(() => {
+    if (inputsHome) return 'home'
+    else if (closerStore) return 'store'
+    else return ''
+  })
 
   useEffect(() => {
-    if (Object.keys(place).length) {
-      setIsTherePlace(true)
-      setWhereDelivery(() => {
-        if (place.name) return 'store'
-        return 'home'
-      })
-    }
+    if (inputsHome) setWhereDelivery('home')
+    else if (closerStore) setWhereDelivery('store')
+    else return setWhereDelivery('')
   }, [place])
 
   function handleChange(event) {
@@ -64,7 +64,7 @@ export default function StoreSection () {
             Tienda
           </Typography>
           {
-            isTherePlace
+            closerStore
             ? (
               <Typography
                 variant='p'
@@ -80,7 +80,7 @@ export default function StoreSection () {
           }
         </Grid>
         {
-          isTherePlace
+          closerStore
           ? (
             <>
               <Grid
@@ -109,7 +109,7 @@ export default function StoreSection () {
                   }}
                 >
                   <Typography>
-                    {place.name}
+                    {closerStore.name}
                   </Typography>
                 </Button>
               </Grid>
@@ -133,6 +133,41 @@ export default function StoreSection () {
                   </Select>
                 </FormControl>
               </Grid>
+              {
+                whereDelivery === 'home'
+                ? (
+                  <>
+                    <Grid
+                      item
+                    >
+                      <Typography
+                        variant='title'
+                        gutterBottom
+                      >
+                        Entregar a
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      item
+                      sx={{
+                        width: '100%'
+                      }}
+                    >
+                      <Button
+                        variant='outlined'
+                        color='secondary'
+                        sx={{
+                          width: '100%',
+                          textTransform: 'none'
+                        }}
+                        onClick={() => {handleOpenModal('deliveryPlace')}}
+                      >
+                        {`${inputsHome.street.unity}/${inputsHome.street.number} ${inputsHome.street.streetName}, ${inputsHome.inputAddress.split(",")[0]}`}
+                      </Button>
+                    </Grid>
+                  </>
+                ) : null
+              }
               <Grid
                 item
               >

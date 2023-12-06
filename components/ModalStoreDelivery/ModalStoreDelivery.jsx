@@ -43,14 +43,14 @@ export default function ModalStoreDelivery() {
     inputsHome,
     withinLimitSaved,
     distanceSaved,
-    place,
+    typeLocation,
     closerStore,
     changeWithinLimitSaved,
     handleInputsStore,
     handleInputsAddress,
     handleDistanceSaved,
     handleInputsHome,
-    handlePlaceType,
+    handleTypeLocation,
     handleCloserStore
   } = useHandlePlace()
 
@@ -118,14 +118,14 @@ export default function ModalStoreDelivery() {
             : <HomeDelivery
                 handleInputsAddress={handleInputsAddress}
                 inputsHome={inputsHome}
-                place={place}
+                typeLocation={typeLocation}
                 withinLimitSaved={withinLimitSaved}
                 distanceSaved={distanceSaved}
                 closerStore={closerStore}
                 changeWithinLimitSaved={changeWithinLimitSaved}
                 handleDistanceSaved={handleDistanceSaved}
                 handleInputsHome={handleInputsHome}
-                handlePlaceType={handlePlaceType}
+                handleTypeLocation={handleTypeLocation}
                 handleCloserStore={handleCloserStore}
               />
           }
