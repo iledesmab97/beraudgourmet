@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import useDebounce from "./useDebounce"
 import stores from '@/stores.json'
@@ -13,12 +13,12 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
     const [address, setAddress] = useState(() => inputAddress ? inputAddress : '')
     const [selectedSuggestion, setSelectedSuggestion] = useState(null)
     const [distance, setDistance] = useState(() => distanceSaved ? distanceSaved : null)
-    const [withinLimit, setWidthinLimit]= useState(() => {
+    const withinLimit = useMemo(() => {
       if (!distance) return null
       if (distance > 15) return false
       if (distance <= 15) return true
       return null
-    })
+    }, [distance])
     const [storeMoreClose, setStoreMoreClose] = useState(closerStore)
 
     const {
@@ -99,15 +99,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
         }
       }
       setDistance(newDistance)
-      changeWithinLimit(newDistance)
       setStoreMoreClose(closerStore)
-    }
-
-    function changeWithinLimit (value) {
-      if (!value) return setWidthinLimit(null)
-      if (value > 15) return setWidthinLimit(false)
-      if (value <= 15) return setWidthinLimit(true)
-      setWidthinLimit(null)
     }
 
     // function clearRoute() {
