@@ -17,6 +17,7 @@ import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 
 import styles from './ModalCheckoutForm.module.css'
+import dayjs from 'dayjs'
 
 const style = {
     position: 'absolute',
@@ -45,7 +46,19 @@ function ModalCheckoutForm() {
     const {orders} = useGetOrders()
     const [stripeSecret, setStripeSecret] = useState(null)
     const stripe = useStripe()
-    const elements = useElements() 
+    const elements = useElements()
+    const [messageDelivery, setMessageDelivery] = useState('')
+
+    useEffect(() => {
+        if (!place.deadLine) return
+        let newMessageDeliver
+        if (dayjs().isSame(dayjs(place.deadLine.date.realDate, 'D/M/YYYY'), 'day')) {
+            newMessageDeliver = `Se espera a las: ${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+        } else {
+            newMessageDeliver = `Se espera el: ${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+        }
+        setMessageDelivery(newMessageDeliver)
+    }, [place])
 
     // useEffect(() => {
     //     loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY}`)
@@ -74,7 +87,7 @@ function ModalCheckoutForm() {
                 }
             })
             const data = await res.json()
-            console.log('data:', data)
+            // console.log('data:', data)
             if (data.message === 'Successful payment') window.location.href = 'http://localhost:3000/success'
             // const payment = await stripeSecret.paymentIntents.create({
             //     amount: 5 * 100,
@@ -147,7 +160,7 @@ function ModalCheckoutForm() {
                                 variant='p'
                                 gutterBottom
                             >
-                                Se espera a las
+                                {messageDelivery}
                             </Typography>
                         </Grid>
                     </Grid>
