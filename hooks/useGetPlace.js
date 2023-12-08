@@ -10,8 +10,8 @@ export default function useGetPlace () {
         dispatch(addPlace(newPlace))
     }
 
-    function handleRemovePlace() {
-        dispatch(removePlace())
+    function handleRemovePlace(placeToRemove) {
+        dispatch(removePlace(placeToRemove))
     }
 
     function handleDeadLine(time) {
