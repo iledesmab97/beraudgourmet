@@ -15,10 +15,19 @@ export const placeSlice = createSlice({
     initialState,
     reducers: {
         addPlace: (state, action) => {
-            return action.payload
+            const newProps = Object.keys(action.payload)
+            const newPlace = {...state}
+            newProps.forEach(prop => {
+                newPlace[prop] = action.payload[prop]
+            })
+            return newPlace
         },
         removePlace: (state, action) => {
-            return {}
+            const place = action.payload.place
+            return {
+                ...state,
+                [place]: null
+            }
         },
         addDeadLine: (state, action) => {
             if (!state.deadLine) {
@@ -38,9 +47,10 @@ export const placeSlice = createSlice({
             }
         },
         addTypeDelivery: (state, action) => {
+            const {name, totalName} = action.payload
             return {
                 ...state,
-                typeDelivery: {name: action.payload.name, totalName: action.payload.totalName}
+                typeDelivery: {name, totalName}
             }
         }
     }
