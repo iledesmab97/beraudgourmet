@@ -20,7 +20,7 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, typeLocation, handleTypeLocation, closerStore, currentModal }) {
 
     const { handleCloseModal } = useGetModal({modalType: 'place'})
-    const { handleAddPlace } = useGetPlace()
+    const { handleAddPlace, handleTypeDelivery } = useGetPlace()
 
     return (
         <Grid
@@ -213,6 +213,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                 variant='contained'
                 onClick={() => {
                     handleAddPlace({inputsHome, closerStore})
+                    handleTypeDelivery({name: 'home', totalName: 'Entrega a domicilio'})
                     handleCloseModal(currentModal)
                 }}
                 sx={{
