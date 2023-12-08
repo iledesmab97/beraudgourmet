@@ -12,16 +12,16 @@ import ModalStoresDetail from '@/components/ModalStoresDetail/ModalStoresDetail'
 import ModalUserInfo from '@/components/ModalUserInfo/ModalUserInfo'
 import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePassword'
 import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
-import ModalPay from '@/components/ModalPay/ModalPay'
+import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
-// import { Elements } from '@stripe/react-stripe-js'
-// import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 // import style from './page.module.css'
 
 // const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 // const stripePromise = loadStripe('pk_test_51OIZNTCMhwExfY9d0HYdVil8pzdiMC07RWY6HqyifqC4FDK80y4erkueRmDJFmv0Y9TWdWSu3GygjpIVQXHXieeh00vIv12PNd')
-// const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`)
+const stripe = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`)
 
 function Menu () {
   const [open, setOpen] = useState(false);
@@ -32,9 +32,9 @@ function Menu () {
     libraries: ['places'],
   });
 
-  // const options = {
-  //   // clientSecret: `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
-  // }
+  const options = {
+    // clientSecret: `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
+  }
 
   return (
     <Container maxWidth="lg" sx={{ mt: '40px'}}>
@@ -56,9 +56,9 @@ function Menu () {
       <ModalUserInfo />
       <ModalChangePassword />
       <ModalChangeEmail />
-      {/* <Elements stripe={stripePromise} options={options}> */}
-        <ModalPay />
-      {/* </Elements> */}
+      <Elements stripe={stripe} >
+        <ModalCheckoutForm />
+      </Elements>
     </Container>
   )
 }
