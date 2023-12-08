@@ -22,7 +22,7 @@ import stores from '@/stores.json'
 
 export default function StorePickup({ handleInputsStore, inputsStore, handleCloseModal }) {
 
-    const { handleAddPlace } = useGetPlace()
+    const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     // const { } = useHandlePlace()
 
     return (
@@ -187,6 +187,7 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                                         }}
                                         onClick={() => {
                                             handleAddPlace({closerStore: store})
+                                            handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
                                             handleCloseModal('place')
                                         }}
                                         disabled={!store.open}
