@@ -19,28 +19,19 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 export default function StoreSection () {
 
   const { handleOpenModal } = useGetModal({modalType: 'place'})
-  const {place, handleTypeDelivery} = useGetPlace()
+  const {place, handleRemovePlace, handleTypeDelivery} = useGetPlace()
   const closerStore = place.closerStore
   const inputsHome = place.inputsHome
-  const [whereDelivery, setWhereDelivery] = useState(() => {
-    if (inputsHome) return 'home'
-    return 'store'
-  })
-
-  useEffect(() => {
-    if (inputsHome) setWhereDelivery('home')
-    else if (closerStore) setWhereDelivery('store')
-    else return setWhereDelivery('')
-  }, [place])
+  const typeDelivery = place.typeDelivery
 
   function handleChange(event) {
     const name = event.target.value
     if (name === 'home' && !inputsHome) {
       return handleOpenModal('deliveryPlace')
     }
-    setWhereDelivery(name)
     const totalName = name === 'home' ? 'Entrega a domicilio' : 'Recoger en tienda'
-    handleTypeDelivery(name, totalName )
+    handleRemovePlace({place: 'inputsHome'})
+    handleTypeDelivery({name, totalName})
   }
 
   return (
@@ -129,7 +120,7 @@ export default function StoreSection () {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={whereDelivery}
+                    value={typeDelivery.name}
                     size='small'
                     // label="Age"
                     onChange={handleChange}
@@ -140,7 +131,7 @@ export default function StoreSection () {
                 </FormControl>
               </Grid>
               {
-                inputsHome && whereDelivery === 'home'
+                inputsHome && typeDelivery.name === 'home'
                 ? (
                   <>
                     <Grid
