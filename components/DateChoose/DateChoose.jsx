@@ -5,8 +5,10 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import useGetPlace from '@/hooks/useGetPlace';
 import dayjs from 'dayjs'
 import 'dayjs/locale/en-gb'
+
 import TextField from '@mui/material/TextField'
 import Input from '@mui/material/Input'
 import Typography from '@mui/material/Typography'
@@ -15,7 +17,7 @@ const daysES = {
   ['Monday']: 'Lunes',
   ['Tuesday']: 'Martes',
   ['Wednesday']: 'Miércoles',
-  ['Thuersday']: 'Jueves',
+  ['Thursday']: 'Jueves',
   ['Friday']: 'Viernes',
   ['Saturday']: 'Sábado',
   ['Sunday']: 'Domingo',
@@ -33,7 +35,7 @@ const monthsES = {
   ['September']: 'Septiembre',
   ['October']: 'Octubre',
   ['November']: 'Noviembre',
-  ['Dicember']: 'Diciembre',
+  ['December']: 'Diciembre',
 }
 
 function NoteCalendar() {
@@ -55,6 +57,7 @@ export default function DateChoose() {
 
   const [date, setDate] = useState(null)
   const [textDate, setTextDate] = useState('')
+  const {handleDeadLine} = useGetPlace()
 
   useEffect(() => {
     if (!date) return
@@ -69,6 +72,7 @@ export default function DateChoose() {
     }
     newTextDate = newTextDate + `, ${date['$D']} de ${monthsES[date.format('MMMM')]} del ${date.format('YYYY')}`
     setTextDate(newTextDate)
+    handleDeadLine({property: 'date', value: {realDate: date.format('DD/MM/YYYY'), relativeDate: newTextDate}})
   }, [date])
 
   function handleChange (event) {
