@@ -34,15 +34,13 @@ const style = {
 
 export default function ModalStoreDelivery() {
 
-  const {open, handleCloseModalPlace} = useGetModal({modalType: 'place'})
+  const {open, handleCloseModal} = useGetModal({modalType: 'place'})
 
   const [delivery, setDelivery] = useState('store')
 
   const {
     inputsStore,
     inputsHome,
-    withinLimitSaved,
-    distanceSaved,
     typeLocation,
     closerStore,
     changeWithinLimitSaved,
@@ -62,7 +60,7 @@ export default function ModalStoreDelivery() {
     <div>
       <Modal
         open={open}
-        onClose={handleCloseModalPlace}
+        onClose={() => {handleCloseModal('place')}}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -113,14 +111,14 @@ export default function ModalStoreDelivery() {
             ? <StorePickup
                 inputsStore={inputsStore}
                 handleInputsStore={handleInputsStore}
-                handleCloseModalPlace={handleCloseModalPlace}
+                handleCloseModal={handleCloseModal}
               />
             : <HomeDelivery
                 handleInputsAddress={handleInputsAddress}
                 inputsHome={inputsHome}
                 typeLocation={typeLocation}
-                withinLimitSaved={withinLimitSaved}
-                distanceSaved={distanceSaved}
+                withinLimitSaved={inputsHome.withinLimitSaved}
+                distanceSaved={inputsHome.distanceSaved}
                 closerStore={closerStore}
                 changeWithinLimitSaved={changeWithinLimitSaved}
                 handleDistanceSaved={handleDistanceSaved}

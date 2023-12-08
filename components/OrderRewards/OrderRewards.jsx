@@ -1,9 +1,11 @@
 'use client'
 
+import useGetModal from '@/hooks/useGetModal'
 import UserSection from './UserSection'
 import OrderSection from './OrderSection'
 import StoreSection from './StoreSection'
 import TotalPriceSection from './TotalPriceSection'
+import ButtonPay from '@/components/ButtonPay/ButtonPay'
 
 import Image from 'next/image'
 import Grid from '@mui/material/Grid'
@@ -19,9 +21,7 @@ import logoBeraud from '@/public/images/homeimg/homeimgberaud/logoBeraud.png'
 
 function OrderRewards () {
 
-  function handleSubmit() {
-
-  }
+  const { handleOpenModal } = useGetModal({modalType: 'pay'})
 
   return (
     <Grid
@@ -49,7 +49,6 @@ function OrderRewards () {
         />
         <Box
           component='form'
-          onSubmit={handleSubmit}
           noValidate
           autoComplete='off'
           sx={{
@@ -79,12 +78,16 @@ function OrderRewards () {
           <TotalPriceSection />
 
           <Box>
-            <Button
+            {/* <Button
               variant='contained'
               color='secondary'
               sx={{ my:1 }}
               fullWidth
-              >Siguiente paso</Button>
+              onClick={() => {handleOpenModal('pay')}}
+            >
+              Siguiente paso
+            </Button> */}
+            <ButtonPay />
           </Box>
           
         </Box>

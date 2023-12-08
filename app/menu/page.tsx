@@ -1,6 +1,5 @@
 'use client'
 
-
 import { useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -13,9 +12,16 @@ import ModalStoresDetail from '@/components/ModalStoresDetail/ModalStoresDetail'
 import ModalUserInfo from '@/components/ModalUserInfo/ModalUserInfo'
 import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePassword'
 import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
+import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 // import style from './page.module.css'
+
+// const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+// const stripePromise = loadStripe('pk_test_51OIZNTCMhwExfY9d0HYdVil8pzdiMC07RWY6HqyifqC4FDK80y4erkueRmDJFmv0Y9TWdWSu3GygjpIVQXHXieeh00vIv12PNd')
+const stripe = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`)
 
 function Menu () {
   const [open, setOpen] = useState(false);
@@ -25,6 +31,10 @@ function Menu () {
     googleMapsApiKey: 'AIzaSyDc8oY7zb9QuGqlkM4kJoOui0lxPv6sOAg',
     libraries: ['places'],
   });
+
+  const options = {
+    // clientSecret: `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
+  }
 
   return (
     <Container maxWidth="lg" sx={{ mt: '40px'}}>
@@ -46,6 +56,9 @@ function Menu () {
       <ModalUserInfo />
       <ModalChangePassword />
       <ModalChangeEmail />
+      <Elements stripe={stripe} >
+        <ModalCheckoutForm />
+      </Elements>
     </Container>
   )
 }

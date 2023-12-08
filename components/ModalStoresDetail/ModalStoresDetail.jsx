@@ -98,7 +98,7 @@ function ModalStoresDetail() {
                         variant='contained'
                         disabled={( currentStore.open ? false : true ) || Boolean(inputsHome) }
                         onClick={() => { 
-                            handleAddPlace(currentStore)
+                            handleAddPlace({closerStore})
                             handleCloseModal('storesDetail')
                         }}
                     >
