@@ -19,7 +19,7 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 export default function StoreSection () {
 
   const { handleOpenModal } = useGetModal({modalType: 'place'})
-  const {place} = useGetPlace()
+  const {place, handleTypeDelivery} = useGetPlace()
   const closerStore = place.closerStore
   const inputsHome = place.inputsHome
   const [whereDelivery, setWhereDelivery] = useState(() => {
@@ -34,10 +34,13 @@ export default function StoreSection () {
   }, [place])
 
   function handleChange(event) {
-    if (event.target.value === 'home' && !inputsHome) {
+    const name = event.target.value
+    if (name === 'home' && !inputsHome) {
       return handleOpenModal('deliveryPlace')
     }
-    setWhereDelivery(event.target.value)
+    setWhereDelivery(name)
+    const totalName = name === 'home' ? 'Entrega a domicilio' : 'Recoger en tienda'
+    handleTypeDelivery(name, totalName )
   }
 
   return (
