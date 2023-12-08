@@ -55,7 +55,7 @@ function NoteCalendar() {
 
 export default function DateChoose() {
 
-  const [date, setDate] = useState(null)
+  const [date, setDate] = useState(dayjs())
   const [textDate, setTextDate] = useState('')
   const {handleDeadLine} = useGetPlace()
 
