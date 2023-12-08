@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { addPlace, removePlace } from '@/stores/place/slice'
+import { addPlace, removePlace, addDeadLine, addTypeDelivery } from '@/stores/place/slice'
 
 export default function useGetPlace () {
 
@@ -14,5 +14,13 @@ export default function useGetPlace () {
         dispatch(removePlace())
     }
 
-    return {place, handleAddPlace, handleRemovePlace}
+    function handleDeadLine(time) {
+        dispatch(addDeadLine(time))
+    }
+
+    function handleTypeDelivery(date) {
+        dispatch(addTypeDelivery(date))
+    }
+
+    return {place, handleAddPlace, handleRemovePlace, handleDeadLine, handleTypeDelivery}
 }
