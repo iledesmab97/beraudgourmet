@@ -114,7 +114,7 @@ function ModalCheckoutForm() {
                     variant='title'
                     gutterBottom
                 >
-                    Pedido a domicilio
+                    { place.typeDelivery && place.typeDelivery.totalName }
                 </Typography>
                 <Grid
                     container
@@ -147,14 +147,21 @@ function ModalCheckoutForm() {
                                 De: {place.closerStore && place.closerStore.name}
                             </Typography>
                         </Grid>
-                        <Grid item>    
-                            <Typography
-                                variant='p'
-                                gutterBottom
-                            >
-                                Dirección: 
-                            </Typography>
-                        </Grid>
+                        {
+                            place.typeDelivery && place.typeDelivery.name  === 'home' ?
+                            (
+                                <Grid item>    
+                                    <Typography
+                                        variant='p'
+                                        gutterBottom
+                                    >
+                                        Dirección: {`${place.inputsHome.street.unity}/${place.inputsHome.street.number} ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
+                                    </Typography>
+                                </Grid>
+                            ) : (
+                                null
+                            )
+                        }
                         <Grid item>
                             <Typography
                                 variant='p'
