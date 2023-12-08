@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import {Stripe} from 'stripe'
+import useGetModal from '@/hooks/useGetModal'
 
 import Button from '@mui/material/Button'
 
 function ButtonPay() {
 
     const [stripe, setStripe] = useState(null)
+    const { handleOpenModal } = useGetModal({modalType: 'pay'})
 
     // useEffect(() => {
     //     // const newStripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -38,8 +40,9 @@ function ButtonPay() {
             sx={{ my:1 }}
             fullWidth
             onClick={() => {
-                console.log('estoy pagando')
-                makePay()
+                // console.log('estoy pagando')
+                // makePay()
+                handleOpenModal('pay')
             }}
         >Pagar</Button>
     )
