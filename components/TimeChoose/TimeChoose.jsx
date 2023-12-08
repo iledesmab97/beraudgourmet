@@ -23,7 +23,7 @@ function differenceTime(now, later) {
 
 export default function TimePickerViewRenderers() {
 
-    const [hour, setHour] = useState(null)
+    const [hour, setHour] = useState(dayjs().add(30, 'minute'))
     const [textHour, setTextHour] = useState('')
     const {place, handleDeadLine} = useGetPlace()
     const [today, setToday] = useState(true)
