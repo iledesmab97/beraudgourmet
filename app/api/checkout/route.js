@@ -7,7 +7,7 @@ export async function POST(req, res) {
     const {amount} = await req.json()
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount * 100,
+            amount: Math.round(amount * 100),
             currency: 'mxn',
             automatic_payment_methods: {
                 enabled: true
