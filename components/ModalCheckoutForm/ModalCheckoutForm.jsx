@@ -9,10 +9,14 @@ import useGetUser from '@/hooks/useGetUser'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
+import useTotalPrice from '@/hooks/useTotalPrice'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
@@ -44,6 +48,7 @@ function ModalCheckoutForm() {
     const {user} = useGetUser()
     const {place} = useGetPlace()
     const {orders} = useGetOrders()
+    // const {totalPrice} = useTotalPrice()
     const {checkout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
 
@@ -151,6 +156,79 @@ function ModalCheckoutForm() {
                                 {messageDelivery}
                             </Typography>
                         </Grid>
+                    </Grid>
+                    <Grid
+                        sx={{
+                            width: '100%'
+                        }}
+                    >
+
+                        {
+                            orders && orders.length && (
+                                <List>
+                                    <ListItem
+                                        sx={{
+                                            pr: '0px',
+                                            pl: '0px',
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <Typography>
+                                            Total Carrito: 
+                                        </Typography>
+                                        <Typography>
+                                            ${checkout.totalPriceCar}
+                                        </Typography>
+                                    </ListItem>
+                                    <ListItem
+                                        sx={{
+                                            pr: '0px',
+                                            pl: '0px',
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <Typography>
+                                            Total IVA Stripe:
+                                        </Typography>
+                                        <Typography>
+                                            ${checkout.commissionStripe}
+                                        </Typography>
+                                    </ListItem>
+                                    <ListItem
+                                        sx={{
+                                            pr: '0px',
+                                            pl: '0px',
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <Typography>
+                                            Total IVA:
+                                        </Typography>
+                                        <Typography>
+                                            ${checkout.IVA}
+                                        </Typography>
+                                    </ListItem>
+                                </List>
+                            )
+                        }
+                        <Box
+                            sx={{
+                                pr: '0px',
+                                pl: '0px',
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}
+                        >    
+                            <Typography variant='title'>
+                                Total
+                            </Typography>
+                            <Typography variant='button' display='block' gutterBottom>
+                                ${checkout.totalClient}
+                            </Typography>
+                        </Box>
                     </Grid>
                     <Typography
                         variant='p'
