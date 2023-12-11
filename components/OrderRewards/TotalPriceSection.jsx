@@ -1,7 +1,8 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import useGetOrder from '@/hooks/useGetOrders'
+import useGetCheckout from '@/hooks/useGetCheckout'
 import useTotalPrice from '@/hooks/useTotalPrice'
 
 import Box from '@mui/material/Box'
@@ -12,7 +13,18 @@ import ListItem from '@mui/material/ListItem'
 function TotalPriceSection() {
 
     const { orders } = useGetOrder()
+    const { handleAddCheckout } = useGetCheckout()
     const { totalPriceCar, IVA, commissionStripe, totalClient } = useTotalPrice(orders)
+
+    useEffect(() => {
+        if (!orders.length) return
+        handleAddCheckout({
+            totalPriceCar,
+            IVA,
+            commissionStripe,
+            totalClient
+        })
+    }, [orders])
 
     return (
         <Box
