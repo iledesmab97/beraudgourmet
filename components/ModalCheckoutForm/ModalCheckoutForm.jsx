@@ -53,18 +53,25 @@ function ModalCheckoutForm() {
     // const {totalPrice} = useTotalPrice()
     const {checkout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
+    const [preMessageDelivery, setPreMessageDelivery] = useState('')
 
     const [clientSecret, setClientSecret] = useState('')
 
     useEffect(() => {
         if (!place.deadLine) return
         let newMessageDeliver
+        let newPreMessageDelivery
         if (dayjs().isSame(dayjs(place.deadLine.date.realDate, 'D/M/YYYY'), 'day')) {
-            newMessageDeliver = `Se espera a las: ${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+            // newMessageDeliver = `Se espera a las: ${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+            newMessageDeliver = `${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+            newPreMessageDelivery = 'Se espera a las:'
         } else {
-            newMessageDeliver = `Se espera el: ${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+            // newMessageDeliver = `Se espera el: ${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+            newMessageDeliver = `${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+            newPreMessageDelivery = 'Se espera el:'
         }
         setMessageDelivery(newMessageDeliver)
+        setPreMessageDelivery(newPreMessageDelivery)
     }, [place])
 
     useEffect(() => {
@@ -119,54 +126,87 @@ function ModalCheckoutForm() {
                         boxSizing: 'border-box'
                     }}
                 >
-                    <Grid
-                        container
-                        item
-                        direction={'column'}
-                        alignItems={'stretch'}
-                        
-                        spacing={1}
+                    <Box
+                        sx={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}
                     >
-                        <Grid item>
+                        <Box
+                            className={styles.CheckoutFormInvoiceData}
+                        >
                             <Typography
                                 variant='p'
                                 gutterBottom
                             >
-                                Para: {user.name}
+                                Para:
                             </Typography>
-                        </Grid>
-                        <Grid item>
                             <Typography
                                 variant='p'
                                 gutterBottom
                             >
-                                De: {place.closerStore && place.closerStore.name}
+                                {user.name}
                             </Typography>
-                        </Grid>
+                        </Box>
+                        <Box
+                            className={styles.CheckoutFormInvoiceData}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                De:
+                            </Typography>
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                {place.closerStore && place.closerStore.name}
+                            </Typography>
+                        </Box>
                         {
                             place.typeDelivery && place.typeDelivery.name  === 'home' ?
                             (
-                                <Grid item>    
+                                <Box
+                                    className={styles.CheckoutFormInvoiceData}
+                                >    
                                     <Typography
                                         variant='p'
                                         gutterBottom
                                     >
-                                        Dirección: {`${place.inputsHome.street.unity}/${place.inputsHome.street.number} ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
+                                        Dirección:
                                     </Typography>
-                                </Grid>
+                                    <Typography
+                                        variant='p'
+                                        gutterBottom
+                                    >
+                                        {`${place.inputsHome.street.unity}/${place.inputsHome.street.number} ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
+                                    </Typography>
+                                </Box>
                             ) : (
                                 null
                             )
                         }
-                        <Grid item>
+                        <Box
+                            className={styles.CheckoutFormInvoiceData}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                {preMessageDelivery}
+                            </Typography>
                             <Typography
                                 variant='p'
                                 gutterBottom
                             >
                                 {messageDelivery}
                             </Typography>
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Box>
                     <Grid
                         sx={{
                             width: '100%'
@@ -284,7 +324,7 @@ function ModalCheckoutForm() {
                         </Box>
                     </Grid>
                     <Typography
-                        variant='p'
+                        variant='title'
                         gutterBottom
                         sx={{
                             alignSelf: 'center'
