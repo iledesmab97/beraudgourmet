@@ -337,14 +337,16 @@ function ModalCheckoutForm() {
                         sx={{
                             width: '100%',
                             bgcolor: '#EAEDF2',
+                            borderRadius: '8px',
+                            py: '8px'
                         }}
                     >
-                        <Typography
+                        {/* <Typography
                             variant='title'
                             gutterBottom
                         >
                             Su cuenta
-                        </Typography>
+                        </Typography> */}
                         {
                             clientSecret && (
                                 <Elements options={options} stripe={stripePromise} >
