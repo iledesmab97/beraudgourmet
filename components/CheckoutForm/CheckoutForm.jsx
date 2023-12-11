@@ -96,17 +96,9 @@ export default function CheckoutForm() {
                 onClick={handleSubmit}
             >
                 {
-                    isLoading ? (
-                        <Box component='div' className='spinner' id='spinner'></Box>
-                    ) : ('Pagar ahora')}
+                    isLoading ? 'Procesando pago' : 'Pagar ahora'
+                }
             </Button>
-            {
-                message && (
-                    <Box id='payment-message'>
-                        {message}
-                    </Box>
-                )
-            }
         </Box>
     )
 }
