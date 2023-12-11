@@ -1,3 +1,5 @@
-.CardInput input {
-    font-size: 2em;
+.CheckoutFormInvoiceData {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
