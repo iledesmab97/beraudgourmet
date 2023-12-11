@@ -3,21 +3,27 @@
 import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import { loadStripe } from '@stripe/stripe-js'
-import {CardElement, useStripe, useElements} from '@stripe/react-stripe-js'
+import {Elements} from '@stripe/react-stripe-js'
+import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
 import useGetUser from '@/hooks/useGetUser'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
+import useGetCheckout from '@/hooks/useGetCheckout'
+import useTotalPrice from '@/hooks/useTotalPrice'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import FormControl from '@mui/material/FormControl'
 import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Divider from '@mui/material/Divider'
+import ListItemText from '@mui/material/ListItemText'
 
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
+
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`)
 
 const style = {
     position: 'absolute',
@@ -44,60 +50,49 @@ function ModalCheckoutForm() {
     const {user} = useGetUser()
     const {place} = useGetPlace()
     const {orders} = useGetOrders()
-    const [stripeSecret, setStripeSecret] = useState(null)
-    const stripe = useStripe()
-    const elements = useElements()
+    // const {totalPrice} = useTotalPrice()
+    const {checkout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
+    const [preMessageDelivery, setPreMessageDelivery] = useState('')
+
+    const [clientSecret, setClientSecret] = useState('')
 
     useEffect(() => {
         if (!place.deadLine) return
         let newMessageDeliver
+        let newPreMessageDelivery
         if (dayjs().isSame(dayjs(place.deadLine.date.realDate, 'D/M/YYYY'), 'day')) {
-            newMessageDeliver = `Se espera a las: ${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+            // newMessageDeliver = `Se espera a las: ${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+            newMessageDeliver = `${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
+            newPreMessageDelivery = 'Se espera a las:'
         } else {
-            newMessageDeliver = `Se espera el: ${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+            // newMessageDeliver = `Se espera el: ${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+            newMessageDeliver = `${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
+            newPreMessageDelivery = 'Se espera el:'
         }
         setMessageDelivery(newMessageDeliver)
+        setPreMessageDelivery(newPreMessageDelivery)
     }, [place])
 
-    // useEffect(() => {
-    //     loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY}`)
-    //         .then(data => {
-    //             console.log('data:', data)
-    //             setStripeSecret(data)
-    //         })
-    // },[])
-
-    async function handleSubmit(event) {
-        event.preventDefault()
-        const {error, paymentMethod} = await stripe.createPaymentMethod({
-            type: 'card',
-            card: elements.getElement(CardElement)
+    useEffect(() => {
+        if (!open || !orders.length) return
+        fetch('api/checkout', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            // body: JSON.stringify({ items: [{ id: "xl-tshirt" }] })
+            body: JSON.stringify({ amount: checkout.totalClient })
         })
-        if (!error) {
-            // console.log('paymentMethod:', paymentMethod)
-            const {id} = paymentMethod
-            const res = await fetch('/api/checkout', {
-                method: 'POST',
-                body: JSON.stringify({
-                    id
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            const data = await res.json()
-            // console.log('data:', data)
-            if (data.message === 'Successful payment') window.location.href = 'http://localhost:3000/success'
-            // const payment = await stripeSecret.paymentIntents.create({
-            //     amount: 5 * 100,
-            //     currency: 'USD',
-            //     description: 'Pizza',
-            //     confirm: true
-            // })
-            // console.log('payment:', payment)
-            // console.log('pago exitoso')
-        }
+            .then(res => res.json())
+            .then(data => setClientSecret(data.clientSecret))
+    }, [open])
+
+    const appearance = {
+        theme: 'stripe'
+    }
+
+    const options = {
+        clientSecret,
+        appearance
     }
 
     return (
@@ -116,63 +111,220 @@ function ModalCheckoutForm() {
                 >
                     { place.typeDelivery && place.typeDelivery.totalName }
                 </Typography>
-                <Grid
+                <Box
                     container
                     item
-                    spacing={2}
-                    direction={'column'}
-                    alignItems={'center'}
+                    sx={{
+                        height: '90%',
+                        width: '100%',
+                        overflow: 'scroll',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '16px',
+                        pr: '8px',
+                        boxSizing: 'border-box'
+                    }}
                 >
-                    <Grid
-                        container
-                        item
-                        direction={'column'}
-                        alignItems={'stretch'}
-                        
-                        spacing={1}
+                    <Box
+                        sx={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}
                     >
-                        <Grid item>
+                        <Box
+                            className={styles.CheckoutFormInvoiceData}
+                        >
                             <Typography
                                 variant='p'
                                 gutterBottom
                             >
-                                Para: {user.name}
+                                Para:
                             </Typography>
-                        </Grid>
-                        <Grid item>
                             <Typography
                                 variant='p'
                                 gutterBottom
                             >
-                                De: {place.closerStore && place.closerStore.name}
+                                {user.name}
                             </Typography>
-                        </Grid>
+                        </Box>
+                        <Box
+                            className={styles.CheckoutFormInvoiceData}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                De:
+                            </Typography>
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                {place.closerStore && place.closerStore.name}
+                            </Typography>
+                        </Box>
                         {
                             place.typeDelivery && place.typeDelivery.name  === 'home' ?
                             (
-                                <Grid item>    
+                                <Box
+                                    className={styles.CheckoutFormInvoiceData}
+                                >    
                                     <Typography
                                         variant='p'
                                         gutterBottom
                                     >
-                                        Dirección: {`${place.inputsHome.street.unity}/${place.inputsHome.street.number} ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
+                                        Dirección:
                                     </Typography>
-                                </Grid>
+                                    <Typography
+                                        variant='p'
+                                        gutterBottom
+                                    >
+                                        {`${place.inputsHome.street.unity}/${place.inputsHome.street.number} ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
+                                    </Typography>
+                                </Box>
                             ) : (
                                 null
                             )
                         }
-                        <Grid item>
+                        <Box
+                            className={styles.CheckoutFormInvoiceData}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                {preMessageDelivery}
+                            </Typography>
                             <Typography
                                 variant='p'
                                 gutterBottom
                             >
                                 {messageDelivery}
                             </Typography>
-                        </Grid>
+                        </Box>
+                    </Box>
+                    <Grid
+                        sx={{
+                            width: '100%'
+                        }}
+                    >
+
+                        {
+                            orders && orders.length && (
+                                <>
+                                    {orders.map((order, index) => (
+                                        <Box key={order.name + order.totalPrice + ' ' + index}>
+                                            <Divider />
+                                            <ListItem
+                                                sx={{
+                                                    px: '0px'
+                                                }}
+                                            >
+                                                <ListItemText
+                                                    primary={
+                                                    <Box
+                                                        component={'div'}
+                                                        sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between'
+                                                        }}
+                                                    >
+                                                        { order.quantity + ' x ' + order.name + ` (${order.size})`}
+                                                        <Typography>
+                                                            ${order.totalPrice}
+                                                        </Typography>
+                                                    </Box>
+                                                    }
+                                                    secondary={
+                                                    <>
+                                                        {`${order.mass}${Object.keys(order.extra).map(ingredient => {
+                                                        return `, ${order.extra[ingredient]}x ${ingredient}`
+                                                        }).join('')
+                                                        }`}
+                                                        {
+                                                        order.ingredientsModal.map((ingredient, index) => (
+                                                            <Box key={ingredient + index} component={'label'}>, <CrossTet component={'span'}>{ingredient}</CrossTet></Box>
+                                                        ))
+                                                        }
+                                                    </>
+                                                    }
+                                                />
+                                            </ListItem>
+                                            <Divider />
+                                        </Box>
+                                    ) )}
+                                    <List>
+                                        <ListItem
+                                            sx={{
+                                                pr: '0px',
+                                                pl: '0px',
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <Typography>
+                                                Total Carrito: 
+                                            </Typography>
+                                            <Typography>
+                                                ${checkout.totalPriceCar}
+                                            </Typography>
+                                        </ListItem>
+                                        <ListItem
+                                            sx={{
+                                                pr: '0px',
+                                                pl: '0px',
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <Typography>
+                                                Total IVA Stripe:
+                                            </Typography>
+                                            <Typography>
+                                                ${checkout.commissionStripe}
+                                            </Typography>
+                                        </ListItem>
+                                        <ListItem
+                                            sx={{
+                                                pr: '0px',
+                                                pl: '0px',
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <Typography>
+                                                Total IVA:
+                                            </Typography>
+                                            <Typography>
+                                                ${checkout.IVA}
+                                            </Typography>
+                                        </ListItem>
+                                    </List>
+                                </>
+                            )
+                        }
+                        <Box
+                            sx={{
+                                pr: '0px',
+                                pl: '0px',
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}
+                        >    
+                            <Typography variant='title'>
+                                Total
+                            </Typography>
+                            <Typography variant='button' display='block' gutterBottom>
+                                ${checkout.totalClient}
+                            </Typography>
+                        </Box>
                     </Grid>
                     <Typography
-                        variant='p'
+                        variant='title'
                         gutterBottom
                         sx={{
                             alignSelf: 'center'
@@ -185,6 +337,8 @@ function ModalCheckoutForm() {
                         sx={{
                             width: '100%',
                             bgcolor: '#EAEDF2',
+                            borderRadius: '8px',
+                            py: '8px'
                         }}
                     >
                         {/* <Typography
@@ -193,33 +347,15 @@ function ModalCheckoutForm() {
                         >
                             Su cuenta
                         </Typography> */}
-                        <Box
-                            component='form'
-                            sx={{
-                                py: '8px',
-                                px: '16px'
-                            }}
-                            // onSubmit={handleSubmit}
-                        >
-                            <CardElement
-                                className={`MuiInputBase-input MuiOutlinedInput-input mui-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input ${styles.CardInput}`}
-                            />
-                            <TextField
-                                variant='outlined'
-                                fullWidth
-                            />
-                        </Box>
+                        {
+                            clientSecret && (
+                                <Elements options={options} stripe={stripePromise} >
+                                    <CheckoutForm />
+                                </Elements>
+                            )
+                        }
                     </Grid>
-                </Grid>
-                <Button
-                    variant='contained'
-                    onClick={handleSubmit}
-                >
-                    Pagar
-                </Button>
-                    {/* <PaymentElement />
-                    <Button>Enviar Pago</Button> */}
-                
+                </Box>                
             </Grid>
         </Modal> 
     )
