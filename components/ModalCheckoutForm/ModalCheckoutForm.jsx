@@ -3,21 +3,21 @@
 import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import { loadStripe } from '@stripe/stripe-js'
-import {CardElement, useStripe, useElements} from '@stripe/react-stripe-js'
+import {Elements} from '@stripe/react-stripe-js'
+import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
 import useGetUser from '@/hooks/useGetUser'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
+import useGetCheckout from '@/hooks/useGetCheckout'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import FormControl from '@mui/material/FormControl'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
 
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
+
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`)
 
 const style = {
     position: 'absolute',
@@ -44,10 +44,10 @@ function ModalCheckoutForm() {
     const {user} = useGetUser()
     const {place} = useGetPlace()
     const {orders} = useGetOrders()
-    const [stripeSecret, setStripeSecret] = useState(null)
-    const stripe = useStripe()
-    const elements = useElements()
+    const {checkout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
+
+    const [clientSecret, setClientSecret] = useState('')
 
     useEffect(() => {
         if (!place.deadLine) return
@@ -60,44 +60,25 @@ function ModalCheckoutForm() {
         setMessageDelivery(newMessageDeliver)
     }, [place])
 
-    // useEffect(() => {
-    //     loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY}`)
-    //         .then(data => {
-    //             console.log('data:', data)
-    //             setStripeSecret(data)
-    //         })
-    // },[])
-
-    async function handleSubmit(event) {
-        event.preventDefault()
-        const {error, paymentMethod} = await stripe.createPaymentMethod({
-            type: 'card',
-            card: elements.getElement(CardElement)
+    useEffect(() => {
+        if (!open || !orders.length) return
+        fetch('api/checkout', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            // body: JSON.stringify({ items: [{ id: "xl-tshirt" }] })
+            body: JSON.stringify({ amount: checkout.totalClient })
         })
-        if (!error) {
-            // console.log('paymentMethod:', paymentMethod)
-            const {id} = paymentMethod
-            const res = await fetch('/api/checkout', {
-                method: 'POST',
-                body: JSON.stringify({
-                    id
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            const data = await res.json()
-            // console.log('data:', data)
-            if (data.message === 'Successful payment') window.location.href = 'http://localhost:3000/success'
-            // const payment = await stripeSecret.paymentIntents.create({
-            //     amount: 5 * 100,
-            //     currency: 'USD',
-            //     description: 'Pizza',
-            //     confirm: true
-            // })
-            // console.log('payment:', payment)
-            // console.log('pago exitoso')
-        }
+            .then(res => res.json())
+            .then(data => setClientSecret(data.clientSecret))
+    }, [open])
+
+    const appearance = {
+        theme: 'stripe'
+    }
+
+    const options = {
+        clientSecret,
+        appearance
     }
 
     return (
@@ -187,39 +168,21 @@ function ModalCheckoutForm() {
                             bgcolor: '#EAEDF2',
                         }}
                     >
-                        {/* <Typography
+                        <Typography
                             variant='title'
                             gutterBottom
                         >
                             Su cuenta
-                        </Typography> */}
-                        <Box
-                            component='form'
-                            sx={{
-                                py: '8px',
-                                px: '16px'
-                            }}
-                            // onSubmit={handleSubmit}
-                        >
-                            <CardElement
-                                className={`MuiInputBase-input MuiOutlinedInput-input mui-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input ${styles.CardInput}`}
-                            />
-                            <TextField
-                                variant='outlined'
-                                fullWidth
-                            />
-                        </Box>
+                        </Typography>
+                        {
+                            clientSecret && (
+                                <Elements options={options} stripe={stripePromise} >
+                                    <CheckoutForm />
+                                </Elements>
+                            )
+                        }
                     </Grid>
-                </Grid>
-                <Button
-                    variant='contained'
-                    onClick={handleSubmit}
-                >
-                    Pagar
-                </Button>
-                    {/* <PaymentElement />
-                    <Button>Enviar Pago</Button> */}
-                
+                </Grid>                
             </Grid>
         </Modal> 
     )
