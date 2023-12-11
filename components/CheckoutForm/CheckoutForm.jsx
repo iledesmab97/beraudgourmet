@@ -44,7 +44,6 @@ export default function CheckoutForm() {
     }, [stripe])
 
     async function handleSubmit(event) {
-        console.log('entre en el submit')
         event.preventDefault()
         if (!stripe || !elements) return 
         setIsLoading(true)
@@ -73,22 +72,29 @@ export default function CheckoutForm() {
         <Box
             id='payment-form'
             component='form'
-            onSubmit={handleSubmit}
             sx={{
                 py: '8px',
-                px: '16px'
+                px: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '16px'
             }}
-            // onSubmit={handleSubmit}
         >
-            {/* <CardElement
-                className={`MuiInputBase-input MuiOutlinedInput-input mui-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input ${styles.CardInput}`}
-            /> */}
-            {/* <TextField
-                variant='outlined'
-                fullWidth
-            /> */}
-            <PaymentElement id='payment-element' options={paymentElementOptions} />
-            <Button onClick={handleSubmit}>
+            <Box
+                component='div'
+                sx={{
+                    width: '100%',
+                    py: '8px',
+                    px: '16px'
+                }}
+            >
+                <PaymentElement id='payment-element' options={paymentElementOptions} />
+            </Box>
+            <Button
+                variant='contained'
+                onClick={handleSubmit}
+            >
                 {
                     isLoading ? (
                         <Box component='div' className='spinner' id='spinner'></Box>
