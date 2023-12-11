@@ -50,7 +50,6 @@ function ModalCheckoutForm() {
     const {user} = useGetUser()
     const {place} = useGetPlace()
     const {orders} = useGetOrders()
-    // const {totalPrice} = useTotalPrice()
     const {checkout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
     const [preMessageDelivery, setPreMessageDelivery] = useState('')
@@ -62,11 +61,9 @@ function ModalCheckoutForm() {
         let newMessageDeliver
         let newPreMessageDelivery
         if (dayjs().isSame(dayjs(place.deadLine.date.realDate, 'D/M/YYYY'), 'day')) {
-            // newMessageDeliver = `Se espera a las: ${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
             newMessageDeliver = `${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
             newPreMessageDelivery = 'Se espera a las:'
         } else {
-            // newMessageDeliver = `Se espera el: ${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
             newMessageDeliver = `${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
             newPreMessageDelivery = 'Se espera el:'
         }
@@ -79,11 +76,13 @@ function ModalCheckoutForm() {
         fetch('api/checkout', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            // body: JSON.stringify({ items: [{ id: "xl-tshirt" }] })
             body: JSON.stringify({ amount: checkout.totalClient })
         })
             .then(res => res.json())
-            .then(data => setClientSecret(data.clientSecret))
+            .then(data => {
+                if (data.clientSecret) setClientSecret(data.clientSecret)
+                else console.log('Error:', data.message)
+            })
     }, [open])
 
     const appearance = {
@@ -112,8 +111,6 @@ function ModalCheckoutForm() {
                     { place.typeDelivery && place.typeDelivery.totalName }
                 </Typography>
                 <Box
-                    container
-                    item
                     sx={{
                         height: '90%',
                         width: '100%',
@@ -341,12 +338,6 @@ function ModalCheckoutForm() {
                             py: '8px'
                         }}
                     >
-                        {/* <Typography
-                            variant='title'
-                            gutterBottom
-                        >
-                            Su cuenta
-                        </Typography> */}
                         {
                             clientSecret && (
                                 <Elements options={options} stripe={stripePromise} >
