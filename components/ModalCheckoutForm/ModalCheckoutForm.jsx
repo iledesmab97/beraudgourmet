@@ -17,6 +17,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
+import Divider from '@mui/material/Divider'
+import ListItemText from '@mui/material/ListItemText'
 
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
@@ -102,12 +104,20 @@ function ModalCheckoutForm() {
                 >
                     { place.typeDelivery && place.typeDelivery.totalName }
                 </Typography>
-                <Grid
+                <Box
                     container
                     item
-                    spacing={2}
-                    direction={'column'}
-                    alignItems={'center'}
+                    sx={{
+                        height: '90%',
+                        width: '100%',
+                        overflow: 'scroll',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '16px',
+                        pr: '8px',
+                        boxSizing: 'border-box'
+                    }}
                 >
                     <Grid
                         container
@@ -165,53 +175,96 @@ function ModalCheckoutForm() {
 
                         {
                             orders && orders.length && (
-                                <List>
-                                    <ListItem
-                                        sx={{
-                                            pr: '0px',
-                                            pl: '0px',
-                                            display: 'flex',
-                                            justifyContent: 'space-between'
-                                        }}
-                                    >
-                                        <Typography>
-                                            Total Carrito: 
-                                        </Typography>
-                                        <Typography>
-                                            ${checkout.totalPriceCar}
-                                        </Typography>
-                                    </ListItem>
-                                    <ListItem
-                                        sx={{
-                                            pr: '0px',
-                                            pl: '0px',
-                                            display: 'flex',
-                                            justifyContent: 'space-between'
-                                        }}
-                                    >
-                                        <Typography>
-                                            Total IVA Stripe:
-                                        </Typography>
-                                        <Typography>
-                                            ${checkout.commissionStripe}
-                                        </Typography>
-                                    </ListItem>
-                                    <ListItem
-                                        sx={{
-                                            pr: '0px',
-                                            pl: '0px',
-                                            display: 'flex',
-                                            justifyContent: 'space-between'
-                                        }}
-                                    >
-                                        <Typography>
-                                            Total IVA:
-                                        </Typography>
-                                        <Typography>
-                                            ${checkout.IVA}
-                                        </Typography>
-                                    </ListItem>
-                                </List>
+                                <>
+                                    {orders.map((order, index) => (
+                                        <Box key={order.name + order.totalPrice + ' ' + index}>
+                                            <Divider />
+                                            <ListItem
+                                                sx={{
+                                                    px: '0px'
+                                                }}
+                                            >
+                                                <ListItemText
+                                                    primary={
+                                                    <Box
+                                                        component={'div'}
+                                                        sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between'
+                                                        }}
+                                                    >
+                                                        { order.quantity + ' x ' + order.name + ` (${order.size})`}
+                                                        <Typography>
+                                                            ${order.totalPrice}
+                                                        </Typography>
+                                                    </Box>
+                                                    }
+                                                    secondary={
+                                                    <>
+                                                        {`${order.mass}${Object.keys(order.extra).map(ingredient => {
+                                                        return `, ${order.extra[ingredient]}x ${ingredient}`
+                                                        }).join('')
+                                                        }`}
+                                                        {
+                                                        order.ingredientsModal.map((ingredient, index) => (
+                                                            <Box key={ingredient + index} component={'label'}>, <CrossTet component={'span'}>{ingredient}</CrossTet></Box>
+                                                        ))
+                                                        }
+                                                    </>
+                                                    }
+                                                />
+                                            </ListItem>
+                                            <Divider />
+                                        </Box>
+                                    ) )}
+                                    <List>
+                                        <ListItem
+                                            sx={{
+                                                pr: '0px',
+                                                pl: '0px',
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <Typography>
+                                                Total Carrito: 
+                                            </Typography>
+                                            <Typography>
+                                                ${checkout.totalPriceCar}
+                                            </Typography>
+                                        </ListItem>
+                                        <ListItem
+                                            sx={{
+                                                pr: '0px',
+                                                pl: '0px',
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <Typography>
+                                                Total IVA Stripe:
+                                            </Typography>
+                                            <Typography>
+                                                ${checkout.commissionStripe}
+                                            </Typography>
+                                        </ListItem>
+                                        <ListItem
+                                            sx={{
+                                                pr: '0px',
+                                                pl: '0px',
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <Typography>
+                                                Total IVA:
+                                            </Typography>
+                                            <Typography>
+                                                ${checkout.IVA}
+                                            </Typography>
+                                        </ListItem>
+                                    </List>
+                                </>
                             )
                         }
                         <Box
@@ -260,7 +313,7 @@ function ModalCheckoutForm() {
                             )
                         }
                     </Grid>
-                </Grid>                
+                </Box>                
             </Grid>
         </Modal> 
     )
