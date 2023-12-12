@@ -68,13 +68,27 @@ export const modalSlice = createSlice({
             }
         },
         openModalOrder: (state, action) => {
-            if (state.order[action.payload.name]) {
+            const {item, index} = action.payload
+            if (index) {
                 return {
                     ...state,
                     order: {
                         ...state.order,
                         open:true,
-                        currentProduct: action.payload.name
+                        edit: {
+                            item,
+                            index
+                        }
+                    }
+                }
+            }
+            if (state.order[action.payload.item.name]) {
+                return {
+                    ...state,
+                    order: {
+                        ...state.order,
+                        open:true,
+                        currentProduct: item.name
                     }
                 }
             }
@@ -82,9 +96,9 @@ export const modalSlice = createSlice({
                 ...state,
                 order: {
                     ...state.order,
-                    [action.payload.name]: action.payload,
+                    [item.name]: item,
                     open: true,
-                    currentProduct: action.payload.name
+                    currentProduct: item.name
                 }
             }
         },
@@ -94,6 +108,7 @@ export const modalSlice = createSlice({
                 order: {
                     ...state.order,
                     open: false,
+                    edit: null 
                 }
             }
             return newState
