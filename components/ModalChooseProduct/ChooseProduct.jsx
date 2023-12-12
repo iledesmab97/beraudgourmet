@@ -17,8 +17,8 @@ import { useMediaQuery } from '@mui/material'
 
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
-    const { product, handleCloseModalOrder } = useGetModal({modalType:'order' })
-    const { handleAddOrder } = useGetOrder()
+    const { product, edit, handleCloseModalOrder } = useGetModal({modalType:'order' })
+    const { handleAddOrder, handleUpdateOrder } = useGetOrder()
 
     const {
         currentProduct,
@@ -120,10 +120,12 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 handleQuantity={handleQuantity}
                 quantity={inputs.quantity}
                 totalPrice={totalPrice}
+                edit={edit}
                 handleAddOrder={handleAddOrder}
                 currentProduct={currentProduct}
                 handleCloseModalOrder={handleCloseModalOrder}
                 handleAddedItem={handleAddedItem}
+                handleUpdateOrder={handleUpdateOrder}
             />
 
         </Grid>
