@@ -13,7 +13,7 @@ export default function useHandleOrder({ product }) {
         ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
         extra: product?.extra ? product.extra : {}
     })
-    const {handleUpdateModalOrder} = useGetModal({modalType:'order'})
+    const { edit, handleUpdateModalOrder} = useGetModal({modalType:'order'})
 
     const totalPrice = useMemo(() => {
         const price = product.price[inputs.size][inputs.mass]
@@ -51,6 +51,7 @@ export default function useHandleOrder({ product }) {
     useEffect(() => {
         firstLoad.current = false
         return () => {
+            if (edit) return
             if (addedItem.current) {
                 for (const item of items) {
                     if (item.name === currentProduct.name) {
