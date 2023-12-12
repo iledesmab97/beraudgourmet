@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import {Stripe} from 'stripe'
 import useGetModal from '@/hooks/useGetModal'
+import useGetOrders from '@/hooks/useGetOrders'
 
 import Button from '@mui/material/Button'
 
@@ -10,28 +11,13 @@ function ButtonPay() {
 
     const [stripe, setStripe] = useState(null)
     const { handleOpenModal } = useGetModal({modalType: 'pay'})
+    const [canPay, setCanPay] = useState(false) 
+    const {orders} = useGetOrders()
 
-    // useEffect(() => {
-    //     // const newStripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-    //     const newStripe = new Stripe('sk_test_51OIZNTCMhwExfY9djLejwgt1FUOqhk8qQm3Qjp6cHIKGMw6v8O04pJSilxbeZ4oQxVNUKjxc0WXS6efL51u6brza006TLHXdCV')
-    //     setStripe(newStripe)
-    // }, [])
-
-    async function makePay() {
-        // const session = await stripe.checkout.sessions.create({
-        //     mode: 'payment',
-        //     payment_method_types: ['card'],
-        //     line_items: [
-        //         {
-        //             price: 50,
-        //             quantity: 1
-        //         }
-        //     ],
-        //     success_url: 'http://localhost:3000',
-        //     cancel_url: 'http://localhost:3000/menu'
-        // })
-        // console.log('session:', session)
-    }
+    useEffect(() => {
+        if (!orders.length) return
+        setCanPay(true)
+    }, [orders])
 
     return (
         <Button
@@ -39,9 +25,8 @@ function ButtonPay() {
             color='secondary'
             sx={{ my:1 }}
             fullWidth
+            disabled={!canPay}
             onClick={() => {
-                // console.log('estoy pagando')
-                // makePay()
                 handleOpenModal('pay')
             }}
         >Pagar</Button>
