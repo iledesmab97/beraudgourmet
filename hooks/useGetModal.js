@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
 import { openModal, closeModal, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } from '@/stores/modal/slice'
 
@@ -5,6 +6,13 @@ export default function useGetModal({modalType}) {
 
     const modal = useAppSelector(state => state.modal[modalType])
     const dispatch = useAppDispatch()
+
+    const product = useMemo(() => {
+        if (modal.edit) {
+            return modal.edit.item
+        }
+        return modal[modal.currentProduct]
+    }, [modal])
 
     function handleOpenModal(modal) {
         dispatch(openModal(modal))
@@ -23,8 +31,8 @@ export default function useGetModal({modalType}) {
         dispatch(closeModalPlace())
     }
 
-    function handleOpenModalOrder(product) {
-        dispatch(openModalOrder(product))
+    function handleOpenModalOrder({item, index}) {
+        dispatch(openModalOrder({item, index}))
     }
 
     function handleCloseModalOrder() {
@@ -37,7 +45,8 @@ export default function useGetModal({modalType}) {
 
     return {
         open: modal.open,
-        product: modal[modal.currentProduct],
+        product,
+        edit: modal.edit,
         handleOpenModal,
         handleCloseModal,
         handleChangeModal,
