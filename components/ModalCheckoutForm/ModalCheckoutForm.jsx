@@ -72,7 +72,7 @@ function ModalCheckoutForm() {
     }, [place])
 
     useEffect(() => {
-        if (!open || !orders.length) return
+        if (!orders.length) return
         fetch('api/checkout', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
