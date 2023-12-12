@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import useGetModal from '@/hooks/useGetModal'
 import totalIngredients from '@/ingredients.json'
+import items from '@/menuStore.json'
 
 export default function useHandleOrder({ product }) {
 
@@ -12,7 +13,7 @@ export default function useHandleOrder({ product }) {
         ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
         extra: product?.extra ? product.extra : {}
     })
-    const {handleUpdateModalOrder} = useGetModal({modalType:'order'})
+    const { edit, handleUpdateModalOrder} = useGetModal({modalType:'order'})
 
     const totalPrice = useMemo(() => {
         const price = product.price[inputs.size][inputs.mass]
@@ -24,6 +25,11 @@ export default function useHandleOrder({ product }) {
 
     const updateValue = useRef(null)
     const firstLoad = useRef(true)
+    const addedItem = useRef(false)
+
+    function handleAddedItem() {
+        addedItem.current = !addedItem.current
+    }
 
     function handleCurrentProduct(newProduct) {
         setCurrentProduct(newProduct)
@@ -45,7 +51,16 @@ export default function useHandleOrder({ product }) {
     useEffect(() => {
         firstLoad.current = false
         return () => {
-            handleUpdateModalOrder(currentProduct)
+            if (edit) return
+            if (addedItem.current) {
+                for (const item of items) {
+                    if (item.name === currentProduct.name) {
+                        handleUpdateModalOrder(item)
+                    }
+                }
+            } else {
+                handleUpdateModalOrder(currentProduct)
+            }
         }
     }, [currentProduct])
 
@@ -136,6 +151,7 @@ export default function useHandleOrder({ product }) {
         handleQuantity,
         handleMass,
         handleIngredientsModal,
-        handleExtra
+        handleExtra,
+        handleAddedItem
     }
 }

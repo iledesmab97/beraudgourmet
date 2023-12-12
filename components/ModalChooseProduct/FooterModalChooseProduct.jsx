@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
-export default function FooterModalChooseProduct({handleQuantity, quantity, totalPrice, handleAddOrder, currentProduct, handleCloseModalOrder}) {
+export default function FooterModalChooseProduct({handleQuantity, quantity, totalPrice, edit, handleAddOrder, currentProduct, handleCloseModalOrder, handleAddedItem, handleUpdateOrder}) {
     return (
         <Grid
             container
@@ -54,12 +54,18 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
             </Box>
             <Button
                 variant='contained'
-                onClick={() => accept({
-                    action: handleAddOrder,
-                    value: currentProduct
-                }, handleCloseModalOrder)}
+                onClick={() => {
+                    if (edit) {
+                        handleUpdateOrder({item: currentProduct, index: edit.index})
+                        handleCloseModalOrder()
+                    } else {
+                        handleAddOrder(currentProduct)
+                        handleAddedItem()
+                        handleCloseModalOrder()
+                    }
+                }}
             >
-                Agregar
+                {edit ? 'Actualizar' : 'Agregar'}
             </Button>
         </Grid>
     )

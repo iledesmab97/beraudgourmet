@@ -1,13 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const order = {
-    email: '',
-    name: '',
-    phone: '',
-    password: '',
-    notifications: ''
-}
-
 const initialState = []
 
 export const ordersSlice = createSlice({
@@ -19,10 +11,16 @@ export const ordersSlice = createSlice({
         },
         removeOrder: (state, action) => {
             return state.filter((order, index) => index !== action.payload)
+        },
+        updateOrder: (state, action) => {
+            const {item, index} = action.payload
+            let newOrders = [...state]
+            newOrders[index] = item
+            return newOrders
         }
     }
 })
 
 export default ordersSlice.reducer
 
-export const { addOrder, removeOrder } = ordersSlice.actions
+export const { addOrder, removeOrder, updateOrder } = ordersSlice.actions

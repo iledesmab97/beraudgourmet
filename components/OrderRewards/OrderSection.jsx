@@ -1,6 +1,7 @@
 'use client'
 
 import useGetOrder from '@/hooks/useGetOrders'
+import useGetModal from '@/hooks/useGetModal'
 import CrossTet from '@/components/CrossText/CrossText'
 
 import Box from '@mui/material/Box'
@@ -15,6 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 export default function OrderSection () {
 
   const {orders, handleRemoveOrder} = useGetOrder()
+  const {handleOpenModalOrder} = useGetModal({modalType: 'order'})
 
   return (
       <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
@@ -40,28 +42,21 @@ export default function OrderSection () {
                       <ListItemText
                         primary={
                           <Box
+                            onClick={() => {
+                              handleOpenModalOrder({item: order, index: String(index)})
+                            }}
                             component={'div'}
                             sx={{
                               display: 'flex',
-                              justifyContent: 'space-between'
+                              justifyContent: 'space-between',
+                              "&:hover": {
+                                cursor: 'pointer'
+                              }
                             }}
                           >
                             { order.quantity + ' x ' + order.name + ` (${order.size})`}
                             <Typography>
                               ${order.totalPrice}
-                              <IconButton
-                                size='small'
-                                variant='text'
-                                color='error'
-                                // endIcon={<DeleteIcon />}
-                                onClick={() => {handleRemoveOrder(index)}}
-                                sx={{
-                                  position: 'absolute',
-                                  top: '0px'
-                                }}
-                              >
-                                <CloseIcon />
-                              </IconButton>
                             </Typography>
                           </Box>
                         }
@@ -79,8 +74,25 @@ export default function OrderSection () {
                           </>
                         }
                       >
-
                       </ListItemText>
+                      <IconButton
+                        size='small'
+                        variant='text'
+                        color='error'
+                        // endIcon={<DeleteIcon />}
+                        onClick={() => {
+                          console.log('estoy removiendo el item')
+                          handleRemoveOrder(index)}}
+                        sx={{
+                          position: 'absolute',
+                          top: '0px',
+                          left: '95%',
+                          p: '0px',
+                          m: '5px'
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
                     </ListItem>
                     <Divider />
                   </Box>
