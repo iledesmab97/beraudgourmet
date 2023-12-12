@@ -27,7 +27,7 @@ function ContainerItems () {
           items.slice(0,5).map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
               <CardActionArea
-                onClick={() => {handleOpenModalOrder(item)}}
+                onClick={() => {handleOpenModalOrder({item})}}
                 sx={{
                   height: '100%'
                 }}
