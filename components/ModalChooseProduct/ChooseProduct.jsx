@@ -28,7 +28,8 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
         handleQuantity,
         handleMass,
         handleIngredientsModal,
-        handleExtra
+        handleExtra,
+        handleAddedItem
     } = useHandleOrder({ product })
 
     const theme = useTheme()
@@ -122,6 +123,7 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 handleAddOrder={handleAddOrder}
                 currentProduct={currentProduct}
                 handleCloseModalOrder={handleCloseModalOrder}
+                handleAddedItem={handleAddedItem}
             />
 
         </Grid>
