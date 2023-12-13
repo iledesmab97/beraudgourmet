@@ -12,3 +12,24 @@ export function twoDecimals(number) {
     }
     return numberBefore + '.' + numberAfter
 }
+
+export function calculateTotalPay(totalCar) {
+    if (totalCar === 0) return {totalClient: '0.00'}
+    const tasaIVA = 0.16
+    const commissionStripe = totalCar*0.036 + 3
+    const IVA = (commissionStripe) * tasaIVA
+    const totalClient = totalCar + commissionStripe + IVA
+    return ({
+        totalPriceCar: twoDecimals(totalCar),
+        commissionStripe: twoDecimals(commissionStripe),
+        IVA: twoDecimals(IVA),
+        totalClient: twoDecimals(totalClient)
+    })
+}
+
+export function totalPrice(orders) {
+    const totalPriceCar = orders.reduce((acc, cur) => {
+        return acc + cur.totalPrice
+    }, 0)
+    return calculateTotalPay(totalPriceCar)
+}

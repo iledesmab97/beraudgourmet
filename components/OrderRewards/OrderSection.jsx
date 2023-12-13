@@ -81,7 +81,6 @@ export default function OrderSection () {
                         color='error'
                         // endIcon={<DeleteIcon />}
                         onClick={() => {
-                          console.log('estoy removiendo el item')
                           handleRemoveOrder(index)}}
                         sx={{
                           position: 'absolute',

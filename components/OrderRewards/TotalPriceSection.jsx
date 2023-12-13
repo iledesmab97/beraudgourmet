@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import useGetOrder from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
-import useTotalPrice from '@/hooks/useTotalPrice'
+import {totalPrice} from '@/genericFunctions/priceCar'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -11,19 +11,29 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 
 function TotalPriceSection() {
-
     const { orders } = useGetOrder()
     const { handleAddCheckout } = useGetCheckout()
-    const { totalPriceCar, IVA, commissionStripe, totalClient } = useTotalPrice(orders)
-
-    useEffect(() => {
-        if (!orders.length) return
-        handleAddCheckout({
+    const [prices, setPrices] = useState(() => {
+        const {totalPriceCar, IVA, commissionStripe, totalClient} = totalPrice(orders)
+        return {
             totalPriceCar,
             IVA,
             commissionStripe,
             totalClient
-        })
+        }
+    })
+
+    useEffect(() => {
+        if (!orders.length) return
+        const {totalPriceCar, IVA, commissionStripe, totalClient} = totalPrice(orders)
+        const newPrices = {
+            totalPriceCar,
+            IVA,
+            commissionStripe,
+            totalClient
+        }
+        setPrices(newPrices)
+        handleAddCheckout(newPrices)
     }, [orders])
 
     return (
@@ -31,9 +41,6 @@ function TotalPriceSection() {
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                // alignItems: 'center',
-                // alignItems: 'space-between',
-                // justifyContent: 'space-between',
                 borderBottom: 1,
                 borderColor: 'divider'
             }}
@@ -54,7 +61,7 @@ function TotalPriceSection() {
                                 Total Carrito: 
                             </Typography>
                             <Typography>
-                                ${totalPriceCar}
+                                ${prices.totalPriceCar}
                             </Typography>
                         </ListItem>
                         <ListItem
@@ -69,7 +76,7 @@ function TotalPriceSection() {
                                 Total IVA Stripe:
                             </Typography>
                             <Typography>
-                                ${commissionStripe}
+                                ${prices.commissionStripe}
                             </Typography>
                         </ListItem>
                         <ListItem
@@ -84,7 +91,7 @@ function TotalPriceSection() {
                                 Total IVA:
                             </Typography>
                             <Typography>
-                                ${IVA}
+                                ${prices.IVA}
                             </Typography>
                         </ListItem>
                     </List>
@@ -102,7 +109,7 @@ function TotalPriceSection() {
                     Total
                 </Typography>
                 <Typography variant='button' display='block' gutterBottom>
-                    ${totalClient}
+                    ${prices.totalClient}
                 </Typography>
             </Box>
         </Box>
