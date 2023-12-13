@@ -23,7 +23,9 @@ import ListItemText from '@mui/material/ListItemText'
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
 
-const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`)
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`, {
+    locale: 'es-419'
+})
 
 const style = {
     position: 'absolute',
