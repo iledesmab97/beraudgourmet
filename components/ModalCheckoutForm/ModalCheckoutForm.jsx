@@ -9,7 +9,7 @@ import useGetUser from '@/hooks/useGetUser'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
-import useTotalPrice from '@/hooks/useTotalPrice'
+import {totalPrice} from '@/genericFunctions/priceCar'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -41,7 +41,6 @@ const style = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    // justifyContent: 'flex-start',
     justifyContent: 'space-between',
     gap: 2,
 }
@@ -75,17 +74,18 @@ function ModalCheckoutForm() {
 
     useEffect(() => {
         if (!orders.length) return
+        const {totalClient} = totalPrice(orders)
         fetch('api/checkout', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: checkout.totalClient })
+            body: JSON.stringify({ amount: totalClient })
         })
             .then(res => res.json())
             .then(data => {
                 if (data.clientSecret) setClientSecret(data.clientSecret)
                 else console.log('Error:', data.message)
             })
-    }, [open])
+    }, [orders])
 
     const appearance = {
         theme: 'stripe'
