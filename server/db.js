@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '.env.local'})
 const {Sequelize} = require('sequelize')
 
-const {User} = require('./definitions/User')
+const {User} = require('./models/User')
 
 const user = process.env.DB_USER
 const pass = process.env.DB_PASSWORD

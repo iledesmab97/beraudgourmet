@@ -2,7 +2,7 @@ require('dotenv').config({ path: '.env.local'})
 const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
-const { initDB } = require("./server/models")
+const { initDB } = require("./db")
 
 const dev = process.env.NODE_ENV !== "production"
 const hostname = process.env.SERVER_HOSTNAME
