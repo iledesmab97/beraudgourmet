@@ -19,6 +19,11 @@ function Order(database) {
             type: DataTypes.INTEGER,
             allowNull: false
         }
+    }, {
+        timestamps: {
+            createdAt: 'application date',
+            updateAt: false
+        }
     })
 }
 
