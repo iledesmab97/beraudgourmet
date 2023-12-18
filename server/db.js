@@ -33,4 +33,4 @@ async function initDB() {
       }
 }
 
-module.exports = { initDB }
+module.exports = { initDB, db, ...db.models }
