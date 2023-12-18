@@ -1,17 +1,28 @@
 require('dotenv').config({ path: '.env.local'})
+const fs = require('fs')
+const path = require('path')
 const {Sequelize} = require('sequelize')
 
-const {User} = require('./models/User')
+const {DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME} = process.env
 
-const user = process.env.DB_USER
-const pass = process.env.DB_PASSWORD
-const host = process.env.DB_HOST
-const port = process.env.DB_PORT
-const dbname = process.env.DB_NAME
+const db = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, {logging: false})
 
-const db = new Sequelize(`postgres://${user}:${pass}@${host}:${port}/${dbname}`, {logging: false})
+const basename = path.basename(__filename)
+const modelDefiners = []
 
-User(db)
+fs.readdirSync(path.join(__dirname, '/models'))
+  .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
+  .forEach((file) => {
+    modelDefiners.push(require(path.join(__dirname, '/models', file)));
+  });
+
+modelDefiners.forEach(model => model(db))
+
+let entries = Object.entries(db.models);
+let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
+db.models = Object.fromEntries(capsEntries)
+
+const { User, Store } = db.models;
 
 async function initDB() {
     try {
