@@ -1,34 +1,27 @@
 const {DataTypes} = require('sequelize')
 
-function User(database) {
-    database.define( 'User', {
+function PizzaCharacteristic(database) {
+    database.define( 'PizzaCharacteristic', {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
+        size: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        password: {
+        masaType: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        email: {
-            type: DataTypes.STRING,
+        cost:{
+            type: DataTypes.INTEGER,
             allowNull: false
-        },
-        phoneNumber: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        promotion: {
-            type: DataTypes.BOOLEAN,
         },
     }, {
         timestamps: false
     })
 }
 
-module.exports = User
+module.exports = PizzaCharacteristic

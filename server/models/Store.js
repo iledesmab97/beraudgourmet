@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize')
 
-function User(database) {
-    database.define( 'User', {
+function Store(database) {
+    database.define( 'Store', {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -11,11 +11,11 @@ function User(database) {
             type: DataTypes.STRING,
             allowNull: false
         },
-        password: {
+        city: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        email: {
+        address: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -23,12 +23,15 @@ function User(database) {
             type: DataTypes.STRING,
             allowNull: false
         },
-        promotion: {
-            type: DataTypes.BOOLEAN,
+        openingTime: {
+            type: DataTypes.STRING,
+        },
+        closingTime: {
+            type: DataTypes.STRING,
         },
     }, {
         timestamps: false
     })
 }
 
-module.exports = User
+module.exports = Store
