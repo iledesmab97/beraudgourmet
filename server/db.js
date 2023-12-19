@@ -22,8 +22,6 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { User, Store } = db.models;
-
 async function initDB() {
     try {
         await db.sync({ force: true })
@@ -33,4 +31,4 @@ async function initDB() {
       }
 }
 
-module.exports = { initDB, db, ...db.models }
+module.exports = { initDB, ...db.models }
