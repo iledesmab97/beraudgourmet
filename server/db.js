@@ -22,6 +22,13 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
+const { User, Order, Store } = db.models
+
+User.hasMany(Order)
+Order.belongsTo(User)
+Store.hasMany(Order)
+Order.belongsTo(Store)
+
 async function initDB() {
     try {
         await db.sync({ force: true })
