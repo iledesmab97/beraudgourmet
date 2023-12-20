@@ -7,23 +7,18 @@ function Order(database) {
             primaryKey: true,
             autoIncrement: true
         },
-        idUser: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        idStore: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         cost: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
-        }
+        },
+        applicationDate: {
+            type: DataTypes.STRING
+        },
+        deliverDate: {
+            type: DataTypes.STRING
+        },
     }, {
-        timestamps: {
-            createdAt: 'application date',
-            updateAt: false
-        }
+        timestamps: false
     })
 }
 
