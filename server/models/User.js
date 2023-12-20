@@ -17,11 +17,11 @@ function User(database) {
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         phoneNumber: {
             type: DataTypes.STRING,
-            allowNull: false
         },
         promotion: {
             type: DataTypes.BOOLEAN,
