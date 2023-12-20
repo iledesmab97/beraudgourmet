@@ -17,7 +17,8 @@ router.post('/', async (req, res) => {
         const newStore = await Store.create({...req.body})
         res.status(200).json(newStore)
     } catch(error) {
-        res.status(400).json({message: error.message})
+        const {message, parent} = error
+        res.status(400).json({message, parent: parent.message})
     }
 })
 

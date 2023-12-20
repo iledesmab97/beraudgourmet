@@ -9,7 +9,8 @@ function Store(database) {
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         city: {
             type: DataTypes.STRING,
@@ -21,7 +22,8 @@ function Store(database) {
         },
         phoneNumber: {
             type: DataTypes.STRING,
-            allowNull: false
+            // allowNull: false,
+            // unique: true
         },
         coordinates: {
             type: DataTypes.JSON,
