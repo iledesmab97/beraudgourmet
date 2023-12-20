@@ -23,11 +23,8 @@ function Store(database) {
             type: DataTypes.STRING,
             allowNull: false
         },
-        openingTime: {
-            type: DataTypes.STRING,
-        },
-        closingTime: {
-            type: DataTypes.STRING,
+        coordinates: {
+            type: DataTypes.JSON,
         },
     }, {
         timestamps: false
