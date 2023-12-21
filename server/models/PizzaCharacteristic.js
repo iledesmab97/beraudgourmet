@@ -16,7 +16,7 @@ function PizzaCharacteristic(database) {
             allowNull: false
         },
         cost:{
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
     }, {

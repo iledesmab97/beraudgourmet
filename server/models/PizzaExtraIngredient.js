@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize')
 
-function PizzaIngredient(database) {
-    database.define( 'PizzaIngredient', {
+function PizzaExtraIngredient(database) {
+    database.define( 'PizzaExtraIngredient', {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -11,9 +11,12 @@ function PizzaIngredient(database) {
             type: DataTypes.STRING,
             allowNull: false
         },
+        cost:{
+            type: DataTypes.STRING,
+        },
     }, {
         timestamps: false
     })
 }
 
-module.exports = PizzaIngredient
+module.exports = PizzaExtraIngredient
