@@ -1,12 +1,17 @@
 const { Router } = require('express')
 const {User} = require('../db')
 
+function validateNumber(input) {
+    const regularExpresion = /^\d+$/
+    return regularExpresion.test(input)
+}
+
 const router = Router()
 
 router.get('/', async (req, res) => {
-    const {email} = req.query
+    const {email, id} = req.query
     try {
-        if (email) {
+        if (email && JSON.parse(email)) {
             const {email} = req.body
             const userFinded = await User.findOne({
                 where:{
@@ -19,30 +24,18 @@ router.get('/', async (req, res) => {
             } : null
             return res.status(200).json(userData)
         }
+        if (id && validateNumber(id)) {
+            const userFinded = await User.findByPk(id)
+            const userData = userFinded ? {
+                ...userFinded.dataValues,
+                password: '****'
+            } : null
+            return res.status(200).json(userData)
+        }
         const allUsers = await User.findAll()
         res.status(200).json(allUsers)
     } catch(error) {
         res.status(400).json({message: error.message})
-    }
-})
-
-router.get('/:idUser', async (req, res) => {
-    const {idUser} = req.params
-    try {
-        const userFinded = await User.findByPk(idUser)
-        if (!userFinded) return res.status(200).json(userFinded) 
-        const {id, name, password, email, phoneNumber, promotion} = userFinded
-        const dataUser = {
-            id,
-            name,
-            password,
-            email,
-            phoneNumber,
-            promotion
-        }
-        return res.status(200).json(dataUser)
-    } catch(error) {
-        return res.status(400).json({message: error.message})
     }
 })
 
