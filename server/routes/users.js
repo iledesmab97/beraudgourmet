@@ -9,7 +9,7 @@ function validateNumber(input) {
 const router = Router()
 
 router.get('/', async (req, res) => {
-    const {email, id} = req.query
+    const {email, id, validate} = req.query
     try {
         if (email && JSON.parse(email)) {
             const {email} = req.body
@@ -32,8 +32,26 @@ router.get('/', async (req, res) => {
             } : null
             return res.status(200).json(userData)
         }
+        if (validate && JSON.parse(validate)) {
+            const {email, password} = req.body
+            const userFinded = await User.findOne({
+                where:{
+                    email,
+                    password
+                }
+            })
+            const userData = userFinded ? {
+                ...userFinded.dataValues,
+                password: '****'
+            } : null
+            return res.status(200).json(userData)
+        }
         const allUsers = await User.findAll()
-        res.status(200).json(allUsers)
+        const usersData = allUsers.map(user => ({
+            ...user.dataValues,
+            password: '****'
+        }))
+        res.status(200).json(usersData)
     } catch(error) {
         res.status(400).json({message: error.message})
     }
