@@ -33,9 +33,21 @@ router.get('/:idUser', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const {search} = req.query 
     try {
-        const newUser = await User.create({...req.body})
-        res.status(200).json(newUser)
+        if (!search) {
+            const newUser = await User.create({...req.body})
+            return res.status(200).json(newUser)
+        } else {
+            const {email, password} = req.body
+            const userFinded = await User.findOne({
+                where:{
+                    email,
+                    password
+                }
+            })
+            res.status(200).json(userFinded)
+        }
     } catch(error) {
         const {message, parent} = error
         res.status(400).json({message, parent: parent.message})
