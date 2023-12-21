@@ -12,6 +12,26 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:idUser', async (req, res) => {
+    const {idUser} = req.params
+    try {
+        const userFinded = await User.findByPk(idUser)
+        if (!userFinded) return res.status(200).json(userFinded) 
+        const {id, name, password, email, phoneNumber, promotion} = userFinded
+        const dataUser = {
+            id,
+            name,
+            password,
+            email,
+            phoneNumber,
+            promotion
+        }
+        return res.status(200).json(dataUser)
+    } catch(error) {
+        return res.status(400).json({message: error.message})
+    }
+})
+
 router.post('/', async (req, res) => {
     try {
         const newUser = await User.create({...req.body})
