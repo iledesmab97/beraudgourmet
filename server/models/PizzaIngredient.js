@@ -11,9 +11,6 @@ function PizzaIngredient(database) {
             type: DataTypes.STRING,
             allowNull: false
         },
-        cost:{
-            type: DataTypes.INTEGER,
-        },
     }, {
         timestamps: false
     })
