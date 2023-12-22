@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const {Pizza} = require('../db')
+const {Pizza, PizzaIngredient} = require('../db')
 
 const router = Router()
 
@@ -14,9 +14,18 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const {ingredients} = req.body
         const newPizza = await Pizza.create({...req.body})
-        newPizza.addPizzaIngredient(ingredients)
+
+        const {ingredients} = req.body
+        const ingredientsSelected = await PizzaIngredient.findAll({
+            attributes: ['id'],
+            where: {
+                name: ingredients
+            }
+        })
+        const ingredientsNumber = ingredientsSelected.map(ingredient => ingredient.id)
+        
+        newPizza.addPizzaIngredient(ingredientsNumber)
         res.status(200).json(newPizza)
     } catch(error) {
         const {message, parent} = error
