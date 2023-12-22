@@ -13,19 +13,27 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const {many} = req.query
     try {
-        const newPizza = await Pizza.create({...req.body})
+        if (many && JSON.parse(many)) {
+            const newPizzas = await Pizza.bulkCreate(req.body)
+            return res.status(200).json(newPizzas)
+        }
 
-        const {ingredients} = req.body
-        const ingredientsSelected = await PizzaIngredient.findAll({
-            attributes: ['id'],
-            where: {
-                name: ingredients
-            }
-        })
-        const ingredientsNumber = ingredientsSelected.map(ingredient => ingredient.id)
+        const newPizza = await Pizza.create({...req.body})
         
-        newPizza.addPizzaIngredient(ingredientsNumber)
+        const {ingredients} = req.body
+        if (ingredients) {
+            const ingredientsSelected = await PizzaIngredient.findAll({
+                attributes: ['id'],
+                where: {
+                    name: ingredients
+                }
+            })
+            const ingredientsNumber = ingredientsSelected.map(ingredient => ingredient.id)
+            newPizza.addPizzaIngredient(ingredientsNumber)
+        }
+        
         res.status(200).json(newPizza)
     } catch(error) {
         const {message, parent} = error
