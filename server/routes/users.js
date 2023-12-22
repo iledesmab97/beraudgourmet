@@ -11,8 +11,7 @@ const router = Router()
 router.get('/', async (req, res) => {
     const {email, id, validate} = req.query
     try {
-        if (email && JSON.parse(email)) {
-            const {email} = req.body
+        if (email) {
             const userFinded = await User.findOne({
                 where:{
                     email
@@ -32,20 +31,6 @@ router.get('/', async (req, res) => {
             } : null
             return res.status(200).json(userData)
         }
-        if (validate && JSON.parse(validate)) {
-            const {email, password} = req.body
-            const userFinded = await User.findOne({
-                where:{
-                    email,
-                    password
-                }
-            })
-            const userData = userFinded ? {
-                ...userFinded.dataValues,
-                password: '****'
-            } : null
-            return res.status(200).json(userData)
-        }
         const allUsers = await User.findAll()
         const usersData = allUsers.map(user => ({
             ...user.dataValues,
@@ -58,7 +43,25 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const {validate} = req.query
     try {
+        if (validate && JSON.parse(validate)) {
+            const {email, password} = req.body
+            const userFinded = await User.findOne({
+                where:{
+                    email,
+                    password
+                }
+            })
+            if (userFinded.password !== password) {
+                return res.status(200).json({message: 'Contraseña incorrecta'})
+            }
+            const userData = userFinded ? {
+                ...userFinded.dataValues,
+                password: '****'
+            } : null
+            return res.status(200).json(userData)
+        }
         const newUser = await User.create({...req.body})
         return res.status(200).json(newUser) 
     } catch(error) {
