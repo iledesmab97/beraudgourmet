@@ -1,24 +1,72 @@
 const { Router } = require('express')
 const {User} = require('../db')
 
+function validateNumber(input) {
+    const regularExpresion = /^\d+$/
+    return regularExpresion.test(input)
+}
+
 const router = Router()
 
 router.get('/', async (req, res) => {
+    const {email, id, validate} = req.query
     try {
+        if (email) {
+            const userFinded = await User.findOne({
+                where:{
+                    email
+                }
+            })
+            const userData = userFinded ? {
+                ...userFinded.dataValues,
+                password: '****'
+            } : null
+            return res.status(200).json(userData)
+        }
+        if (id && validateNumber(id)) {
+            const userFinded = await User.findByPk(id)
+            const userData = userFinded ? {
+                ...userFinded.dataValues,
+                password: '****'
+            } : null
+            return res.status(200).json(userData)
+        }
         const allUsers = await User.findAll()
-        res.status(200).json(allUsers)
+        const usersData = allUsers.map(user => ({
+            ...user.dataValues,
+            password: '****'
+        }))
+        res.status(200).json(usersData)
     } catch(error) {
         res.status(400).json({message: error.message})
     }
 })
 
 router.post('/', async (req, res) => {
+    const {validate} = req.query
     try {
+        if (validate && JSON.parse(validate)) {
+            const {email, password} = req.body
+            const userFinded = await User.findOne({
+                where:{
+                    email,
+                    password
+                }
+            })
+            if (userFinded.password !== password) {
+                return res.status(200).json({message: 'Contraseña incorrecta'})
+            }
+            const userData = userFinded ? {
+                ...userFinded.dataValues,
+                password: '****'
+            } : null
+            return res.status(200).json(userData)
+        }
         const newUser = await User.create({...req.body})
-        res.status(200).json(newUser)
+        return res.status(200).json(newUser) 
     } catch(error) {
         const {message, parent} = error
-        res.status(400).json({message, parent: parent.message})
+        return res.status(400).json({message, parent: parent.message})
     }
 })
 

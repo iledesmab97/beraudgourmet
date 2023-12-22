@@ -51,8 +51,15 @@ function lastValidation(inputs) {
 }
 
 function searchUser(email) {
-    const user = users.filter(user => email === user.email)[0]
-    return user ? user : null
+    if (!email) return null
+    return fetch(`http://localhost:3000/api/users?email=${email}`)
+        .then(res => res.json())
+        .then(data => {
+            // console.log('data:', data)
+            return data
+        })
+    // const user = users.filter(user => email === user.email)[0]
+    // return user ? user : null
 }
 
 function useHandleUser() {
@@ -75,15 +82,32 @@ function useHandleUser() {
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
 
-    const currentUser = useRef(searchUser(inputs.email))
+    // const currentUser = useRef(null)
+    const [currentUser, setCurrentUser] = useState(null)
+
+    // useEffect(() => {
+    //     console.log('el valor actual de currentUser es:', currentUser.current)
+    //     console.log('Boolean:', Boolean(currentUser.current))
+    // }, [currentUser.current])
+
+    // useEffect(() => {
+    //     console.log('el valor actual de currentUser es:', currentUser)
+    //     console.log('Boolean:', Boolean(currentUser))
+    // }, [currentUser])
 
     useEffect(() => {
         debounceSetValue(() => {
             setErrors(validation(inputs))
-            if (!userLoged) currentUser.current = searchUser(inputs.email)
-            // if (userLoged && user[lastDataSet.current] !== inputs[lastDataSet.current]) {
-            //     handleUpdateUser(inputs)
-            // }
+            if (!userLoged && (lastDataSet.current === 'email')) {
+                // currentUser.current = searchUser(inputs.email)
+                searchUser(inputs.email)
+                    .then(data => setCurrentUser({
+                        email: data.email,
+                        password: data.password,
+                        name: data.name,
+                        numberPhone: data.phoneNumber
+                    }))
+            }
         }, 500)
     }, [inputs])
 
@@ -131,19 +155,40 @@ function useHandleUser() {
         lastDataSet.current = 'numberPhone'
     }
 
+    // function verifyUser() {
+    //     // if (currentUser.current.password === inputs.password) {
+    //     if (currentUser.password === inputs.password) {
+    //         logInUser()
+    //     }
+    //     else {
+    //         setErrors({password: 'Contraseña incorrecta'})
+    //     }
+    // }
+
     function verifyUser() {
-        if (currentUser.current.password === inputs.password) {
-            logInUser()
-        }
-        else {
-            setErrors({password: 'Contraseña incorrecta'})
-        }
+        const { email, password } = inputs
+        return fetch('http://localhost:3000/api/users?validate=true', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
+                return logInUser()
+            })
     }
 
+    // function logInUser() {
+    //     handleAddUser(currentUser.current)
+    //     setInputs(currentUser.current)
+    //     currentUser.current = null
+    // }
+
     function logInUser() {
-        handleAddUser(currentUser.current)
-        setInputs(currentUser.current)
-        currentUser.current = null
+        handleAddUser(currentUser)
+        setInputs(currentUser)
+        // setCurrentUser(null)
     }
 
     function changePassword() {
@@ -207,7 +252,8 @@ function useHandleUser() {
         handleChange,
         handleChangeEdit,
         errors,
-        currentUser: currentUser.current,
+        // currentUser: currentUser.current,
+        currentUser: currentUser,
         userLoged,
         user,
         editing,
