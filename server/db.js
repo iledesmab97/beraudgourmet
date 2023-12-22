@@ -22,12 +22,22 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { User, Order, Store } = db.models
+const { User, Order, Store, Pizza, PizzaIngredient } = db.models
 
 User.hasMany(Order)
 Order.belongsTo(User)
+
 Store.hasMany(Order)
 Order.belongsTo(Store)
+
+Pizza.belongsToMany(PizzaIngredient, {
+  through: 'IngredientsxPizza',
+  timestamps: false
+})
+PizzaIngredient.belongsToMany(Pizza, {
+  through: 'IngredientsxPizza',
+  timestamps: false
+})
 
 async function initDB() {
     try {

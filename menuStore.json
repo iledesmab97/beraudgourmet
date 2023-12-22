@@ -1,7 +1,7 @@
 [
     {
         "name": "Margarita",
-        "text": "texto de la pizza margarita",
+        "text": "La pizza margarita (en italiano pizza Margherita) es una típica pizza napolitana elaborada con tomate, mozzarella (tradicionalmente se usa el Fior di latte), albahaca fresca, sal y aceite. Se trata de la pizza napolitana más popular, junto con la marinera.",
         "image": "https://us.123rf.com/450wm/radionphoto/radionphoto1702/radionphoto170200628/72031659-pizza-margarita-mozzarella-aislado-en-el-fondo-blanco.jpg",
         "price": {
             "12\"": {
@@ -54,7 +54,7 @@
     },
     {
         "name": "Cuatro estaciones",
-        "text": "texto de la pizza cuatro estaciones",
+        "text": "La pizza cuatro estaciones, en italiano, pizza quattro stagioni es una variedad italiana de pizza que se prepara en cuatro secciones con diversos ingredientes, y cada sección representa una estación del año. Las alcachofas representan la primavera, los tomates o la albahaca representan el verano, las setas representan el otoño y el jamón (también puede ser jamón curado, llamado prosciutto) o las aceitunas representan el invierno",
         "image": "https://us.123rf.com/450wm/aksakalko/aksakalko1702/aksakalko170200238/71848943-deliciosa-pizza-italiana-cl%C3%A1sica-cuatro-estaciones-con-pollo-picante-champi%C3%B1ones-y-queso.jpg",
         "price": {
             "12\"": {
@@ -82,7 +82,7 @@
     },
     {
         "name": "Cuatro quesos",
-        "text": "texto de la pizza cuatro quesos",
+        "text": "La pizza cuatro quesos, en italiano Pizza quattro formaggi es una variante de pizza con cuatro quesos italianos, que generalmente son la mozarela, el gorgonzola, el fontina y el parmesano. Todos estos quesos son fundibles. Se derriten sobre una base de salsa de tomate (rossa), o también hay recetas sin tomate (bianca).",
         "image": "https://img.freepik.com/fotos-premium/pizza-4-quesos-salsa-blanca-lados-crujientes-aislado-sobre-fondo-blanco_207126-7195.jpg",
         "price": {
             "12\"": {

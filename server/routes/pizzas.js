@@ -14,7 +14,9 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+        const {ingredients} = req.body
         const newPizza = await Pizza.create({...req.body})
+        newPizza.addPizzaIngredient(ingredients)
         res.status(200).json(newPizza)
     } catch(error) {
         const {message, parent} = error
