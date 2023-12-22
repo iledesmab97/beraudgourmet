@@ -9,6 +9,7 @@ function PizzaIngredient(database) {
         },
         name: {
             type: DataTypes.STRING,
+            unique: true,
             allowNull: false
         },
     }, {
