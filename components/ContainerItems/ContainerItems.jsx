@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 
 import Grid from '@mui/material/Grid'
@@ -9,13 +10,21 @@ import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 
-import items from '@/menuStore.json'
+// import items from '@/menuStore.json'
 
 // import style from './ContainerItems.module.css'
 
 function ContainerItems () {
 
+  const [items, setItems] = useState([])
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
+
+  useEffect(() => {
+    console.log('entrando en el useEffect')
+    fetch('http://localhost:3000/api/pizzas')
+      .then(response => response.json())
+      .then(data => setItems(data))
+  }, [])
 
   return (
     <Grid item xs={12}>
