@@ -13,9 +13,14 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const {single} = req.query
     try {
-        const newPizzaIngredient = await PizzaIngredient.create({...req.body})
-        res.status(200).json(newPizzaIngredient)
+        if (single && JSON.parse(single)) {
+            const newPizzaIngredients = await PizzaIngredient.create(req.body)
+            return res.status(200).json(newPizzaIngredients)    
+        }
+        const newPizzaIngredients = await PizzaIngredient.bulkCreate(req.body)
+        res.status(200).json(newPizzaIngredients)
     } catch(error) {
         const {message, parent} = error
         res.status(400).json({message, parent: parent.message})
