@@ -10,7 +10,7 @@ import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 
-// import items from '@/menuStore.json'
+import itemsJSON from '@/menuStore.json'
 
 // import style from './ContainerItems.module.css'
 
@@ -20,10 +20,24 @@ function ContainerItems () {
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
 
   useEffect(() => {
-    console.log('entrando en el useEffect')
     fetch('http://localhost:3000/api/pizzas')
       .then(response => response.json())
-      .then(data => setItems(data))
+      .then(data => {
+        console.log('data', data)
+        const pizzaList = data.map(pizza => {
+            const { id, name, text, image, ingredients, price } = pizza
+            return {
+              id,
+              name,
+              text,
+              image,
+              ingredients,
+              price
+            }
+        })
+        console.log('newData:', pizzaList)
+        return setItems(pizzaList)
+      })
   }, [])
 
   return (
@@ -33,10 +47,15 @@ function ContainerItems () {
       </Typography>
       <Grid container spacing={4}>
         {
-          items.slice(0,5).map((item, index) => (
+          itemsJSON.map((item, index) => (
+          // items.map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
               <CardActionArea
-                onClick={() => {handleOpenModalOrder({item})}}
+                onClick={() => {
+                  console.log('itemJSON:', itemsJSON[index])
+                  console.log('itemsDB', items[index])
+                  handleOpenModalOrder({item})
+                }}
                 sx={{
                   height: '100%'
                 }}
