@@ -1,14 +1,32 @@
 const { Router } = require('express')
-const {Pizza, PizzaIngredient} = require('../db')
+const {Pizza, PizzaIngredient, PizzaCharacteristic} = require('../db')
 
 const router = Router()
 
 router.get('/', async (req, res) => {
     try {
+        // Buscar precios
+        const price = {}
+        const priceList = await PizzaCharacteristic.findAll()
+        priceList.forEach(priceItem => {
+            const {size, masaType, cost} = priceItem
+            if (price[size]) {
+                price[size] = {
+                    ...price[size],
+                    [masaType]: cost
+                }    
+            } else {
+                price[size] = {[masaType]: cost}
+            }
+        })
+
+        // Buscar todas las pizzas con sus ingredientes
         const allPizzas = await Pizza.findAll({
             include: PizzaIngredient
         })
-        const pizzasWithIngredients = allPizzas.map(pizza => {
+
+        // Modificar la estructura del objeto resultante
+        const pizzaList = allPizzas.map(pizza => {
             const { id, name, text, image, PizzaIngredients } = pizza
             const ingredients = PizzaIngredients.map(ingredient => ingredient.name)
             return {
@@ -16,10 +34,11 @@ router.get('/', async (req, res) => {
                 name,
                 text,
                 image,
-                ingredients
+                ingredients,
+                price
             }
         })
-        res.status(200).json(pizzasWithIngredients)
+        res.status(200).json(pizzaList)
     } catch(error) {
         res.status(400).json({message: error.message})
     }
