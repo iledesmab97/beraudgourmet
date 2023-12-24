@@ -16,8 +16,26 @@ router.post('/', async (req, res) => {
     const {many} = req.query
     try {
         if (many && JSON.parse(many)) {
-            const newPizzas = await Pizza.bulkCreate(req.body)
-            return res.status(200).json(newPizzas)
+            const pizzas = req.body
+            const newPizzas = pizzas.map( async (pizza) => {
+                const newPizza = await Pizza.create(pizza)
+                const {ingredients} = pizza
+                if (ingredients) {
+                    const ingredientsSelected = await PizzaIngredient.findAll({
+                        attributes: ['id'],
+                        where: {
+                            name: ingredients
+                        }
+                    })
+                    const ingredientsNumber = ingredientsSelected.map(ingredient => ingredient.id)
+                    newPizza.addPizzaIngredient(ingredientsNumber)
+                }
+                
+                return newPizza
+            })
+            return Promise.all(newPizzas)
+                .then(result => res.status(200).json(result))
+                .catch(error => {throw new Error({message: error.message})})
         }
 
         const newPizza = await Pizza.create({...req.body})
