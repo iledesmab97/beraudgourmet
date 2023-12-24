@@ -13,7 +13,12 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const { many } = req.query
     try {
+        if (many && JSON.parse(many)) {
+            const newPizzaCharacteristics = await PizzaCharacteristic.bulkCreate(req.body)
+            return res.status(200).json(newPizzaCharacteristics)
+        }
         const newPizzaCharacteristic = await PizzaCharacteristic.create({...req.body})
         res.status(200).json(newPizzaCharacteristic)
     } catch(error) {
