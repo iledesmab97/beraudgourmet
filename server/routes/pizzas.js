@@ -5,8 +5,21 @@ const router = Router()
 
 router.get('/', async (req, res) => {
     try {
-        const allPizzas = await Pizza.findAll()
-        res.status(200).json(allPizzas)
+        const allPizzas = await Pizza.findAll({
+            include: PizzaIngredient
+        })
+        const pizzasWithIngredients = allPizzas.map(pizza => {
+            const { id, name, text, image, PizzaIngredients } = pizza
+            const ingredients = PizzaIngredients.map(ingredient => ingredient.name)
+            return {
+                id,
+                name,
+                text,
+                image,
+                ingredients
+            }
+        })
+        res.status(200).json(pizzasWithIngredients)
     } catch(error) {
         res.status(400).json({message: error.message})
     }
