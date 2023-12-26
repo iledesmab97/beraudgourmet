@@ -7,14 +7,6 @@ function PizzaCharacteristic(database) {
             primaryKey: true,
             autoIncrement: true
         },
-        size: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        masaType: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         cost:{
             type: DataTypes.STRING,
             allowNull: false
