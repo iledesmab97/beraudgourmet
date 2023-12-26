@@ -5,21 +5,6 @@ const router = Router()
 
 router.get('/', async (req, res) => {
     try {
-        // Buscar precios
-        const price = {}
-        const priceList = await PizzaCharacteristic.findAll()
-        priceList.forEach(priceItem => {
-            const {size, masaType, cost} = priceItem
-            if (price[size]) {
-                price[size] = {
-                    ...price[size],
-                    [masaType]: cost
-                }    
-            } else {
-                price[size] = {[masaType]: cost}
-            }
-        })
-
         // Buscar todas las pizzas con sus ingredientes
         const allPizzas = await Pizza.findAll({
             include: PizzaIngredient
@@ -34,8 +19,7 @@ router.get('/', async (req, res) => {
                 name,
                 text,
                 image,
-                ingredients,
-                price
+                ingredients
             }
         })
         res.status(200).json(pizzaList)
