@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const {PizzaCharacteristic} = require('../db')
+const {PizzaCharacteristic, } = require('../db')
 
 const router = Router()
 
@@ -19,7 +19,10 @@ router.post('/', async (req, res) => {
             const newPizzaCharacteristics = await PizzaCharacteristic.bulkCreate(req.body)
             return res.status(200).json(newPizzaCharacteristics)
         }
+        const { sizeId, masaTypeId} = req.body
         const newPizzaCharacteristic = await PizzaCharacteristic.create({...req.body})
+        await newPizzaCharacteristic.setPizzaSize(sizeId)
+        await newPizzaCharacteristic.setPizzaMass(masaTypeId)
         res.status(200).json(newPizzaCharacteristic)
     } catch(error) {
         const {message, parent} = error
