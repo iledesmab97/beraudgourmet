@@ -1,14 +1,15 @@
 const {DataTypes} = require('sequelize')
 
-function PizzaCharacteristic(database) {
-    database.define( 'PizzaCharacteristic', {
+function PizzaSize(database) {
+    database.define( 'PizzaSize', {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        cost:{
+        size: {
             type: DataTypes.STRING,
+            unique: true,
             allowNull: false
         },
     }, {
@@ -16,4 +17,4 @@ function PizzaCharacteristic(database) {
     })
 }
 
-module.exports = PizzaCharacteristic
+module.exports = PizzaSize

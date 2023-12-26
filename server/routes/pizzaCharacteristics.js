@@ -1,20 +1,65 @@
 const { Router } = require('express')
-const {PizzaCharacteristic} = require('../db')
+const {PizzaCharacteristic, PizzaMass, PizzaSize} = require('../db')
 
 const router = Router()
 
 router.get('/', async (req, res) => {
     try {
         const allPizzaCharacteristics = await PizzaCharacteristic.findAll()
-        res.status(200).json(allPizzaCharacteristics)
+        const allPizzaCharacteristicsWithText = allPizzaCharacteristics.map(async(pizzaCharacteristics) => {
+            const { id, cost, PizzaMassId, PizzaSizeId } = pizzaCharacteristics
+            const massName = await PizzaMass.findOne({
+                attribute: ['name'],
+                where: {
+                    id: PizzaMassId
+                }
+            })
+            const sizeName = await PizzaSize.findOne({
+                attribute: ['size'],
+                where: {
+                    id: PizzaSizeId
+                }
+            })
+            const pizzaCharacteristicsText = {
+                id,
+                cost,
+                pizzaSize: sizeName.size,
+                pizzaMass: massName.name
+            }
+            return pizzaCharacteristicsText
+        })
+        return Promise.all(allPizzaCharacteristicsWithText)
+            .then(result => res.status(200).json(result))
+            .catch(error => {throw new Error({message: error.message})})
     } catch(error) {
         res.status(400).json({message: error.message})
     }
 })
 
 router.post('/', async (req, res) => {
+    const { many } = req.query
     try {
+        if (many && JSON.parse(many)) {
+            const listPizzaCharacteristics = req.body
+            const newListPizzaCharacteristics = listPizzaCharacteristics.map(async (pizzaCharacteristics) => {
+                const newPizzaCharacteristics = await PizzaCharacteristic.create(pizzaCharacteristics)
+                const {PizzaMassId, PizzaSizeId} = pizzaCharacteristics
+                if (PizzaMassId && PizzaSizeId) {
+                    await newPizzaCharacteristics.setPizzaMass(PizzaMassId)
+                    await newPizzaCharacteristics.setPizzaSize(PizzaSizeId)
+                }
+                return newPizzaCharacteristics
+            })
+            return Promise.all(newListPizzaCharacteristics)
+                .then(result => res.status(200).json(result))
+                .catch(error => {throw new Error({message: error.message})})
+        }
+
+
+        const { sizeId, masaTypeId} = req.body
         const newPizzaCharacteristic = await PizzaCharacteristic.create({...req.body})
+        await newPizzaCharacteristic.setPizzaSize(sizeId)
+        await newPizzaCharacteristic.setPizzaMass(masaTypeId)
         res.status(200).json(newPizzaCharacteristic)
     } catch(error) {
         const {message, parent} = error

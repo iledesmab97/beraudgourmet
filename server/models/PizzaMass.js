@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize')
 
-function Pizza(database) {
-    database.define( 'Pizza', {
+function PizzaMass(database) {
+    database.define( 'PizzaMass', {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -9,18 +9,15 @@ function Pizza(database) {
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+            unique: true,
+            allowNull: false
         },
         text: {
-            type: DataTypes.TEXT,
-        },
-        image: {
             type: DataTypes.STRING
-        }
+        },
     }, {
         timestamps: false
     })
 }
 
-module.exports = Pizza
+module.exports = PizzaMass
