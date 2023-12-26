@@ -23,8 +23,8 @@ router.get('/', async (req, res) => {
             const pizzaCharacteristicsText = {
                 id,
                 cost,
-                PizzaSizeId: sizeName.size,
-                PizzaMassId: massName.name
+                pizzaSize: sizeName.size,
+                pizzaMass: massName.name
             }
             return pizzaCharacteristicsText
         })
