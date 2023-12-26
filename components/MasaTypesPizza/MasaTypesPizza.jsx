@@ -63,7 +63,7 @@ function MasaTypesPizza({ listMass, mass, handleMass }) {
                                                     fontWeight: 400
                                                 }}
                                             >
-                                                {typeMass}
+                                                {typeMass.slice(5)}
                                             </Typography>
                                         }
                                         sx={ mass === typeMass
