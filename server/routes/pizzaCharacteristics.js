@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const {PizzaCharacteristic, } = require('../db')
+const {PizzaCharacteristic, PizzaMass, PizzaSize} = require('../db')
 
 const router = Router()
 
@@ -16,9 +16,24 @@ router.post('/', async (req, res) => {
     const { many } = req.query
     try {
         if (many && JSON.parse(many)) {
-            const newPizzaCharacteristics = await PizzaCharacteristic.bulkCreate(req.body)
-            return res.status(200).json(newPizzaCharacteristics)
+            const listPizzaCharacteristics = req.body
+            const newListPizzaCharacteristics = listPizzaCharacteristics.map(async (pizzaCharacteristics) => {
+                const newPizzaCharacteristics = await PizzaCharacteristic.create(pizzaCharacteristics)
+                const {PizzaMassId, PizzaSizeId} = pizzaCharacteristics
+                if (PizzaMassId && PizzaSizeId) {
+                    await newPizzaCharacteristics.setPizzaMass(PizzaMassId)
+                    await newPizzaCharacteristics.setPizzaSize(PizzaSizeId)
+                    return newPizzaCharacteristics
+                } else {
+                    console.log('entre en el else')
+                }
+            })
+            return Promise.all(newListPizzaCharacteristics)
+                .then(result => res.status(200).json(result))
+                .catch(error => {throw new Error({message: error.message})})
         }
+
+
         const { sizeId, masaTypeId} = req.body
         const newPizzaCharacteristic = await PizzaCharacteristic.create({...req.body})
         await newPizzaCharacteristic.setPizzaSize(sizeId)
