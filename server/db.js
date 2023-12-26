@@ -22,14 +22,16 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { User, Order, Store, Pizza, PizzaIngredient } = db.models
+const { User, Order, Store, Pizza, PizzaIngredient, PizzaCharacteristic, PizzaMass, PizzaSize } = db.models
 
+// Relacion entre ordenes, usuarios y tiendas
 User.hasMany(Order)
 Order.belongsTo(User)
 
 Store.hasMany(Order)
 Order.belongsTo(Store)
 
+// Relación entre pizzas e ingredientes
 Pizza.belongsToMany(PizzaIngredient, {
   through: 'IngredientsxPizza',
   timestamps: false
@@ -38,6 +40,14 @@ PizzaIngredient.belongsToMany(Pizza, {
   through: 'IngredientsxPizza',
   timestamps: false
 })
+
+// Relación entre tamaño de la pizza, Maza y costo
+PizzaMass.hasMany(PizzaCharacteristic)
+PizzaCharacteristic.belongsTo(PizzaMass)
+
+PizzaSize.hasMany(PizzaCharacteristic)
+PizzaCharacteristic.belongsTo(PizzaSize)
+
 
 async function initDB() {
     try {
