@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react';
+
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid'
 import RadioGroup from '@mui/material/RadioGroup';
@@ -8,9 +10,39 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography'
 import Radio from '@mui/material/Radio';
 
-import masses from '@/masses.json'
+import massesJSON from '@/masses.json'
+
+function fetchMasses() {
+    return fetch('http://localhost:3000/api/pizzaMasses')
+        .then(response => response.json())
+        .then(data => {
+            const listMasses = data.map(mass => {
+                const { id, name, text } = mass
+                return {
+                    id,
+                    name,
+                    text
+                }
+            })
+            const listMassesObject = {}
+            listMasses.forEach(mass => {
+                listMassesObject[mass.name] = {
+                    ...mass
+                }
+            })
+            return listMassesObject
+        })
+}
 
 function MasaTypesPizza({ listMass, mass, handleMass }) {
+
+    const [masses, setMasses] = useState({})
+
+    useEffect(() => {
+        fetchMasses().then(data => {
+            setMasses(data)
+        })
+    },[])
 
     return (
         <FormControl>
@@ -105,7 +137,8 @@ function MasaTypesPizza({ listMass, mass, handleMass }) {
                                         paddingTop: 0
                                     }}
                                 >
-                                    {masses[typeMass].text}
+                                    {/* {massesJSON[typeMass].text} */}
+                                    { masses[typeMass] && masses[typeMass].text}
                                 </Typography>
                             </Grid>
                         ))    
