@@ -99,8 +99,6 @@ function ContainerItems () {
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
               <CardActionArea
                 onClick={() => {
-                  console.log('itemJSON:', itemsJSON[index])
-                  console.log('itemsDB', items[index])
                   handleOpenModalOrder({item})
                 }}
                 sx={{
