@@ -6,7 +6,31 @@ const router = Router()
 router.get('/', async (req, res) => {
     try {
         const allPizzaCharacteristics = await PizzaCharacteristic.findAll()
-        res.status(200).json(allPizzaCharacteristics)
+        const allPizzaCharacteristicsWithText = allPizzaCharacteristics.map(async(pizzaCharacteristics) => {
+            const { id, cost, PizzaMassId, PizzaSizeId } = pizzaCharacteristics
+            const massName = await PizzaMass.findOne({
+                attribute: ['name'],
+                where: {
+                    id: PizzaMassId
+                }
+            })
+            const sizeName = await PizzaSize.findOne({
+                attribute: ['size'],
+                where: {
+                    id: PizzaSizeId
+                }
+            })
+            const pizzaCharacteristicsText = {
+                id,
+                cost,
+                PizzaSizeId: sizeName.size,
+                PizzaMassId: massName.name
+            }
+            return pizzaCharacteristicsText
+        })
+        return Promise.all(allPizzaCharacteristicsWithText)
+            .then(result => res.status(200).json(result))
+            .catch(error => {throw new Error({message: error.message})})
     } catch(error) {
         res.status(400).json({message: error.message})
     }
@@ -23,10 +47,8 @@ router.post('/', async (req, res) => {
                 if (PizzaMassId && PizzaSizeId) {
                     await newPizzaCharacteristics.setPizzaMass(PizzaMassId)
                     await newPizzaCharacteristics.setPizzaSize(PizzaSizeId)
-                    return newPizzaCharacteristics
-                } else {
-                    console.log('entre en el else')
                 }
+                return newPizzaCharacteristics
             })
             return Promise.all(newListPizzaCharacteristics)
                 .then(result => res.status(200).json(result))
