@@ -13,14 +13,29 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const { many } = req.query
     const { scheduleHoursId } = req.body
     try {
+        if (many && JSON.parse(many)) {
+            const listSchedules = req.body
+            const newSchedules = listSchedules.map(async(schedule) => {
+                const { scheduleHoursId } = schedule
+                const newSchedule = await Schedule.create(schedule)
+                if (scheduleHoursId) {
+                    newSchedule.addScheduleHours(scheduleHoursId)
+                }
+                return newSchedule
+            })
+            return Promise.all(newSchedules)
+                .then(result => res.status(200).json(result))
+                .catch(error => {throw new Error({message: error.message})})
+        }
         const newSchedule = await Schedule.create({...req.body})
         newSchedule.addScheduleHours(scheduleHoursId)
         res.status(200).json(newSchedule)
     } catch(error) {
         const {message, parent} = error
-        res.status(400).json({message, parent: parent.message})
+        res.status(400).json({message, parent: parent ? parent.message : null})
     }
 })
 
