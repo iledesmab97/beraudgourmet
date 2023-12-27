@@ -37,9 +37,44 @@ function fetchStores() {
   return fetch('http://localhost:3000/api/stores')
     .then(response => response.json())
     .then(data => {
+      const newData = data.map(store => ({
+        name: store.name,
+        place: store.address,
+        city: store.city,
+        phone: store.phoneNumber,
+        coordinates: store.coordinates
+      }))
+      return newData
+    })
+}
+
+function fetchSchedules() {
+  return fetch('http://localhost:3000/api/schedules')
+    .then(response => response.json())
+    .then(data => {
       return data
     })
 }
+
+async function updateStores() {
+  const scheduels = await fetchSchedules()
+  const storesList = await fetchStores()
+  const storesWithSchedulsList = storesList.map(store => ({
+    ...store,
+    closeTime: scheduels[0].scheduleHoursList[0].endTime,
+    openTime: scheduels[0].scheduleHoursList[0].startTime,
+    open: true,
+    pickUpSchedule: scheduels[1].scheduleHoursList.map(schedule => ({
+      days: schedule.days,
+      hours: `${schedule.startTime} - ${schedule.endTime}`
+    })),
+    deliverySchedule: scheduels[2].scheduleHoursList.map(schedule => ({
+      days: schedule.days,
+      hours: `${schedule.startTime} - ${schedule.endTime}`
+    }))
+  }))
+  return storesWithSchedulsList
+} 
 
 export default function ModalStoreDelivery() {
 
@@ -64,11 +99,9 @@ export default function ModalStoreDelivery() {
   const { storeList, handleAddStoreList } = useGetStoreList()
 
   useEffect(() => {
-    // fetchStores()
-    fetchStores()
-      .then(arrayStoreList => {
-        handleAddStoreList(arrayStoreList)
-      })
+    updateStores().then(storeList => {
+      handleAddStoreList(storeList)
+    })
   }, [])
 
   function handlePlace (place) {
@@ -128,6 +161,7 @@ export default function ModalStoreDelivery() {
           {
             delivery === 'store'
             ? <StorePickup
+                storeList={storeList}
                 inputsStore={inputsStore}
                 handleInputsStore={handleInputsStore}
                 handleCloseModal={handleCloseModal}
