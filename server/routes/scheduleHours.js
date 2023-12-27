@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { many } = req.query
     try {
-        if (many) {
+        if (many && JSON.parse(many)) {
             const newScheduleHours = await ScheduleHours.bulkCreate(req.body)
             return res.status(200).json(newScheduleHours)
         }
