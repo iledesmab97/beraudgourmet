@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
-import useHandlePlace from '@/hooks/useHandlePlace';
+import useHandlePlace from '@/hooks/useHandlePlace'
+import useGetStoreList from '@/hooks/useGetStoreList'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -32,6 +33,49 @@ const style = {
   gap: 2,
 };
 
+function fetchStores() {
+  return fetch('http://localhost:3000/api/stores')
+    .then(response => response.json())
+    .then(data => {
+      const newData = data.map(store => ({
+        name: store.name,
+        place: store.address,
+        city: store.city,
+        phone: store.phoneNumber,
+        coordinates: store.coordinates
+      }))
+      return newData
+    })
+}
+
+function fetchSchedules() {
+  return fetch('http://localhost:3000/api/schedules')
+    .then(response => response.json())
+    .then(data => {
+      return data
+    })
+}
+
+async function updateStores() {
+  const scheduels = await fetchSchedules()
+  const storesList = await fetchStores()
+  const storesWithSchedulsList = storesList.map(store => ({
+    ...store,
+    closeTime: scheduels[0].scheduleHoursList[0].endTime,
+    openTime: scheduels[0].scheduleHoursList[0].startTime,
+    open: true,
+    pickUpSchedule: scheduels[1].scheduleHoursList.map(schedule => ({
+      days: schedule.days,
+      hours: `${schedule.startTime} - ${schedule.endTime}`
+    })),
+    deliverySchedule: scheduels[2].scheduleHoursList.map(schedule => ({
+      days: schedule.days,
+      hours: `${schedule.startTime} - ${schedule.endTime}`
+    }))
+  }))
+  return storesWithSchedulsList
+} 
+
 export default function ModalStoreDelivery() {
 
   const {open, handleCloseModal} = useGetModal({modalType: 'place'})
@@ -51,6 +95,14 @@ export default function ModalStoreDelivery() {
     handleTypeLocation,
     handleCloserStore
   } = useHandlePlace()
+
+  const { storeList, handleAddStoreList } = useGetStoreList()
+
+  useEffect(() => {
+    updateStores().then(storeList => {
+      handleAddStoreList(storeList)
+    })
+  }, [])
 
   function handlePlace (place) {
     setDelivery(place)
@@ -109,6 +161,7 @@ export default function ModalStoreDelivery() {
           {
             delivery === 'store'
             ? <StorePickup
+                storeList={storeList}
                 inputsStore={inputsStore}
                 handleInputsStore={handleInputsStore}
                 handleCloseModal={handleCloseModal}

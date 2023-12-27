@@ -40,7 +40,6 @@ function MasaTypesPizza({ listMass, mass, handleMass }) {
 
     useEffect(() => {
         fetchMasses().then(data => {
-            console.log('data:', data)
             setMasses(data)
         })
     },[])

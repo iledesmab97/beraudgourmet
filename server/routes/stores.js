@@ -13,12 +13,17 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const { many } = req.query
     try {
+        if (many && JSON.parse(many)) {
+            const newStores = await Store.bulkCreate(req.body)
+            return res.status(200).json(newStores)
+        }
         const newStore = await Store.create({...req.body})
         res.status(200).json(newStore)
     } catch(error) {
         const {message, parent} = error
-        res.status(400).json({message, parent: parent.message})
+        res.status(400).json({ message, parent: parent ? parent.message : null })
     }
 })
 
