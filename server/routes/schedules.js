@@ -1,12 +1,30 @@
 const { Router } = require('express')
-const {Schedule} = require('../db')
+const { Schedule, ScheduleHours} = require('../db')
 
 const router = Router()
 
 router.get('/', async (req, res) => {
     try {
-        const allSchedules = await Schedule.findAll()
-        res.status(200).json(allSchedules)
+        const allSchedules = await Schedule.findAll({
+            include: ScheduleHours
+        })
+        const schedulesList = allSchedules.map(schedule => {
+            const { id, name, ScheduleHours } = schedule
+            const scheduleHoursList = ScheduleHours.map(scheduleHours => {
+                const {day, startTime, endTime} = scheduleHours
+                return {
+                    days: day,
+                    startTime,
+                    endTime
+                } 
+            })
+            return {
+                id,
+                name,
+                scheduleHoursList
+            }
+        })
+        res.status(200).json(schedulesList)
     } catch(error) {
         res.status(400).json({message: error.message})
     }
