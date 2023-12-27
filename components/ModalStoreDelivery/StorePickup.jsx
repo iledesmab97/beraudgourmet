@@ -18,9 +18,10 @@ import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import SearchIcon from '@mui/icons-material/Search';
 import ItemPlace from '../PlaceFinder/ItemPlace'
+
 import stores from '@/stores.json'
 
-export default function StorePickup({ handleInputsStore, inputsStore, handleCloseModal }) {
+export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     // const { } = useHandlePlace()
@@ -42,7 +43,7 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                     id='autocomplete-StorePickup'
                     size='small'
                     fullWidth
-                    options={Object.keys(stores)}
+                    options={Object.keys(storeList)}
                     getOptionLabel={option => option}
                     renderOption={
                         (props, option) => (
@@ -95,7 +96,7 @@ export default function StorePickup({ handleInputsStore, inputsStore, handleClos
                     }}
                 >
                     {
-                        stores[inputsStore].stores.map((store, index) => (
+                        storeList[inputsStore].stores.map((store, index) => (
                         <ListItem
                             key={store.name + index}
                             alignItems='flex-start'
