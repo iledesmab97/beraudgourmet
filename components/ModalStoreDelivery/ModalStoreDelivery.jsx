@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
-import useHandlePlace from '@/hooks/useHandlePlace';
+import useHandlePlace from '@/hooks/useHandlePlace'
+import useGetStoreList from '@/hooks/useGetStoreList'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -32,6 +33,14 @@ const style = {
   gap: 2,
 };
 
+function fetchStores() {
+  return fetch('http://localhost:3000/api/stores')
+    .then(response => response.json())
+    .then(data => {
+      return data
+    })
+}
+
 export default function ModalStoreDelivery() {
 
   const {open, handleCloseModal} = useGetModal({modalType: 'place'})
@@ -51,6 +60,16 @@ export default function ModalStoreDelivery() {
     handleTypeLocation,
     handleCloserStore
   } = useHandlePlace()
+
+  const { storeList, handleAddStoreList } = useGetStoreList()
+
+  useEffect(() => {
+    // fetchStores()
+    fetchStores()
+      .then(arrayStoreList => {
+        handleAddStoreList(arrayStoreList)
+      })
+  }, [])
 
   function handlePlace (place) {
     setDelivery(place)
