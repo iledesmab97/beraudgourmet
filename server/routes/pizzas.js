@@ -1,5 +1,7 @@
 const { Router } = require('express')
+const { Op } = require('sequelize')
 const {Pizza, PizzaIngredient, PizzaCharacteristic} = require('../db')
+const { create } = require('domain')
 
 const router = Router()
 
@@ -37,14 +39,16 @@ router.post('/', async (req, res) => {
                 const newPizza = await Pizza.create(pizza)
                 const {ingredients} = pizza
                 if (ingredients) {
-                    const ingredientsSelected = await PizzaIngredient.findAll({
-                        attributes: ['id'],
-                        where: {
-                            name: ingredients
-                        }
-                    })
-                    const ingredientsNumber = ingredientsSelected.map(ingredient => ingredient.id)
-                    newPizza.addPizzaIngredient(ingredientsNumber)
+                    for (let ingredient of ingredients) {
+                        const [ingredientsSelected, created] = await PizzaIngredient.findOrCreate({
+                            attributes: ['id'],
+                            where: {
+                                name: ingredient
+                            },
+                            defaults: {}
+                        })
+                        newPizza.addPizzaIngredient([ingredientsSelected.id])
+                    }
                 }
                 
                 return newPizza

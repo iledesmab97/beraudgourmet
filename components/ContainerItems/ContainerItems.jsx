@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
+import useGetProducts from '@/hooks/useGetProducts'
 
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
@@ -80,11 +81,16 @@ async function fetchingData() {
 
 function ContainerItems () {
 
-  const [items, setItems] = useState([])
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
+  const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
 
   useEffect(() => {
-    fetchingData().then(data => setItems(data))
+    fetchingData().then(data => {
+      handleAddProductsList({
+        type: 'pizzas',
+        products: data
+      })
+    })
   }, [])
 
   return (
@@ -95,7 +101,7 @@ function ContainerItems () {
       <Grid container spacing={4}>
         {
           // itemsJSON.map((item, index) => (
-          items.map((item, index) => (
+          products && products.map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
               <CardActionArea
                 onClick={() => {

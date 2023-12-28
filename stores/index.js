@@ -5,6 +5,7 @@ import placeReducer from './place/slice'
 import modalReducer from './modal/slice'
 import checkoutReducer from './checkout/slice'
 import storeListReducer from './storeList/slice'
+import productsReducer from './products/slice'
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         place: placeReducer,
         modal: modalReducer,
         checkout: checkoutReducer,
-        storeList: storeListReducer
+        storeList: storeListReducer,
+        products: productsReducer
     }
 })
