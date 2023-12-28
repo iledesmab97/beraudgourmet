@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const {storeId, cost, applicationDate, deliverDate, userId} = req.body
-        const newOrder = await Order.create({storeId, cost, applicationDate, deliverDate})
+        const {storeId, cost, applicationDate, deliveryDate, userId} = req.body
+        const newOrder = await Order.create({cost, applicationDate, deliveryDate})
         await newOrder.setUser(userId)
         await newOrder.setStore(storeId)
         return res.status(200).json(newOrder)

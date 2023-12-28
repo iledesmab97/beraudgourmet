@@ -14,9 +14,9 @@ function Order(database) {
         applicationDate: {
             type: DataTypes.STRING
         },
-        deliverDate: {
+        deliveryDate: {
             type: DataTypes.STRING
-        },
+        }
     }, {
         timestamps: false
     })

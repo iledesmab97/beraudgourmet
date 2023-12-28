@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const {validate} = req.query
+    const { validate, many } = req.query
     try {
         if (validate && JSON.parse(validate)) {
             const {email, password} = req.body
@@ -61,6 +61,11 @@ router.post('/', async (req, res) => {
                 password: '****'
             } : null
             return res.status(200).json(userData)
+        }
+        if (many && JSON.parse(many)) {
+            const usersList = req.body
+            const newUserList = await User.bulkCreate(usersList)
+            return res.status(200).json(newUserList)
         }
         const newUser = await User.create({...req.body})
         return res.status(200).json(newUser) 

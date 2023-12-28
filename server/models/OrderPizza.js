@@ -7,10 +7,6 @@ function OrderPizza(database) {
             primaryKey: true,
             autoIncrement: true
         },
-        idOrder: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         idPizza: {
             type: DataTypes.INTEGER,
             allowNull: false
@@ -20,9 +16,11 @@ function OrderPizza(database) {
             allowNull: false
         },
         cost: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         }
+    }, {
+        timestamps: false
     })
 }
 

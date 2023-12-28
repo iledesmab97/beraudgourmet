@@ -22,7 +22,7 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { User, Order, Store, Pizza, PizzaIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours } = db.models
+const { User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza } = db.models
 
 // Relacion entre ordenes, usuarios y tiendas
 User.hasMany(Order)
@@ -55,6 +55,31 @@ Schedule.belongsToMany(ScheduleHours, {
 })
 ScheduleHours.belongsToMany(Schedule, {
   through: 'SchedulexScheduleHours',
+  timestamps: false
+})
+
+// Relación entre Orden y Orden de Pizza
+Order.hasMany(OrderPizza)
+OrderPizza.belongsTo(Order)
+
+// Relación entre Orden de Pizza e ingredientes extra, e Ingredinetes a quitar
+OrderPizza.belongsToMany(PizzaIngredient, {
+  through: 'IngredientsOutxOrderPizza',
+  timestamps: false
+})
+PizzaIngredient.belongsToMany(OrderPizza, {
+  through: 'IngredientsOutxOrderPizza',
+  timestamps: false
+})
+
+OrderPizza.belongsToMany(PizzaExtraIngredient, {
+  // through: 'ExtraIngredientsxOrderPizza',
+  through: ExtraIngredientsxOrderPizza,
+  timestamps: false
+})
+PizzaExtraIngredient.belongsToMany(OrderPizza, {
+  // through: 'ExtraIngredientsxOrderPizza',
+  through: ExtraIngredientsxOrderPizza,
   timestamps: false
 })
 
