@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
             idPizza: pizzaId.id
         })
 
-        await newOrderPizza.setOrder(orderId)
+        // await newOrderPizza.setOrder(orderId)
 
         if (ingredientsOut) {
             for (let ingredient of ingredientsOut) {
