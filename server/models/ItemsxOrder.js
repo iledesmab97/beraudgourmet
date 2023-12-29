@@ -2,6 +2,11 @@ const {DataTypes} = require('sequelize')
 
 function ItemsxOrder(database) {
     database.define( 'ItemsxOrder', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
         quantity: {
             type: DataTypes.INTEGER,
             allowNull: false
