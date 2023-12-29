@@ -22,7 +22,7 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza } = db.models
+const { User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders } = db.models
 
 // Relacion entre ordenes, usuarios y tiendas
 User.hasMany(Order)
@@ -58,9 +58,12 @@ ScheduleHours.belongsToMany(Schedule, {
   timestamps: false
 })
 
-// Relación entre Orden y Orden de Pizza
-Order.hasMany(OrderPizza)
-OrderPizza.belongsTo(Order)
+// Relación entre Orden y Tipo de Producto
+Order.hasMany(ItemsxOrder)
+ItemsxOrder.belongsTo(Order)
+
+KindProduct.hasMany(ItemsxOrder)
+ItemsxOrder.belongsTo(KindProduct)
 
 // Relación entre Orden de Pizza e ingredientes extra, e Ingredinetes a quitar
 OrderPizza.belongsToMany(PizzaIngredient, {
@@ -73,19 +76,22 @@ PizzaIngredient.belongsToMany(OrderPizza, {
 })
 
 OrderPizza.belongsToMany(PizzaExtraIngredient, {
-  // through: 'ExtraIngredientsxOrderPizza',
   through: ExtraIngredientsxOrderPizza,
   timestamps: false
 })
 PizzaExtraIngredient.belongsToMany(OrderPizza, {
-  // through: 'ExtraIngredientsxOrderPizza',
   through: ExtraIngredientsxOrderPizza,
   timestamps: false
 })
 
+// Relación entre Otras ordenes y Tipo de Producto
+KindProduct.hasMany(OtherOrders)
+OtherOrders.belongsTo(KindProduct)
+
 async function initDB() {
     try {
-        await db.sync({ force: true })
+        // await db.sync({ force: true })
+        await db.sync({ alter: true })
         console.log('Connection with database has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);

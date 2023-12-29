@@ -13,30 +13,36 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const {single} = req.query
+    const {many} = req.query
+    const {body} = req
     try {
-        if (single && JSON.parse(single)) {
-            const newPizzaSizes = await PizzaSize.create(req.body)
+        if (many && JSON.parse(many)) {
+            if (!Array.isArray(body)) throw new Error('the body need to be a array')
+            const newPizzaSizes = await PizzaSize.bulkCreate(body)
+            console.log('the list of pizzas sizes has been created')
             return res.status(200).json(newPizzaSizes)    
         }
-        const newPizzaSizes = await PizzaSize.bulkCreate(req.body)
+        if (!body || Array.isArray(body)) throw new Error('the body need to be a object')
+        const newPizzaSizes = await PizzaSize.create(body)
+        console.log('the pizza size has been created')
         res.status(200).json(newPizzaSizes)
     } catch(error) {
         const {message, parent} = error
-        res.status(400).json({message, parent: parent.message})
+        res.status(400).json({message, parent: parent ? parent.message : undefined})
     }
 })
 
 router.delete('/', async (req, res) => {
     const {id} = req.query
     try {
-        if (!id) return res.status(300).json({message: 'id can\'t be undefined'})
+        if (!id) throw new Error('id can\'t be undefined')
         const pizzaSizeToRemove = await PizzaSize.findByPk(id)
         if (!pizzaSizeToRemove) return res.status(200).json({message: `pizzaSize with id:${id} does not exist`})
         await pizzaSizeToRemove.destroy()
         res.status(200).json({message: `pizzaSize with id:${id} had been removed successfully`})
     } catch(error) {
-        res.status(400).json({message: error.message})
+        const {message, parent} = error
+        res.status(400).json({message, parent: parent ? parent.message : undefined})
     }
 })
 
