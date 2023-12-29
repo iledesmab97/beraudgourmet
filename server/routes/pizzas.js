@@ -62,14 +62,16 @@ router.post('/', async (req, res) => {
         
         const {ingredients} = req.body
         if (ingredients) {
-            const ingredientsSelected = await PizzaIngredient.findAll({
-                attributes: ['id'],
-                where: {
-                    name: ingredients
-                }
-            })
-            const ingredientsNumber = ingredientsSelected.map(ingredient => ingredient.id)
-            newPizza.addPizzaIngredient(ingredientsNumber)
+            for (let ingredient of ingredients) {
+                const [ingredientsSelected, created] = await PizzaIngredient.findOrCreate({
+                    attributes: ['id'],
+                    where: {
+                        name: ingredient
+                    },
+                    defaults: {}
+                })
+                newPizza.addPizzaIngredient([ingredientsSelected.id])
+            }
         }
         
         res.status(200).json(newPizza)
