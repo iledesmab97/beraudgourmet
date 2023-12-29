@@ -13,17 +13,39 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const {single} = req.query
+    const {many} = req.query
+    const { body } = req
     try {
-        if (single && JSON.parse(single)) {
-            const newPizzaIngredients = await PizzaIngredient.create(req.body)
+        if (many && JSON.parse(many)) {
+            if (!Array.isArray(body)) throw new Error('the body need to be a array')
+            const pizzaIngredientAlreadyCreated = await PizzaIngredient.findAll({
+                where: {
+                    name: body.map(ingredient => ingredient.name)
+                }
+            })
+            const listIngredientsNameAlreadyCreated = pizzaIngredientAlreadyCreated.map( ingredient => ingredient.name)
+            const pizzaIngredientsToCreate = body.filter(ingredient => {
+                return !listIngredientsNameAlreadyCreated.includes(ingredient.name)
+            } )
+            const newPizzaIngredients = await PizzaIngredient.bulkCreate(pizzaIngredientsToCreate)
+            console.log('the list of pizzas ingredients has been created')
             return res.status(200).json(newPizzaIngredients)    
         }
-        const newPizzaIngredients = await PizzaIngredient.bulkCreate(req.body)
+        if (!body || Array.isArray(body)) throw new Error('the body need to be a object')
+        const {name} = body
+        if (!name) throw new Error('name cannot be undefined')
+        const ingredientAlreadyCreated = await PizzaIngredient.findOne({
+            where: {
+                name: [name]
+            }
+        })
+        if (ingredientAlreadyCreated) throw new Error('the pizza ingredients had already been created')
+        const newPizzaIngredients = await PizzaIngredient.create(body)
+        console.log('the pizza ingredient has been created successfully')
         res.status(200).json(newPizzaIngredients)
     } catch(error) {
         const {message, parent} = error
-        res.status(400).json({message, parent: parent.message})
+        res.status(400).json({message, parent: parent ? parent.message : undefined})
     }
 })
 
