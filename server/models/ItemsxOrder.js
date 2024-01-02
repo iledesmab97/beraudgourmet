@@ -11,7 +11,11 @@ function ItemsxOrder(database) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        cost:{
+        costPerUnity:{
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        totalCostByItem:{
             type: DataTypes.STRING,
             allowNull: false
         },
