@@ -10,6 +10,7 @@ import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
 import {totalPrice} from '@/genericFunctions/priceCar'
+import CrossText from '@/components/CrossText/CrossText'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -246,7 +247,7 @@ function ModalCheckoutForm() {
                                                         }`}
                                                         {
                                                         order.ingredientsModal.map((ingredient, index) => (
-                                                            <Box key={ingredient + index} component={'label'}>, <CrossTet component={'span'}>{ingredient}</CrossTet></Box>
+                                                            <Box key={ingredient + index} component={'label'}>, <CrossText component={'span'}>{ingredient}</CrossText></Box>
                                                         ))
                                                         }
                                                     </>
