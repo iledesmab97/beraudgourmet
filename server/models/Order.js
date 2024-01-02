@@ -7,9 +7,15 @@ function Order(database) {
             primaryKey: true,
             autoIncrement: true
         },
-        cost: {
+        totalCostByItems: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        commissions: {
+            type: DataTypes.STRING
+        },
+        totalCost: {
+            type: DataTypes.STRING
         },
         applicationDate: {
             type: DataTypes.STRING
