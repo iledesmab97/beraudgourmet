@@ -344,7 +344,12 @@ function ModalCheckoutForm() {
                         {
                             clientSecret && (
                                 <Elements options={options} stripe={stripePromise} >
-                                    <CheckoutForm />
+                                    <CheckoutForm
+                                        user={user}
+                                        place={place}
+                                        orders={orders}
+                                        checkout={checkout}
+                                    />
                                 </Elements>
                             )
                         }
