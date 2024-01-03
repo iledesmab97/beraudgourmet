@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
+import useGetProducts from '@/hooks/useGetProducts'
+import dayjs from 'dayjs'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -9,10 +11,50 @@ import Button from '@mui/material/Button'
 
 import styles from './CheckoutForm.module.css'
 
-export default function CheckoutForm() {
+function registerOrder(data) {
+    fetch('http://localhost:3000/api/orders', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log('The new order has been created successfully')
+        })
+}
+
+export default function CheckoutForm({user, place, orders, checkout}) {
 
     const stripe = useStripe()
     const elements = useElements()
+    // const { products } = useGetProducts()
+    const orderItems = orders.map(item => {
+        const { size, mass, quantity, ingredientsModal, extra, totalPrice } = item
+        return {
+            name: 'pizza',
+            itemType: item.name,
+            size,
+            mass,
+            quantity,
+            ingredientsOut: ingredientsModal,
+            extraIngredients: Object.keys(extra).map(extraIngredient => ({
+                name: extraIngredient,
+                quantity: extra[extraIngredient]
+            })),
+            costItemPerUnit: totalPrice,
+            totalCostByItem: Number(totalPrice) * quantity
+        }
+    })
+    const dataOrders = {
+        userId: user.id,
+        storeId: place.closerStore.id,
+        totalCostByItems: checkout.totalPriceCar,
+        commissions: Number(checkout.IVA) + Number(checkout.commissionStripe),
+        totalCost: checkout.totalClient,
+        applicationDate: dayjs().format('DD/MM/YYYY - HH:mm'),
+        deliveryDate: place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime,
+        itemsList: orderItems
+    }
 
     const [message, setMessage] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -60,6 +102,8 @@ export default function CheckoutForm() {
         } else {
             setMessage('An unexpected error ocurred.')
         }
+
+        registerOrder(dataOrders)
 
         setIsLoading(false)
     }
