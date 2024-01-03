@@ -136,7 +136,7 @@ export default function useHandleOrder({ product }) {
             if (newInputs.extra[extraName] && newInputs.extra[extraName] >= 2) {
                 newInputs.extra[extraName] -=1
             } else if (newInputs.extra[extraName] && newInputs.extra[extraName] === 1) {
-                newInputs.extra[extraName] = 0
+                delete newInputs.extra[extraName]
             } else return
         } else return
         setInputs(newInputs)
