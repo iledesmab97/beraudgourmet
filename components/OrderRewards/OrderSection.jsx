@@ -2,7 +2,7 @@
 
 import useGetOrder from '@/hooks/useGetOrders'
 import useGetModal from '@/hooks/useGetModal'
-import CrossTet from '@/components/CrossText/CrossText'
+import CrossText from '@/components/CrossText/CrossText'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -68,7 +68,7 @@ export default function OrderSection () {
                             }`}
                             {
                               order.ingredientsModal.map((ingredient, index) => (
-                                <Box key={ingredient + index} component={'label'}>, <CrossTet component={'span'}>{ingredient}</CrossTet></Box>
+                                <Box key={ingredient + index} component={'label'}>, <CrossText component={'span'}>{ingredient}</CrossText></Box>
                               ))
                             }
                           </>
