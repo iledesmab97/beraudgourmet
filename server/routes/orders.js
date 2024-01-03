@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
 
         // Creo la nueva Orden
         const newOrder = await Order.create({totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, StoreId: storeId, UserId: userId})
+        console.log('added new Order successfully')
 
         // Creo las nuevas Ordenes para los articulos de la orden general
         for (let item of itemsList) {
@@ -60,6 +61,7 @@ router.post('/', async (req, res) => {
                         quantity,
                         idPizza: pizzaId.id
                     })
+                    console.log('added new OrderPizza successfully')
     
                     if (ingredientsOut) {
                         for (let ingredient of ingredientsOut) {
@@ -73,6 +75,7 @@ router.post('/', async (req, res) => {
                             newOrderPizza.addPizzaIngredient([ingredientsSelected.id])
                         }
                     }
+                    console.log('added ingredietsOut to OrderPizza successfully')
     
                     if (extraIngredients) {
                         const extraIngredientsListName = extraIngredients.map(ingredient => ingredient.name)
@@ -81,7 +84,7 @@ router.post('/', async (req, res) => {
                                 name: extraIngredientsListName
                             }
                         })
-                        for (let i=0; i < extraIngredients.length; i++) {
+                        for (let i=0; i < extraIngredientsList.length; i++) {
                             const {id, cost} = extraIngredientsList[i]
                             const {quantity} = extraIngredients[i]
                             await newOrderPizza.addPizzaExtraIngredient(id, {
@@ -92,6 +95,7 @@ router.post('/', async (req, res) => {
                             })
                         }
                     }
+                    console.log('added extraIngredients to OrderPizza successfully')
 
                     // Añado la información a la tabla de ItemsxOrder
 
@@ -102,8 +106,8 @@ router.post('/', async (req, res) => {
                         OrderItemId: newOrderPizza.id
                     })
                     await newItemxOrder.setOrder(newOrder.id)
-                    await newItemxOrder.setKindProduct({})
-
+                    await newItemxOrder.setKindProduct(1)
+                    console.log('added new ItemsxOrder successfully')
                 }
                 default: {
                     continue
@@ -111,7 +115,6 @@ router.post('/', async (req, res) => {
             }
 
         }
-        
         return res.status(200).json(newOrder)
     } catch(error) {
         const {message, parent} = error
