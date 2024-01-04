@@ -101,12 +101,16 @@ function useHandleUser() {
             if (!userLoged && (lastDataSet.current === 'email')) {
                 // currentUser.current = searchUser(inputs.email)
                 searchUser(inputs.email)
-                    .then(data => setCurrentUser({
-                        email: data.email,
-                        password: data.password,
-                        name: data.name,
+                    .then(data => {
+                        if (!data) return setCurrentUser(null)
+                        const {email, name, password} = data
+                        setCurrentUser({
+                        email,
+                        password,
+                        name,
                         numberPhone: data.phoneNumber
-                    }))
+                    })
+                })
             }
         }, 500)
     }, [inputs])
@@ -175,7 +179,16 @@ function useHandleUser() {
             .then(res => res.json())
             .then(data => {
                 if (data.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-                return logInUser()
+                const {id, name, email, password, promotion} = data
+                const dataUser = {
+                    id,
+                    name,
+                    email,
+                    password,
+                    numberPhone: data.phoneNumber,
+                    promotion
+                }
+                return logInUser(dataUser)
             })
     }
 
@@ -185,8 +198,8 @@ function useHandleUser() {
     //     currentUser.current = null
     // }
 
-    function logInUser() {
-        handleAddUser(currentUser)
+    function logInUser(dataUser) {
+        handleAddUser(dataUser)
         setInputs(currentUser)
         // setCurrentUser(null)
     }

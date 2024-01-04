@@ -38,6 +38,7 @@ function fetchStores() {
     .then(response => response.json())
     .then(data => {
       const newData = data.map(store => ({
+        id: store.id,
         name: store.name,
         place: store.address,
         city: store.city,

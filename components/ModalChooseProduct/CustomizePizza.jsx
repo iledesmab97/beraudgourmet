@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { scrollToSection, showScrollPosition } from '@/genericFunctions/modal'
 import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -28,13 +29,15 @@ import IconButton from '@mui/material/IconButton'
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
 import Link from '@mui/material/Link';
 
-import totalIngredients from '@/ingredients.json'
 import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
 
+
+
 export default function CustomizePizza ({ name, ingredientsProduct, customizePizza, currentProduct }) {
 
-    const [visibilityArrow, setVisibilityArrow] = useState(true) 
+    const [visibilityArrow, setVisibilityArrow] = useState(true)
+    const { extraIngredients } = useGetExtraIngredients()
 
     useEffect(() => {
         const container = document.querySelector('#modal-container-customizePizza')
@@ -153,7 +156,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                             >
                             <TableBody>
                                 {
-                                Object.values(totalIngredients).map(ingredient => {
+                                Object.values(extraIngredients).map((ingredient) => {
                                     return (
                                     <TableRow
                                         key={ingredient.name}
@@ -172,7 +175,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                             <Button
                                                 size='small'
                                                 variant='contained'
-                                                onClick={handleExtra}
+                                                onClick={() => { handleExtra({ingredient, operation: '-'}) }}
                                                 name='-'
                                                 value={ingredient.name}
                                                 disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
@@ -190,7 +193,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                             <Button
                                                 size='small'
                                                 variant='contained'
-                                                onClick={handleExtra}
+                                                onClick={() => { handleExtra({ingredient, operation: '+'}) }}
                                                 name='+'
                                                 value={ingredient.name}
                                             >
