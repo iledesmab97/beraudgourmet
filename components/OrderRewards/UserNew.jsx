@@ -16,7 +16,7 @@ const styleButtons = {
     marginBottom: '4px'
 }
 
-function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, verifyUser }) {
+function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, logInUser }) {
     return (
         <>    
             <TextField
@@ -92,7 +92,7 @@ function UserNew({ inputs, handleChange, errors, editing, currentUser, handleCha
                             margin='dense'
                             // size='small'
                             sx={styleButtons}
-                            onClick={verifyUser}
+                            onClick={logInUser}
                         >
                             Iniciar seción
                         </Button>

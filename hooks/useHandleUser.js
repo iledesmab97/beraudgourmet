@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
-import users from '@/users.json'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
@@ -55,11 +54,17 @@ function searchUser(email) {
     return fetch(`http://localhost:3000/api/users?email=${email}`)
         .then(res => res.json())
         .then(data => {
-            // console.log('data:', data)
             return data
         })
-    // const user = users.filter(user => email === user.email)[0]
-    // return user ? user : null
+}
+
+function requestLogout() {
+    return fetch('http://localhost:3000/api/users/logout', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => response.json())
+        .then(data => data)
 }
 
 function useHandleUser() {
@@ -82,24 +87,12 @@ function useHandleUser() {
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
 
-    // const currentUser = useRef(null)
     const [currentUser, setCurrentUser] = useState(null)
-
-    // useEffect(() => {
-    //     console.log('el valor actual de currentUser es:', currentUser.current)
-    //     console.log('Boolean:', Boolean(currentUser.current))
-    // }, [currentUser.current])
-
-    // useEffect(() => {
-    //     console.log('el valor actual de currentUser es:', currentUser)
-    //     console.log('Boolean:', Boolean(currentUser))
-    // }, [currentUser])
 
     useEffect(() => {
         debounceSetValue(() => {
             setErrors(validation(inputs))
             if (!userLoged && (lastDataSet.current === 'email')) {
-                // currentUser.current = searchUser(inputs.email)
                 searchUser(inputs.email)
                     .then(data => {
                         if (!data) return setCurrentUser(null)
@@ -159,49 +152,32 @@ function useHandleUser() {
         lastDataSet.current = 'numberPhone'
     }
 
-    // function verifyUser() {
-    //     // if (currentUser.current.password === inputs.password) {
-    //     if (currentUser.password === inputs.password) {
-    //         logInUser()
-    //     }
-    //     else {
-    //         setErrors({password: 'Contraseña incorrecta'})
-    //     }
-    // }
-
     function verifyUser() {
         const { email, password } = inputs
-        return fetch('http://localhost:3000/api/users?validate=true', {
+        return fetch('http://localhost:3000/api/users/login', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         })
             .then(res => res.json())
-            .then(data => {
-                if (data.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-                const {id, name, email, password, promotion} = data
-                const dataUser = {
-                    id,
-                    name,
-                    email,
-                    password,
-                    numberPhone: data.phoneNumber,
-                    promotion
-                }
-                return logInUser(dataUser)
-            })
+            .then(data => data)
     }
 
-    // function logInUser() {
-    //     handleAddUser(currentUser.current)
-    //     setInputs(currentUser.current)
-    //     currentUser.current = null
-    // }
-
-    function logInUser(dataUser) {
+    async function logInUser() {
+        const response = await verifyUser()
+        if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
+        if (response.message) return console.log('Error:', response.message)
+        const {id, name, email, phoneNumber, promotion} = response
+        const dataUser = {
+            id,
+            name,
+            email,
+            numberPhone: phoneNumber,
+            promotion
+        } 
         handleAddUser(dataUser)
         setInputs(currentUser)
-        // setCurrentUser(null)
+        console.log('Se ha iniciado sesión exitosamente')
     }
 
     function changePassword() {
@@ -240,9 +216,12 @@ function useHandleUser() {
         }
     }
 
-    function signOff() {
+    async function signOff() {
+        const {message} = await requestLogout()
+        if (message === 'No hay usuario con la sesión activa') return
         setInputs(initialInputs)
         handleRemoveUser()
+        console.log(message)
     }
 
     function handleEditing(event) {
@@ -265,13 +244,12 @@ function useHandleUser() {
         handleChange,
         handleChangeEdit,
         errors,
-        // currentUser: currentUser.current,
         currentUser: currentUser,
         userLoged,
         user,
         editing,
         handleChangeNumberPhone,
-        verifyUser,
+        logInUser,
         changePassword,
         changeEmail,
         signOff,
