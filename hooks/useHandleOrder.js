@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import useGetModal from '@/hooks/useGetModal'
-import totalIngredients from '@/ingredients.json'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import items from '@/menuStore.json'
 
 export default function useHandleOrder({ product }) {
 
     const [currentProduct, setCurrentProduct] = useState(product)
+    const { extraIngredients } = useGetExtraIngredients()
     const [inputs, setInputs] = useState({
         size: product.size ? product.size : '14"',
         quantity: product?.quantity ? product.quantity : 1,
@@ -18,7 +19,8 @@ export default function useHandleOrder({ product }) {
     const totalPrice = useMemo(() => {
         const price = product.price[inputs.size][inputs.mass]
         const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
-            return acc + inputs.extra[cur] * totalIngredients[cur].price
+            const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0
+            return acc + quantity * extraIngredients[cur].price
         }, 0)
         return inputs.quantity * (price + totalExtras)
     }, [inputs])
@@ -126,9 +128,8 @@ export default function useHandleOrder({ product }) {
         updateValue.current = {name: 'ingredientsModal'}
     }
 
-    function handleExtra (event) {
-        const operation = event.target.name
-        const extraName = event.target.value
+    function handleExtra ({ingredient, operation}) {
+        const extraName = ingredient.name
         const newInputs = structuredClone(inputs)
         if (operation === '+') {
             newInputs.extra[extraName] = newInputs.extra[extraName] ? newInputs.extra[extraName] +=1 : 1
