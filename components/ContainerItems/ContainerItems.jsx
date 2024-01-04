@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetProducts from '@/hooks/useGetProducts'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
@@ -69,6 +70,23 @@ function fetchPizzasCharacteristics({type}) {
     })
 }
 
+async function fetchExtraIngredients() {
+  return fetch('http://localhost:3000/api/pizzaExtraIngredients')
+    .then(response => response.json())
+    .then(data => {
+      const extraIngredinetList = {}
+      data.forEach(extraIngredient => {
+        const {id, name, cost} = extraIngredient
+        extraIngredinetList[name] = {
+          id,
+          name,
+          price: cost
+        }
+      })
+      return extraIngredinetList
+    })
+} 
+
 async function fetchingData() {
   const pizzasList = await fetchPizzas()
   const pizzaCharacteristicsList = await fetchPizzasCharacteristics({type: 'object'})
@@ -83,6 +101,7 @@ function ContainerItems () {
 
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
   const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
+  const { handleAddExtraIngredinetsList } = useGetExtraIngredients()
 
   useEffect(() => {
     fetchingData().then(data => {
@@ -91,6 +110,10 @@ function ContainerItems () {
         products: data
       })
     })
+    fetchExtraIngredients()
+      .then(data => {
+        handleAddExtraIngredinetsList({ extraIngredientsList: data })
+      })
   }, [])
 
   return (
