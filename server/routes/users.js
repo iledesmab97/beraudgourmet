@@ -1,7 +1,8 @@
 const { Router } = require('express')
 const {User} = require('../db')
 const jwt =  require('jsonwebtoken')
-const { serialize, parse } = require('cookie') 
+const { serialize, parse } = require('cookie')
+const bcryptjs = require('bcryptjs')
 
 function validateNumber(input) {
     const regularExpresion = /^\d+$/
@@ -9,6 +10,30 @@ function validateNumber(input) {
 }
 
 const router = Router()
+
+async function makeUser(props) {
+    const {name, password, email, phoneNumber, promotion, verified, role} = props
+    if (role) {
+        const rootUser = await User.findOne({
+            where: {
+                role: 'root'
+            }
+        })
+        if (rootUser) throw new Error('there is already a root user registered')
+    }
+    const newUser = await User.create({
+        name,
+        password,
+        email,
+        phoneNumber: phoneNumber ? phoneNumber : null,
+        promotion,
+        verified,
+        role
+    })
+    const newUserWithoutPassword = {...newUser.dataValues}
+    delete newUserWithoutPassword.password
+    return newUserWithoutPassword
+}
 
 router.get('/', async (req, res) => {
     const {email, id, validate} = req.query
@@ -20,9 +45,9 @@ router.get('/', async (req, res) => {
                 }
             })
             const userData = userFinded ? {
-                ...userFinded.dataValues,
-                password: '****'
+                ...userFinded.dataValues
             } : null
+            delete userData.password
             return res.status(200).json(userData)
         }
         if (id && validateNumber(id)) {
@@ -46,49 +71,62 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { many } = req.query
+    const { body } = req
     try {
-        if (many && JSON.parse(many)) {
+        if (many && JSON.parse(many) && Array.isArray(body)) {
             const usersList = req.body
-            const newUserList = await User.bulkCreate(usersList)
+            const newUserList = []
+            for (let user of usersList) {
+                const newUser = await makeUser(user)
+                newUserList.push(newUser)
+            }
             return res.status(200).json(newUserList)
         }
-        const newUser = await User.create({...req.body})
+        const newUser = await makeUser(body)
         return res.status(200).json(newUser) 
     } catch(error) {
         const {message, parent} = error
-        return res.status(400).json({message, parent: parent.message})
+        return res.status(400).json({message, parent: parent?.message})
     }
 })
 
 router.post('/login', async (req, res) => {
     try {
         const {email, password} = req.body
-            const userFinded = await User.findOne({
-                where:{
-                    email,
-                    password
-                }
-            })
-            if (!userFinded) {
-                return res.status(401).json({message: 'Contraseña incorrecta'})
+        
+        const userFinded = await User.findOne({
+            where:{
+                email
             }
-            const userData = {
-                ...userFinded.dataValues
-            }
-            delete userData.password
-            const token = jwt.sign({
-                ...userData.dataValues,
-                exp: Math.floor(Date.now() / 1000) + 60*60*24*30
-            }, 'secret')
+        })
 
-            const serialized = serialize( 'tokenUser', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                // sameSite: 'none',
-                maxAge: 1000 * 60 * 60 * 24 * 30,
-                path: '/'
-            })
+        if (!userFinded) {
+            return res.status(401).json({message: 'Usuario no encontrado'})
+        }
+
+        const compare = await bcryptjs.compare(password, userFinded.password)
+
+        if (!compare) {
+            return res.status(401).json({message: 'Contraseña incorrecta'})
+        }
+
+        const userData = {
+            ...userFinded.dataValues
+        }
+        delete userData.password
+        const token = jwt.sign({
+            ...userData.dataValues,
+            exp: Math.floor(Date.now() / 1000) + 60*60*24*30
+        }, 'secret')
+
+        const serialized = serialize( 'tokenUser', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            // sameSite: 'none',
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            path: '/'
+        })
 
             res.setHeader('Set-Cookie', serialized)
             return res.status(200).json(userData) 
