@@ -1,4 +1,5 @@
 const {DataTypes} = require('sequelize')
+const bcryptjs = require('bcryptjs')
 
 function User(database) {
     database.define( 'User', {
@@ -13,19 +14,39 @@ function User(database) {
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            set(value) {
+                this.setDataValue("password", bcryptjs.hashSync(value, 10))
+            }
         },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true
+            unique: true,
+            validate: {
+                isEmail: true
+            }
         },
         phoneNumber: {
             type: DataTypes.STRING,
+            allowNull: true,
+            unique: true,
         },
         promotion: {
             type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         },
+        verified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
+        },
+        role: {
+            type: DataTypes.STRING,
+            defaultValue: 'client',
+            allowNull: false
+        }
     }, {
         timestamps: false
     })
