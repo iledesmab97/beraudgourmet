@@ -1,8 +1,12 @@
+require('dotenv').config({ path: '.env.local'})
 const { Router } = require('express')
 const {User} = require('../db')
 const jwt =  require('jsonwebtoken')
 const { serialize, parse } = require('cookie')
 const bcryptjs = require('bcryptjs')
+const { transporter } = require('../mailer')
+
+const { GOOGLE_USER, NODE_ENV } = process.env
 
 function validateNumber(input) {
     const regularExpresion = /^\d+$/
@@ -33,6 +37,26 @@ async function makeUser(props) {
     const newUserWithoutPassword = {...newUser.dataValues}
     delete newUserWithoutPassword.password
     return newUserWithoutPassword
+}
+
+function makeJWT(userData) {
+    const token = jwt.sign({
+        ...userData,
+        exp: Math.floor(Date.now() / 1000) + 60*60*24*30
+    }, 'secret')
+
+    const serialized = serialize( 'tokenUser', token, {
+        httpOnly: true,
+        secure: NODE_ENV === 'production',
+        sameSite: 'strict',
+        // sameSite: 'none',
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        path: '/'
+    })
+    return {
+        token,
+        serialized
+    }
 }
 
 router.get('/', async (req, res) => {
@@ -83,6 +107,17 @@ router.post('/', async (req, res) => {
             return res.status(200).json(newUserList)
         }
         const newUser = await makeUser(body)
+
+        const { token } = makeJWT(newUser)
+        const verificationLink = `http://localhost:3000/user-verify/${token}`
+
+        transporter.sendMail({
+            from: `"Verification email" <${GOOGLE_USER}>`, // sender address
+            to: newUser.email, // list of receivers
+            subject: "Verification email", // Subject line
+            // text: "", // plain text body
+            html: `<p>Te saludamos desde BeraudGourmet y te damos gracias por darnos la oportunidad de servirte con nuestras más exquisitas pizzas.</p><br/><a href='${verificationLink}'>Haz clic aquí para verificar tu cuenta.</a>`, // html body
+          })
         return res.status(200).json(newUser) 
     } catch(error) {
         const {message, parent} = error
@@ -114,22 +149,11 @@ router.post('/login', async (req, res) => {
             ...userFinded.dataValues
         }
         delete userData.password
-        const token = jwt.sign({
-            ...userData.dataValues,
-            exp: Math.floor(Date.now() / 1000) + 60*60*24*30
-        }, 'secret')
 
-        const serialized = serialize( 'tokenUser', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            // sameSite: 'none',
-            maxAge: 1000 * 60 * 60 * 24 * 30,
-            path: '/'
-        })
+        const { serialized } = makeJWT(userData)
 
-            res.setHeader('Set-Cookie', serialized)
-            return res.status(200).json(userData) 
+        res.setHeader('Set-Cookie', serialized)
+        return res.status(200).json(userData) 
     } catch(error) {
         const {message, parent} = error
         return res.status(400).json({message, parent: parent?.message})
@@ -154,6 +178,23 @@ router.post('/logout', async (req, res) => {
     } catch(error) {
         const {message, parent} = error
         return res.status(400).json({message, parent: parent?.message})
+    }
+})
+
+router.put('/', async (req, res) => {
+    const {id, property, value} = req.body
+    try {
+        const updatedUser = await User.update({
+            [property]: value
+        }, {
+            where: {
+                id
+            }
+        })
+        console.log(`se han actuliazado exitosamente ${updatedUser} usuarios`)
+        res.status(200).json(updatedUser)
+    } catch(error) {
+        res.status(400).json({message: error.message})
     }
 })
 
