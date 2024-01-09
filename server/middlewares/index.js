@@ -1,3 +1,3 @@
-const verifyToken = require('./authjwt')
+const authJwt = require('./authjwt')
 
-module.exports = { verifyToken }
+module.exports = { ...authJwt }
