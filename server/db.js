@@ -22,7 +22,11 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders } = db.models
+const { Role, User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders } = db.models
+
+// Relación entre usuarios y roles
+Role.hasMany(User)
+User.belongsTo(Role)
 
 // Relacion entre ordenes, usuarios y tiendas
 User.hasMany(Order)
@@ -90,8 +94,8 @@ OtherOrders.belongsTo(KindProduct)
 
 async function initDB() {
     try {
-        // await db.sync({ force: true })
-        await db.sync({ alter: true })
+        await db.sync({ force: true })
+        // await db.sync({ alter: true })
         console.log('Connection with database has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);
