@@ -51,7 +51,7 @@ function lastValidation(inputs) {
 
 function searchUser(email) {
     if (!email) return null
-    return fetch(`http://localhost:3000/api/users?email=${email}`)
+    return fetch(`http://localhost:3000/api/users/${email}`)
         .then(res => res.json())
         .then(data => {
             return data
