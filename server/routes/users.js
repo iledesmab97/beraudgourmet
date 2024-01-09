@@ -5,6 +5,9 @@ const jwt =  require('jsonwebtoken')
 const { serialize, parse } = require('cookie')
 const bcryptjs = require('bcryptjs')
 const { transporter } = require('../mailer')
+const {getUser, signUp, logIn, logOut} = require('../controllers/users.controller')
+
+const {verifyToken} = require('../middlewares')
 
 const { GOOGLE_USER, NODE_ENV } = process.env
 
@@ -53,133 +56,52 @@ function makeJWT(userData) {
         maxAge: 1000 * 60 * 60 * 24 * 30,
         path: '/'
     })
+
     return {
         token,
         serialized
     }
 }
 
-router.get('/', async (req, res) => {
-    const {email, id, validate} = req.query
-    try {
-        if (email) {
-            const userFinded = await User.findOne({
-                where:{
-                    email
-                }
-            })
-            const userData = userFinded ? {
-                ...userFinded.dataValues
-            } : null
-            delete userData.password
-            return res.status(200).json(userData)
-        }
-        if (id && validateNumber(id)) {
-            const userFinded = await User.findByPk(id)
-            const userData = userFinded ? {
-                ...userFinded.dataValues,
-                password: '****'
-            } : null
-            return res.status(200).json(userData)
-        }
-        const allUsers = await User.findAll()
-        const usersData = allUsers.map(user => ({
-            ...user.dataValues,
-            password: '****'
-        }))
-        res.status(200).json(usersData)
-    } catch(error) {
-        res.status(400).json({message: error.message})
-    }
-})
+router.get('/', getUser)
 
-router.post('/', async (req, res) => {
-    const { many } = req.query
-    const { body } = req
-    try {
-        if (many && JSON.parse(many) && Array.isArray(body)) {
-            const usersList = req.body
-            const newUserList = []
-            for (let user of usersList) {
-                const newUser = await makeUser(user)
-                newUserList.push(newUser)
-            }
-            return res.status(200).json(newUserList)
-        }
-        const newUser = await makeUser(body)
+// router.post('/', async (req, res) => {
+//     const { many } = req.query
+//     const { body } = req
+//     try {
+//         if (many && JSON.parse(many) && Array.isArray(body)) {
+//             const usersList = req.body
+//             const newUserList = []
+//             for (let user of usersList) {
+//                 const newUser = await makeUser(user)
+//                 newUserList.push(newUser)
+//             }
+//             return res.status(200).json(newUserList)
+//         }
+//         const newUser = await makeUser(body)
 
-        const { token } = makeJWT(newUser)
-        const verificationLink = `http://localhost:3000/user-verify/${token}`
+//         const { token } = makeJWT(newUser)
+//         const verificationLink = `http://localhost:3000/user-verify/${token}`
 
-        transporter.sendMail({
-            from: `"Verification email" <${GOOGLE_USER}>`, // sender address
-            to: newUser.email, // list of receivers
-            subject: "Verification email", // Subject line
-            // text: "", // plain text body
-            html: `<p>Te saludamos desde BeraudGourmet y te damos gracias por darnos la oportunidad de servirte con nuestras más exquisitas pizzas.</p><br/><a href='${verificationLink}'>Haz clic aquí para verificar tu cuenta.</a>`, // html body
-          })
-        return res.status(200).json(newUser) 
-    } catch(error) {
-        const {message, parent} = error
-        return res.status(400).json({message, parent: parent?.message})
-    }
-})
+//         transporter.sendMail({
+//             from: `"Verification email" <${GOOGLE_USER}>`, // sender address
+//             to: newUser.email, // list of receivers
+//             subject: "Verification email", // Subject line
+//             // text: "", // plain text body
+//             html: `<p>Te saludamos desde BeraudGourmet y te damos gracias por darnos la oportunidad de servirte con nuestras más exquisitas pizzas.</p><br/><a href='${verificationLink}'>Haz clic aquí para verificar tu cuenta.</a>`, // html body
+//           })
+//         return res.status(200).json(newUser) 
+//     } catch(error) {
+//         const {message, parent} = error
+//         return res.status(400).json({message, parent: parent?.message})
+//     }
+// })
 
-router.post('/login', async (req, res) => {
-    try {
-        const {email, password} = req.body
-        
-        const userFinded = await User.findOne({
-            where:{
-                email
-            }
-        })
+router.post('/', signUp)
 
-        if (!userFinded) {
-            return res.status(401).json({message: 'Usuario no encontrado'})
-        }
+router.post('/login', logIn)
 
-        const compare = await bcryptjs.compare(password, userFinded.password)
-
-        if (!compare) {
-            return res.status(401).json({message: 'Contraseña incorrecta'})
-        }
-
-        const userData = {
-            ...userFinded.dataValues
-        }
-        delete userData.password
-
-        const { serialized } = makeJWT(userData)
-
-        res.setHeader('Set-Cookie', serialized)
-        return res.status(200).json(userData) 
-    } catch(error) {
-        const {message, parent} = error
-        return res.status(400).json({message, parent: parent?.message})
-    }
-})
-
-router.post('/logout', async (req, res) => {
-    const { tokenUser } = parse(req.headers.cookie)
-    try {
-        if (!tokenUser) return res.status(200).json({message: 'No hay usuario con la sesión activa'})
-        jwt.verify(tokenUser, 'secret')
-        const serialized = serialize( 'tokenUser', null, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            // sameSite: 'none',
-            maxAge: 0,
-            path: '/'
-        })
-        res.setHeader('Set-Cookie', serialized)
-        res.status(200).json({ message: 'Se ha cerrado seción exitosamente'})
-    } catch(error) {
-        const {message, parent} = error
-        return res.status(400).json({message, parent: parent?.message})
-    }
-})
+router.post('/logout', verifyToken, logOut)
 
 router.put('/', async (req, res) => {
     const {id, property, value} = req.body
