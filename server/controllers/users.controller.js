@@ -1,6 +1,6 @@
-const {User} = require('../db')
+const {User, Role} = require('../db')
 const {emailVerification} = require('../controllers/mailer.controller')
-const {validateNumber, makeJWT} = require('../libs/validateData')
+const {validateNumber, validateEmail, makeJWT, unserialize} = require('../libs/validateData')
 const bcryptjs = require('bcryptjs')
 const { serialize, parse } = require('cookie')
 const jwt =  require('jsonwebtoken')
@@ -22,19 +22,19 @@ module.exports = {
         }
     },
     getUser: async function (req, res) {
-        const { email, id } = req.query
+        const { identifier } = req.params
         try {
-            if (!email && !id) throw new Error('Email or id can not to be null')
+            if (!identifier) throw new Error('Identifier can not to be null')
             let user
-            if (email) {
+            if (validateNumber(identifier)) {
+                user = await User.findByPk(identifier)
+            }
+            if (validateEmail(identifier)) {
                 user = await User.findOne({
                     where:{
-                        email
+                        email: identifier
                     }
                 })
-            }
-            if (id && validateNumber(id)) {
-                user = await User.findByPk(id)
             }
             if (!user) throw new Error('User not finded')
             const userData = {
@@ -48,23 +48,26 @@ module.exports = {
     },
     makeUser: async function (props) {
         const {name, password, email, phoneNumber, promotion, verified, role} = props
-        if (role) {
-            const rootUser = await User.findOne({
-                where: {
-                    role: 'root'
-                }
-            })
-            if (rootUser) throw new Error('there is already a root user registered')
-        }
+        
         const newUser = await User.create({
             name,
             password,
             email,
             phoneNumber: phoneNumber ? phoneNumber : null,
             promotion,
-            verified,
-            role
+            verified
         })
+        
+        if (role && role !== 'root') {            
+            const roleFinded = await Role.findOne({
+                where: {
+                    name: role
+                }
+            })
+            if (!roleFinded) throw new Error('the indicated role does not exist')
+            newUser.setRole(roleFinded.id)
+        } else await newUser.setRole(3)
+
         const newUserWithoutPassword = {...newUser.dataValues}
         delete newUserWithoutPassword.password
         return newUserWithoutPassword
@@ -77,8 +80,10 @@ module.exports = {
                 const usersList = req.body
                 const newUserList = []
                 for (let user of usersList) {
-                    const newUser = await makeUser(user)
+                    const newUser = await this.makeUser(user)
                     newUserList.push(newUser)
+                    const { token } = makeJWT(newUser)
+                    emailVerification(token)
                 }
                 return res.status(200).json(newUserList)
             }
@@ -127,10 +132,10 @@ module.exports = {
         }
     },
     logOut: async function (req, res) {
-        const { tokenUser } = parse(req.headers.cookie)
+        // const { tokenUser } = parse(req.headers.cookie)
         try {
-            if (!tokenUser) return res.status(200).json({message: 'No hay usuario con la sesión activa'})
-            jwt.verify(tokenUser, 'secret')
+            // if (!tokenUser) return res.status(200).json({message: 'No hay usuario con la sesión activa'})
+            // jwt.verify(tokenUser, 'secret')
             const serialized = serialize( 'tokenUser', null, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -144,6 +149,45 @@ module.exports = {
         } catch(error) {
             const {message, parent} = error
             return res.status(400).json({message, parent: parent?.message})
+        }
+    },
+    update: async function (req, res) {
+        // const {id, property, value} = req.body
+        const { user } = req
+        try {
+            const id = user.RoleId === 3 ? user.id : req.body.id
+            const {property, value} = req.body
+            const userUpdated = await User.update({
+                [property]: value
+            }, {
+                where: {
+                    id
+                }
+            })
+            if (!userUpdated[0]) throw new Error('El usuario indicado no existe')
+            res.status(200).json({message: 'se han actuliazado exitosamente'})
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
+    },
+    remove: async function (req, res) {
+        const { user } = req
+        try {
+            if (user.id === 1) throw new Error('The root user can not be removed')
+            const roleOfUser = user.RoleId
+            const id = roleOfUser === 3 ? user.id : req.query.id
+            if (!id) return res.status(300).json({message: 'id can\'t be undefined'})
+            const userToRemove = await User.findByPk(id)
+            if (!userToRemove) return res.status(200).json({message: `user with id:${id} does not exist`})
+            await userToRemove.destroy()
+            if (roleOfUser === 3) {
+                const serialized = unserialize()
+                res.setHeader('Set-Cookie', serialized)
+                return res.status(200).json({ message: 'The user has been removed successfully'})
+            }
+            res.status(200).json({message: `User with id:${id} had been removed successfully`})
+        } catch(error) {
+            res.status(400).json({message: error.message})
         }
     }
 }

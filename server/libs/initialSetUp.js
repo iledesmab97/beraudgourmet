@@ -37,7 +37,6 @@ module.exports = {
             if (root) return
             const newRoot = await User.create(initialRoot)
             await newRoot.setRole(1)
-            console.log('newRoot:', newRoot)
         } catch(error) {
             console.error(error)
         }
