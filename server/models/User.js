@@ -41,11 +41,6 @@ function User(database) {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false
-        },
-        role: {
-            type: DataTypes.STRING,
-            defaultValue: 'client',
-            allowNull: false
         }
     }, {
         timestamps: false
