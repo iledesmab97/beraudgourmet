@@ -5,7 +5,7 @@ const bcryptjs = require('bcryptjs')
 const { serialize, parse } = require('cookie')
 const jwt =  require('jsonwebtoken')
 
-module.exports = {
+controllersUser = {
     getAllUsers: async function (req, res) {
         try {
             const allUsers = await User.findAll()
@@ -49,28 +49,32 @@ module.exports = {
     makeUser: async function (props) {
         const {name, password, email, phoneNumber, promotion, verified, role} = props
         
-        const newUser = await User.create({
-            name,
-            password,
-            email,
-            phoneNumber: phoneNumber ? phoneNumber : null,
-            promotion,
-            verified
-        })
-        
-        if (role && role !== 'root') {            
-            const roleFinded = await Role.findOne({
-                where: {
-                    name: role
-                }
+        try {
+            const newUser = await User.create({
+                name,
+                password,
+                email,
+                phoneNumber: phoneNumber ? phoneNumber : null,
+                promotion,
+                verified
             })
-            if (!roleFinded) throw new Error('the indicated role does not exist')
-            newUser.setRole(roleFinded.id)
-        } else await newUser.setRole(3)
-
-        const newUserWithoutPassword = {...newUser.dataValues}
-        delete newUserWithoutPassword.password
-        return newUserWithoutPassword
+            
+            if (role && role !== 'root') {            
+                const roleFinded = await Role.findOne({
+                    where: {
+                        name: role
+                    }
+                })
+                if (!roleFinded) throw new Error('the indicated role does not exist')
+                newUser.setRole(roleFinded.id)
+            } else await newUser.setRole(3)
+    
+            const newUserWithoutPassword = {...newUser.dataValues}
+            delete newUserWithoutPassword.password
+            return newUserWithoutPassword
+        } catch(error) {
+            return {message: error.message}
+        }
     },
     signUp :async function (req, res) {
         const { many } = req.query
@@ -80,17 +84,16 @@ module.exports = {
                 const usersList = req.body
                 const newUserList = []
                 for (let user of usersList) {
-                    const newUser = await this.makeUser(user)
+                    const newUser = await this.controllersUser.makeUser(user)
                     newUserList.push(newUser)
                     const { token } = makeJWT(newUser)
-                    emailVerification(token)
+                    emailVerification({token, user: newUser})
                 }
                 return res.status(200).json(newUserList)
             }
-            const newUser = await this.makeUser(body)
-    
+            const newUser = await this.controllersUser.makeUser(body)
             const { token } = makeJWT(newUser)
-            emailVerification(token)
+            emailVerification({token, user: newUser})
             return res.status(200).json(newUser) 
         } catch(error) {
             const {message, parent} = error
@@ -152,7 +155,6 @@ module.exports = {
         }
     },
     update: async function (req, res) {
-        // const {id, property, value} = req.body
         const { user } = req
         try {
             const id = user.RoleId === 3 ? user.id : req.body.id
@@ -173,12 +175,12 @@ module.exports = {
     remove: async function (req, res) {
         const { user } = req
         try {
-            if (user.id === 1) throw new Error('The root user can not be removed')
+            if (!validateNumber(req.query.id)) throw new Error('id need to be a number')
             const roleOfUser = user.RoleId
-            const id = roleOfUser === 3 ? user.id : req.query.id
-            if (!id) return res.status(300).json({message: 'id can\'t be undefined'})
+            const id = roleOfUser === 3 ? user.id : Number(req.query.id)
+            if (id === 1) throw new Error('The root user can not be removed')
             const userToRemove = await User.findByPk(id)
-            if (!userToRemove) return res.status(200).json({message: `user with id:${id} does not exist`})
+            if (!userToRemove) return res.status(400).json({message: `user with id:${id} does not exist`})
             await userToRemove.destroy()
             if (roleOfUser === 3) {
                 const serialized = unserialize()
@@ -191,3 +193,5 @@ module.exports = {
         }
     }
 }
+
+module.exports = controllersUser
