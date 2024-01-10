@@ -15,8 +15,8 @@ const initialRoles = [
 const initialRoot = {
     name: 'root',
     password: 'root',
-    email: 'troy00pernia@gmail.com',
-    phoneNumber: '+584120146661',
+    email: 'beraudgourmet@gmail.com',
+    phoneNumber: '+525531489408',
     promotion: false,
     verified: true,
 }
