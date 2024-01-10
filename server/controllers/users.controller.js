@@ -173,12 +173,12 @@ module.exports = {
     remove: async function (req, res) {
         const { user } = req
         try {
-            if (user.id === 1) throw new Error('The root user can not be removed')
+            if (!validateNumber(req.query.id)) throw new Error('id need to be a number')
             const roleOfUser = user.RoleId
-            const id = roleOfUser === 3 ? user.id : req.query.id
-            if (!id) return res.status(300).json({message: 'id can\'t be undefined'})
+            const id = roleOfUser === 3 ? user.id : Number(req.query.id)
+            if (id === 1) throw new Error('The root user can not be removed')
             const userToRemove = await User.findByPk(id)
-            if (!userToRemove) return res.status(200).json({message: `user with id:${id} does not exist`})
+            if (!userToRemove) return res.status(400).json({message: `user with id:${id} does not exist`})
             await userToRemove.destroy()
             if (roleOfUser === 3) {
                 const serialized = unserialize()
