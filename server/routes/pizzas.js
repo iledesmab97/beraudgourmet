@@ -1,7 +1,19 @@
+require('dotenv').config({ path: '.env.local'})
 const { Router } = require('express')
 const { Op } = require('sequelize')
 const {Pizza, PizzaIngredient, PizzaCharacteristic} = require('../db')
-const { create } = require('domain')
+const multer = require('multer')
+const {v2} = require('cloudinary')
+
+const {CLOUD_NAME, CLOUD_API_KEY, CLOUD_API_SECRET} = process.env
+
+const upload = multer({ storage: multer.memoryStorage() })
+
+v2.config({ 
+    cloud_name: CLOUD_NAME, 
+    api_key: CLOUD_API_KEY, 
+    api_secret: CLOUD_API_SECRET 
+})
 
 const router = Router()
 
@@ -78,6 +90,22 @@ router.post('/', async (req, res) => {
     } catch(error) {
         const {message, parent} = error
         res.status(400).json({message, parent: parent.message})
+    }
+})
+
+router.post('/image', upload.single('file'), async (req, res) => {
+    try {
+        const image = req.file.buffer
+        const response = await new Promise((resolve, reject) => {
+            v2.uploader.upload_stream({}, (err, result) => {
+                if (err) reject(err)
+                resolve(result)
+            }).end(image)
+        })
+        console.log('response:', response)
+        res.status(200).json({message: 'Imagen subida exitosamente', url: response.secure_url})
+    } catch(error) {
+        res.status(400).json({message: error.message})
     }
 })
 
