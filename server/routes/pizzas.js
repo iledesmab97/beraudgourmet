@@ -1,15 +1,18 @@
+require('dotenv').config({ path: '.env.local'})
 const { Router } = require('express')
 const { Op } = require('sequelize')
 const {Pizza, PizzaIngredient, PizzaCharacteristic} = require('../db')
 const multer = require('multer')
 const {v2} = require('cloudinary')
 
+const {CLOUD_NAME, CLOUD_API_KEY, CLOUD_API_SECRET} = process.env
+
 const upload = multer({ storage: multer.memoryStorage() })
 
 v2.config({ 
-    cloud_name: 'da3j37gy8', 
-    api_key: '698167558834788', 
-    api_secret: 'M57JzlSIunzGJedN8ZlTmxOJLYE' 
+    cloud_name: CLOUD_NAME, 
+    api_key: CLOUD_API_KEY, 
+    api_secret: CLOUD_API_SECRET 
 })
 
 const router = Router()
