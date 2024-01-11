@@ -94,8 +94,8 @@ OtherOrders.belongsTo(KindProduct)
 
 async function initDB() {
     try {
-        await db.sync({ force: true })
-        // await db.sync({ alter: true })
+        // await db.sync({ force: true })
+        await db.sync({ alter: true })
         console.log('Connection with database has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);
