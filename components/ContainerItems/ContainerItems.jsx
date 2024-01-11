@@ -116,6 +116,18 @@ function ContainerItems () {
       })
   }, [])
 
+  async function handleChange(event) {
+    const file = event.target.files[0]
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await fetch('http://localhost:3000/api/pizzas/image', {
+      method: 'POST',
+      body: formData,
+    })
+    const data = await response.json()
+    console.log('data:', data)
+  }
+
   return (
     <Grid item xs={12}>
       <Typography variant='encabezado'>
@@ -123,7 +135,6 @@ function ContainerItems () {
       </Typography>
       <Grid container spacing={4}>
         {
-          // itemsJSON.map((item, index) => (
           products && products.map((item, index) => (
             <Grid item key={item.name + index} xs={12} sm={6} md={4}>
               <CardActionArea
@@ -159,6 +170,7 @@ function ContainerItems () {
           ))
         }
       </Grid>
+      <input type='file' onChange={handleChange} />
     </Grid>
   )
 }
