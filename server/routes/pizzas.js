@@ -5,6 +5,8 @@ const {Pizza, PizzaIngredient, PizzaCharacteristic} = require('../db')
 const multer = require('multer')
 const {v2} = require('cloudinary')
 
+const {verifyToken, isRoot, isAdmin} = require('../middlewares')
+
 const {CLOUD_NAME, CLOUD_API_KEY, CLOUD_API_SECRET} = process.env
 
 const upload = multer({ storage: multer.memoryStorage() })
@@ -93,7 +95,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.post('/image', upload.single('file'), async (req, res) => {
+router.post('/image', [verifyToken, isAdmin, upload.single('file')], async (req, res) => {
     try {
         const image = req.file.buffer
         const response = await new Promise((resolve, reject) => {
