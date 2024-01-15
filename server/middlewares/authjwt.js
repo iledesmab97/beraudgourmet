@@ -1,16 +1,19 @@
+const { InvalidToken } = require('../db')
 const jwt =  require('jsonwebtoken')
 const { parse } = require('cookie')
 
 async function verifyToken(req, res, next) {
     try {
         const { tokenUser } = parse(req.headers.cookie)
-
         if (!tokenUser) return res.status(403).json({message: 'No token provided'})
+        const token = await InvalidToken.findByPk(tokenUser)
+        if (token) throw new Error('invalid token')
         const user = jwt.verify(tokenUser, 'secret')
         req.user = user
+        req.token = tokenUser
         next()
     } catch(error) {
-        res.status(400).json({message: 'Unauthorized'})
+        res.status(400).json({message: error.message})
     }
 }
 
