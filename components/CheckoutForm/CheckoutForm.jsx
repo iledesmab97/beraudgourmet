@@ -11,7 +11,7 @@ import Button from '@mui/material/Button'
 
 import styles from './CheckoutForm.module.css'
 
-function registerOrder(data) {
+async function registerOrder(data) {
     fetch('http://localhost:3000/api/orders', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
@@ -87,6 +87,9 @@ export default function CheckoutForm({user, place, orders, checkout}) {
 
     async function handleSubmit(event) {
         event.preventDefault()
+
+        await registerOrder(dataOrders)
+
         if (!stripe || !elements) return 
         setIsLoading(true)
 
@@ -103,7 +106,7 @@ export default function CheckoutForm({user, place, orders, checkout}) {
             setMessage('An unexpected error ocurred.')
         }
 
-        registerOrder(dataOrders)
+        // la verificación fue exitosa
 
         setIsLoading(false)
     }
