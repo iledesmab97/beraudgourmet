@@ -1,6 +1,6 @@
 const {User, Role, InvalidToken} = require('../db')
 const {emailVerification} = require('../controllers/mailer.controller')
-const {validateNumber, validateEmail, makeJWT, unserialize} = require('../libs/validateData')
+const {validateNumber, validateEmail, makeJWT, unserialize, makeJWTVerifyUser} = require('../libs/validateData')
 const bcryptjs = require('bcryptjs')
 const { serialize, parse } = require('cookie')
 const jwt =  require('jsonwebtoken')
@@ -92,8 +92,9 @@ controllersUser = {
                 return res.status(200).json(newUserList)
             }
             const newUser = await this.controllersUser.makeUser(body)
-            const { token } = makeJWT(newUser)
-            emailVerification({token, user: newUser})
+            // const { token } = makeJWT(newUser)
+            const tokenVerify = makeJWTVerifyUser({id: newUser.id})
+            emailVerification({ token: tokenVerify, email: newUser.email})
             return res.status(200).json(newUser) 
         } catch(error) {
             const {message, parent} = error
@@ -187,6 +188,23 @@ controllersUser = {
                 return res.status(200).json({ message: 'The user has been removed successfully'})
             }
             res.status(200).json({message: `User with id:${id} had been removed successfully`})
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
+    },
+    verifyUser: async function (req, res) {
+        const { tokenVerify } = req.params
+        try {
+            if (!tokenVerify) return res.status(403).json({message: 'No token provided'})
+            const tokenVerifyEncoded = jwt.verify(tokenVerify, 'secret')
+            const userUpdated = await User.update({
+                ['verified']: true
+            }, {
+                where: {
+                    id: tokenVerifyEncoded.id
+                }
+            })
+            res.status(200).json(userUpdated)
         } catch(error) {
             res.status(400).json({message: error.message})
         }
