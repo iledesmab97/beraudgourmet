@@ -1,6 +1,5 @@
 require('dotenv').config({ path: '.env.local'})
 const { Router } = require('express')
-const {User} = require('../db')
 
 const {getAllUsers, getUser, signUp, logIn, logOut, update, remove} = require('../controllers/users.controller')
 
