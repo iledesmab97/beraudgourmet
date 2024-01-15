@@ -1,4 +1,4 @@
-const {User, Role} = require('../db')
+const {User, Role, InvalidToken} = require('../db')
 const {emailVerification} = require('../controllers/mailer.controller')
 const {validateNumber, validateEmail, makeJWT, unserialize} = require('../libs/validateData')
 const bcryptjs = require('bcryptjs')
@@ -135,10 +135,9 @@ controllersUser = {
         }
     },
     logOut: async function (req, res) {
-        // const { tokenUser } = parse(req.headers.cookie)
+        const { token } = req
         try {
-            // if (!tokenUser) return res.status(200).json({message: 'No hay usuario con la sesión activa'})
-            // jwt.verify(tokenUser, 'secret')
+            await InvalidToken.create({token})
             const serialized = serialize( 'tokenUser', null, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
