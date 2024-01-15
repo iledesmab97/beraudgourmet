@@ -33,6 +33,9 @@ module.exports = {
             serialized
         }
     },
+    makeJWTVerifyUser: (userData) => {
+        return jwt.sign({...userData}, 'secret', { expiresIn: '15m' })
+    },
     unserialize: () => {
         return serialize( 'tokenUser', null, {
             httpOnly: true,
