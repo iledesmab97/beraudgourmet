@@ -1,24 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetPlace from '@/hooks/useGetPlace'
 import ListStores from './ListStores'
 import DetailStore from './DetailStore'
 import useHandleStoresDetail from '@/hooks/useHandleStoresDetail'
-import { accept } from '@/genericFunctions/modal'
+import useGetStoreList from '@/hooks/useGetStoreList'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/List'
-import ListItemButton from '@mui/material/ListItemButton'
-import Divider from '@mui/material/Divider'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
 
 const style = {
     position: 'absolute',
@@ -46,6 +38,7 @@ function ModalStoresDetail() {
     const inputsHome = place.inputsHome
     const closerStore = place.closerStore
     const {currentStore, handleCurrentStoreDetail} = useHandleStoresDetail({place: closerStore})
+    const { storeList } = useGetStoreList()
 
     if ( !currentStore ) return
 
@@ -84,7 +77,11 @@ function ModalStoresDetail() {
                     }}
                 >
 
-                    <ListStores handleCurrentStoreDetail={handleCurrentStoreDetail} place={closerStore}/>
+                    <ListStores
+                        handleCurrentStoreDetail={handleCurrentStoreDetail}
+                        place={closerStore}
+                        stores={storeList}
+                    />
                     <DetailStore currentStore={currentStore}/>
 
                 </Grid>
