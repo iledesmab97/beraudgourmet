@@ -84,7 +84,32 @@ controllersUser = {
             return {message: error.message}
         }
     },
-    signUp :async function (req, res) {
+    signUp: async function (req, res) {
+        const { many } = req.query
+        const { body } = req
+        try {
+            if (many && JSON.parse(many) && Array.isArray(body)) {
+                const usersList = req.body
+                const newUserList = []
+                for (let user of usersList) {
+                    const newUser = await this.controllersUser.makeUser(user)
+                    newUserList.push(newUser)
+                    const { token } = makeJWT(newUser)
+                    emailVerification({token, user: newUser})
+                }
+                return res.status(200).json(newUserList)
+            }
+            const newUser = await this.controllersUser.makeUser(body)
+            // const { token } = makeJWT(newUser)
+            const tokenVerify = makeJWTVerifyUser({id: newUser.id})
+            emailVerification({ token: tokenVerify, email: newUser.email})
+            return res.status(200).json(newUser) 
+        } catch(error) {
+            const {message, parent} = error
+            return res.status(400).json({message, parent: parent?.message})
+        }
+    },
+    signUpAdmin: async function (req, res) {
         const { many } = req.query
         const { body } = req
         try {
@@ -147,14 +172,7 @@ controllersUser = {
         const { token } = req
         try {
             await InvalidToken.create({token})
-            const serialized = serialize( 'tokenUser', null, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                // sameSite: 'none',
-                maxAge: 0,
-                path: '/'
-            })
+            const serialized = unserialize()
             res.setHeader('Set-Cookie', serialized)
             res.status(200).json({ message: 'Se ha cerrado seción exitosamente'})
         } catch(error) {
@@ -181,9 +199,14 @@ controllersUser = {
         }
     },
     updateUser: async function (req, res) {
+        const { user } = req
         const { id } = req.params
         const {property, value } = req.body
         try {
+            if (!validateNumber(id)) throw new Error('id need to be a number')
+            if (Number(id) === 1) throw new Error('Cannot update root user')
+            const userToUpdate = await User.findByPk(id)
+            if (user.RoleId === 2 && userToUpdate.RoleId === 2) throw new Error('Unauthorized')
             const userUpdated = await User.update({
                 [property]: value
             }, {
@@ -197,22 +220,33 @@ controllersUser = {
             res.status(400).json({message: error.message})
         }
     },
-    remove: async function (req, res) {
-        const { user } = req
+    removeMyAccount: async function (req, res) {
+        const { user, token } = req
         try {
-            if (!validateNumber(req.query.id)) throw new Error('id need to be a number')
-            const roleOfUser = user.RoleId
-            const id = roleOfUser === 3 ? user.id : Number(req.query.id)
+            const id = user.id
             if (id === 1) throw new Error('The root user can not be removed')
             const userToRemove = await User.findByPk(id)
             if (!userToRemove) return res.status(400).json({message: `user with id:${id} does not exist`})
             await userToRemove.destroy()
-            if (roleOfUser === 3) {
-                const serialized = unserialize()
-                res.setHeader('Set-Cookie', serialized)
-                return res.status(200).json({ message: 'The user has been removed successfully'})
-            }
-            res.status(200).json({message: `User with id:${id} had been removed successfully`})
+            await InvalidToken.create({token})
+            const serialized = unserialize()
+            res.setHeader('Set-Cookie', serialized)
+            return res.status(200).json({ message: 'The user has been removed successfully'})
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
+    },
+    removeUser: async function (req, res) {
+        const { user } = req
+        const { id } = req.params
+        try {
+            if (!validateNumber(id)) throw new Error('id need to be a number')
+            if (Number(id) === 1) throw new Error('The root user can not be removed')
+            const userToRemove = await User.findByPk(id)
+            if (user.RoleId === 2 && userToRemove.RoleId === 2) throw new Error('Unauthorized')
+            if (!userToRemove) return res.status(400).json({message: `user with id:${id} does not exist`})
+            await userToRemove.destroy()
+            res.status(200).json({message: `User had been removed successfully`})
         } catch(error) {
             res.status(400).json({message: error.message})
         }
