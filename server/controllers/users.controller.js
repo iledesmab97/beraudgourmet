@@ -154,11 +154,28 @@ controllersUser = {
             return res.status(400).json({message, parent: parent?.message})
         }
     },
-    update: async function (req, res) {
+    updateMyAccount: async function (req, res) {
         const { user } = req
         try {
-            const id = user.RoleId === 3 ? user.id : req.body.id
+            const id = user.id
             const {property, value} = req.body
+            const userUpdated = await User.update({
+                [property]: value
+            }, {
+                where: {
+                    id
+                }
+            })
+            if (!userUpdated[0]) throw new Error('El usuario indicado no existe')
+            res.status(200).json({message: 'se han actuliazado exitosamente'})
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
+    },
+    updateUser: async function (req, res) {
+        const { id } = req.params
+        const {property, value } = req.body
+        try {
             const userUpdated = await User.update({
                 [property]: value
             }, {
