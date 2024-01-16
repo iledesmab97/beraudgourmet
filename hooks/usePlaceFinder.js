@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react"
 import usePlacesAutocomplete from 'use-places-autocomplete'
 import useDebounce from "./useDebounce"
-import stores from '@/stores.json'
+import useGetStoreList from '@/hooks/useGetStoreList'
 
 const center = {
     lat: 19.43174631841264,
@@ -33,6 +33,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
         }
       });
 
+    const { storeList } = useGetStoreList()
     const { debounceSetValue } = useDebounce()
 
     function handleSetAddress (value) {
@@ -66,7 +67,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
       let newDistance = Infinity
       let cityStore
       let closerStore 
-      const arrayCitys = Object.values(stores)
+      const arrayCitys = Object.values(storeList)
       for (const city of arrayCitys) {
         // cityStore = city.name
         if (cityStore && cityStore !== city.name) break
