@@ -4,6 +4,7 @@ const { parse } = require('cookie')
 
 async function verifyToken(req, res, next) {
     try {
+        if (!req.headers.cookie) throw new Error('No token provided')
         const { tokenUser } = parse(req.headers.cookie)
         if (!tokenUser) return res.status(403).json({message: 'No token provided'})
         const token = await InvalidToken.findByPk(tokenUser)
