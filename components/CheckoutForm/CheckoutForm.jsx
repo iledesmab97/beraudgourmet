@@ -51,7 +51,7 @@ export default function CheckoutForm({user, place, orders, checkout}) {
         totalCostByItems: checkout.totalPriceCar,
         commissions: Number(checkout.IVA) + Number(checkout.commissionStripe),
         totalCost: checkout.totalClient,
-        applicationDate: dayjs().format('DD/MM/YYYY - HH:mm'),
+        applicationDate: dayjs().format('DD/MM/YYYY - HH:mm a'),
         deliveryDate: place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime,
         itemsList: orderItems
     }

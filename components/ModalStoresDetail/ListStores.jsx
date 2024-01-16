@@ -8,8 +8,6 @@ import ListItem from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import Divider from '@mui/material/Divider'
 
-// import stores from '@/stores.json'
-
 function ListStores({ handleCurrentStoreDetail , place, stores }) {
     return (
         <Grid

@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const {ScheduleHours} = require('../db')
+const dayjs = require('dayjs')
 
 const router = Router()
 
@@ -37,6 +38,29 @@ router.delete('/', async (req, res) => {
         res.status(200).json({message: `scheduleHours with id:${id} had been removed successfully`})
     } catch(error) {
         res.status(400).json({message: error.message})
+    }
+})
+
+router.put('/changeFormat', async (req, res) => {
+    const { prevFormat, newFormat } = req.body
+    try {
+        const allScheduleHours = await ScheduleHours.findAll()
+        for (let timetable of allScheduleHours) {
+            const { id, startTime, endTime } = timetable
+            const newStartTime = dayjs(`${dayjs().format('YYYY')} ${startTime}`, `YYYY ${prevFormat}`).format(newFormat)
+            const newEndTime = dayjs(`${dayjs().format('YYYY')} ${endTime}`, `YYYY ${prevFormat}`).format(newFormat)
+            const newTimetable = await ScheduleHours.update({
+                startTime: newStartTime,
+                endTime: newEndTime
+            }, {
+                where: {
+                    id
+                }
+            })
+        }
+        res.status(200).json({ message: 'The format time had been updated successfully' })
+    } catch(error) {
+        res.status(400).json({ message: error.message })
     }
 })
 

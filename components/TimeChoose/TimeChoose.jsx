@@ -8,8 +8,6 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
-import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker'
 
 function differenceTime(now, later) {
     let minutes = later.format('m') - now.format('m')
@@ -65,7 +63,7 @@ export default function TimePickerViewRenderers() {
         setTextHour(totalText)
         handleDeadLine({
             property: 'time',
-            value: {realTime: hour.format('hh:mm'), relativeTime: totalText}
+            value: {realTime: hour.format('hh:mm a'), relativeTime: totalText}
         })
     }, [hour])
 
@@ -76,21 +74,8 @@ export default function TimePickerViewRenderers() {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
-                {/* <TimePicker
-                    label="Hora"
-                    value={hour}
-                    onChange={handleHour}
-                    viewRenderers={{
-                        hours: renderTimeViewClock,
-                        minutes: renderTimeViewClock,
-                        seconds: renderTimeViewClock,
-                    }}
-                    // viewRenderers={
-                    //     <StaticTimePicker orientation="landscape" />
-                    // }
-                /> */}
                 <TimePicker
-                    format='hh:mm'
+                    format='hh:mm a'
                     label="Hora"
                     slotProps={{
                         textField: {
@@ -104,8 +89,7 @@ export default function TimePickerViewRenderers() {
                     minTime={dayjs().hour(8).minute(0).second(0)}
                     maxTime={dayjs().hour(21).minute(0).second(0)}
                 />
-        </DemoContainer>
-        {/* <StaticTimePicker orientation="landscape" /> */}
+            </DemoContainer>
         </LocalizationProvider>
     )
 }
