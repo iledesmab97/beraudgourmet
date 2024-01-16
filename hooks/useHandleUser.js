@@ -51,7 +51,7 @@ function lastValidation(inputs) {
 
 function searchUser(email) {
     if (!email) return null
-    return fetch(`http://localhost:3000/api/users/${email}`)
+    return fetch(`http://localhost:3000/api/users/registered?email=${email}`)
         .then(res => res.json())
         .then(data => {
             return data
@@ -95,14 +95,7 @@ function useHandleUser() {
             if (!userLoged && (lastDataSet.current === 'email')) {
                 searchUser(inputs.email)
                     .then(data => {
-                        if (!data) return setCurrentUser(null)
-                        const {email, name, password} = data
-                        setCurrentUser({
-                        email,
-                        password,
-                        name,
-                        numberPhone: data.phoneNumber
-                    })
+                        if (data === true || data === false) setCurrentUser(data)
                 })
             }
         }, 500)
@@ -176,7 +169,7 @@ function useHandleUser() {
             promotion
         } 
         handleAddUser(dataUser)
-        setInputs(currentUser)
+        setInputs(dataUser)
         console.log('Se ha iniciado sesión exitosamente')
     }
 

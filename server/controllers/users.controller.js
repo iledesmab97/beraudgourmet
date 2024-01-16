@@ -22,26 +22,34 @@ controllersUser = {
         }
     },
     getUser: async function (req, res) {
-        const { identifier } = req.params
+        const { id } = req.params
         try {
-            if (!identifier) throw new Error('Identifier can not to be null')
-            let user
-            if (validateNumber(identifier)) {
-                user = await User.findByPk(identifier)
-            }
-            if (validateEmail(identifier)) {
-                user = await User.findOne({
-                    where:{
-                        email: identifier
-                    }
-                })
-            }
+            if (!id) throw new Error('Identifier can not to be null')
+            if (!validateNumber(id)) throw new Error('id need to be a number')
+            const user = await User.findByPk(id)
             if (!user) throw new Error('User not finded')
             const userData = {
                 ...user.dataValues
             }
             delete userData.password
             return res.status(200).json(userData)
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
+    },
+    isEmailRegistered: async function (req, res) {
+        console.log('pasando por isEmailRegistered')
+        const { email } = req.query
+        try {
+            if (!email) throw new Error('Identifier can not to be null')
+            if (!validateEmail(email)) throw new Error('email no valid')
+            const user = await User.findOne({
+                where:{
+                    email: email
+                }
+            })
+            if (!user) return res.status(200).json(false)
+            return res.status(200).json(true)
         } catch(error) {
             res.status(400).json({message: error.message})
         }
@@ -154,11 +162,28 @@ controllersUser = {
             return res.status(400).json({message, parent: parent?.message})
         }
     },
-    update: async function (req, res) {
+    updateMyAccount: async function (req, res) {
         const { user } = req
         try {
-            const id = user.RoleId === 3 ? user.id : req.body.id
+            const id = user.id
             const {property, value} = req.body
+            const userUpdated = await User.update({
+                [property]: value
+            }, {
+                where: {
+                    id
+                }
+            })
+            if (!userUpdated[0]) throw new Error('El usuario indicado no existe')
+            res.status(200).json({message: 'se han actuliazado exitosamente'})
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
+    },
+    updateUser: async function (req, res) {
+        const { id } = req.params
+        const {property, value } = req.body
+        try {
             const userUpdated = await User.update({
                 [property]: value
             }, {
