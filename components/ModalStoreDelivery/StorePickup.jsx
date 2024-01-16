@@ -1,25 +1,18 @@
 'use client'
 
-import { useState } from 'react';
 import useGetPlace from '@/hooks/useGetPlace'
-import useHandlePlace from '@/hooks/useHandlePlace'
-import { accept } from '@/genericFunctions/modal';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete';
-import InputAdornment from '@mui/material/InputAdornment'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import SearchIcon from '@mui/icons-material/Search';
 import ItemPlace from '../PlaceFinder/ItemPlace'
-
-import stores from '@/stores.json'
 
 export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
