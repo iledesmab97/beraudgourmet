@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { scrollToSection, showScrollPosition } from '@/genericFunctions/modal'
+import { scrollToSection, showScrollPosition } from '@/utils/modal'
 import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'

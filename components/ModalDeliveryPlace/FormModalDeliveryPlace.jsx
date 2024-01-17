@@ -1,10 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetModal from '@/hooks/useGetModal'
 import places from '@/typePlaces.json'
-import { accept } from '@/genericFunctions/modal'
 
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'

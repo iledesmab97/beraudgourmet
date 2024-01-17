@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
+import { userDataFromBackToFront } from '@/utils/preparingData'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
@@ -160,16 +161,10 @@ function useHandleUser() {
         const response = await verifyUser()
         if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
         if (response.message) return console.log('Error:', response.message)
-        const {id, name, email, phoneNumber, promotion} = response
-        const dataUser = {
-            id,
-            name,
-            email,
-            numberPhone: phoneNumber,
-            promotion
-        } 
-        handleAddUser(dataUser)
-        setInputs(dataUser)
+        const userFront = userDataFromBackToFront(response) 
+        handleAddUser(userFront)
+        setInputs(userFront)
+        localStorage.setItem('userLoged', 'true')
         console.log('Se ha iniciado sesión exitosamente')
     }
 
@@ -214,6 +209,7 @@ function useHandleUser() {
         if (message === 'No hay usuario con la sesión activa') return
         setInputs(initialInputs)
         handleRemoveUser()
+        localStorage.removeItem('userLoged')
         console.log(message)
     }
 

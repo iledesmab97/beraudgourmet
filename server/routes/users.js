@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '.env.local'})
 const { Router } = require('express')
 
-const {getAllUsers, getUser, isEmailRegistered, signUp, signUpAdmin, logIn, logOut, updateMyAccount, updateUser, removeMyAccount, removeUser, verifyUser } = require('../controllers/users.controller')
+const {getAllUsers, getUser, isEmailRegistered, signUp, signUpAdmin, logIn, logOut, updateMyAccount, updateUser, removeMyAccount, removeUser, verifyUser, whoAmI } = require('../controllers/users.controller')
 
 const {verifyToken, isRoot, isAdmin} = require('../middlewares')
 
@@ -11,6 +11,7 @@ const router = Router()
 router.get('/', [verifyToken, isAdmin], getAllUsers)
 router.get('/registered', isEmailRegistered)
 router.get('/verify/:tokenVerify', verifyUser)
+router.get('/loged', verifyToken, whoAmI)
 router.get('/:id', [verifyToken, isAdmin], getUser)
 
 router.post('/signup', signUp)
