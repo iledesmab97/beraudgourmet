@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import useGetOrder from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
-import {totalPrice} from '@/genericFunctions/priceCar'
+import {totalPrice} from '@/utils/priceCar'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
