@@ -16,9 +16,9 @@ import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
 import Cookies from 'js-cookie'
-import { fetchwhoAmI } from '@/app/api/userApi'
+import { fetchwhoAmI } from '@/services/userApi'
 import useGetUser from '@/hooks/useGetUser';
-import {userDataFromBackToFront} from '@/services/preparingData'
+import {userDataFromBackToFront} from '@/utils/preparingData'
 
 const roles = ['root', 'admin', 'client']
 
