@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
-import { userDataFromBackToFront } from '@/services/preparingData'
-import { ROLES } from '@/config/user'
+import { userDataFromBackToFront } from '@/utils/preparingData'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
