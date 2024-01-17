@@ -267,6 +267,19 @@ controllersUser = {
         } catch(error) {
             res.status(400).json({message: error.message})
         }
+    },
+    whoAmI: async function (req, res) {
+        const { user } = req
+        try {
+            const userToReturn = {
+                ...user
+            }
+            delete userToReturn.exp
+            delete userToReturn.iat
+            res.status(200).json(userToReturn)
+        } catch(error) {
+            res.status(400).json({message: error.message})
+        }
     }
 }
 
