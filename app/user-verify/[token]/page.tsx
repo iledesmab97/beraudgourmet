@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Button from "@mui/material/Button"
-import { verifyEmailUser } from '@/app/api/userApi'
+import { verifyEmailUser } from '@/services/userApi'
 
 function UserTokenVerify({ params }) {
 
