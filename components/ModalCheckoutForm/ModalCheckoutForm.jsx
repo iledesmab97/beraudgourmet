@@ -9,7 +9,7 @@ import useGetUser from '@/hooks/useGetUser'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
-import {totalPrice} from '@/genericFunctions/priceCar'
+import {totalPrice} from '@/utils/priceCar'
 import CrossText from '@/components/CrossText/CrossText'
 
 import Modal from '@mui/material/Modal'
