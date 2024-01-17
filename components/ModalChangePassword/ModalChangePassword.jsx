@@ -1,9 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useHandleUser from '@/hooks/useHandleUser'
-import { accept } from '@/genericFunctions/modal'
 
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'

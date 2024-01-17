@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
 import UserLoged from '../OrderRewards/UserLoged'
-import { accept } from '@/genericFunctions/modal'
 
 import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
