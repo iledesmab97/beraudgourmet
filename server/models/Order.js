@@ -22,6 +22,10 @@ function Order(database) {
         },
         deliveryDate: {
             type: DataTypes.STRING
+        },
+        StripeId: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     }, {
         timestamps: false

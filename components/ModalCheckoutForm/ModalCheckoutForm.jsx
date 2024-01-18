@@ -75,11 +75,20 @@ function ModalCheckoutForm() {
 
     useEffect(() => {
         if (!orders.length) return
+        const orderDescription = orders.reduce((acc, cur) => {
+            const newText = `${cur.mass}${Object.keys(cur.extra).map(ingredient => `, ${cur.extra[ingredient]}x ${ingredient}`).join('')}`
+            return acc + '; ' + newText
+        }, '')
         const {totalClient} = totalPrice(orders)
         fetch('api/checkout', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: totalClient })
+            body: JSON.stringify({
+                userId: `${user.id}`,
+                email: user.email,
+                amount: totalClient,
+                description: orderDescription
+            })
         })
             .then(res => res.json())
             .then(data => {

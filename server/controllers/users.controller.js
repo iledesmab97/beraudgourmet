@@ -5,7 +5,7 @@ const bcryptjs = require('bcryptjs')
 const { serialize, parse } = require('cookie')
 const jwt =  require('jsonwebtoken')
 
-controllersUser = {
+const controllersUser = {
     getAllUsers: async function (req, res) {
         try {
             const allUsers = await User.findAll()

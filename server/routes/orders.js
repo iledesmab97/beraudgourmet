@@ -15,10 +15,19 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
 
-        const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList } = req.body
+        const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList, stripeId } = req.body
 
         // Creo la nueva Orden
-        const newOrder = await Order.create({totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, StoreId: storeId, UserId: userId})
+        const newOrder = await Order.create({
+            totalCostByItems,
+            commissions,
+            totalCost,
+            applicationDate,
+            deliveryDate,
+            StoreId: storeId,
+            UserId: userId,
+            StripeId: stripeId
+        })
         console.log('added new Order successfully')
 
         // Creo las nuevas Ordenes para los articulos de la orden general
