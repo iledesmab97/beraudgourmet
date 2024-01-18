@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
 import useGetProducts from '@/hooks/useGetProducts'
 import dayjs from 'dayjs'
@@ -20,6 +21,7 @@ async function registerOrder(data) {
         .then(res => res.json())
         .then(data => {
             console.log('The new order has been created successfully')
+            return data
         })
 }
 
@@ -27,6 +29,7 @@ export default function CheckoutForm({user, place, orders, checkout}) {
 
     const stripe = useStripe()
     const elements = useElements()
+    const router = useRouter()
     // const { products } = useGetProducts()
     const orderItems = orders.map(item => {
         const { size, mass, quantity, ingredientsModal, extra, totalPrice } = item
@@ -88,27 +91,37 @@ export default function CheckoutForm({user, place, orders, checkout}) {
     async function handleSubmit(event) {
         event.preventDefault()
 
-        await registerOrder(dataOrders)
-
         if (!stripe || !elements) return 
         setIsLoading(true)
 
-        const { error } = await stripe.confirmPayment({
+        const {paymentIntent, error} = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: 'http://localhost:3000/success'
-            }
+                // return_url: 'http://localhost:3000/success'
+            },
+            redirect: 'if_required'
         })
 
-        if (error.type === 'card_error' || error.type === 'validation_error') {
-            setMessage(error.message)
+        if (error) {
+            if (error.type === 'card_error' || error.type === 'validation_error') {
+                setMessage(error.message)
+            } else {
+                setMessage('An unexpected error ocurred.')
+            }
         } else {
-            setMessage('An unexpected error ocurred.')
+                
+            await registerOrder({
+                ...dataOrders,
+                stripeId: paymentIntent.id
+            })
+
+            return router.push('/success')
         }
 
         // la verificación fue exitosa
 
         setIsLoading(false)
+        alert('Algo salió mal')
     }
 
     const paymentElementOptions = {
@@ -141,6 +154,7 @@ export default function CheckoutForm({user, place, orders, checkout}) {
             <Button
                 variant='contained'
                 onClick={handleSubmit}
+                disabled={isLoading}
             >
                 {
                     isLoading ? 'Procesando pago' : 'Pagar ahora'
