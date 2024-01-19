@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import useHandlePlace from '@/hooks/useHandlePlace'
 import useGetStoreList from '@/hooks/useGetStoreList'
+import { getAllStores } from '@/services/storeApi'
+import { getAllSchedules } from '@/services/scheduleApi'
+import { isOpen } from '@/utils/hours'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -33,46 +36,26 @@ const style = {
   gap: 2,
 };
 
-function fetchStores() {
-  return fetch('http://localhost:3000/api/stores')
-    .then(response => response.json())
-    .then(data => {
-      const newData = data.map(store => ({
-        id: store.id,
-        name: store.name,
-        place: store.address,
-        city: store.city,
-        phone: store.phoneNumber,
-        coordinates: store.coordinates
-      }))
-      return newData
-    })
-}
-
-function fetchSchedules() {
-  return fetch('http://localhost:3000/api/schedules')
-    .then(response => response.json())
-    .then(data => {
-      return data
-    })
-}
-
 async function updateStores() {
-  const scheduels = await fetchSchedules()
-  const storesList = await fetchStores()
+  const scheduels = await getAllSchedules()
+  const storesList = await getAllStores()
+  const closeTime = scheduels[0].scheduleHoursList[0].endTime
+  const openTime = scheduels[0].scheduleHoursList[0].startTime
+  const pickUpSchedule = scheduels[1].scheduleHoursList.map(schedule => ({
+    days: schedule.days,
+    hours: `${schedule.startTime} - ${schedule.endTime}`
+  }))
+  const deliverySchedule = scheduels[2].scheduleHoursList.map(schedule => ({
+    days: schedule.days,
+    hours: `${schedule.startTime} - ${schedule.endTime}`
+  }))
   const storesWithSchedulsList = storesList.map(store => ({
     ...store,
-    closeTime: scheduels[0].scheduleHoursList[0].endTime,
-    openTime: scheduels[0].scheduleHoursList[0].startTime,
-    open: true,
-    pickUpSchedule: scheduels[1].scheduleHoursList.map(schedule => ({
-      days: schedule.days,
-      hours: `${schedule.startTime} - ${schedule.endTime}`
-    })),
-    deliverySchedule: scheduels[2].scheduleHoursList.map(schedule => ({
-      days: schedule.days,
-      hours: `${schedule.startTime} - ${schedule.endTime}`
-    }))
+    closeTime,
+    openTime,
+    pickUpSchedule,
+    deliverySchedule,
+    open: isOpen({closeTime, openTime})
   }))
   return storesWithSchedulsList
 } 
