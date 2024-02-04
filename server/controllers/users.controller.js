@@ -91,18 +91,19 @@ async function signUp (req, res) {
     const { many } = req.query
     const { body } = req
     try {
+        // Add many users
         if (many && JSON.parse(many) && Array.isArray(body)) {
             const usersList = req.body
             const newUserList = []
             for (let user of usersList) {
-                // const newUser = await this.controllersUser.makeUser(user)
                 const newUser = await makeUser(user)
                 newUserList.push(newUser)
-                const { token } = makeJWT(newUser)
-                emailVerification({token, user: newUser})
+                const tokenVerify = makeJWTVerifyUser({id: newUser.id})
+                emailVerification({token: tokenVerify, email: newUser.email})
             }
             return res.status(200).json(newUserList)
         }
+        // Add one user
         const newUser = await makeUser(body)
         const tokenVerify = makeJWTVerifyUser({id: newUser.id})
         emailVerification({ token: tokenVerify, email: newUser.email})
