@@ -1,5 +1,4 @@
 const { Router } = require('express')
-const {PizzaIngredient} = require('../db')
 
 const { getAllPizzaIngredients, addPizzaIngredients, removePizzaIngredients } = require('../controllers/pizzaIngredients.controller')
 
