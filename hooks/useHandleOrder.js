@@ -22,7 +22,8 @@ export default function useHandleOrder({ product }) {
             const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0
             return acc + quantity * extraIngredients[cur].price
         }, 0)
-        return inputs.quantity * (price + totalExtras)
+        const totalPrice = inputs.quantity * (Number(price) + totalExtras)
+        return totalPrice
     }, [inputs])
 
     const updateValue = useRef(null)
