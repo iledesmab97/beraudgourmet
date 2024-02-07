@@ -23,8 +23,9 @@ function WhatsappButton() {
             }}
         >
             <Link
-                // href={`https://wa.me/${phoneNumber}/?text=${text}`}
-                href={`https://wa.me/?text=${text}`}
+                href={`https://wa.me/${phoneNumber}/?text=${text}`}
+                // href={`https://wa.me/?text=${text}`}
+                target='_blank'
                 sx={{
                     width: '100%',
                     height: '100%',
