@@ -33,7 +33,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: 750,
     height: 700,
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -126,7 +126,7 @@ function ModalCheckoutForm() {
                     sx={{
                         height: '90%',
                         width: '100%',
-                        overflow: 'scroll',
+                        overflowY: 'scroll',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
