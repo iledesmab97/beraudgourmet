@@ -28,12 +28,11 @@ async function registerOrder(data) {
         })
 }
 
-export default function CheckoutForm({user, place, orders, checkout}) {
+export default function CheckoutForm({user, place, orders, checkout, payment_method, handlePaymentMethod}) {
 
     const stripe = useStripe()
     const elements = useElements()
     const router = useRouter()
-    const [payment_method, setPayment_metod] = useState('null')
     // const { products } = useGetProducts()
     const orderItems = orders.map(item => {
         const { size, mass, quantity, ingredientsModal, extra, totalPrice } = item
@@ -131,10 +130,6 @@ export default function CheckoutForm({user, place, orders, checkout}) {
     const paymentElementOptions = {
         layout: 'tabs'
         // layout: 'accordion'
-    }
-
-    function handlePaymentMethod(paymethod) {
-        setPayment_metod(paymethod)
     }
 
     return (
