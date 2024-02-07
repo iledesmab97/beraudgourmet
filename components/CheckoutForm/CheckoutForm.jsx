@@ -134,7 +134,6 @@ export default function CheckoutForm({user, place, orders, checkout}) {
     }
 
     function handlePaymentMethod(paymethod) {
-        console.log('paymethod:', paymethod)
         setPayment_metod(paymethod)
     }
 
