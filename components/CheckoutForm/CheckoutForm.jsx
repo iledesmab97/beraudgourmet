@@ -150,10 +150,12 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             <Button
                 variant="outlined"
                 onClick={() => {handlePaymentMethod('card')}}
-                sx={ payment_method !== 'null' && {
+                sx={ payment_method !== 'null' ? {
                     position: 'absolute',
                     top: '8px',
-                    left: '32px'
+                    left: '32px',
+                } : {
+                    mt: '16px'
                 }}
             >
                 <PaymentIcon />
@@ -173,10 +175,12 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             <Button
                 variant="outlined"
                 onClick={() => {handlePaymentMethod('bank')}}
-                sx={ payment_method !== 'null' && {
+                sx={ payment_method !== 'null' ? {
                     position: 'absolute',
                     top: '8px',
                     left: '110px'
+                } : {
+                    mt: '16px'
                 }}
             >
                 <AccountBalanceIcon />
