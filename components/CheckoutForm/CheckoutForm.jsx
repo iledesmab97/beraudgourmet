@@ -9,6 +9,9 @@ import dayjs from 'dayjs'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import PaymentIcon from '@mui/icons-material/Payment';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import Typography from '@mui/material/Typography'
 
 import styles from './CheckoutForm.module.css'
 
@@ -25,7 +28,7 @@ async function registerOrder(data) {
         })
 }
 
-export default function CheckoutForm({user, place, orders, checkout}) {
+export default function CheckoutForm({user, place, orders, checkout, payment_method, handlePaymentMethod}) {
 
     const stripe = useStripe()
     const elements = useElements()
@@ -126,6 +129,7 @@ export default function CheckoutForm({user, place, orders, checkout}) {
 
     const paymentElementOptions = {
         layout: 'tabs'
+        // layout: 'accordion'
     }
 
     return (
@@ -134,32 +138,118 @@ export default function CheckoutForm({user, place, orders, checkout}) {
             component='form'
             sx={{
                 py: '8px',
+                pt: payment_method === 'null' ? '8px' : '45px',
                 px: '16px',
+                position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '16px'
             }}
         >
-            <Box
-                component='div'
-                sx={{
-                    width: '100%',
-                    py: '8px',
-                    px: '16px'
+            <Button
+                variant="outlined"
+                onClick={() => {handlePaymentMethod('card')}}
+                sx={ payment_method !== 'null' && {
+                    position: 'absolute',
+                    top: '8px',
+                    left: '32px'
                 }}
             >
-                <PaymentElement id='payment-element' options={paymentElementOptions} />
-            </Box>
-            <Button
-                variant='contained'
-                onClick={handleSubmit}
-                disabled={isLoading}
-            >
+                <PaymentIcon />
                 {
-                    isLoading ? 'Procesando pago' : 'Pagar ahora'
+                    payment_method === 'null' ?
+                        (
+                            <Typography
+                                sx={{
+                                    ml: '8px'
+                                }}
+                            >
+                                Tarjeta de crédito
+                            </Typography>
+                        ) : null
                 }
             </Button>
+            <Button
+                variant="outlined"
+                onClick={() => {handlePaymentMethod('bank')}}
+                sx={ payment_method !== 'null' && {
+                    position: 'absolute',
+                    top: '8px',
+                    left: '110px'
+                }}
+            >
+                <AccountBalanceIcon />
+                {
+                    payment_method === 'null' ?
+                        (
+                            <Typography
+                                sx={{
+                                    ml: '8px'
+                                }}
+                            >
+                                Transferencia bancaria
+                            </Typography>
+                        ) : null
+                }
+            </Button>
+            {
+                payment_method === 'null' ?
+                    (
+                        null
+                    ) : (
+                        <>
+                            {
+                                payment_method === 'card' ?
+                                    (
+                                        <>
+                                            <Box
+                                                component='div'
+                                                sx={{
+                                                    width: '100%',
+                                                    py: '8px',
+                                                    px: '16px'
+                                                }}
+                                            >
+                                                <PaymentElement id='payment-element' options={paymentElementOptions} />
+                                            </Box>
+                                            <Button
+                                                variant='contained'
+                                                onClick={handleSubmit}
+                                                disabled={isLoading}
+                                            >
+                                                {
+                                                    isLoading ? 'Procesando pago' : 'Pagar ahora'
+                                                }
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Box
+                                                component='div'
+                                                sx={{
+                                                    width: '100%',
+                                                    py: '8px',
+                                                    px: '16px'
+                                                }}
+                                            >
+                                                Contacta con nosotros para seguir los pasos con este método de pago
+                                            </Box>
+                                            <Button
+                                                variant='contained'
+                                                onClick={handleSubmit}
+                                            >
+                                                {
+                                                    'Contactar con nostros'
+                                                }
+                                            </Button>
+                                        </>
+                                    )
+                            }
+                        </>
+                        
+                    )
+            }
         </Box>
     )
 }

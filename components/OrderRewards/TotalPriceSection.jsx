@@ -45,7 +45,7 @@ function TotalPriceSection() {
                 borderColor: 'divider'
             }}
         >
-            {
+            {/* {
                 orders.length
                 ? (
                     <List>
@@ -96,7 +96,7 @@ function TotalPriceSection() {
                         </ListItem>
                     </List>
                 ): null
-            }
+            } */}
             <Box
                 sx={{
                     pr: '0px',
@@ -109,7 +109,7 @@ function TotalPriceSection() {
                     Total
                 </Typography>
                 <Typography variant='button' display='block' gutterBottom>
-                    ${prices.totalClient}
+                    ${prices.totalPriceCar}
                 </Typography>
             </Box>
         </Box>

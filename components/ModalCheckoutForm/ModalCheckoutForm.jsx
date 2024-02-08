@@ -33,7 +33,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: 750,
     height: 700,
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -57,6 +57,7 @@ function ModalCheckoutForm() {
     const [preMessageDelivery, setPreMessageDelivery] = useState('')
 
     const [clientSecret, setClientSecret] = useState('')
+    const [payment_method, setPayment_metod] = useState('null')
 
     useEffect(() => {
         if (!place.deadLine) return
@@ -106,6 +107,10 @@ function ModalCheckoutForm() {
         appearance
     }
 
+    function handlePaymentMethod(paymethod) {
+        setPayment_metod(paymethod)
+    }
+
     return (
         <Modal
             open={open}
@@ -126,7 +131,7 @@ function ModalCheckoutForm() {
                     sx={{
                         height: '90%',
                         width: '100%',
-                        overflow: 'scroll',
+                        overflowY: 'scroll',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -266,53 +271,57 @@ function ModalCheckoutForm() {
                                             <Divider />
                                         </Box>
                                     ) )}
-                                    <List>
-                                        <ListItem
-                                            sx={{
-                                                pr: '0px',
-                                                pl: '0px',
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}
-                                        >
-                                            <Typography>
-                                                Total Carrito: 
-                                            </Typography>
-                                            <Typography>
-                                                ${checkout.totalPriceCar}
-                                            </Typography>
-                                        </ListItem>
-                                        <ListItem
-                                            sx={{
-                                                pr: '0px',
-                                                pl: '0px',
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}
-                                        >
-                                            <Typography>
-                                                Total IVA Stripe:
-                                            </Typography>
-                                            <Typography>
-                                                ${checkout.commissionStripe}
-                                            </Typography>
-                                        </ListItem>
-                                        <ListItem
-                                            sx={{
-                                                pr: '0px',
-                                                pl: '0px',
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}
-                                        >
-                                            <Typography>
-                                                Total IVA:
-                                            </Typography>
-                                            <Typography>
-                                                ${checkout.IVA}
-                                            </Typography>
-                                        </ListItem>
-                                    </List>
+                                    {
+                                        payment_method === 'card' && (
+                                            <List>
+                                                <ListItem
+                                                    sx={{
+                                                        pr: '0px',
+                                                        pl: '0px',
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between'
+                                                    }}
+                                                >
+                                                    <Typography>
+                                                        Total Carrito: 
+                                                    </Typography>
+                                                    <Typography>
+                                                        ${checkout.totalPriceCar}
+                                                    </Typography>
+                                                </ListItem>
+                                                <ListItem
+                                                    sx={{
+                                                        pr: '0px',
+                                                        pl: '0px',
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between'
+                                                    }}
+                                                >
+                                                    <Typography>
+                                                        Total IVA Stripe:
+                                                    </Typography>
+                                                    <Typography>
+                                                        ${checkout.commissionStripe}
+                                                    </Typography>
+                                                </ListItem>
+                                                <ListItem
+                                                    sx={{
+                                                        pr: '0px',
+                                                        pl: '0px',
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between'
+                                                    }}
+                                                >
+                                                    <Typography>
+                                                        Total IVA:
+                                                    </Typography>
+                                                    <Typography>
+                                                        ${checkout.IVA}
+                                                    </Typography>
+                                                </ListItem>
+                                            </List>
+                                        )
+                                    }
                                 </>
                             )
                         }
@@ -327,8 +336,11 @@ function ModalCheckoutForm() {
                             <Typography variant='title'>
                                 Total
                             </Typography>
-                            <Typography variant='button' display='block' gutterBottom>
-                                ${checkout.totalClient}
+                            {/* <Typography variant='button' display='block' gutterBottom> */}
+                            <Typography>
+                                {
+                                    payment_method === 'card' ? `${checkout.totalClient}` : `${checkout.totalPriceCar}`
+                                }
                             </Typography>
                         </Box>
                     </Grid>
@@ -339,7 +351,17 @@ function ModalCheckoutForm() {
                             alignSelf: 'center'
                         }}
                     >
-                        Pago
+                        {
+                            payment_method === 'null' ?
+                                "Pago" : (
+                                    payment_method === 'card' ?
+                                        (
+                                            "Pago por Tarjeta de Crédito"
+                                        ) : (
+                                            "Pago por Transferencia Bancaria"
+                                        )
+                                )
+                        }
                     </Typography>
                     <Grid
                         item
@@ -358,6 +380,8 @@ function ModalCheckoutForm() {
                                         place={place}
                                         orders={orders}
                                         checkout={checkout}
+                                        payment_method={payment_method}
+                                        handlePaymentMethod={handlePaymentMethod}
                                     />
                                 </Elements>
                             )
