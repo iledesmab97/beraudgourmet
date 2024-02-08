@@ -39,8 +39,13 @@ async function addPizzaCharacteristics(req, res) {
         if (many && JSON.parse(many)) {
             const listPizzaCharacteristics = req.body
             const newListPizzaCharacteristics = listPizzaCharacteristics.map(async (pizzaCharacteristics) => {
-                const newPizzaCharacteristics = await PizzaCharacteristic.create(pizzaCharacteristics)
-                const {sizeId, masaTypeId} = pizzaCharacteristics
+                const { sizeId, masaTypeId, cost } = pizzaCharacteristics
+                const newPizzaCharacteristics = await PizzaCharacteristic.create({
+                    cost,
+                    costIVA: cost,
+                    sizeId,
+                    masaTypeId
+                })
                 if (masaTypeId && sizeId) {
                     await newPizzaCharacteristics.setPizzaMass(masaTypeId)
                     await newPizzaCharacteristics.setPizzaSize(sizeId)
@@ -52,8 +57,14 @@ async function addPizzaCharacteristics(req, res) {
                 .catch(error => {throw new Error({message: error.message})})
         }
 
-        const { sizeId, masaTypeId} = req.body
-        const newPizzaCharacteristic = await PizzaCharacteristic.create({...req.body})
+        const { sizeId, masaTypeId, cost} = req.body
+        console.log('cost:', cost)
+        const newPizzaCharacteristic = await PizzaCharacteristic.create({
+            cost,
+            costIVA: cost,
+            sizeId,
+            masaTypeId
+        })
         await newPizzaCharacteristic.setPizzaSize(sizeId)
         await newPizzaCharacteristic.setPizzaMass(masaTypeId)
         res.status(200).json(newPizzaCharacteristic)
