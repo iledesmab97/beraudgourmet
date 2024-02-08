@@ -14,9 +14,10 @@ function TotalPriceSection() {
     const { orders } = useGetOrder()
     const { handleAddCheckout } = useGetCheckout()
     const [prices, setPrices] = useState(() => {
-        const {totalPriceCar, IVA, commissionStripe, totalClient} = totalPrice(orders)
+        const {totalPriceCar, commissionIVA, IVA, commissionStripe, totalClient} = totalPrice(orders)
         return {
             totalPriceCar,
+            commissionIVA,
             IVA,
             commissionStripe,
             totalClient
@@ -25,9 +26,10 @@ function TotalPriceSection() {
 
     useEffect(() => {
         if (!orders.length) return
-        const {totalPriceCar, IVA, commissionStripe, totalClient} = totalPrice(orders)
+        const {totalPriceCar, commissionIVA, IVA, commissionStripe, totalClient} = totalPrice(orders)
         const newPrices = {
             totalPriceCar,
+            commissionIVA,
             IVA,
             commissionStripe,
             totalClient

@@ -9,9 +9,13 @@ function PizzaCharacteristic(database) {
         },
         cost:{
             type: DataTypes.STRING,
+            allowNull: false
+        },
+        costIVA:{
+            type: DataTypes.STRING,
             allowNull: false,
             set(value) {
-                this.setDataValue("cost", `${Math.ceil(Number(value)*1.16*100)/100}`)
+                this.setDataValue("costIVA", `${Math.ceil(Number(value)*1.16*100)/100}`)
             }
         },
     }, {
