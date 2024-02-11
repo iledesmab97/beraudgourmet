@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
 import useGetProducts from '@/hooks/useGetProducts'
@@ -12,6 +12,7 @@ import Button from '@mui/material/Button'
 import PaymentIcon from '@mui/icons-material/Payment';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
 
 import styles from './CheckoutForm.module.css'
 
@@ -64,6 +65,24 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
 
     const [message, setMessage] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [openTooltip, setOpenTooltip] = useState({
+        card: false,
+        bank: false
+    })
+
+    function handleOpenTooltip(paymentMethod) {
+        setOpenTooltip(prevState => ({
+            ...prevState,
+            [paymentMethod]: true
+        }))
+    }
+
+    function handleCloseTootip(paymentMethod) {
+        setOpenTooltip(prevState => ({
+            ...prevState,
+            [paymentMethod]: false
+        }))
+    }
 
     useEffect(() => {
         if (!stripe) return
@@ -152,7 +171,18 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 onClick={() => {handlePaymentMethod('card')}}
                 className={ payment_method === 'null' ? styles.buttonPaymentMethodToSelect : `${styles.buttonPaymentMethodSelected} ${styles.card} ${payment_method === 'card' ? styles.paymentMethodSelected : ''}` }
             >
-                <PaymentIcon className={styles.iconButtonPaymentMethodToSelect} />
+                <Tooltip
+                    title= {
+                        <Typography>
+                            Targeta de crédito
+                        </Typography>
+                    }
+                    open={payment_method !== 'null' && openTooltip.card}
+                    onOpen={() => { handleOpenTooltip('card') }}
+                    onClose={() => { handleCloseTootip('card') }}
+                >
+                    <PaymentIcon className={styles.iconButtonPaymentMethodToSelect} />
+                </Tooltip>
                 {
                     payment_method === 'null' ?
                         (
@@ -172,7 +202,18 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 onClick={() => {handlePaymentMethod('bank')}}
                 className={ payment_method === 'null' ? styles.buttonPaymentMethodToSelect : `${styles.buttonPaymentMethodSelected} ${styles.bank} ${payment_method === 'bank' ? styles.paymentMethodSelected : ''}`  }
             >
-                <AccountBalanceIcon />
+                <Tooltip
+                    title= {
+                        <Typography>
+                            Transferencia bancaria
+                        </Typography>
+                    }
+                    open={payment_method !== 'null' && openTooltip.bank}
+                    onOpen={() => { handleOpenTooltip('bank') }}
+                    onClose={() => { handleCloseTootip('bank') }}
+                >
+                    <AccountBalanceIcon />
+                </Tooltip>
                 {
                     payment_method === 'null' ?
                         (
