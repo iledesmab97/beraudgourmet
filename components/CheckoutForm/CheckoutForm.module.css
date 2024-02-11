@@ -1,0 +1,50 @@
+.buttonPaymentMethodToSelect {
+    width: 100%;
+    padding: 5px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: #295386;
+    border-radius: 5px;
+}
+
+.buttonPaymentMethodToSelect:hover {
+    background-color: #EAEDF2;
+}
+
+.buttonPaymentMethodToSelect svg {
+    width: 50px;
+    height: 50px;
+    color: #295386
+} 
+
+.textButtonPaymentMethodToSelect {
+    margin-left: 8px;
+}
+
+.buttonPaymentMethodSelected {
+    position: absolute;
+    top: 10px;
+    padding: 5px;
+    color: #295386;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    left: 32px;
+}
+
+.bank {
+    left: 80px;
+}
+
+.buttonPaymentMethodSelected:hover {
+    background-color: #EAEDF2;
+}
+
+.paymentMethodSelected {
+    background-color: #EAEDF2;
+}

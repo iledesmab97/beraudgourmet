@@ -176,7 +176,6 @@ function ModalCheckoutForm() {
                         item
                         sx={{
                             width: '100%',
-                            bgcolor: '#EAEDF2',
                             borderRadius: '8px',
                             py: '8px'
                         }}
