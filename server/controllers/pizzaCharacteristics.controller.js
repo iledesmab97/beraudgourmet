@@ -4,7 +4,7 @@ async function getAllPizzaCharacteristics(req, res) {
     try {
         const allPizzaCharacteristics = await PizzaCharacteristic.findAll()
         const allPizzaCharacteristicsWithText = allPizzaCharacteristics.map(async(pizzaCharacteristics) => {
-            const { id, cost, PizzaMassId, PizzaSizeId } = pizzaCharacteristics
+            const { id, cost, PizzaMassId, PizzaSizeId, costIVA } = pizzaCharacteristics
             const massName = await PizzaMass.findOne({
                 attribute: ['name'],
                 where: {
@@ -20,6 +20,7 @@ async function getAllPizzaCharacteristics(req, res) {
             const pizzaCharacteristicsText = {
                 id,
                 cost,
+                costIVA,
                 pizzaSize: sizeName.size,
                 pizzaMass: massName.name
             }
@@ -58,7 +59,6 @@ async function addPizzaCharacteristics(req, res) {
         }
 
         const { sizeId, masaTypeId, cost} = req.body
-        console.log('cost:', cost)
         const newPizzaCharacteristic = await PizzaCharacteristic.create({
             cost,
             costIVA: cost,
