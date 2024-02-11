@@ -17,7 +17,6 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
-    // const { } = useHandlePlace()
 
     return (
         <>
@@ -44,13 +43,9 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                             {...props}
                             place={option}
                             key={option}
-                            // onClick={() => {calculateRoute}}
                         />
                     )}
-                    // value={inputsStore.currentCity}
                     onChange={handleInputsStore}
-                    // inputValue={inputsStore.inputText}
-                    // onInputChange={handleInputsStoreText}
                     renderInput={(params) => (
                         <TextField
                             {...params}
