@@ -147,56 +147,46 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 gap: '16px'
             }}
         >
-            <Button
+            <Box
                 variant="outlined"
                 onClick={() => {handlePaymentMethod('card')}}
-                sx={ payment_method !== 'null' ? {
-                    position: 'absolute',
-                    top: '8px',
-                    left: '32px',
-                } : {
-                    mt: '16px'
-                }}
+                className={ payment_method === 'null' ? styles.buttonPaymentMethodToSelect : `${styles.buttonPaymentMethodSelected} ${styles.card} ${payment_method === 'card' ? styles.paymentMethodSelected : ''}` }
             >
-                <PaymentIcon />
+                <PaymentIcon className={styles.iconButtonPaymentMethodToSelect} />
                 {
                     payment_method === 'null' ?
                         (
-                            <Typography
-                                sx={{
-                                    ml: '8px'
-                                }}
-                            >
-                                Tarjeta de crédito
-                            </Typography>
+                            <Box className={styles.textButtonPaymentMethodToSelect} >
+                                <Typography>
+                                    {"Tarjeta de crédito".toUpperCase()}
+                                </Typography>
+                                <Typography>
+                                    Recargo de: 6%
+                                </Typography>
+                            </Box>
                         ) : null
                 }
-            </Button>
-            <Button
+            </Box>
+            <Box
                 variant="outlined"
                 onClick={() => {handlePaymentMethod('bank')}}
-                sx={ payment_method !== 'null' ? {
-                    position: 'absolute',
-                    top: '8px',
-                    left: '110px'
-                } : {
-                    mt: '16px'
-                }}
+                className={ payment_method === 'null' ? styles.buttonPaymentMethodToSelect : `${styles.buttonPaymentMethodSelected} ${styles.bank} ${payment_method === 'bank' ? styles.paymentMethodSelected : ''}`  }
             >
                 <AccountBalanceIcon />
                 {
                     payment_method === 'null' ?
                         (
-                            <Typography
-                                sx={{
-                                    ml: '8px'
-                                }}
-                            >
-                                Transferencia bancaria
-                            </Typography>
+                            <Box className={styles.textButtonPaymentMethodToSelect}>
+                                <Typography>
+                                    {"Transferencia bancaria".toUpperCase()}
+                                </Typography>
+                                <Typography>
+                                    Recargo de: 0%
+                                </Typography>
+                            </Box>
                         ) : null
                 }
-            </Button>
+            </Box>
             {
                 payment_method === 'null' ?
                     (
