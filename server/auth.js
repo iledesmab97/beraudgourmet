@@ -7,8 +7,6 @@ const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NEXT_PUBLIC_PATH_BACK, NEXT_PUBL
 passport.use( new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    // callbackURL: `${NEXT_PUBLIC_PATH_BACK}/auth/google/callback`,
-    // callbackURL: `${NEXT_PUBLIC_PATH_BACK}/auth/google/callback`,
     callbackURL: `http://localhost:3000/api/auth/google/callback`,
     passReqToCallback: true
   },
