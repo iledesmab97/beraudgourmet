@@ -14,10 +14,12 @@ import Typography from '@mui/material/Typography'
 
 import itemsJSON from '@/menuStore.json'
 
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 // import style from './ContainerItems.module.css'
 
 function fetchPizzas() {
-  return fetch('http://localhost:3000/api/pizzas')
+  return fetch(`${PATH_BACK}/pizzas`)
     .then(response => response.json())
     .then(data => {
       const pizzaList = data.map(pizza => {
@@ -36,7 +38,7 @@ function fetchPizzas() {
 }
 
 function fetchPizzasCharacteristics({type}) {
-  return fetch('http://localhost:3000/api/pizzaCharacteristics')
+  return fetch(`${PATH_BACK}/pizzaCharacteristics`)
     .then(response => response.json())
     .then(data => {
       const pizzaCharacteristicsList = data.map(pizzaCharacteristics => {
@@ -71,7 +73,7 @@ function fetchPizzasCharacteristics({type}) {
 }
 
 async function fetchExtraIngredients() {
-  return fetch('http://localhost:3000/api/pizzaExtraIngredients')
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
     .then(response => response.json())
     .then(data => {
       const extraIngredinetList = {}
@@ -120,7 +122,7 @@ function ContainerItems () {
     const file = event.target.files[0]
     const formData = new FormData()
     formData.append('file', file)
-    const response = await fetch('http://localhost:3000/api/pizzas/image', {
+    const response = await fetch(`${PATH_BACK}/pizzas/image`, {
       method: 'POST',
       body: formData,
     })
