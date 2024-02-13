@@ -38,4 +38,8 @@ async function isAdmin(req, res, next) {
     }
 }
 
-module.exports = {verifyToken, isRoot, isAdmin}
+async function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401)
+}
+
+module.exports = {verifyToken, isRoot, isAdmin, isLoggedIn}
