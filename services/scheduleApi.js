@@ -1,5 +1,7 @@
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 export function getAllSchedules() {
-    return fetch('http://localhost:3000/api/schedules')
+    return fetch(`${PATH_BACK}/schedules`)
       .then(response => response.json())
       .then(data => {
         return data
