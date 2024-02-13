@@ -16,8 +16,10 @@ import Tooltip from '@mui/material/Tooltip'
 
 import styles from './CheckoutForm.module.css'
 
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 async function registerOrder(data) {
-    fetch('http://localhost:3000/api/orders', {
+    fetch(`${PATH_BACK}/orders`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
