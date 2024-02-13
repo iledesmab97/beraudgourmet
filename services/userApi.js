@@ -1,5 +1,7 @@
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 export function verifyEmailUser(token) {
-    return fetch(`http://localhost:3000/api/users/verify/${token}`)
+    return fetch(`${PATH_BACK}/users/verify/${token}`)
         .then(response => response.json())
         .then(data => {
             if (data.message) return { message: data.message}
@@ -8,7 +10,7 @@ export function verifyEmailUser(token) {
 }
 
 export function fetchwhoAmI() {
-    return fetch('http://localhost:3000/api/users/loged')
+    return fetch(`${PATH_BACK}/users/loged`)
         .then(response => response.json())
         .then(data => {
             if (data.message) return null
