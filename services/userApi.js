@@ -17,3 +17,13 @@ export function fetchwhoAmI() {
             return data
         })
 }
+
+export function newAccount(data) {
+    return fetch(`${PATH_BACK}/users/signup`, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => data)
+}
