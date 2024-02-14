@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
-import { userDataFromBackToFront } from '@/utils/preparingData'
+import { userDataFromBackToFront, userDataFromFrontToBack  } from '@/utils/preparingData'
+import { newAccount } from '@/services/userApi'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -24,15 +25,13 @@ const initialInputsEdit = {
 
 function validation(inputs) {
     const errors = {}
+    if ( !inputs.email ) errors.email = false
+    if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
+    if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
     if (inputs.numberPhone !== undefined) {
-        if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
-        if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
         const [code, place, number] = inputs.numberPhone.split(" ")
         if (!code) errors.numberPhone = 'Coloca el código del país'
         if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
-    } else {
-        if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
-        if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
     }
     return errors
 }
@@ -126,10 +125,11 @@ function useHandleUser() {
 
     function handleChange(event) {
         const { name, value } = event.target
-        setInputs(prevInputs => ({
-            ...prevInputs,
+        const newInputs = {
+            ...inputs,
             [name]: value
-        }))
+        }
+        setInputs(newInputs)
         lastDataSet.current = name
     }
 
@@ -151,6 +151,10 @@ function useHandleUser() {
 
     function verifyUser() {
         const { email, password } = inputs
+        const errors = {}
+        if ( !email ) errors.email = 'El email no puede estar vacio'
+        if ( !password ) errors.password = 'La contraseña no puede estar vacia'
+        if ( errors.email || errors.password) return setErrors(errors)
         return fetch(`${PATH_BACK}/users/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -162,6 +166,7 @@ function useHandleUser() {
 
     async function logInUser() {
         const response = await verifyUser()
+        if (!response) return
         if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
         if (response.message) return console.log('Error:', response.message)
         const userFront = userDataFromBackToFront(response) 
@@ -230,6 +235,30 @@ function useHandleUser() {
         }))
     }
 
+    async function signUp() {
+        const { email, password, name, numberPhone } = inputs
+        const errors = {}
+        if ( !email ) errors.email = 'El email no puede estar vacio'
+        if ( !password ) errors.password = 'La contraseña no puede estar vacia'
+        if ( !name ) errors.name = 'El nombre no puede estar vacio'
+        if ( !numberPhone ) errors.numberPhone = 'El número no puede estar vacio'
+        else {
+            const [code, place, number] = inputs.numberPhone.split(" ")
+            if (!code) errors.numberPhone = 'Coloca el código del país'
+            if (!(place + number).length) errors.numberPhone = 'El número no puede estar vacio'
+            if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
+        }
+        if ( errors.email || errors.password || errors.name || errors.numberPhone ) return setErrors(errors)
+        const userBack = userDataFromFrontToBack({ email, password, name, numberPhone})
+        const response = await newAccount(userBack)
+        if (response.message) return console.log('Error:', response.message)
+        const userFront = userDataFromBackToFront(response) 
+        handleAddUser(userFront)
+        setInputs(userFront)
+        localStorage.setItem('userLoged', 'true')
+        console.log('Se ha iniciado sesión exitosamente')
+    }
+
     return {
         inputs,
         inputsEdit,
@@ -244,6 +273,7 @@ function useHandleUser() {
         logInUser,
         changePassword,
         changeEmail,
+        signUp,
         signOff,
         handleEditing
     }
