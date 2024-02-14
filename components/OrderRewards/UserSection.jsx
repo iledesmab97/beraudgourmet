@@ -15,7 +15,7 @@ const styleButtons = {
 
 export default function UserSection () {
 
-  const { inputs, handleChange, errors, currentUser, userLoged, editing, handleChangeNumberPhone, logInUser } = useHandleUser()
+  const { inputs, handleChange, errors, currentUser, userLoged, editing, handleChangeNumberPhone, logInUser, signUp } = useHandleUser()
 
   return (
     <FormControl
@@ -44,6 +44,7 @@ export default function UserSection () {
             currentUser={currentUser}
             handleChangeNumberPhone={handleChangeNumberPhone}
             logInUser={logInUser}
+            signUp={signUp}
           />
         )
       }
