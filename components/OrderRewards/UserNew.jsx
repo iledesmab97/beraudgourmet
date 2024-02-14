@@ -16,7 +16,7 @@ const styleButtons = {
     marginBottom: '4px'
 }
 
-function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, logInUser }) {
+function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, logInUser, signUp }) {
     return (
         <>    
             <TextField
@@ -56,7 +56,7 @@ function UserNew({ inputs, handleChange, errors, editing, currentUser, handleCha
             }
         
             {
-                currentUser && (
+                !errors.email && !(errors.email === false) && (
                     <Box
                         sx={{ position: 'relative'}}
                     >
@@ -113,6 +113,18 @@ function UserNew({ inputs, handleChange, errors, editing, currentUser, handleCha
                             Crear cuenta nueva
                         </Button>
                     </Box>
+                )
+            }
+
+            {
+                !errors.email && !(errors.email === false) && !currentUser && (
+                    <Button
+                        variant='contained'
+                        disabled={false}
+                        onClick={signUp}
+                    >
+                        Registrarse
+                    </Button>
                 )
             }
         </>
