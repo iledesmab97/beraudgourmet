@@ -12,8 +12,10 @@ import Radio from '@mui/material/Radio';
 
 import massesJSON from '@/masses.json'
 
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 function fetchMasses() {
-    return fetch('http://localhost:3000/api/pizzaMasses')
+    return fetch(`${PATH_BACK}/pizzaMasses`)
         .then(response => response.json())
         .then(data => {
             const listMasses = data.map(mass => {

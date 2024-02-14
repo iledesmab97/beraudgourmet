@@ -1,5 +1,7 @@
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 export function getAllStores() {
-    return fetch('http://localhost:3000/api/stores')
+    return fetch(`${PATH_BACK}/stores`)
         .then(response => response.json())
         .then(data => {
         const newData = data.map(store => ({

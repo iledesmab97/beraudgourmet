@@ -4,6 +4,8 @@ import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront } from '@/utils/preparingData'
 
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
 
@@ -52,7 +54,7 @@ function lastValidation(inputs) {
 
 function searchUser(email) {
     if (!email) return null
-    return fetch(`http://localhost:3000/api/users/registered?email=${email}`)
+    return fetch(`${PATH_BACK}/users/registered?email=${email}`)
         .then(res => res.json())
         .then(data => {
             return data
@@ -60,7 +62,7 @@ function searchUser(email) {
 }
 
 function requestLogout() {
-    return fetch('http://localhost:3000/api/users/logout', {
+    return fetch(`${PATH_BACK}/users/logout`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" }
     })
@@ -148,7 +150,7 @@ function useHandleUser() {
 
     function verifyUser() {
         const { email, password } = inputs
-        return fetch('http://localhost:3000/api/users/login', {
+        return fetch(`${PATH_BACK}/users/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })

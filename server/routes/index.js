@@ -15,6 +15,7 @@ const pizzaExtraIngredientsMiddleware = require('./pizzaExtraIngredients')
 const pizzaCharacteristicsMiddleware = require('./pizzaCharacteristics')
 const checkoutMiddleware = require('./checkout')
 const invalidTokensMiddleware = require('./invalidTokens')
+const authMiddleware = require('./auth')
 
 const router = Router()
 router.use('/checkout', checkoutMiddleware)
@@ -33,5 +34,6 @@ router.use('/pizzaSizes', pizzaSizesMiddleware)
 router.use('/pizzaCharacteristics', pizzaCharacteristicsMiddleware)
 router.use('/pizzaExtraIngredients', pizzaExtraIngredientsMiddleware)
 router.use('/invalidTokens', invalidTokensMiddleware)
+router.use('/auth', authMiddleware)
 
 module.exports = router
