@@ -13,3 +13,14 @@ export function userDataFromBackToFront(userBack) {
     }
     return userFront
 }
+
+export function userDataFromFrontToBack(userFront) {
+    const { name, email, password, numberPhone } = userFront
+    const userBack = {
+        name,
+        email,
+        password,
+        phoneNumber: numberPhone.replaceAll(" ", ""),
+    }
+    return userBack
+}
