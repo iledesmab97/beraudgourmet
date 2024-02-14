@@ -95,12 +95,13 @@ function useHandleUser() {
     useEffect(() => {
         debounceSetValue(() => {
             setErrors(validation(inputs))
-            if (!userLoged && (lastDataSet.current === 'email')) {
+            if (!userLoged && (lastDataSet.current === 'email') && inputs.email) {
                 searchUser(inputs.email)
                     .then(data => {
                         if (data === true || data === false) setCurrentUser(data)
                 })
             }
+            if (!inputs.email) setCurrentUser(false)
         }, 500)
     }, [inputs])
 
