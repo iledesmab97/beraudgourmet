@@ -16,6 +16,7 @@ import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
 import Cookies from 'js-cookie'
+import jwt from 'jsonwebtoken'
 import { fetchwhoAmI } from '@/services/userApi'
 import useGetUser from '@/hooks/useGetUser';
 import {userDataFromBackToFront} from '@/utils/preparingData'
@@ -31,6 +32,17 @@ async function getUserLoged(updateUser) {
   updateUser(userDataFront)
 }
 
+function getCookies(updateUser){
+  const tokenUser = Cookies.get('tokenUser')
+  try {
+    const dataUser = jwt.decode(tokenUser)
+    const userDataFront = userDataFromBackToFront(dataUser)
+    return updateUser(userDataFront)
+  } catch(error) {
+    return console.log('error:', error.message)
+  }
+}
+
 function Menu () {
 
   const [open, setOpen] = useState(false);
@@ -43,7 +55,8 @@ function Menu () {
   const { handleAddUser } = useGetUser()
 
   useEffect(() => {
-    getUserLoged(handleAddUser)
+    // getUserLoged(handleAddUser)
+    getCookies(handleAddUser)
   }, [])
 
   return (
