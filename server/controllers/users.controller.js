@@ -105,9 +105,21 @@ async function signUp (req, res) {
         }
         // Add one user
         const newUser = await makeUser(body)
+        
+        // send verification email
         const tokenVerify = makeJWTVerifyUser({id: newUser.id})
         emailVerification({ token: tokenVerify, email: newUser.email})
-        return res.status(200).json(newUser) 
+
+        // send jwt by cookie
+        const userData = {
+            ...newUser
+        }
+        delete userData.password
+        const { serialized } = makeJWT(userData)
+        res.setHeader('Set-Cookie', serialized)
+
+        return res.status(200).json(newUser)
+
     } catch(error) {
         const {message, parent} = error
         return res.status(400).json({message, parent: parent?.message})
@@ -146,6 +158,7 @@ async function logIn (req, res) {
     try {
         const {email, password} = req.body
         
+        // find the user
         const userFinded = await User.findOne({
             where:{
                 email
@@ -156,21 +169,25 @@ async function logIn (req, res) {
             return res.status(401).json({message: 'Usuario no encontrado'})
         }
 
+        // verify password
         const compare = await bcryptjs.compare(password, userFinded.password)
 
         if (!compare) {
             return res.status(401).json({message: 'Contraseña incorrecta'})
         }
 
+        // remove password
         const userData = {
             ...userFinded.dataValues
         }
         delete userData.password
 
+        // serialize and create a jwt
         const { serialized } = makeJWT(userData)
-
         res.setHeader('Set-Cookie', serialized)
-        return res.status(200).json(userData) 
+
+        return res.status(200).json(userData)
+
     } catch(error) {
         const {message, parent} = error
         return res.status(400).json({message, parent: parent?.message})
