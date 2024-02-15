@@ -4,6 +4,7 @@ const passport = require('passport')
 require('../auth')
 
 const { isLoggedIn } = require('../middlewares/authjwt')
+const { makeJWT } = require('../libs/validateData')
 
 const router = Router()
 
@@ -19,17 +20,19 @@ router.get('/google/callback',
     })
 )
 
-router.get('/google/success', isLoggedIn, (req, res) => {
-    const name = req.user?.displayName
-    res.send(`Hello ${name}`)
+router.get('/google/success', isLoggedIn, async (req, res) => {
+    const userData = { ...req.user }
+    delete userData.password
+    const { serialized } = makeJWT(userData)
+    res.setHeader('Set-Cookie', serialized)
+    res.redirect('/menu')
 })
 
 router.get('/google/failure', (req, res) => {
-    res.send('something went wrong...')
+    res.status(200).json('something went wrong...')
 })
 
 router.get('/logout', (req, res) => {
-    console.log('pasando por el logout')
     req.session.destroy()
     res.send('Cerrando seción')
 })
