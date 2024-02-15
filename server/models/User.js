@@ -14,7 +14,7 @@ function User(database) {
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             set(value) {
                 this.setDataValue("password", bcryptjs.hashSync(value, 10))
             }
@@ -30,7 +30,7 @@ function User(database) {
         phoneNumber: {
             type: DataTypes.STRING,
             allowNull: true,
-            unique: true,
+            unique: false,
         },
         promotion: {
             type: DataTypes.BOOLEAN,
