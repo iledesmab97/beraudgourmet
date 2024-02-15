@@ -7,8 +7,10 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
-import PersonIcon from '@mui/icons-material/Person'
-import { MuiTelInput } from 'mui-tel-input'
+
+import GoogleIcon from '@mui/icons-material/Google';
+
+import { fetchAuthGoogle } from '@/services/authApi'
 
 const styleButtons = {
     textTransform: 'none',
@@ -16,9 +18,19 @@ const styleButtons = {
     marginBottom: '4px'
 }
 
+async function signInGoogle() {
+    fetchAuthGoogle()
+}
+
 function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, logInUser, signUp }) {
     return (
-        <>    
+        <>
+            <Button
+                variant='outlined'
+                onClick={signInGoogle}
+            >
+                <GoogleIcon />
+            </Button>    
             <TextField
                 name='email'
                 label='Email'
