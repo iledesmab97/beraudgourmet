@@ -1,4 +1,7 @@
 require('dotenv').config({ path: '.env.local'})
+const { User } = require('./db')
+const { makeJWTVerifyUser } = require('./libs/validateData')
+const { emailVerification } = require('./controllers/mailer.controller')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
@@ -10,11 +13,17 @@ passport.use( new GoogleStrategy({
     callbackURL: `http://localhost:3000/api/auth/google/callback`,
     passReqToCallback: true
   },
-  function(request, accessToken, refreshToken, profile, done) {
-    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    //   return done(err, user);
-    // });
-    return done(null, profile)
+  async function(request, accessToken, refreshToken, profile, done) {
+    const { displayName, email } = profile
+    const [user, created] = await User.findOrCreate({
+      where: { email },
+      defaults: { name: displayName, email }
+    })
+    if (created) {
+      const tokenVerify = makeJWTVerifyUser({id: user.id})
+      emailVerification({ token: tokenVerify, email: user.email})
+    }
+    return done(null, user)
   }
 ));
 
