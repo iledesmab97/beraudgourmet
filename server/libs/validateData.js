@@ -20,7 +20,8 @@ module.exports = {
         }, 'secret')
     
         const serialized = serialize( 'tokenUser', token, {
-            httpOnly: true,
+            // httpOnly: true,
+            httpOnly: false,
             secure: NODE_ENV === 'production',
             sameSite: 'strict',
             // sameSite: 'none',
