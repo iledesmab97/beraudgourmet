@@ -76,7 +76,7 @@ async function makeUser (props) {
                 }
             })
             if (!roleFinded) throw new Error('the indicated role does not exist')
-            newUser.setRole(roleFinded.id)
+            await newUser.setRole(roleFinded.id)
         } else await newUser.setRole(3)
 
         const newUserWithoutPassword = {...newUser.dataValues}
