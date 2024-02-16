@@ -211,7 +211,8 @@ async function updateMyAccount (req, res) {
     const { user } = req
     try {
         const id = user.id
-        const {property, value} = req.body
+        const { property, value } = req.body
+        if (!property) throw new Error('Property cannot to be undefined or null')
         const userUpdated = await User.update({
             [property]: value
         }, {
@@ -233,6 +234,7 @@ async function updateUser (req, res) {
     try {
         if (!validateNumber(id)) throw new Error('id need to be a number')
         if (Number(id) === 1) throw new Error('Cannot update root user')
+        if (!property) throw new Error('Property cannot to be undefined or null')
         const userToUpdate = await User.findByPk(id)
         if (user.RoleId === 2 && userToUpdate.RoleId === 2) throw new Error('Unauthorized')
         const userUpdated = await User.update({
