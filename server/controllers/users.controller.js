@@ -221,6 +221,18 @@ async function updateMyAccount (req, res) {
             }
         })
         if (!userUpdated[0]) throw new Error('El usuario indicado no existe')
+        const newUser = await User.findByPk(id)
+
+        // remove password
+        const userData = {
+            ...newUser.dataValues
+        }
+        delete userData.password
+
+        // serialize and create a jwt
+        const { serialized } = makeJWT(userData)
+        res.setHeader('Set-Cookie', serialized)
+        
         res.status(200).json({message: 'se han actuliazado exitosamente'})
     } catch(error) {
         res.status(400).json({message: error.message})
