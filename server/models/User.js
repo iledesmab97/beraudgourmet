@@ -31,6 +31,9 @@ function User(database) {
             type: DataTypes.STRING,
             allowNull: true,
             unique: false,
+            set(value) {
+                this.setDataValue("phoneNumber", value.replaceAll(" ", ""))
+            }
         },
         promotion: {
             type: DataTypes.BOOLEAN,
