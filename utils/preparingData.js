@@ -30,6 +30,6 @@ export function userDataFromFrontToBack(userFront) {
 export function oneUserDataFromFrontToBack(propertyFront) {
     const { property } = propertyFront
     if (sameProperties.includes(property)) return propertyFront
-    else if ( property === 'numberPhone' ) return { ...propertyFront, property: 'numberPhone' }
+    else if ( property === 'numberPhone' ) return { ...propertyFront, property: 'phoneNumber' }
     return propertyFront
 }
