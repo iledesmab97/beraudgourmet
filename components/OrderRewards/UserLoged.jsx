@@ -88,20 +88,20 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                     endAdornment: ( open
                         ? (
                             <IconButton
-                                name='number'
+                                name='numberPhone'
                                 position='end'
                                 onClick={handleEditing}
                                 disabled={errors.name ? true : false}    
                             >
                                 {
-                                    editing.number
+                                    editing.numberPhone
                                     ? <CheckIcon />
                                     : <BorderColorIcon />
                                 }
                             </IconButton>
                         ): null
                     ),
-                    readOnly: !editing.number && open ? true : false
+                    readOnly: !editing.numberPhone && open ? true : false
                 }}
             />
         </Grid>
