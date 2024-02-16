@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
-import { userDataFromBackToFront, userDataFromFrontToBack  } from '@/utils/preparingData'
-import { newAccount } from '@/services/userApi'
+import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
+import { newAccount, updateMyAccount } from '@/services/userApi'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -223,7 +223,7 @@ function useHandleUser() {
         console.log(message)
     }
 
-    function handleEditing(event) {
+    async function handleEditing(event) {
         const { name } = event.currentTarget
         if (!editing[name]) {
             return setEditing((prevEdit) => ({
@@ -237,7 +237,10 @@ function useHandleUser() {
             ...prevEdit,
             [name]: !editing[name]
         }))
-        handleUpdateUser(inputs)        
+        handleUpdateUser(inputs)
+        const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
+        const response = await updateMyAccount(propertyToUpdate)
+        console.log(response)
     }
 
     async function signUp() {
