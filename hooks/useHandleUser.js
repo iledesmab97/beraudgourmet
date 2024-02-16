@@ -172,7 +172,6 @@ function useHandleUser() {
         const userFront = userDataFromBackToFront(response) 
         handleAddUser(userFront)
         setInputs(userFront)
-        localStorage.setItem('userLoged', 'true')
         console.log('Se ha iniciado sesión exitosamente')
     }
 
@@ -217,7 +216,6 @@ function useHandleUser() {
         if (message === 'No hay usuario con la sesión activa') return
         setInputs(initialInputs)
         handleRemoveUser()
-        localStorage.removeItem('userLoged')
         console.log(message)
     }
 
@@ -255,7 +253,6 @@ function useHandleUser() {
         const userFront = userDataFromBackToFront(response) 
         handleAddUser(userFront)
         setInputs(userFront)
-        localStorage.setItem('userLoged', 'true')
         console.log('Se ha iniciado sesión exitosamente')
     }
 
