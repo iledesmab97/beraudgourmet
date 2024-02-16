@@ -20,6 +20,7 @@ passport.use( new GoogleStrategy({
       defaults: { name: displayName, email }
     })
     if (created) {
+      await user.setRole(3)
       const tokenVerify = makeJWTVerifyUser({id: user.id})
       emailVerification({ token: tokenVerify, email: user.email})
     }
