@@ -76,7 +76,7 @@ async function makeUser (props) {
                 }
             })
             if (!roleFinded) throw new Error('the indicated role does not exist')
-            newUser.setRole(roleFinded.id)
+            await newUser.setRole(roleFinded.id)
         } else await newUser.setRole(3)
 
         const newUserWithoutPassword = {...newUser.dataValues}
@@ -208,10 +208,12 @@ async function logOut (req, res) {
 }
 
 async function updateMyAccount (req, res) {
-    const { user } = req
+    const { id } = req.user
+    
     try {
-        const id = user.id
-        const {property, value} = req.body
+        const { property, value } = req.body
+        if (!property) throw new Error('Property cannot to be undefined or null')
+
         const userUpdated = await User.update({
             [property]: value
         }, {
@@ -220,6 +222,18 @@ async function updateMyAccount (req, res) {
             }
         })
         if (!userUpdated[0]) throw new Error('El usuario indicado no existe')
+        const newUser = await User.findByPk(id)
+
+        // remove password
+        const userData = {
+            ...newUser.dataValues
+        }
+        delete userData.password
+
+        // serialize and create a jwt
+        const { serialized } = makeJWT(userData)
+        res.setHeader('Set-Cookie', serialized)
+
         res.status(200).json({message: 'se han actuliazado exitosamente'})
     } catch(error) {
         res.status(400).json({message: error.message})
@@ -233,6 +247,7 @@ async function updateUser (req, res) {
     try {
         if (!validateNumber(id)) throw new Error('id need to be a number')
         if (Number(id) === 1) throw new Error('Cannot update root user')
+        if (!property) throw new Error('Property cannot to be undefined or null')
         const userToUpdate = await User.findByPk(id)
         if (user.RoleId === 2 && userToUpdate.RoleId === 2) throw new Error('Unauthorized')
         const userUpdated = await User.update({
@@ -314,6 +329,29 @@ async function whoAmI (req, res) {
     }
 }
 
+async function verifyProperty(req, res) {
+    const { id } = req.user
+    const { property } = req.body
+    const value = req.body.value ? req.body.value : null
+
+    try {
+        if ( property !== 'password' ) {
+            return res.status(400).json({ message: 'only for password' })
+        }
+
+        const user = await User.findByPk(id)
+        const compare = user[property] ? await bcryptjs.compare(value, user[property]) : user[property] === value
+        
+        if (!compare) {
+            return res.status(200).json(false)
+        }
+    
+        res.status(200).json(true)
+    } catch(error) {
+        res.status(400).json({message: error.message})
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUser,
@@ -328,5 +366,6 @@ module.exports = {
     signUpAdmin,
     signUp,
     makeUser,
-    isEmailRegistered
+    isEmailRegistered,
+    verifyProperty
 }

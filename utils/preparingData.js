@@ -1,5 +1,7 @@
 import { ROLES } from '@/config/user'
 
+const sameProperties = [ 'name', 'email', 'promotion', 'verified']
+
 export function userDataFromBackToFront(userBack) {
     const {id, name, email, phoneNumber, promotion, verified, RoleId} = userBack
     const userFront = {
@@ -23,4 +25,11 @@ export function userDataFromFrontToBack(userFront) {
         phoneNumber: numberPhone.replaceAll(" ", ""),
     }
     return userBack
+}
+
+export function oneUserDataFromFrontToBack(propertyFront) {
+    const { property } = propertyFront
+    if (sameProperties.includes(property)) return propertyFront
+    else if ( property === 'numberPhone' ) return { ...propertyFront, property: 'phoneNumber' }
+    return propertyFront
 }

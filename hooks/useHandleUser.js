@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
-import { userDataFromBackToFront, userDataFromFrontToBack  } from '@/utils/preparingData'
-import { newAccount } from '@/services/userApi'
+import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
+import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -28,7 +28,7 @@ function validation(inputs) {
     if ( !inputs.email ) errors.email = false
     if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
     if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
-    if (inputs.numberPhone !== undefined) {
+    if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
         const [code, place, number] = inputs.numberPhone.split(" ")
         if (!code) errors.numberPhone = 'Coloca el código del país'
         if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
@@ -38,15 +38,17 @@ function validation(inputs) {
 
 function lastValidation(inputs) {
     const errors = {}
-    if (inputs.numberPhone !== undefined) {
-        if ( !inputs.email ) errors.name = 'Este campo no puede estar vacio'
-        if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
-        if ( !inputs.password ) errors.name = 'Este campo no puede estar vacio'
-        if ( !inputs.numberPhone ) errors.name = 'Este campo no puede estar vacio'
-    } else {
-        if ( !inputs.email ) errors.email = 'Este campo no puede estar vacio'
-        if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
-        if ( !inputs.passwordConfirmation ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
+    if ( !inputs.email ) errors.email = 'Este campo no puede estar vacio'
+    if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
+    if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
+    if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
+    if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
+    // if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
+    if ( !inputs.numberPhone ) errors.numberPhone = 'Este campo no puede estar vacio'
+    if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
+        const [code, place, number] = inputs.numberPhone.split(" ")
+        if (!code) errors.numberPhone = 'Coloca el código del país'
+        if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
     }
     return errors
 }
@@ -85,7 +87,10 @@ function useHandleUser() {
         passwordConfirmation: ''
     })
     const [errors, setErrors] = useState(validation(inputs))
-    const [editing, setEditing] = useState({name: false, number: false})
+    const [editing, setEditing] = useState({
+        name: false,
+        numberPhone: false
+    })
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
 
@@ -172,23 +177,30 @@ function useHandleUser() {
         const userFront = userDataFromBackToFront(response) 
         handleAddUser(userFront)
         setInputs(userFront)
-        localStorage.setItem('userLoged', 'true')
         console.log('Se ha iniciado sesión exitosamente')
     }
 
-    function changePassword() {
+    async function changePassword() {
+        // Evaluate Errors
         const newErors = lastValidation(inputsEdit)
         if (newErors.password || newErors.passwordConfirmation) return setErrors(newErors)
-        if (user.password === inputsEdit.passwordConfirmation) {
-            handleUpdateUser({
-                ...user,
-                password: inputsEdit.password
-            })
-            setInputsEdit(initialInputsEdit)
-            return 'password changed'
+        
+        // Verify correct password
+        const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
+
+        // if Verify is true
+        if (isCorrectPassword) {
+            const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
+            const response = await updateMyAccount(propertyToUpdate)
+            if ( response.message === 'se han actuliazado exitosamente' ) {
+                console.log(response)
+                setInputsEdit(initialInputsEdit)
+                return 'password changed'
+            }
         }
+        // If verify is false
         setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
-        return 'password no changed'
+        return console.log('password no changed')
     }
 
     function changeEmail() {
@@ -217,22 +229,27 @@ function useHandleUser() {
         if (message === 'No hay usuario con la sesión activa') return
         setInputs(initialInputs)
         handleRemoveUser()
-        localStorage.removeItem('userLoged')
         console.log(message)
     }
 
-    function handleEditing(event) {
+    async function handleEditing(event) {
         const { name } = event.currentTarget
-        if (Object.keys(errors).length) return
-        const newErrors = lastValidation(inputs)
-        if (Object.keys(newErrors).length) return setErrors(newErrors)
-        if (editing[name]) {
-            handleUpdateUser(inputs)
+        if (!editing[name]) {
+            return setEditing((prevEdit) => ({
+                ...prevEdit,
+                [name]: !editing[name]
+            }))
         }
+        const newErrors = lastValidation(inputs)
+        if (newErrors[name]) return setErrors({ [name]: newErrors[name] })
         setEditing((prevEdit) => ({
             ...prevEdit,
             [name]: !editing[name]
         }))
+        handleUpdateUser(inputs)
+        const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
+        const response = await updateMyAccount(propertyToUpdate)
+        console.log(response)
     }
 
     async function signUp() {
@@ -255,7 +272,6 @@ function useHandleUser() {
         const userFront = userDataFromBackToFront(response) 
         handleAddUser(userFront)
         setInputs(userFront)
-        localStorage.setItem('userLoged', 'true')
         console.log('Se ha iniciado sesión exitosamente')
     }
 
