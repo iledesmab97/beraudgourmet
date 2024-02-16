@@ -37,3 +37,14 @@ export function updateMyAccount(data) {
         .then(res => res.json())
         .then(data => data)
 }
+
+export function verifyProperty(data) {
+    const { property } = data
+    return fetch(`${PATH_BACK}/users/verify/${property}`, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => data)
+}
