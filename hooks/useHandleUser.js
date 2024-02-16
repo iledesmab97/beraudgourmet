@@ -28,7 +28,7 @@ function validation(inputs) {
     if ( !inputs.email ) errors.email = false
     if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
     if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
-    if (inputs.numberPhone !== undefined) {
+    if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
         const [code, place, number] = inputs.numberPhone.split(" ")
         if (!code) errors.numberPhone = 'Coloca el código del país'
         if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
