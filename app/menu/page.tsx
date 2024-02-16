@@ -17,23 +17,12 @@ import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
-import { fetchwhoAmI } from '@/services/userApi'
 import useGetUser from '@/hooks/useGetUser';
 import {userDataFromBackToFront} from '@/utils/preparingData'
 
-const roles = ['root', 'admin', 'client']
-
-async function getUserLoged(updateUser) {
-  const userLogued = JSON.parse(localStorage.getItem('userLoged'))
-  if (!userLogued) return
-  const userBack = await fetchwhoAmI()
-  if (!userBack) return
-  const userDataFront = userDataFromBackToFront(userBack)
-  updateUser(userDataFront)
-}
-
-function getCookies(updateUser){
+function lookingForUserLoged(updateUser){
   const tokenUser = Cookies.get('tokenUser')
+  if (!tokenUser) return
   try {
     const dataUser = jwt.decode(tokenUser)
     const userDataFront = userDataFromBackToFront(dataUser)
@@ -55,8 +44,7 @@ function Menu () {
   const { handleAddUser } = useGetUser()
 
   useEffect(() => {
-    // getUserLoged(handleAddUser)
-    getCookies(handleAddUser)
+    lookingForUserLoged(handleAddUser)
   }, [])
 
   return (
