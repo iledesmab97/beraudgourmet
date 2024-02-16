@@ -3,7 +3,7 @@ import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
-import { newAccount, updateMyAccount } from '@/services/userApi'
+import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -43,6 +43,7 @@ function lastValidation(inputs) {
     if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
     if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
     if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
+    // if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
     if ( !inputs.numberPhone ) errors.numberPhone = 'Este campo no puede estar vacio'
     if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
         const [code, place, number] = inputs.numberPhone.split(" ")
@@ -179,19 +180,27 @@ function useHandleUser() {
         console.log('Se ha iniciado sesión exitosamente')
     }
 
-    function changePassword() {
+    async function changePassword() {
+        // Evaluate Errors
         const newErors = lastValidation(inputsEdit)
         if (newErors.password || newErors.passwordConfirmation) return setErrors(newErors)
-        if (user.password === inputsEdit.passwordConfirmation) {
-            handleUpdateUser({
-                ...user,
-                password: inputsEdit.password
-            })
-            setInputsEdit(initialInputsEdit)
-            return 'password changed'
+        
+        // Verify correct password
+        const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
+
+        // if Verify is true
+        if (isCorrectPassword) {
+            const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
+            const response = await updateMyAccount(propertyToUpdate)
+            if ( response.message === 'se han actuliazado exitosamente' ) {
+                console.log(response)
+                setInputsEdit(initialInputsEdit)
+                return 'password changed'
+            }
         }
+        // If verify is false
         setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
-        return 'password no changed'
+        return console.log('password no changed')
     }
 
     function changeEmail() {
