@@ -69,8 +69,9 @@ function ModalChangeEmail() {
                     sx={{
                         alignSelf: 'flex-end'
                     }}
-                    onClick={() => {
-                        if(changeEmail() === 'successful') handleChangeModal('changeEmail', 'user')
+                    onClick={async () => {
+                        const successfull = await changeEmail()
+                        if(successfull === true) handleChangeModal('changeEmail', 'user')
                     }}
                 >
                     Cabiar contraeña
