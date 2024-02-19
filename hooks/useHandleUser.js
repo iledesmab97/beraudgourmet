@@ -111,7 +111,11 @@ function useHandleUser() {
 
     useEffect(() => {
         debounceSetValue(() => {
-            setErrors(validation(inputsEdit))
+            const newError = validation(inputsEdit)
+            if ( !newError.email && inputsEdit.email === user.email ) {
+                newError.email = 'Debe ingresar otro correo electrónico'
+            }
+            setErrors(newError)
         }, 500)
     }, [inputsEdit])
 
@@ -188,40 +192,54 @@ function useHandleUser() {
         // Verify correct password
         const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
 
-        // if Verify is true
-        if (isCorrectPassword) {
-            const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
-            const response = await updateMyAccount(propertyToUpdate)
-            if ( response.message === 'se han actuliazado exitosamente' ) {
-                console.log(response)
-                setInputsEdit(initialInputsEdit)
-                return 'password changed'
-            }
-        }
         // If verify is false
-        setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
-        return console.log('password no changed')
+        if (!isCorrectPassword) {
+            setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
+            return console.log('password no changed')
+        }
+        // if Verify is true
+        const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
+        const response = await updateMyAccount(propertyToUpdate)
+        if ( response.message !== 'se han actuliazado exitosamente' ) {
+            return console.log(response.message)
+        }
+        setInputsEdit(initialInputsEdit)
+        console.log(response.message)
+        return true
     }
 
-    function changeEmail() {
+    async function changeEmail() {
+        // Evaluate Errors
         if (errors.email) return
-        const newErors = lastValidation(inputsEdit)
-        if (!inputsEdit.email || !inputsEdit.password) {
-            setErrors(newErors)
-            return 'failed'
+        const newErrors = lastValidation(inputsEdit)
+        if (newErrors.password || newErrors.email) {
+            return setErrors(newErrors)
         }
-        if (user.password === inputsEdit.password) {
-            handleUpdateUser({
-                ...user,
-                email: inputsEdit.email,
-                password: inputsEdit.password
-            })
-            setInputsEdit(initialInputsEdit)
-            return 'successful'
-        } else {
-            setErrors({password: 'Contraseña incorrecta'})
-            return 'failed'
+        
+        // Verify correct password
+        const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.password })
+
+        // If verify is false
+        if (!isCorrectPassword) {
+            setErrors({ password: 'Contraseña incorrecta' })
+            console.log('password no changed')
+            return false
         }
+
+        // if Verify is true
+        const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'email', value: inputsEdit.email })
+        const response = await updateMyAccount(propertyToUpdate)
+        if ( response.message !== 'se han actuliazado exitosamente' ) {
+            return console.log(response.message)
+        }
+        handleUpdateUser({
+            ...user,
+            email: inputsEdit.email,
+            password: inputsEdit.password
+        })
+        setInputsEdit(initialInputsEdit)
+        console.log(response.message)
+        return true
     }
 
     async function signOff() {
@@ -246,10 +264,11 @@ function useHandleUser() {
             ...prevEdit,
             [name]: !editing[name]
         }))
-        handleUpdateUser(inputs)
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
         const response = await updateMyAccount(propertyToUpdate)
-        console.log(response)
+        if ( response.message !== 'se han actuliazado exitosamente') return console.log(response.message)
+        handleUpdateUser(inputs)
+        console.log(response.message)
     }
 
     async function signUp() {
