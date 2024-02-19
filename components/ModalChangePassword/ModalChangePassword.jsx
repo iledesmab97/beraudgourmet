@@ -70,7 +70,7 @@ function ModalChangePassword() {
                         alignSelf: 'flex-end'
                     }}
                     onClick={async () => {
-                        if (await changePassword() === 'password changed') handleChangeModal('changePassword', 'user')
+                        if (await changePassword() === true) handleChangeModal('changePassword', 'user')
                     }}
                 >
                     Cabiar contraeña
