@@ -234,6 +234,12 @@ async function updateMyAccount (req, res) {
         const { serialized } = makeJWT(userData)
         res.setHeader('Set-Cookie', serialized)
 
+        if ( property === 'email') {
+            // send verification email
+            const tokenVerify = makeJWTVerifyUser({id: newUser.id})
+            emailVerification({ token: tokenVerify, email: newUser.email})
+        }
+
         res.status(200).json({message: 'se han actuliazado exitosamente'})
     } catch(error) {
         res.status(400).json({message: error.message})
