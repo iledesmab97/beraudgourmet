@@ -25,6 +25,10 @@ function User(database) {
             unique: true,
             validate: {
                 isEmail: true
+            },
+            set(value) {
+                this.setDataValue("email", value)
+                this.setDataValue("verified", false)
             }
         },
         phoneNumber: {
