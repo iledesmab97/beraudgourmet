@@ -22,7 +22,7 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { Role, User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders } = db.models
+const { Role, User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders, PizzaCost } = db.models
 
 // Relación entre usuarios y roles
 Role.hasMany(User)
@@ -45,12 +45,19 @@ PizzaIngredient.belongsToMany(Pizza, {
   timestamps: false
 })
 
-// Relación entre tamaño de la pizza, Maza y costo
-PizzaMass.hasMany(PizzaCharacteristic)
-PizzaCharacteristic.belongsTo(PizzaMass)
+// Relación entre tamaño de la pizza y masa
+PizzaMass.belongsToMany(PizzaSize, {
+  through: 'PizzaCharacteristic'
+})
 
-PizzaSize.hasMany(PizzaCharacteristic)
-PizzaCharacteristic.belongsTo(PizzaSize)
+PizzaSize.belongsToMany(PizzaMass, {
+  through: 'PizzaCharacteristic'
+})
+
+PizzaCharacteristic.addScope('primary', {
+  attributes: ["PizzaMassId", "PizzaSizeId"],
+  primaryKey: true
+})
 
 // Relación entre schedule y las horas y dias
 Schedule.belongsToMany(ScheduleHours, {
@@ -91,6 +98,27 @@ PizzaExtraIngredient.belongsToMany(OrderPizza, {
 // Relación entre Otras ordenes y Tipo de Producto
 KindProduct.hasMany(OtherOrders)
 OtherOrders.belongsTo(KindProduct)
+
+// Relación entre la pizza, sus caracteristicas costo
+
+Pizza.belongsToMany(PizzaCharacteristic, {
+  through: 'PizzaCost'
+})
+
+PizzaCharacteristic.belongsToMany(Pizza, {
+  through: 'PizzaCost'
+})
+
+// Pizza.hasMany(PizzaCost)
+// PizzaCost.belongsTo(Pizza)
+
+// PizzaCharacteristic.hasMany(PizzaCost)
+// PizzaCost.belongsTo(PizzaCharacteristic)
+
+PizzaCost.addScope('primary', {
+  attributes: ["PizzaId", "PizzaCharacteristicId"],
+  primaryKey: true
+})
 
 async function initDB() {
     try {
