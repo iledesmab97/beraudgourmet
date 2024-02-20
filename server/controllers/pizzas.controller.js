@@ -1,4 +1,6 @@
-const { Pizza, PizzaIngredient } = require('../db')
+const { Pizza, PizzaIngredient, PizzaCost } = require('../db')
+const { findOrCreatedPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
+const { makePizzaCost } = require('./pizzaCosts.controller')
 
 async function getAllPizzas (req, res) {
     try {
@@ -26,8 +28,10 @@ async function getAllPizzas (req, res) {
 }
 
 async function makePizza(body) {
-    const newPizza = await Pizza.create(body)    
-    const {ingredients} = body
+    const { name, text, image, ingredients, costs } = body
+    const newPizza = await Pizza.create({ name, text, image })    
+    
+    //Add ingredients to new pizza
     if (ingredients) {
         for (let ingredient of ingredients) {
             const [ingredientsSelected, created] = await PizzaIngredient.findOrCreate({
@@ -37,7 +41,15 @@ async function makePizza(body) {
                 },
                 defaults: {}
             })
-            newPizza.addPizzaIngredient([ingredientsSelected.id])
+            await newPizza.addPizzaIngredient([ingredientsSelected.id])
+        }
+    }
+
+    //Add costs to new pizza
+    if (costs) {
+        for (let pizzaCost of costs) {
+            const { mass, size, cost } = pizzaCost
+            const newPizzaCost = await makePizzaCost({ cost, pizza: newPizza.name, characteristics: { mass, size}})
         }
     }
     return newPizza
@@ -62,7 +74,7 @@ async function addPizzas(req, res) {
         res.status(200).json(newPizza)
     } catch(error) {
         const {message, parent} = error
-        res.status(400).json({message, parent: parent.message})
+        res.status(400).json({message, parent: parent?.message})
     }
 }
 
