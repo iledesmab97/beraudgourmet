@@ -16,32 +16,34 @@ async function makePizzaMass(massData) {
 
     // Add sizes to mass
     if (sizes) {
-        const sizesId = findSizesId(sizes)
-
+        const sizesId = await getSizesId(sizes)
         await newPizzaMass.addPizzaSizes(sizesId)
     }
 
     return newPizzaMass
 }
 
-async function findSizesId(listSizes) {
-    return await PizzaSize.findAll({
-        attributes: ['id'],
-        where: {
-            size: listSizes
-        }
-    }).then(data => data.map( size => size.id ))
+async function getSizesId(listSizes) {
+    // get all sizes added
+    const listSizesAlreadyCreated = await PizzaSize.findAll().then(data => data.map(size => size.size))
+    // get all sizes for add
+    const listSizesToCreate = listSizes.filter(name => !listSizesAlreadyCreated.includes( name )).map(size => ({ size }))
+    // add sizes
+    const listSizesCreated = await PizzaSize.bulkCreate(listSizesToCreate).then(data => data.map(size => size.id))
+    return listSizesCreated
 }
 
 async function addPizzaMass(req, res) {
     const {many} = req.query
     try {
+        // Add many masses
         if (many && JSON.parse(many)) {
             const newPizzaMass = await PizzaMass.bulkCreate(req.body)
             return res.status(200).json(newPizzaMass)
         }
-        const { name, text, sizes } = massData
-        const newPizzaMass = makePizzaMass({ name, text, sizes })
+        // Add a mass
+        const { name, text, sizes } = req.body
+        const newPizzaMass = await makePizzaMass({ name, text, sizes })
 
         return res.status(200).json(newPizzaMass)
     } catch(error) {
@@ -64,7 +66,7 @@ async function addSizesToPizzaMass(req, res) {
         })
         if (!mass) throw new Error('Esta masa no se encuentra ne la base de datos')
 
-        const sizesId = await findSizesId(sizes)
+        const sizesId = await getSizesId(sizes)
 
         if (!sizesId.length) throw new Error('Los tamaños indicados no están en la base de datos')
 
