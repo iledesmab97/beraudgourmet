@@ -1,10 +1,10 @@
 const { Router } = require('express')
 
-const { getAllPizzaCharacteristics, addPizzaCharacteristics, removePizzaCharacteristics } = require('../controllers/pizzaCharacteristics.controller')
+const { getPizzaCharacteristics, getPizzaCharacteristicWithData, addPizzaCharacteristics, removePizzaCharacteristics } = require('../controllers/pizzaCharacteristics.controller')
 
 const router = Router()
 
-router.get('/', getAllPizzaCharacteristics)
+router.get('/', getPizzaCharacteristics)
 
 router.post('/', addPizzaCharacteristics)
 
