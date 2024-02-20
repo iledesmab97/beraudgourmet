@@ -1,4 +1,5 @@
 const {PizzaCost, PizzaCharacteristic, Pizza, PizzaMass, PizzaSize } = require('../db')
+const { findOrCreatedPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
 
 async function getAllPizzaCosts(req, res) {
     try {
@@ -36,62 +37,33 @@ async function getAllPizzaCosts(req, res) {
 }
 
 async function makePizzaCost(pizzaCostData) {
-    const { cost, name, characteristics } = pizzaCostData
+    const { cost, pizza, characteristics } = pizzaCostData
+    const { mass, size } = characteristics
     
     try {
-        // get id of Pizza
+        // get id of PizzaId
         const PizzaId = await Pizza.findOne({
             attributes: ['id'],
             where: {
-                name
+                name: pizza
             }
         }).then(data => data.id)
         if (!PizzaId) throw new Error('Pizza not found')
 
-        const { masaType, size } = characteristics
-
-        // get id masaType
-        const PizzaMassId = await PizzaMass.findOne({
-            attributes: ['id'],
-            where: {
-                name: masaType
-            }
-        }).then(data => data.id)
-        if (!PizzaMassId) throw new Error('Mass not found')
-        
-        // get id size
-        const PizzaSizeId = await PizzaSize.findOne({
-            attributes: ['id'],
-            where: {
-                size: size
-            }
-        }).then(data => data.id)
-        if (!PizzaSizeId) throw new Error('Size not found')
-
-        // get id PizzaCharacteristic
-        const pizzaCharacteristicsId = await PizzaCharacteristic.findOne({
-            attributes: ['id'],
-            where: {
-                PizzaMassId,
-                PizzaSizeId
-            }
-        }).then(data => data.id)
-        if(!pizzaCharacteristicsId) throw new Error('PizzaCharacteristic not found')
+        // get PizzaCharacteristicId
+        const PizzaCharacteristicId = await findOrCreatedPizzaCharacteristic({ mass, size }).then(data => data.id)
 
         // Create new PizzaCost
         const newPizzaCost = await PizzaCost.create({
-            cost
+            cost,
+            PizzaId,
+            PizzaCharacteristicId
         })
-
-        // add pizza, mass and size
-        await newPizzaCost.setPizzaCharacteristic(pizzaCharacteristicsId)
-        await newPizzaCost.setPizza(PizzaId)
 
         return newPizzaCost
 
     } catch (error) {
-        const { message } = error
-        res.status(400).json({ message })
+        return {message: error.message}
     }
 }
 
@@ -121,9 +93,8 @@ async function addPizzaCosts(req, res) {
         // }
         
         // Add a pizzaCost
-        const { cost, name, characteristics } = req.body
-        
-        const newPizzaCost = await makePizzaCost({ cost, name, characteristics })
+        const { cost, pizza, characteristics } = req.body
+        const newPizzaCost = await makePizzaCost({ cost, pizza, characteristics })
 
         res.status(200).json(newPizzaCost)
     } catch(error) {
@@ -148,5 +119,6 @@ async function removePizzaCosts(req, res) {
 module.exports = {
     getAllPizzaCosts,
     addPizzaCosts,
-    removePizzaCosts
+    removePizzaCosts,
+    makePizzaCost
 }
