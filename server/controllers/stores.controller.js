@@ -13,7 +13,18 @@ async function addStores(req, res) {
     const { many } = req.query
     try {
         if (many && JSON.parse(many)) {
-            const newStores = await Store.bulkCreate(req.body)
+            // find stores already added
+            const listStoresName = req.body.map(store => store.name)
+            const listStoresAdded = await Store.findAll({
+                attributes: ['name'],
+                where: {
+                    name: listStoresName
+                }
+            }).then(data => data.map( store => store.name ))
+            const listStoresToAdd = req.body.filter(( store ) => !listStoresAdded.includes(store.name)  )
+            
+            // add stores new
+            const newStores = await Store.bulkCreate(listStoresToAdd)
             return res.status(200).json(newStores)
         }
         const newStore = await Store.create({...req.body})
