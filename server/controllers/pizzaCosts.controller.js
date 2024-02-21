@@ -37,12 +37,12 @@ async function getAllPizzaCosts(req, res) {
 }
 
 async function makePizzaCost(pizzaCostData) {
-    const { cost, pizza, characteristics } = pizzaCostData
+    const { cost, pizza, characteristics, pizzaId } = pizzaCostData
     const { mass, size } = characteristics
     
     try {
         // get id of PizzaId
-        const PizzaId = await Pizza.findOne({
+        const PizzaId = pizzaId ? pizzaId : await Pizza.findOne({
             attributes: ['id'],
             where: {
                 name: pizza
