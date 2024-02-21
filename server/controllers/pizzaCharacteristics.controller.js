@@ -12,7 +12,7 @@ async function findOrCreatedPizzaCharacteristic(pizzaCharacteristicsData) {
                 name: mass
             }
         })
-        if (!massFinded) throw new Error('El tipo de masa no fue encontrado')
+        if (!massFinded) throw new Error('hubo un error al buscar o crear el tipo de masa')
         
         // get id size
         const [sizeFinded, createdSize] = await PizzaSize.findOrCreate({
@@ -23,7 +23,7 @@ async function findOrCreatedPizzaCharacteristic(pizzaCharacteristicsData) {
                 size
             }
         })
-        if (!sizeFinded) throw new Error('El tamaño de la pizza no se ha encontrado')
+        if (!sizeFinded) throw new Error('hubo un error al buscar o crear el tamaño de la pizza')
 
         // get id pizzaCharacteristics
         const [pizzaCharacteristics, created] = await PizzaCharacteristic.findOrCreate({
@@ -36,7 +36,41 @@ async function findOrCreatedPizzaCharacteristic(pizzaCharacteristicsData) {
                 PizzaSizeId: sizeFinded.id
             }
         })
-        if (!pizzaCharacteristics) throw new Error('Las caracteristicas de la pizza no se han encontrado')
+        if (!pizzaCharacteristics) throw new Error('hubo un error al buscar o crear las caracteristicas de la pizza')
+
+        return pizzaCharacteristics
+    } catch(error) {
+        return {message: error.message}
+    }
+}
+
+async function findPizzaCharacteristic(pizzaCharacteristicsData) {
+    const { mass, size } = pizzaCharacteristicsData
+    try {
+        // get mass
+        const massFinded = await PizzaMass.findOne({
+            where: {
+                name: mass
+            }
+        })
+        if (!massFinded) throw new Error('El tipo de masa no fue encontrado')
+        
+        // get id size
+        const sizeFinded = await PizzaSize.findOne({
+            where: {
+                size
+            }
+        })
+        if (!sizeFinded) throw new Error('El tamaño de la pizza no fue encontrado')
+
+        // get id pizzaCharacteristics
+        const pizzaCharacteristics = await PizzaCharacteristic.findOne({
+            where: {
+                PizzaMassId: massFinded.id,
+                PizzaSizeId: sizeFinded.id
+            }
+        })
+        if (!pizzaCharacteristics) throw new Error('Las caracteristicas de la pizza no están registradas en la base de datos')
 
         return pizzaCharacteristics
     } catch(error) {
@@ -164,5 +198,6 @@ module.exports = {
     getPizzaCharacteristicWithData,
     addPizzaCharacteristics,
     removePizzaCharacteristics,
-    findOrCreatedPizzaCharacteristic
+    findOrCreatedPizzaCharacteristic,
+    findPizzaCharacteristic
 }
