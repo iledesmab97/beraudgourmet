@@ -49,7 +49,7 @@ async function makePizza(body) {
     if (costs) {
         for (let pizzaCost of costs) {
             const { mass, size, cost } = pizzaCost
-            const newPizzaCost = await makePizzaCost({ cost, pizza: newPizza.name, characteristics: { mass, size}})
+            const newPizzaCost = await makePizzaCost({ cost, pizza: newPizza.name, characteristics: { mass, size}, pizzaId: newPizza.id })
         }
     }
     return newPizza
