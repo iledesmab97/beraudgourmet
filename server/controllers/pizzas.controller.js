@@ -49,7 +49,7 @@ async function makePizza(body) {
     if (costs) {
         for (let pizzaCost of costs) {
             const { mass, size, cost } = pizzaCost
-            const newPizzaCost = await makePizzaCost({ cost, pizza: newPizza.name, characteristics: { mass, size}, pizzaId: newPizza.id })
+            const newPizzaCost = await makePizzaCost({ cost, pizza: newPizza.name, characteristics: { mass, size}, pizza: newPizza })
         }
     }
     return newPizza
@@ -65,7 +65,7 @@ async function addPizzas(req, res) {
                 const newPizza = await makePizza(pizza)
                 return newPizza
             })
-            return Promise.all(newPizzas)
+            return await Promise.all(newPizzas)
                 .then(result => res.status(200).json(result))
                 .catch(error => {throw new Error({message: error.message})})
         }
