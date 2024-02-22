@@ -2,6 +2,11 @@ const {DataTypes} = require('sequelize')
 
 function PizzaCost(database) {
     database.define( 'PizzaCost', {
+        id:{
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
         cost:{
             type: DataTypes.STRING,
             allowNull: false,
