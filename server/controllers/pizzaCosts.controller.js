@@ -4,60 +4,62 @@ const { findOrCreatedPizzaCharacteristic } = require('./pizzaCharacteristics.con
 async function getAllPizzaCosts(req, res) {
     try {
         const allPizzaCosts = await PizzaCost.findAll()
-        // const allPizzaCostsWithText = allPizzaCosts.map(async(pizzaCosts) => {
-        //     const { id, cost, PizzaMassId, PizzaSizeId, costIVA } = pizzaCosts
-        //     const massName = await PizzaMass.findOne({
-        //         attribute: ['name'],
-        //         where: {
-        //             id: PizzaMassId
-        //         }
-        //     })
-        //     const sizeName = await PizzaSize.findOne({
-        //         attribute: ['size'],
-        //         where: {
-        //             id: PizzaSizeId
-        //         }
-        //     })
-        //     const pizzaCostsText = {
-        //         id,
-        //         cost,
-        //         costIVA,
-        //         pizzaSize: sizeName.size,
-        //         pizzaMass: massName.name
-        //     }
-        //     return pizzaCostsText
-        // })
-        // return Promise.all(allPizzaCostsWithText)
-        //     .then(result => res.status(200).json(result))
-        //     .catch(error => {throw new Error({message: error.message})})
-        res.status(200).json(allPizzaCosts)
+        const allPizzaCostsWithText = allPizzaCosts.map(async(pizzaCosts) => {
+            const { id, cost, costIVA, PizzaId, PizzaCharacteristicId } = pizzaCosts
+
+            const pizza = await Pizza.findByPk(PizzaId)
+            const pizzaCharacteristic = await PizzaCharacteristic.findByPk(PizzaCharacteristicId)
+                        
+            const size = await PizzaSize.findByPk(pizzaCharacteristic.PizzaSizeId)
+            const mass = await PizzaMass.findByPk(pizzaCharacteristic.PizzaMassId)
+
+            const pizzaCostsText = {
+                id,
+                cost,
+                costIVA,
+                pizza: pizza.name,
+                pizzaCharacteristic: {
+                    mass: mass.name,
+                    size: size.size
+                }
+            }
+            
+            return pizzaCostsText
+        })
+        return await Promise.all(allPizzaCostsWithText)
+            .then(result => res.status(200).json(result))
+            .catch(error => {throw new Error({message: error.message})})
     } catch(error) {
         res.status(400).json({message: error.message})
     }
 }
 
 async function makePizzaCost(pizzaCostData) {
-    const { cost, pizza, characteristics, pizzaId } = pizzaCostData
+    const { cost, pizzaName, characteristics, pizza } = pizzaCostData
     const { mass, size } = characteristics
-    
     try {
         // get id of PizzaId
-        const PizzaId = pizzaId ? pizzaId : await Pizza.findOne({
-            attributes: ['id'],
+        const PizzaObject = pizza ? pizza : await Pizza.findOne({
             where: {
-                name: pizza
+                name: pizzaName
             }
-        }).then(data => data.id)
-        if (!PizzaId) throw new Error('Pizza not found')
+        })
+        if (!PizzaObject) throw new Error('Pizza not found')
 
         // get PizzaCharacteristicId
-        const PizzaCharacteristicId = await findOrCreatedPizzaCharacteristic({ mass, size }).then(data => data.id)
+        const PizzaCharacteristic = await findOrCreatedPizzaCharacteristic({ mass, size })
 
         // Create new PizzaCost
+        // await PizzaObject.addPizzaCharacteristic(PizzaCharacteristicId.id, {
+        //     through: {
+        //         cost
+        //     }
+        // })
+
         const newPizzaCost = await PizzaCost.create({
             cost,
-            PizzaId,
-            PizzaCharacteristicId
+            PizzaId: PizzaObject.id,
+            PizzaCharacteristicId: PizzaCharacteristic.id
         })
 
         return newPizzaCost
@@ -71,30 +73,21 @@ async function addPizzaCosts(req, res) {
     const { many } = req.query
     try {
         // Add many PizzaCotst
-        // if (many && JSON.parse(many)) {
-        //     const listPizzaCosts = req.body
-        //     const newListPizzaCosts = listPizzaCosts.map(async (pizzaCosts) => {
-        //         const { sizeId, masaTypeId, cost } = pizzaCosts
-        //         const newPizzaCosts = await PizzaCost.create({
-        //             cost,
-        //             costIVA: cost,
-        //             sizeId,
-        //             masaTypeId
-        //         })
-        //         if (masaTypeId && sizeId) {
-        //             await newPizzaCosts.setPizzaMass(masaTypeId)
-        //             await newPizzaCosts.setPizzaSize(sizeId)
-        //         }
-        //         return newPizzaCosts
-        //     })
-        //     return Promise.all(newListPizzaCosts)
-        //         .then(result => res.status(200).json(result))
-        //         .catch(error => {throw new Error({message: error.message})})
-        // }
+        if (many && JSON.parse(many)) {
+            const listPizzaCosts = req.body
+            const newListPizzaCosts = listPizzaCosts.map(async (pizzaCosts) => {
+                const { cost, pizzaName, characteristics } = pizzaCosts
+                const newPizzaCost = await makePizzaCost({ cost, pizzaName, characteristics })
+                return newPizzaCost
+            })
+            return Promise.all(newListPizzaCosts)
+                .then(result => res.status(200).json(result))
+                .catch(error => {throw new Error({message: error.message})})
+        }
         
         // Add a pizzaCost
-        const { cost, pizza, characteristics } = req.body
-        const newPizzaCost = await makePizzaCost({ cost, pizza, characteristics })
+        const { cost, pizzaName, characteristics } = req.body
+        const newPizzaCost = await makePizzaCost({ cost, pizzaName, characteristics })
 
         res.status(200).json(newPizzaCost)
     } catch(error) {
