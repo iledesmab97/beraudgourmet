@@ -29,6 +29,13 @@ async function getAllPizzas (req, res) {
 
 async function makePizza(body) {
     const { name, text, image, ingredients, costs } = body
+    
+    const alreadyExist = Pizza.findOne({
+        where: {
+            name 
+        }
+    })
+    if (alreadyExist) return `La pizza ${name} ya existe`
     const newPizza = await Pizza.create({ name, text, image })    
     
     //Add ingredients to new pizza
