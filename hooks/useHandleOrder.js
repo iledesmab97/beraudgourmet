@@ -8,7 +8,7 @@ export default function useHandleOrder({ product }) {
     const [currentProduct, setCurrentProduct] = useState(product)
     const { extraIngredients } = useGetExtraIngredients()
     const [inputs, setInputs] = useState({
-        size: product.size ? product.size : '14"',
+        size: product.size ? product.size : '30cm',
         quantity: product?.quantity ? product.quantity : 1,
         mass: product?.mass ? product.mass : 'Masa Tradicional',
         ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
