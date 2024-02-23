@@ -37,38 +37,92 @@ function fetchPizzas() {
     })
 }
 
+// function fetchPizzasCharacteristics({type}) {
+//   return fetch(`${PATH_BACK}/pizzaCharacteristics`)
+//     .then(response => response.json())
+//     .then(data => {
+//       const pizzaCharacteristicsList = data.map(pizzaCharacteristics => {
+//         const { id, cost, pizzaSize, pizzaMass } = pizzaCharacteristics
+//         const newPizzaCharacteristics = {
+//           id,
+//           cost,
+//           pizzaSize,
+//           pizzaMass
+//         }
+//         return newPizzaCharacteristics
+//       })
+//       if (type === 'object') {
+//         const listCharacteristicsObject = {}
+//         pizzaCharacteristicsList.forEach(characteristics => {
+//           const { cost, pizzaSize, pizzaMass } = characteristics
+//           if (listCharacteristicsObject[pizzaSize]) {
+//             listCharacteristicsObject[pizzaSize] = {
+//               ...listCharacteristicsObject[pizzaSize],
+//               [pizzaMass]: cost
+//             }
+//           } else {
+//             listCharacteristicsObject[pizzaSize] = {
+//               [pizzaMass]: cost
+//             }
+//           }
+//         })
+//         return listCharacteristicsObject
+//       }
+//       return pizzaCharacteristicsList
+//     })
+// }
+
 function fetchPizzasCharacteristics({type}) {
-  return fetch(`${PATH_BACK}/pizzaCharacteristics`)
+  return fetch(`${PATH_BACK}/pizzaCosts`)
     .then(response => response.json())
     .then(data => {
-      const pizzaCharacteristicsList = data.map(pizzaCharacteristics => {
-        const { id, cost, pizzaSize, pizzaMass } = pizzaCharacteristics
-        const newPizzaCharacteristics = {
+      const pizzaCostsList = data.map(pizzaCost => {
+        const { id, cost, costIVA, pizza, pizzaCharacteristics } = pizzaCost
+        const newPizzaCost = {
           id,
           cost,
-          pizzaSize,
-          pizzaMass
+          costIVA,
+          pizza,
+          pizzaCharacteristics
         }
-        return newPizzaCharacteristics
+        return newPizzaCost
       })
       if (type === 'object') {
-        const listCharacteristicsObject = {}
-        pizzaCharacteristicsList.forEach(characteristics => {
-          const { cost, pizzaSize, pizzaMass } = characteristics
-          if (listCharacteristicsObject[pizzaSize]) {
-            listCharacteristicsObject[pizzaSize] = {
-              ...listCharacteristicsObject[pizzaSize],
-              [pizzaMass]: cost
+        const listCostsObject = {}
+        pizzaCostsList.forEach(pizzaCost => {
+          const { costIVA, pizza, pizzaCharacteristics } = pizzaCost
+          const { mass, size } = pizzaCharacteristics
+
+          if (listCostsObject[pizza]) {
+            // cost per mass
+            const costPerMass = {
+              ...listCostsObject[pizza][size],
+              [mass]: costIVA
             }
+            // mass per size
+            const massPerSize = {
+              ...listCostsObject[pizza],
+              [size]: costPerMass
+            }
+
+            listCostsObject[pizza] = massPerSize
+
           } else {
-            listCharacteristicsObject[pizzaSize] = {
-              [pizzaMass]: cost
+            // cost per mass
+            const costPerMass = {
+              [mass]: costIVA
             }
+            // mass per size
+            const massPerSize = {
+              [size]: costPerMass
+            }
+
+            listCostsObject[pizza] = massPerSize
           }
         })
-        return listCharacteristicsObject
+        return listCostsObject
       }
-      return pizzaCharacteristicsList
+      return pizzaCostsList
     })
 }
 
@@ -89,12 +143,22 @@ async function fetchExtraIngredients() {
     })
 } 
 
+// async function fetchingData() {
+//   const pizzasList = await fetchPizzas()
+//   const pizzaCharacteristicsList = await fetchPizzasCharacteristics({type: 'object'})
+//   const totalPizzasList = pizzasList.map(pizza => ({
+//     ...pizza,
+//     price: pizzaCharacteristicsList
+//   }))
+//   return totalPizzasList
+// }
+
 async function fetchingData() {
   const pizzasList = await fetchPizzas()
   const pizzaCharacteristicsList = await fetchPizzasCharacteristics({type: 'object'})
   const totalPizzasList = pizzasList.map(pizza => ({
     ...pizza,
-    price: pizzaCharacteristicsList
+    price: pizzaCharacteristicsList[pizza.name]
   }))
   return totalPizzasList
 }
