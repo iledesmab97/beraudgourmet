@@ -30,7 +30,7 @@ async function getAllPizzas (req, res) {
 async function makePizza(body) {
     const { name, text, image, ingredients, costs } = body
     
-    const alreadyExist = Pizza.findOne({
+    const alreadyExist = await Pizza.findOne({
         where: {
             name 
         }
