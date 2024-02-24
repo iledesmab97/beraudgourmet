@@ -5,16 +5,8 @@
         "subNav": [
             {
                 "title": "Pizzas",
-                "path": "/menu/pizzas"
-            },
-            {
-                "title": "Bebidas",
-                "path": "/menu/bebidas"
+                "path": "Pizza-Section"
             }
         ]
-    },
-    {
-        "title": "Acerca de nosotros",
-        "path": "/about"
     }
 ]
