@@ -1,8 +1,83 @@
 "use client";
 
-export default function Home() {
+// export default function Home() {
+
+//   return (
+//     <h1>Página principal</h1>
+//   );
+// }
+
+import { useState, useEffect } from 'react';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+// import ContainerItems from '../../components/ContainerItems/ContainerItems'
+import ContainerItems from '@/components/ContainerItems/ContainerItems'
+import OrderRewards from '@/components/OrderRewards/OrderRewards'
+import ModalChooseProduct from '@/components/ModalChooseProduct/ModalChooseProduct'
+import ModalStoreDelivery from '@/components/ModalStoreDelivery/ModalStoreDelivery'
+import ModalDeliveryPlace from '@/components/ModalDeliveryPlace/ModalDeliveryPlace'
+import ModalStoresDetail from '@/components/ModalStoresDetail/ModalStoresDetail'
+import ModalUserInfo from '@/components/ModalUserInfo/ModalUserInfo'
+import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePassword'
+import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
+import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
+import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
+import { useLoadScript } from "@react-google-maps/api"
+import Cookies from 'js-cookie'
+import jwt from 'jsonwebtoken'
+import useGetUser from '@/hooks/useGetUser';
+import {userDataFromBackToFront} from '@/utils/preparingData'
+
+function lookingForUserLoged(updateUser){
+  const tokenUser = Cookies.get('tokenUser')
+  if (!tokenUser) return
+  try {
+    const dataUser = jwt.decode(tokenUser)
+    const userDataFront = userDataFromBackToFront(dataUser)
+    return updateUser(userDataFront)
+  } catch(error) {
+    return console.log('error:', error.message)
+  }
+}
+
+function Menu () {
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: 'AIzaSyDc8oY7zb9QuGqlkM4kJoOui0lxPv6sOAg',
+    libraries: ['places'],
+  });
+  const { handleAddUser } = useGetUser()
+
+  useEffect(() => {
+    lookingForUserLoged(handleAddUser)
+  }, [])
 
   return (
-    <h1>Página principal</h1>
-  );
+    <Container maxWidth="lg" sx={{ mt: '40px'}}>
+      <Grid
+        container
+        spacing={5}
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'auto 350px',
+          pb: 3}}>
+        <ContainerItems />
+        <OrderRewards />
+      </Grid>
+      <WhatsappButton />
+      <ModalChooseProduct />
+      <ModalStoreDelivery />
+      <ModalDeliveryPlace />
+      <ModalStoresDetail />
+      <ModalUserInfo />
+      <ModalChangePassword />
+      <ModalChangeEmail />
+      <ModalCheckoutForm />
+    </Container>
+  )
 }
+
+export default Menu
