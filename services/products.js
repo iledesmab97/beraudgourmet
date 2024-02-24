@@ -19,7 +19,7 @@ export function fetchPizzas() {
     })
 }
 
-export function fetchPizzasCharacteristics({type}) {
+export function fetchPizzaCosts({type}) {
     return fetch(`${PATH_BACK}/pizzaCosts`)
       .then(response => response.json())
       .then(data => {
@@ -92,7 +92,7 @@ export async function fetchExtraIngredients() {
 
 export async function fetchingData() {
     const pizzasList = await fetchPizzas()
-    const pizzaCharacteristicsList = await fetchPizzasCharacteristics({type: 'object'})
+    const pizzaCharacteristicsList = await fetchPizzaCosts({type: 'object'})
     const totalPizzasList = pizzasList.map(pizza => ({
       ...pizza,
       price: pizzaCharacteristicsList[pizza.name]
