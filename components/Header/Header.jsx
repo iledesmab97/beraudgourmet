@@ -11,6 +11,7 @@ import { Typography } from '@mui/material'
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
 import links from '../NavBar/navbarpaths.json'
 
+import { scrollToSection } from '@/utils/moveIntoPage'
 
 function Header() {
   return (
@@ -37,11 +38,14 @@ function Header() {
           {
             links[0].subNav.map(link => (
               <Link
-                href={link.path}
+                // href={link.path}
                 color='#000'
-                key={link.title}
-                sx={{textDecoration: 'none'}}
-              ><Typography variant='title'>{link.title}</Typography></Link>
+                // key={link.title}
+                sx={{textDecoration: 'none', cursor: 'pointer'}}
+                onClick={() => { scrollToSection(link.path, -192) }}
+              >
+                <Typography variant='title'>{link.title}</Typography>
+              </Link>
             ))
           }
         </Toolbar>
