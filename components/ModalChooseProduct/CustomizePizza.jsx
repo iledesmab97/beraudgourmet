@@ -95,7 +95,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     ELIGE EL TAMAÑO
                 </Typography>
 
-                <ButtonGroupPizza handleClick={handleSize} size={size} />
+                <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
 
                 <Typography
                     id="modal-subtitle-ELIGE_LA_MASA"

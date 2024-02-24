@@ -1,6 +1,114 @@
 const {PizzaCharacteristic, PizzaMass, PizzaSize} = require('../db')
 
-async function getAllPizzaCharacteristics(req, res) {
+async function findOrCreatedPizzaCharacteristic(pizzaCharacteristicsData) {
+    const { mass, size } = pizzaCharacteristicsData
+    try {
+        // get mass
+        const [massFinded, createdMass] = await PizzaMass.findOrCreate({
+            where: {
+                name: mass
+            },
+            default: {
+                name: mass
+            }
+        })
+        if (!massFinded) throw new Error('hubo un error al buscar o crear el tipo de masa')
+        
+        // get id size
+        const [sizeFinded, createdSize] = await PizzaSize.findOrCreate({
+            where: {
+                size
+            },
+            default: {
+                size
+            }
+        })
+        if (!sizeFinded) throw new Error('hubo un error al buscar o crear el tamaño de la pizza')
+
+        // get id pizzaCharacteristics
+        const [pizzaCharacteristics, created] = await PizzaCharacteristic.findOrCreate({
+            where: {
+                PizzaMassId: massFinded.id,
+                PizzaSizeId: sizeFinded.id
+            },
+            default: {
+                PizzaMassId: massFinded.id,
+                PizzaSizeId: sizeFinded.id
+            }
+        })
+        if (!pizzaCharacteristics) throw new Error('hubo un error al buscar o crear las caracteristicas de la pizza')
+
+        return pizzaCharacteristics
+    } catch(error) {
+        return {message: error.message}
+    }
+}
+
+async function findPizzaCharacteristic(pizzaCharacteristicsData) {
+    const { mass, size } = pizzaCharacteristicsData
+    try {
+        // get mass
+        const massFinded = await PizzaMass.findOne({
+            where: {
+                name: mass
+            }
+        })
+        if (!massFinded) throw new Error('El tipo de masa no fue encontrado')
+        
+        // get id size
+        const sizeFinded = await PizzaSize.findOne({
+            where: {
+                size
+            }
+        })
+        if (!sizeFinded) throw new Error('El tamaño de la pizza no fue encontrado')
+
+        // get id pizzaCharacteristics
+        const pizzaCharacteristics = await PizzaCharacteristic.findOne({
+            where: {
+                PizzaMassId: massFinded.id,
+                PizzaSizeId: sizeFinded.id
+            }
+        })
+        if (!pizzaCharacteristics) throw new Error('Las caracteristicas de la pizza no están registradas en la base de datos')
+
+        return pizzaCharacteristics
+    } catch(error) {
+        return {message: error.message}
+    }
+}
+
+async function makePizzaCharacteristics(characteristicsData) {
+    const { size, mass } = characteristicsData
+    // find or create the mass
+    const [ massFinded, createdMass ] = await PizzaMass.findOrCreate({
+        where: {
+            name: mass
+        },
+        default: {
+            name: mass
+        }
+    })
+
+    // find or create the size
+    const [ sizeFinded, createdSize ] = await PizzaSize.findOrCreate({
+        where: {
+            size
+        },
+        default: {
+            size
+        }
+    })
+
+    // create pizza characteristics
+    const newPizzaCharacteristic = await PizzaCharacteristic.create({
+        PizzaMassId: massFinded.id,
+        PizzaSizeId: sizeFinded.id
+    })
+    return newPizzaCharacteristic
+}
+
+async function getPizzaCharacteristics(req, res) {
     try {
         const allPizzaCharacteristics = await PizzaCharacteristic.findAll()
         const allPizzaCharacteristicsWithText = allPizzaCharacteristics.map(async(pizzaCharacteristics) => {
@@ -34,43 +142,41 @@ async function getAllPizzaCharacteristics(req, res) {
     }
 }
 
+async function getPizzaCharacteristicWithData(req, res) {
+    const { mass, size } = req.body
+    try {
+        const pizzaCharacteristic = findOrCreatedPizzaCharacteristic({ mass, size })
+        res.status(200).json(pizzaCharacteristic)
+    } catch(error) {
+        res.status(400).json({message: error.message})
+    }
+}
+
 async function addPizzaCharacteristics(req, res) {
     const { many } = req.query
     try {
         if (many && JSON.parse(many)) {
             const listPizzaCharacteristics = req.body
             const newListPizzaCharacteristics = listPizzaCharacteristics.map(async (pizzaCharacteristics) => {
-                const { sizeId, masaTypeId, cost } = pizzaCharacteristics
-                const newPizzaCharacteristics = await PizzaCharacteristic.create({
-                    cost,
-                    costIVA: cost,
-                    sizeId,
-                    masaTypeId
-                })
-                if (masaTypeId && sizeId) {
-                    await newPizzaCharacteristics.setPizzaMass(masaTypeId)
-                    await newPizzaCharacteristics.setPizzaSize(sizeId)
-                }
-                return newPizzaCharacteristics
+                // create new pizza characteristics
+                const { size, mass } = pizzaCharacteristics
+                const newPizzaCharacteristic = await makePizzaCharacteristics({ size, mass })
+                return newPizzaCharacteristic
             })
+
             return Promise.all(newListPizzaCharacteristics)
                 .then(result => res.status(200).json(result))
                 .catch(error => {throw new Error({message: error.message})})
         }
 
-        const { sizeId, masaTypeId, cost} = req.body
-        const newPizzaCharacteristic = await PizzaCharacteristic.create({
-            cost,
-            costIVA: cost,
-            sizeId,
-            masaTypeId
-        })
-        await newPizzaCharacteristic.setPizzaSize(sizeId)
-        await newPizzaCharacteristic.setPizzaMass(masaTypeId)
+        const { size, mass } = req.body
+        // create new pizza characteristics
+        const newPizzaCharacteristic = await makePizzaCharacteristics({ size, mass })
+
         res.status(200).json(newPizzaCharacteristic)
     } catch(error) {
-        const {message, parent} = error
-        res.status(400).json({message, parent: parent?.message})
+        const { message } = error
+        res.status(400).json({ message })
     }
 }
 
@@ -88,7 +194,10 @@ async function removePizzaCharacteristics(req, res) {
 }
 
 module.exports = {
-    getAllPizzaCharacteristics,
+    getPizzaCharacteristics,
+    getPizzaCharacteristicWithData,
     addPizzaCharacteristics,
-    removePizzaCharacteristics
+    removePizzaCharacteristics,
+    findOrCreatedPizzaCharacteristic,
+    findPizzaCharacteristic
 }

@@ -3,8 +3,7 @@
 import ButtonGroup from '@mui/material/ButtonGroup'
 import Button from '@mui/material/Button'
 
-function ButtonGroupPizza({ handleClick, size }) {
-
+function ButtonGroupPizza({ handleClick, size, listSizes }) {
     return (
         <ButtonGroup
             size='large'
@@ -17,33 +16,36 @@ function ButtonGroupPizza({ handleClick, size }) {
         >
             <Button
                 onClick={handleClick}
-                value={'12"'}
-                sx={size === '12"'
+                disabled={!listSizes.includes('30cm')}
+                value={'30cm'}
+                sx={size === '30cm'
                     ? {
                         backgroundColor: 'rgb(28, 58, 93)'
                     } : {}}
             >
-                {'12"'}
+                {'30 cm'}
             </Button>
             <Button
                 onClick={handleClick}
-                value={'14"'}
-                sx={size === '14"'
+                disabled={!listSizes.includes('45cm')}
+                value={'45cm'}
+                sx={size === '45cm'
                     ? {
                         backgroundColor: 'rgb(28, 58, 93)'
                     } : {}}
             >
-                {'14"'}
+                {'45 cm'}
             </Button>
             <Button
                 onClick={handleClick}
-                value={'16"'}
-                sx={size === '16"'
+                disabled={!listSizes.includes('60cm')}
+                value={'60cm'}
+                sx={size === '60cm'
                     ? {
                         backgroundColor: 'rgb(28, 58, 93)'
                     } : {}}
             >
-                {'16"'}
+                {'60 cm'}
             </Button>
             {/* <Button onClick={handleSize} value={'18"'}>{'18"'}</Button> */}
         </ButtonGroup>

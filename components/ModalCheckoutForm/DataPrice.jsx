@@ -6,6 +6,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
+import CrossText from '@/components/CrossText/CrossText'
 
 function DataPrice({ orders, payment_method, checkout }) {
     return (
@@ -169,7 +170,7 @@ function DataPrice({ orders, payment_method, checkout }) {
                         payment_method === 'card' ?
                             (
                                 // `${checkout.totalClient}`
-                                `${ Number(checkout.commissionIVA) + Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
+                                `${ Math.round((Number(checkout.commissionIVA) + Number(checkout.commissionStripe) + Number(checkout.totalPriceCar))*100)/100 }`
                             ) : (
                                 `${ Number(checkout.commissionIVA) + Number(checkout.totalPriceCar) }`
                             )
