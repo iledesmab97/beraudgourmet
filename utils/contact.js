@@ -1,5 +1,4 @@
 // export const phoneNumber = '+5552954221'
-// export const phoneNumber = '+584122934232'
 export const phoneNumber = '+584169015765'
 export const text1 = 'Quieres comunicarte con nosotros para dejarnos alguna sugerencia'
 export const text2 = 'Saludos, me gustaría hacer un pedido de: '

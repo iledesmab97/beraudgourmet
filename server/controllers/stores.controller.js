@@ -48,8 +48,27 @@ async function removeStore(req, res) {
     }
 }
 
+async function updateStore(req, res) {
+    const { id } = req.params
+    const { property, value } = req.body
+    try {
+        const storeUpdated = await Store.update({
+            [property]: value
+        }, {
+            where: {
+                id
+            }
+        })
+        if (!storeUpdated[0]) throw new Error('La tienda indicada no existe')
+        res.status(200).json(storeUpdated)
+    } catch(error) {
+        res.status(400).json({message: error.message})
+    }
+}
+
 module.exports={
     getAllStores,
     addStores,
-    removeStore
+    removeStore,
+    updateStore
 }

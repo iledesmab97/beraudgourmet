@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import useGetPlace from './useGetPlace'
+import useGetStoreList from '@/hooks/useGetStoreList'
 import typeLocations from '@/typePlaces.json'
 
 function useHandlePlace() {
 
+    const { storeList } = useGetStoreList()
     const {place} = useGetPlace()
-    const [inputsStore, setInputsStore] = useState('Ciudad de México')
+    const [inputsStore, setInputsStore] = useState(() => { return Object.keys(storeList)[0] })
     const [typeLocation, setTypeLocation] = useState(() => {
         if (place.inputsHome) return typeLocations[place.inputsHome.type.name]
         return typeLocations.home
@@ -31,6 +33,10 @@ function useHandlePlace() {
             withinLimitSaved: null
         }
     })
+
+    useEffect(() => {
+        setInputsStore(Object.keys(storeList)[0])
+    }, [storeList])
 
     useEffect(() => {
         if (place.inputsHome && (place.inputsHome.inputAddress !== inputsHome?.inputAddress)) setInputsHome(place.inputsHome)
