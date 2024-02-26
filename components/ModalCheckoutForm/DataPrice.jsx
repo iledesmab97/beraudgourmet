@@ -45,14 +45,20 @@ function DataPrice({ orders, payment_method, checkout }) {
                                             }
                                             secondary={
                                             <>
-                                                {`${order.mass}${Object.keys(order.extra).map(ingredient => {
-                                                return `, ${order.extra[ingredient]}x ${ingredient}`
-                                                }).join('')
-                                                }`}
                                                 {
-                                                order.ingredientsModal.map((ingredient, index) => (
-                                                    <Box key={ingredient + index} component={'label'}>, <CrossText component={'span'}>{ingredient}</CrossText></Box>
-                                                ))
+                                                    `${order.mass}${Object.keys(order.extra).map(ingredient => {
+                                                        return `, ${order.extra[ingredient]}x ${ingredient}`
+                                                    }).join('')
+                                                    }`
+                                                }
+                                                {
+                                                    order.ingredientsModal.map((ingredient, index) => (
+                                                        <Box
+                                                            key={ingredient + index}
+                                                            component={'label'}
+                                                        >, <CrossText component={'span'}>{ingredient}</CrossText>
+                                                        </Box>
+                                                    ))
                                                 }
                                             </>
                                             }
@@ -73,7 +79,7 @@ function DataPrice({ orders, payment_method, checkout }) {
                                 }}
                             >
                                 <Typography>
-                                    Total Carrito: 
+                                    {`Total Carrito (MXN) incl. $${checkout.commissionIVA} IVA`} 
                                 </Typography>
                                 <Typography>
                                     ${checkout.totalPriceCar}
@@ -87,12 +93,6 @@ function DataPrice({ orders, payment_method, checkout }) {
                                     justifyContent: 'space-between'
                                 }}
                             >
-                                <Typography>
-                                    IVA: 
-                                </Typography>
-                                <Typography>
-                                    ${checkout.commissionIVA}
-                                </Typography>
                             </ListItem>
                             {
                                 payment_method === 'card' && (
@@ -166,13 +166,22 @@ function DataPrice({ orders, payment_method, checkout }) {
                 </Typography>
                 {/* <Typography variant='button' display='block' gutterBottom> */}
                 <Typography>
-                    {
+                    {/* {
                         payment_method === 'card' ?
                             (
                                 // `${checkout.totalClient}`
                                 `${ Math.round((Number(checkout.commissionIVA) + Number(checkout.commissionStripe) + Number(checkout.totalPriceCar))*100)/100 }`
                             ) : (
                                 `${ Number(checkout.commissionIVA) + Number(checkout.totalPriceCar) }`
+                            )
+                    } */}
+                    {
+                        payment_method === 'card' ?
+                            (
+                                // `${checkout.totalClient}`
+                                `${ Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
+                            ) : (
+                                `${ Number(checkout.totalPriceCar) }`
                             )
                     }
                 </Typography>

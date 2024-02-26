@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
 import useGetProducts from '@/hooks/useGetProducts'
 import dayjs from 'dayjs'
+import { contactUs } from '@/utils/contact'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -72,6 +73,16 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         bank: false
     })
 
+    const textOrderToWhatsapp = orders.map(order => {
+        const primrayData = order.quantity + ' x ' + order.name + ` (${order.size})`
+        const extraIngredients = `${order.mass}${Object.keys(order.extra).map(ingredient => {
+            return `, ${order.extra[ingredient]}x ${ingredient}`
+            }).join('')
+            }`
+        const ingredientsOut = order.ingredientsModal.map( ingredient => `~${ingredient}~` ).join(', ')
+        return primrayData + (extraIngredients ? ', ' : '') + extraIngredients + (ingredientsOut ? ', ' : '') + ingredientsOut
+    }).join("; ")
+
     function handleOpenTooltip(paymentMethod) {
         setOpenTooltip(prevState => ({
             ...prevState,
@@ -114,6 +125,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
 
     async function handleSubmit(event) {
         event.preventDefault()
+
+        // Confirmar los datos del usuario
+        if(!user.numberPhone)
+        return alert('Debes agregar un número telefónico antes de poder realizar un pago')
 
         if (!stripe || !elements) return 
         setIsLoading(true)
@@ -274,7 +289,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                             </Box>
                                             <Button
                                                 variant='contained'
-                                                onClick={handleSubmit}
+                                                onClick={() => contactUs({context: 'transfer', order: textOrderToWhatsapp })}
                                             >
                                                 {
                                                     'Contactar con nostros'
