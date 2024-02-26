@@ -1,3 +1,4 @@
+import { twoDecimals } from '@/utils/priceCar'
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function fetchPizzas() {
@@ -28,7 +29,7 @@ export function fetchPizzaCosts({type}) {
           const newPizzaCost = {
             id,
             cost,
-            costIVA,
+            costIVA: twoDecimals(costIVA),
             pizza,
             pizzaCharacteristics
           }
