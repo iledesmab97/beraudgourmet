@@ -64,7 +64,7 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                 sx={{
                     width:'100%',
                     height: 370,
-                    overflow: 'scroll'
+                    overflowY: 'auto'
                 }}
             >
                 <Typography
@@ -78,9 +78,9 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                 <List
                     sx={{
                         width: '100%',
+                        p: '0px',
                         position: 'static',
-                        height: '450px',
-                        overflowY: 'scroll'
+                        overflow: 'hidden'
                     }}
                 >
                     {
