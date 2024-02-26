@@ -34,7 +34,7 @@ export default function HomeDelivery({
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     gap: 2,
-                    overflow: 'scroll',
+                    // overflow: 'scroll',
                     pr: 1
                 }}
             >    
