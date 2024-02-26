@@ -4,9 +4,7 @@ import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import useHandlePlace from '@/hooks/useHandlePlace'
 import useGetStoreList from '@/hooks/useGetStoreList'
-import { getAllStores } from '@/services/storeApi'
-import { getAllSchedules } from '@/services/scheduleApi'
-import { isOpen } from '@/utils/hours'
+import { updateStores } from '@/services/storeApi'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -34,31 +32,7 @@ const style = {
   alignItems: 'center',
   justifyContent: 'flex-start',
   gap: 2,
-};
-
-async function updateStores() {
-  const scheduels = await getAllSchedules()
-  const storesList = await getAllStores()
-  const closeTime = scheduels[0].scheduleHoursList[0].endTime
-  const openTime = scheduels[0].scheduleHoursList[0].startTime
-  const pickUpSchedule = scheduels[1].scheduleHoursList.map(schedule => ({
-    days: schedule.days,
-    hours: `${schedule.startTime} - ${schedule.endTime}`
-  }))
-  const deliverySchedule = scheduels[2].scheduleHoursList.map(schedule => ({
-    days: schedule.days,
-    hours: `${schedule.startTime} - ${schedule.endTime}`
-  }))
-  const storesWithSchedulsList = storesList.map(store => ({
-    ...store,
-    closeTime,
-    openTime,
-    pickUpSchedule,
-    deliverySchedule,
-    open: isOpen({closeTime, openTime})
-  }))
-  return storesWithSchedulsList
-} 
+}; 
 
 export default function ModalStoreDelivery() {
 
@@ -144,13 +118,15 @@ export default function ModalStoreDelivery() {
           </ButtonGroup>
           {
             delivery === 'store'
-            ? <StorePickup
+            ?
+              <StorePickup
                 storeList={storeList}
                 inputsStore={inputsStore}
                 handleInputsStore={handleInputsStore}
                 handleCloseModal={handleCloseModal}
               />
-            : <HomeDelivery
+            : 
+              <HomeDelivery
                 handleInputsAddress={handleInputsAddress}
                 inputsHome={inputsHome}
                 typeLocation={typeLocation}
