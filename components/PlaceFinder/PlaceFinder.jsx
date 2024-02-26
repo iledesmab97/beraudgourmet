@@ -75,6 +75,8 @@ function PlaceFinder({
             {...params}
             // waitTime={500}
             label='Place'
+            size='small'
+            margin='dense'
             error={withinLimit === null ? false : !withinLimit}
             helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 15 km. Distancia actual: ${distance} km` } 
           />)}
