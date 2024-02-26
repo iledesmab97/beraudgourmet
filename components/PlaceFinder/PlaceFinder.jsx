@@ -47,38 +47,38 @@ function PlaceFinder({
 
   return (
     <>
-    <Autocomplete
-      fullWidth
-      disablePortal
-      id='autocomplete-PlaceFinder'
-      // noOptionsText={null}
-      options={ address ? data : []}
-      getOptionLabel={option => option.description ? option.description : option}
-      renderOption={
-        (props, option) => (
-          <ItemPlace
-            {...props}
-            place={option.description}
-            key={option.description}
-            // onClick={() => {calculateRoute}}
-          />
-      )}
-      value={selectedSuggestion}
-      onChange={handleSelect}
-      inputValue={address}
-      onInputChange={handleInputChange}
-      isOptionEqualToValue={(option, value) => {
-        return option.description === value.description
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          // waitTime={500}
-          label='Place'
-          error={withinLimit === null ? false : !withinLimit}
-          helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 15 km. Distancia actual: ${distance} km` } 
-        />)}
-    />
+      <Autocomplete
+        fullWidth
+        disablePortal
+        id='autocomplete-PlaceFinder'
+        // noOptionsText={null}
+        options={ address ? data : []}
+        getOptionLabel={option => option.description ? option.description : option}
+        renderOption={
+          (props, option) => (
+            <ItemPlace
+              {...props}
+              place={option.description}
+              key={option.description}
+              // onClick={() => {calculateRoute}}
+            />
+        )}
+        value={selectedSuggestion}
+        onChange={handleSelect}
+        inputValue={address}
+        onInputChange={handleInputChange}
+        isOptionEqualToValue={(option, value) => {
+          return option.description === value.description
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            // waitTime={500}
+            label='Place'
+            error={withinLimit === null ? false : !withinLimit}
+            helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 15 km. Distancia actual: ${distance} km` } 
+          />)}
+      />
     {/* <GoogleMap center={center} zoom={15} mapContainerStyle={{width: '100%', height: '500px'}}/> */}
     </>
   );
