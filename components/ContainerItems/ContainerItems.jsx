@@ -93,7 +93,7 @@ function ContainerItems () {
           ))
         }
       </Grid>
-      <input type='file' onChange={handleChange} />
+      {/* <input type='file' onChange={handleChange} /> */}
     </Grid>
   )
 }
