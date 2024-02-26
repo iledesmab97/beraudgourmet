@@ -32,7 +32,7 @@ const style = {
   alignItems: 'center',
   justifyContent: 'flex-start',
   gap: 2,
-}; 
+}
 
 export default function ModalStoreDelivery() {
 
