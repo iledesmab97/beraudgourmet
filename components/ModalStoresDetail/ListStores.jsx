@@ -15,7 +15,7 @@ function ListStores({ handleCurrentStoreDetail , place, stores }) {
             xs={4}
             pr={1}
             sx={{
-                overflow: 'scroll',
+                overflowY: 'auto',
                 height: '100%'
             }}
         >
