@@ -1,0 +1,23 @@
+.PrimaryTitle {
+    margin: 0px;
+}
+
+.containerPrimaryTitle {
+    /* border: solid 1px black; */
+    width: fit-content;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.containerPrimaryTitle svg {
+    width: 200px;
+    height: auto;
+    color: #295386;
+}
+
+.containerPrimaryTitle h3 {
+    margin: 0px;
+    color: #4e5762;
+}
