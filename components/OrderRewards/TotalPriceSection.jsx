@@ -47,58 +47,6 @@ function TotalPriceSection() {
                 borderColor: 'divider'
             }}
         >
-            {/* {
-                orders.length
-                ? (
-                    <List>
-                        <ListItem
-                            sx={{
-                                pr: '0px',
-                                pl: '0px',
-                                display: 'flex',
-                                justifyContent: 'space-between'
-                            }}
-                        >
-                            <Typography>
-                                Total Carrito: 
-                            </Typography>
-                            <Typography>
-                                ${prices.totalPriceCar}
-                            </Typography>
-                        </ListItem>
-                        <ListItem
-                            sx={{
-                                pr: '0px',
-                                pl: '0px',
-                                display: 'flex',
-                                justifyContent: 'space-between'
-                            }}
-                        >
-                            <Typography>
-                                Total IVA Stripe:
-                            </Typography>
-                            <Typography>
-                                ${prices.commissionStripe}
-                            </Typography>
-                        </ListItem>
-                        <ListItem
-                            sx={{
-                                pr: '0px',
-                                pl: '0px',
-                                display: 'flex',
-                                justifyContent: 'space-between'
-                            }}
-                        >
-                            <Typography>
-                                Total IVA:
-                            </Typography>
-                            <Typography>
-                                ${prices.IVA}
-                            </Typography>
-                        </ListItem>
-                    </List>
-                ): null
-            } */}
             <Box
                 sx={{
                     pr: '0px',
