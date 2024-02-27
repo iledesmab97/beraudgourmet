@@ -41,8 +41,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const orderItems = orders.map(item => {
         const { size, mass, quantity, ingredientsModal, extra, totalPrice } = item
         return {
-            name: 'pizza',
-            itemType: item.name,
+            name: item.name,
+            itemType: 'pizza',
             size,
             mass,
             quantity,

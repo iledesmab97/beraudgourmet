@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import AppBar from '@mui/material/AppBar'
 import Container from '@mui/material/Container'
@@ -14,6 +16,10 @@ import links from '../NavBar/navbarpaths.json'
 import { scrollToSection } from '@/utils/moveIntoPage'
 
 function Header() {
+
+  const pathname = usePathname()
+  const [subNav, setSubNav] = useState(links.filter((route) => route.path === pathname)[0] ? links.filter((route) => route.path === pathname)[0].subNav : [])
+
   return (
     <AppBar color='default'>
       <Container maxWidth="lg">
@@ -36,11 +42,9 @@ function Header() {
         </Toolbar>
         <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
           {
-            links[0].subNav.map(link => (
+            subNav.map(link => (
               <Link
-                // href={link.path}
                 color='#000'
-                // key={link.title}
                 sx={{textDecoration: 'none', cursor: 'pointer'}}
                 onClick={() => { scrollToSection(link.path, -192) }}
               >

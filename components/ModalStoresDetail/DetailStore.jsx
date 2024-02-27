@@ -25,7 +25,7 @@ export default function DetailStore({ currentStore }) {
             pr={1}
             sx={{
                 height: '100%',
-                overflow: 'scroll'
+                overflowY: 'auto'
             }}
         >
             <Box
