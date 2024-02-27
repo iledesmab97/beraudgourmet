@@ -7,14 +7,12 @@ import DateChoose from '@/components/DateChoose/DateChoose'
 import TimeChoose from '@/components/TimeChoose/TimeChoose'
 
 import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-import ItemPlace from '../PlaceFinder/ItemPlace'
+import PlaceIcon from '@mui/icons-material/Place';
 
 export default function StoreSection () {
 
@@ -89,20 +87,7 @@ export default function StoreSection () {
                   fullWidth
                   variant='contained'
                   onClick={() => {handleOpenModal('storesDetail')}}
-                  startIcon={
-                    <ItemPlace
-                      sx={{
-                        width: '60px',
-                        position: 'absolute',
-                        left: '0px',
-                        top: '0px'
-                      }}
-                    />
-                  }
-                  sx={{
-                    // display: 'flex',
-                    // justifyContent: 'flex-start',
-                  }}
+                  startIcon={<PlaceIcon />}
                 >
                   <Typography>
                     {closerStore.name}
