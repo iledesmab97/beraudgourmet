@@ -15,18 +15,12 @@ const listTabs = [
     'Pendientes'
 ]
 
-function TabBar() {
-
-    const [value, setValue] = useState(0)
-
-    function handleChange(event, newValue) {
-        setValue(newValue)
-    }
+function TabBar({ tabSelected, handleChange }) {
 
     return (
         <Box className={styles.TabsBar}>
             <Tabs
-                value={value}
+                value={tabSelected}
                 onChange={handleChange}
             >
                 {
