@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza } = require('../db')
+const { Order } = require('../db')
 const { getAllOrders, addOrder } = require('../controllers/orders.controller')
 
 const router = Router()
