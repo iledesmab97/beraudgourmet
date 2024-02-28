@@ -1,0 +1,12 @@
+.ToolLateralBar {
+    /* background-color: red; */
+}
+
+.ToolLateralBar h1 {
+    margin: 0px;
+}
+
+.ToolSelected {
+    background-color: red;
+    color: red;
+}
