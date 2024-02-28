@@ -1,5 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { getAllOrders } from '@/services/orderApi'
+
 import TabBar from '@/components/TabBar/TabBar'
 import DataTable from '@/components/DataTable/DataTable'
 
@@ -10,6 +13,23 @@ import Typography from '@mui/material/Typography'
 import styles from './DataPanel.module.css'
 
 function DataPanel() {
+
+    const [tabSelected, setTabSelected] = useState(0)
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        getAllOrders().then(data => updateOrders(data))
+    }, [])
+
+
+    function updateOrders(newListOrders) {
+        setOrders(newListOrders)
+    }
+
+    function handleChange(event, newValue) {
+        setTabSelected(newValue)
+    }
+
     return (
         <Grid
             item
@@ -21,8 +41,8 @@ function DataPanel() {
             >
                 Historial de Ordenes
             </Typography>
-            <TabBar />
-            <DataTable />
+            <TabBar tabSelected={tabSelected} handleChange={handleChange} />
+            <DataTable orders={orders} />
         </Grid>
     )
 }
