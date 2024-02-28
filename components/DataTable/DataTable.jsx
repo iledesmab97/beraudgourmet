@@ -6,37 +6,43 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    orders: [ 'id', 'Nombre', 'Pago','Tiempo restante', 'Tipo', 'Estatus', 'Total', 'Acción' ]
+    orders: [ 'id', 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total(MXS)', 'Acción' ]
 }
 
-function DataTable() {
+function DataTable({ orders }) {
     return (
-        <TableContainer className={styles.DataTable}>
+        <TableContainer className={styles.DataTable} component={Paper}>
             <Table>
                 <TableHead>
                     <TableRow>
                         {
                             tableHeaders.orders.map(column => (
-                                <TableCell>{column}</TableCell>
+                                <TableCell align='center'>{column}</TableCell>
                             ))          
                         }
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
-                        <TableCell>45612</TableCell>
-                        <TableCell>Carlos González</TableCell>
-                        <TableCell>Tarjeta de crédito</TableCell>
-                        <TableCell>2 dias</TableCell>
-                        <TableCell>Delivery</TableCell>
-                        <TableCell>Pendiente</TableCell>
-                        <TableCell>170</TableCell>
-                        <TableCell>...</TableCell>
-                    </TableRow>
+                    {
+                        orders.map(order => (
+                            <TableRow>
+                                <TableCell align='center'>{order.id}</TableCell>
+                                <TableCell align='center'>{order.user.name}</TableCell>
+                                <TableCell align='center'>{order.user.phoneNumber}</TableCell>
+                                <TableCell align='center'>{order.StripeId ? 'Stripe' : 'Transferencia' }</TableCell>
+                                <TableCell align='center'>{order.deliveryDate}</TableCell>
+                                <TableCell align='center'>Delivery</TableCell>
+                                <TableCell align='center'>Pendiente</TableCell>
+                                <TableCell align='center'>{order.totalCost}</TableCell>
+                                <TableCell align='center'>...</TableCell>
+                            </TableRow>
+                        ))
+                    }
                 </TableBody>
             </Table>
         </TableContainer>
