@@ -24,7 +24,6 @@ function ToolLateralBar({ toolSelected }) {
         <Grid
             item xs={3}
             className={styles.ToolLateralBar}
-            bgcolor={'background.paper'}
         >
             <List>
                 {
