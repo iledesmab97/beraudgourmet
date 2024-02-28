@@ -1,5 +1,7 @@
 body {
-  padding-top: 192px;
+  display: flex;
+  flex-direction: column;
+  /* padding-top: 192px; */
 }
 
 /* .main {

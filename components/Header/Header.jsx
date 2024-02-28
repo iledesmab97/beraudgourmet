@@ -21,38 +21,44 @@ function Header() {
   const [subNav, setSubNav] = useState(links.filter((route) => route.path === pathname)[0] ? links.filter((route) => route.path === pathname)[0].subNav : [])
 
   return (
-    <AppBar color='default'>
+    <AppBar color='default' sx={{ position: 'relative'}}>
       <Container maxWidth="lg">
         <Toolbar sx={{borderBottom: 1, borderColor: 'divider'}}>
           <Box>
             <Image src={logoBeraund} alt={'logoBeraund'} width={130}/>
           </Box>
         </Toolbar>
-        <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
-          {
-            links.map(link => (
-              <Link
-                href={link.path}
-                color='#000'
-                key={link.title}
-                sx={{textDecoration: 'none'}}
-              ><Typography variant='title'>{link.title}</Typography></Link>
-            ))
-          }
-        </Toolbar>
-        <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
-          {
-            subNav.map(link => (
-              <Link
-                color='#000'
-                sx={{textDecoration: 'none', cursor: 'pointer'}}
-                onClick={() => { scrollToSection(link.path, -192) }}
-              >
-                <Typography variant='title'>{link.title}</Typography>
-              </Link>
-            ))
-          }
-        </Toolbar>
+        {
+          pathname !== '/admin' ? (
+            <>
+              <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
+                {
+                  links.map(link => (
+                    <Link
+                      href={link.path}
+                      color='#000'
+                      key={link.title}
+                      sx={{textDecoration: 'none'}}
+                    ><Typography variant='title'>{link.title}</Typography></Link>
+                  ))
+                }
+              </Toolbar>
+              <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
+                {
+                  subNav.map(link => (
+                    <Link
+                      color='#000'
+                      sx={{textDecoration: 'none', cursor: 'pointer'}}
+                      onClick={() => { scrollToSection(link.path, -192) }}
+                    >
+                      <Typography variant='title'>{link.title}</Typography>
+                    </Link>
+                  ))
+                }
+              </Toolbar>
+            </>
+          ) : null
+        }
       </Container>
     </AppBar>
   );
