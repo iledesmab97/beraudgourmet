@@ -1,10 +1,31 @@
-const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza } = require('../db')
+const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza, User, Store } = require('../db')
 const { findPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
 
 async function getAllOrders(req, res) {
     try {
         const allOrders = await Order.findAll()
-        res.status(200).json(allOrders)
+        const ordersToReturn = allOrders.map(async (order) => {
+            const {id, totalCost, applicationDate, deliveryDate, StripeId} = order
+            const user = await User.findByPk(order.UserId, {
+                attributes: ['id', 'name', 'phoneNumber']
+            })
+            const store = await Store.findByPk(order.StoreId, {
+                attributes: ['id', 'name']
+            })
+            const newOrder = {
+                id,
+                totalCost,
+                applicationDate,
+                deliveryDate,
+                StripeId,
+                user,
+                store
+            }
+            return newOrder
+        })
+        return Promise.all(ordersToReturn)
+            .then(result => res.status(200).json(result))
+            .catch(error => {throw new Error({message: error.message})})
     } catch(error) {
         res.status(400).json({message: error.message})
     }
