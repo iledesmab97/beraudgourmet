@@ -26,6 +26,19 @@ function Order(database) {
         StripeId: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        paymentMethod: {
+            type: DataTypes.STRING
+        },
+        delivery: {
+            type: DataTypes.BOOLEAN
+        },
+        closed: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        paid: {
+            type: DataTypes.BOOLEAN
         }
     }, {
         timestamps: false
