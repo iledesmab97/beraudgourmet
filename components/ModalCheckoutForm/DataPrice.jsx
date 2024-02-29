@@ -85,15 +85,6 @@ function DataPrice({ orders, payment_method, checkout }) {
                                     ${checkout.totalPriceCar}
                                 </Typography>
                             </ListItem>
-                            <ListItem
-                                sx={{
-                                    pr: '0px',
-                                    pl: '0px',
-                                    display: 'flex',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
-                            </ListItem>
                             {
                                 payment_method === 'card' && (
                                     <>
@@ -109,40 +100,9 @@ function DataPrice({ orders, payment_method, checkout }) {
                                                 Comisión Stripe:
                                             </Typography>
                                             <Typography>
-                                                {/* ${ ((Number(checkout.commissionIVA) + Number(checkout.totalPriceCar)) * 0.036 + 3) * ( 1 + 0.16 ) } */}
                                                 ${ checkout.commissionStripe }
                                             </Typography>
                                         </ListItem>
-                                        {/* <ListItem
-                                            sx={{
-                                                pr: '0px',
-                                                pl: '0px',
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}
-                                        >
-                                            <Typography>
-                                                Total IVA Stripe:
-                                            </Typography>
-                                            <Typography>
-                                                ${checkout.commissionStripe}
-                                            </Typography>
-                                        </ListItem>
-                                        <ListItem
-                                            sx={{
-                                                pr: '0px',
-                                                pl: '0px',
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}
-                                        >
-                                            <Typography>
-                                                Total IVA:
-                                            </Typography>
-                                            <Typography>
-                                                ${checkout.IVA}
-                                            </Typography>
-                                        </ListItem> */}
                                     </>
                                 )
                             }
@@ -154,8 +114,6 @@ function DataPrice({ orders, payment_method, checkout }) {
             
             <Box
                 sx={{
-                    // pr: '0px',
-                    // pl: '0px',
                     pt: '8px',
                     display: 'flex',
                     justifyContent: 'space-between'
@@ -164,24 +122,13 @@ function DataPrice({ orders, payment_method, checkout }) {
                 <Typography variant='title'>
                     Total
                 </Typography>
-                {/* <Typography variant='button' display='block' gutterBottom> */}
                 <Typography>
-                    {/* {
-                        payment_method === 'card' ?
-                            (
-                                // `${checkout.totalClient}`
-                                `${ Math.round((Number(checkout.commissionIVA) + Number(checkout.commissionStripe) + Number(checkout.totalPriceCar))*100)/100 }`
-                            ) : (
-                                `${ Number(checkout.commissionIVA) + Number(checkout.totalPriceCar) }`
-                            )
-                    } */}
                     {
                         payment_method === 'card' ?
                             (
-                                // `${checkout.totalClient}`
-                                `${ Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
+                                `$${ Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
                             ) : (
-                                `${ Number(checkout.totalPriceCar) }`
+                                `$${ Number(checkout.totalPriceCar) }`
                             )
                     }
                 </Typography>
