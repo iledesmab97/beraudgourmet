@@ -293,7 +293,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                             </Box>
                                             <Button
                                                 variant='contained'
-                                                onClick={() => contactUs({context: 'transfer', order: textOrderToWhatsapp })}
+                                                onClick={() => contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })}
                                             >
                                                 {
                                                     'Contactar con nostros'
