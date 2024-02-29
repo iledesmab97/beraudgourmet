@@ -32,6 +32,9 @@ const initialState = {
     },
     pay: {
         open: false
+    },
+    userOrders: {
+        open: false
     }
 }
 
