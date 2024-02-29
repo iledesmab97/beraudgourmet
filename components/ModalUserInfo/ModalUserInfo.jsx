@@ -128,6 +128,11 @@ function ModalUserInfo() {
                         ¿Cambiar de correo electrónico?
                     </Button>
                     <Button
+                        onClick={ () => { handleChangeModal('user', 'userOrders') }}
+                    >
+                        Ver historial de ordenes
+                    </Button>
+                    <Button
                         onClick={ () => {}}
                     >
                         Borrar mi cuenta
