@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    orders: [ 'id', 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total(MXS)', 'Acción' ]
+    orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
 }
 
 function DataTable({ orders }) {
@@ -31,7 +31,6 @@ function DataTable({ orders }) {
                     {
                         orders.map(order => (
                             <TableRow>
-                                <TableCell align='center'>{order.id}</TableCell>
                                 <TableCell align='center'>{order.user.name}</TableCell>
                                 <TableCell align='center'>{order.user.phoneNumber}</TableCell>
                                 <TableCell align='center'>{order.StripeId ? 'Stripe' : 'Transferencia' }</TableCell>

@@ -13,7 +13,6 @@ import ModalUserInfo from '@/components/ModalUserInfo/ModalUserInfo'
 import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePassword'
 import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
 import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
-import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { useLoadScript } from "@react-google-maps/api"
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
@@ -59,7 +58,6 @@ function Menu () {
         <ContainerItems />
         <OrderRewards />
       </Grid>
-      <WhatsappButton />
       <ModalChooseProduct />
       <ModalStoreDelivery />
       <ModalDeliveryPlace />

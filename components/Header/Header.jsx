@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import AppBar from '@mui/material/AppBar'
@@ -15,10 +15,26 @@ import links from '../NavBar/navbarpaths.json'
 
 import { scrollToSection } from '@/utils/moveIntoPage'
 
+function getSubNav(currentPath) {
+  const route = links.filter((route) => {
+    return route.path === currentPath
+  })[0]
+  if (route) return route.subNav
+  return []
+}
+
 function Header() {
 
   const pathname = usePathname()
-  const [subNav, setSubNav] = useState(links.filter((route) => route.path === pathname)[0] ? links.filter((route) => route.path === pathname)[0].subNav : [])
+  const [subNav, setSubNav] = useState(getSubNav(pathname))
+
+  useEffect(() => {
+    handleSubNav(getSubNav(pathname))
+  }, [pathname])
+
+  function handleSubNav(newSubNav) {
+    setSubNav(newSubNav)
+  }
 
   return (
     <AppBar color='default' sx={{ position: 'relative'}}>

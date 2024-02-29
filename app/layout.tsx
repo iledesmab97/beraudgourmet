@@ -1,5 +1,6 @@
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import Header from "@/components/Header/Header"
+import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import { Providers } from '../stores/Providers'
 import './global.css'
 
@@ -20,6 +21,7 @@ export default function RootLayout({
           <Providers>
             <Header />
             {children}
+            <WhatsappButton />
           </Providers>
         </body>
       </ThemeRegistry>

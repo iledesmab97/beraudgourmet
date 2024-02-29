@@ -1,6 +1,7 @@
 'use client'
 
 import { phoneNumber, text1 } from '@/utils/contact'
+import { usePathname } from 'next/navigation'
 
 import Image from 'next/image'
 import Box from '@mui/material/Box'
@@ -10,6 +11,11 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp'
 import whatsappImage from '@/public/images/homeimg/logos/whatsapp.svg'
 
 function WhatsappButton() {
+
+    const pathname = usePathname()
+
+    if (pathname === '/admin') return null
+
     return (
         <Fab
             // color='primary'
