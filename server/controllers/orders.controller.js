@@ -33,7 +33,7 @@ async function getAllOrders(req, res) {
 
 async function addOrder(req, res) {
     try {
-        const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList, stripeId } = req.body
+        const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList, stripeId, paid, closed, delivery, paymentMethod } = req.body
 
         // Creo la nueva Orden
         const newOrder = await Order.create({
@@ -44,7 +44,11 @@ async function addOrder(req, res) {
             deliveryDate,
             StoreId: storeId,
             UserId: userId,
-            StripeId: stripeId
+            StripeId: stripeId,
+            paid,
+            closed,
+            delivery,
+            paymentMethod
         })
         console.log('added new Order successfully')
 
