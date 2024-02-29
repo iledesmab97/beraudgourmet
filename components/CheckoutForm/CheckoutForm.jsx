@@ -63,6 +63,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         totalCost: checkout.totalClient,
         applicationDate: dayjs().format('DD/MM/YYYY - hh:mm a'),
         deliveryDate: place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime,
+        delivery: place.inputsHome ? true : false,
         itemsList: orderItems
     }
 
@@ -151,7 +152,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 
             await registerOrder({
                 ...dataOrders,
-                stripeId: paymentIntent.id
+                stripeId: paymentIntent.id,
+                paymentMethod: 'stripe',
+                paid: false,
+
             })
 
             return router.push('/success')
