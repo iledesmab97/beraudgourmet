@@ -7,6 +7,9 @@ function DeliveryInformation(database) {
             primaryKey: true,
             autoIncrement: true
         },
+        address: {
+            type: DataTypes.STRING,
+        },
         typeResidence: {
             type: DataTypes.STRING,
         },
