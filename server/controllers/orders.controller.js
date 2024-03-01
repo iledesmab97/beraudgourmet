@@ -1,16 +1,37 @@
-const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza, User, Store } = require('../db')
+const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza, User, Store, DeliveryInformation } = require('../db')
 const { findPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
+const { Op } = require('sequelize')
+
+async function findAllOrders({userId}) {
+    const orderList = await Order.findAll({
+        include: DeliveryInformation,
+        where: {
+            UserId: userId ? userId : { [Op.ne]: 0}
+        }
+    })
+    return orderList
+}
 
 async function getAllOrders(req, res) {
+    const { userId } = req.params
     try {
-        const allOrders = await Order.findAll()
+        const allOrders = await findAllOrders({userId})
         const ordersToReturn = allOrders.map(async (order) => {
-            const {id, totalCost, applicationDate, deliveryDate, StripeId} = order
+            const {id, totalCost, applicationDate, deliveryDate, StripeId, paymentMethod, delivery, closed, paid} = order
+            // Find the User
             const user = await User.findByPk(order.UserId, {
                 attributes: ['id', 'name', 'phoneNumber']
             })
+            // Find the Store
             const store = await Store.findByPk(order.StoreId, {
                 attributes: ['id', 'name']
+            })
+            // Find the DeliveryInformation
+            const deliveryInformation = await DeliveryInformation.findOne({
+                attributes: { exclude: ['OrderId'] },
+                where: {
+                    OrderId: id
+                }
             })
             const newOrder = {
                 id,
@@ -19,7 +40,12 @@ async function getAllOrders(req, res) {
                 deliveryDate,
                 StripeId,
                 user,
-                store
+                store,
+                paymentMethod,
+                delivery,
+                closed,
+                paid,
+                deliveryInformation
             }
             return newOrder
         })
@@ -33,7 +59,7 @@ async function getAllOrders(req, res) {
 
 async function addOrder(req, res) {
     try {
-        const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList, stripeId, paid, closed, delivery, paymentMethod } = req.body
+        const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList, stripeId, paid, closed, delivery, paymentMethod, deliveryInformation } = req.body
 
         // Creo la nueva Orden
         const newOrder = await Order.create({
@@ -51,6 +77,21 @@ async function addOrder(req, res) {
             paymentMethod
         })
         console.log('added new Order successfully')
+
+        // Agrego la información de delivery
+        if (deliveryInformation) {
+            const { inputAddress, street, city, postalCode, note, type, other } = deliveryInformation
+            const { totalName } = type
+            const newDeliveryInformation = await DeliveryInformation.create({
+                address: inputAddress,
+                typeResidence: totalName,
+                businessOrBuilding: other ? Object.values(other).join(' / ') : '',
+                street: Object.values(street).join(' / '),
+                townOrCity: `${city} / ${postalCode}`,
+                note
+            })
+            await newOrder.setDeliveryInformation(newDeliveryInformation.id)
+        }
 
         // Creo las nuevas Ordenes para los articulos de la orden general
         for (let item of itemsList) {
@@ -139,5 +180,5 @@ async function addOrder(req, res) {
 
 module.exports = {
     getAllOrders,
-    addOrder
+    addOrder,
 }
