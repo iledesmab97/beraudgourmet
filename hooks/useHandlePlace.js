@@ -72,7 +72,7 @@ function useHandlePlace() {
         const newTypeLocation = typeLocations[value]
         setTypeLocation(newTypeLocation)
         const newStreet = {}
-        const newOther = {}
+        let newOther = {}
         newTypeLocation.street.forEach(item => {
             if (inputsHome.street[item.name]) {
                 newStreet[item.name] = inputsHome.street[item.name]
@@ -84,6 +84,8 @@ function useHandlePlace() {
             newTypeLocation.other.inputs.forEach(item => {
                 newOther[item.name] = ''
             })
+        } else {
+            newOther = undefined
         }
         setInputsHome(prevInputsHome => ({
             ...prevInputsHome,
