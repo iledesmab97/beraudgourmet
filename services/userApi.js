@@ -48,3 +48,9 @@ export function verifyProperty(data) {
         .then(res => res.json())
         .then(data => data)
 }
+
+export function getAllOrders(userId) {
+    return fetch(`${PATH_BACK}/orders/${userId}`)
+        .then(res => res.json())
+        .then(data => data)
+}
