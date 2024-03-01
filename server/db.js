@@ -22,7 +22,7 @@ let entries = Object.entries(db.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 db.models = Object.fromEntries(capsEntries)
 
-const { Role, User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders, PizzaCost } = db.models
+const { Role, User, Order, Store, OrderPizza, Pizza, PizzaIngredient, PizzaExtraIngredient, PizzaCharacteristic, PizzaMass, PizzaSize, Schedule, ScheduleHours, ExtraIngredientsxOrderPizza, KindProduct, ItemsxOrder, OtherOrders, PizzaCost, DeliveryInformation } = db.models
 
 // Relación entre usuarios y roles
 Role.hasMany(User)
@@ -109,16 +109,15 @@ PizzaCharacteristic.belongsToMany(Pizza, {
   through: 'PizzaCost'
 })
 
-// Pizza.hasMany(PizzaCost)
-// PizzaCost.belongsTo(Pizza)
-
-// PizzaCharacteristic.hasMany(PizzaCost)
-// PizzaCost.belongsTo(PizzaCharacteristic)
-
 PizzaCost.addScope('primary', {
   attributes: ["PizzaId", "PizzaCharacteristicId"],
   primaryKey: true
 })
+
+// Relación entre DeliveryInformation y la Orden
+
+Order.hasOne(DeliveryInformation)
+DeliveryInformation.belongsTo(Order)
 
 async function initDB() {
     try {

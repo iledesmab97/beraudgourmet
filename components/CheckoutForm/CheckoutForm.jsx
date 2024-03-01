@@ -64,7 +64,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         applicationDate: dayjs().format('DD/MM/YYYY - hh:mm a'),
         deliveryDate: place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime,
         delivery: place.inputsHome ? true : false,
-        itemsList: orderItems
+        itemsList: orderItems,
+        deliveryInformation: place.inputsHome
     }
 
     const [message, setMessage] = useState(null)

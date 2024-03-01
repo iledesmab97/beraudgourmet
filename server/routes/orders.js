@@ -5,6 +5,7 @@ const { getAllOrders, addOrder } = require('../controllers/orders.controller')
 const router = Router()
 
 router.get('/', getAllOrders)
+router.get('/:userId', getAllOrders)
 
 router.post('/', addOrder)
 
