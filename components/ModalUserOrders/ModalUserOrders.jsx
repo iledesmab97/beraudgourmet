@@ -10,14 +10,13 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-
 
 import { useState, useEffect } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 
 import { getAllOrders } from '@/services/userApi'
+import { extractIngredientsOut } from '@/utils/preparingData'
 
 import styles from './ModalUserOrders.module.css'
 
@@ -38,8 +37,6 @@ const style = {
     alignItem: 'center'
 }
 
-const tableHeader = [ 'Pedido', 'Precio ($)', 'Estatus' ]
-
 function ModalUserOrders() {
 
     const { open, handleChangeModal } = useGetModal({ modalType: 'userOrders' })
@@ -58,25 +55,17 @@ function ModalUserOrders() {
         >
             <Box
                 sx={style}
-                // container
-                // direction='column'
-                // // justifyContent='flex-start'
-                // // spacing={1}
-                // alignItems='stretch'
             >
-                <Typography variant='title' sx={{ flexGrow: 1 }} align='center' >Historial de Ordenes</Typography>
-                {/* <Grid
-                    item
-                    // xs={12}
+                <Typography
+                    variant='title'
                     sx={{
-                        display: 'flex',
-                        // flexDirection: 'row',
-                        justifyContent: 'center',
-                        flexGrow: 2
+                        // flexGrow: 1,
+                        mb: 3
                     }}
+                    align='center'
                 >
-                    <Typography variant='title' >Historial de Ordenes</Typography>
-                </Grid> */}
+                    Historial de Ordenes
+                </Typography>
                 <Grid
                     item
                     sx={{
@@ -92,14 +81,14 @@ function ModalUserOrders() {
                                     <TableCell
                                         align='right'
                                         sx={{
-                                            width: '100px'
+                                            width: 'fit-content'
                                         }}
                                     >
                                         Precio($)
                                     </TableCell>
                                     <TableCell
                                         sx={{
-                                            width: '120px'
+                                            width: 'fit-content'
                                         }}
                                     >Estatus</TableCell>
                                 </TableRow>
@@ -107,8 +96,18 @@ function ModalUserOrders() {
                             <TableBody>
                                 {
                                     orders.map( order => (
-                                        <TableRow>
-                                            <TableCell >1 pizza</TableCell>
+                                        <TableRow key={order.id}>
+                                            <TableCell
+                                                dangerouslySetInnerHTML={{
+                                                    __html: order.itemsxOrder.map(item => {
+                                                        const ingredinetsOut = extractIngredientsOut(item.description)
+                                                        if (!ingredinetsOut.length) return item.description
+                                                        const index = item.description.indexOf(', ~')
+                                                        return (
+                                                            item.description.slice(0, index) + ingredinetsOut.map( ingredient => `, <span style="text-decoration: line-through">${ingredient}</span>` ).join('')
+                                                        )
+                                                    }).join('; ')
+                                                }}/>
                                             <TableCell align='right'>{order.totalCost}</TableCell>
                                             <TableCell >{order.closed ? 'Entregado' : 'Pendiente'}</TableCell>
                                         </TableRow>
