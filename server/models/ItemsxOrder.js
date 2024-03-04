@@ -23,6 +23,9 @@ function ItemsxOrder(database) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        description:{
+            type: DataTypes.STRING
+        }
     }, {
         timestamps: false,
         freezeTableName: true
