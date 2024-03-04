@@ -6,6 +6,7 @@ import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react
 import useGetProducts from '@/hooks/useGetProducts'
 import dayjs from 'dayjs'
 import { contactUs } from '@/utils/contact'
+import { descriptionOrder } from '@/utils/preparingData'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -37,7 +38,9 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const stripe = useStripe()
     const elements = useElements()
     const router = useRouter()
-    // const { products } = useGetProducts()
+
+    const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
+
     const orderItems = orders.map(item => {
         const { size, mass, quantity, ingredientsModal, extra, totalPrice } = item
         return {
@@ -52,7 +55,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 quantity: extra[extraIngredient]
             })),
             costItemPerUnit: totalPrice,
-            totalCostByItem: Number(totalPrice) * quantity
+            totalCostByItem: Number(totalPrice) * quantity,
+            description: descriptionOrder(item)
         }
     })
     const dataOrders = {
@@ -74,16 +78,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         card: false,
         bank: false
     })
-
-    const textOrderToWhatsapp = orders.map(order => {
-        const primrayData = order.quantity + ' x ' + order.name + ` (${order.size})`
-        const extraIngredients = `${order.mass}${Object.keys(order.extra).map(ingredient => {
-            return `, ${order.extra[ingredient]}x ${ingredient}`
-            }).join('')
-            }`
-        const ingredientsOut = order.ingredientsModal.map( ingredient => `~${ingredient}~` ).join(', ')
-        return primrayData + (extraIngredients ? ', ' : '') + extraIngredients + (ingredientsOut ? ', ' : '') + ingredientsOut
-    }).join("; ")
 
     function handleOpenTooltip(paymentMethod) {
         setOpenTooltip(prevState => ({

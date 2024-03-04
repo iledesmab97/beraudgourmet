@@ -50,7 +50,7 @@ export function verifyProperty(data) {
 }
 
 export function getAllOrders(userId) {
-    return fetch(`${PATH_BACK}/orders/${userId}`)
+    return fetch(`${PATH_BACK}/orders/${userId}`, { cache: 'no-store' })
         .then(res => res.json())
         .then(data => data)
 }

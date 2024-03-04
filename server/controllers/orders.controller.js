@@ -33,6 +33,13 @@ async function getAllOrders(req, res) {
                     OrderId: id
                 }
             })
+            // Find Item by Order
+            const itemsxOrder = await ItemsxOrder.findAll({
+                attributes: { exclude: ['OrderId'] },
+                where: {
+                    OrderId: id
+                }
+            })
             const newOrder = {
                 id,
                 totalCost,
@@ -45,7 +52,8 @@ async function getAllOrders(req, res) {
                 delivery,
                 closed,
                 paid,
-                deliveryInformation
+                deliveryInformation,
+                itemsxOrder
             }
             return newOrder
         })
@@ -95,7 +103,7 @@ async function addOrder(req, res) {
 
         // Creo las nuevas Ordenes para los articulos de la orden general
         for (let item of itemsList) {
-            const { name, itemType, quantity } = item
+            const { name, itemType, quantity, description } = item
             switch (itemType) {
                 case 'pizza': {
                     const { size, mass, ingredientsOut, extraIngredients, costItemPerUnit, totalCostByItem } = item
@@ -153,13 +161,14 @@ async function addOrder(req, res) {
                         }
                     }
                     console.log('added extraIngredients to OrderPizza successfully')
+                    
                     // Añado la información a la tabla de ItemsxOrder
-
                     const newItemxOrder = await ItemsxOrder.create({
                         quantity,
                         costPerUnity: costItemPerUnit,
                         totalCostByItem,
-                        OrderItemId: newOrderPizza.id
+                        OrderItemId: newOrderPizza.id,
+                        description
                     })
                     await newItemxOrder.setOrder(newOrder.id)
                     await newItemxOrder.setKindProduct(1)
