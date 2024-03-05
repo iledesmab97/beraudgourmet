@@ -69,41 +69,14 @@ async function addOrder(req, res) {
     try {
         const { userId, storeId, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, itemsList, stripeId, paid, closed, delivery, paymentMethod, deliveryInformation } = req.body
 
-        // Creo la nueva Orden
-        const newOrder = await Order.create({
-            totalCostByItems,
-            commissions,
-            totalCost,
-            applicationDate,
-            deliveryDate,
-            StoreId: storeId,
-            UserId: userId,
-            StripeId: stripeId,
-            paid,
-            closed,
-            delivery,
-            paymentMethod
-        })
-        console.log('added new Order successfully')
-
-        // Agrego la información de delivery
-        if (deliveryInformation) {
-            const { inputAddress, street, city, postalCode, note, type, other } = deliveryInformation
-            const { totalName } = type
-            const newDeliveryInformation = await DeliveryInformation.create({
-                address: inputAddress,
-                typeResidence: totalName,
-                businessOrBuilding: other ? Object.values(other).join(' / ') : '',
-                street: Object.values(street).join(' / '),
-                townOrCity: `${city} / ${postalCode}`,
-                note
-            })
-            await newOrder.setDeliveryInformation(newDeliveryInformation.id)
-        }
+        const listItemsOrderId = []
 
         // Creo las nuevas Ordenes para los articulos de la orden general
         for (let item of itemsList) {
             const { name, itemType, quantity, description } = item
+
+            if (!description) throw new Error('Description can not be null')
+
             switch (itemType) {
                 case 'pizza': {
                     const { size, mass, ingredientsOut, extraIngredients, costItemPerUnit, totalCostByItem } = item
@@ -128,6 +101,7 @@ async function addOrder(req, res) {
     
                     // add ingredients out
                     if (ingredientsOut) {
+                        const listIngredinetsOutId = []
                         for (let ingredient of ingredientsOut) {
                             const [ingredientsSelected, created] = await PizzaIngredient.findOrCreate({
                                 attributes: ['id'],
@@ -136,22 +110,29 @@ async function addOrder(req, res) {
                                 },
                                 defaults: {}
                             })
-                            newOrderPizza.addPizzaIngredient([ingredientsSelected.id])
+                            listIngredinetsOutId.push(ingredientsSelected.id)
                         }
+                        await newOrderPizza.addPizzaIngredient(listIngredinetsOutId)
+                        console.log('added ingredietsOut to OrderPizza successfully')
                     }
-                    console.log('added ingredietsOut to OrderPizza successfully')
     
                     // add extra ingredients
                     if (extraIngredients) {
                         const extraIngredientsListName = extraIngredients.map(ingredient => ingredient.name)
-                        const extraIngredientsList = await PizzaExtraIngredient.findAll({
-                            where: {
-                                name: extraIngredientsListName
-                            }
-                        })
-                        for (let i=0; i < extraIngredientsList.length; i++) {
-                            const { id, cost } = extraIngredientsList[i]
-                            const { quantity } = extraIngredients[i]
+                        const listExtraIngredients = []
+                        for (let i = 0; i < extraIngredientsListName.length; i++ ) {
+                            const extraIngredient = await PizzaExtraIngredient.findOne({
+                                where: {
+                                    name: extraIngredientsListName[i]
+                                }
+                            })
+                            listExtraIngredients.push({
+                                ...extraIngredient.dataValues,
+                                quantity: extraIngredients[i].quantity
+                            })
+                        }
+                        for (let extraIngredient of listExtraIngredients) {
+                            const { id, cost, quantity } = extraIngredient
                             await newOrderPizza.addPizzaExtraIngredient(id, {
                                 through: {
                                     quantity,
@@ -159,8 +140,8 @@ async function addOrder(req, res) {
                                 }
                             })
                         }
+                        console.log('added extraIngredients to OrderPizza successfully')
                     }
-                    console.log('added extraIngredients to OrderPizza successfully')
                     
                     // Añado la información a la tabla de ItemsxOrder
                     const newItemxOrder = await ItemsxOrder.create({
@@ -170,16 +151,51 @@ async function addOrder(req, res) {
                         OrderItemId: newOrderPizza.id,
                         description
                     })
-                    await newItemxOrder.setOrder(newOrder.id)
+                    // await newItemxOrder.setOrder(newOrder.id)
                     await newItemxOrder.setKindProduct(1)
+                    listItemsOrderId.push(newItemxOrder.id)
                     console.log('added new ItemsxOrder successfully')
                 }
                 default: {
                     continue
                 }
             }
-
         }
+
+        // Creo la nueva Orden
+        const newOrder = await Order.create({
+            totalCostByItems,
+            commissions,
+            totalCost,
+            applicationDate,
+            deliveryDate,
+            StoreId: storeId,
+            UserId: userId,
+            StripeId: stripeId,
+            paid,
+            closed,
+            delivery,
+            paymentMethod
+        })
+        await newOrder.addItemsxOrder(listItemsOrderId)
+        console.log('added new Order successfully')
+
+        // Agrego la información de delivery
+        if (deliveryInformation) {
+            const { inputAddress, street, city, postalCode, note, type, other } = deliveryInformation
+            const { totalName } = type
+            const newDeliveryInformation = await DeliveryInformation.create({
+                address: inputAddress,
+                typeResidence: totalName,
+                businessOrBuilding: other ? Object.values(other).join(' / ') : '',
+                street: Object.values(street).join(' / '),
+                townOrCity: `${city} / ${postalCode}`,
+                note
+            })
+            await newOrder.setDeliveryInformation(newDeliveryInformation.id)
+            console.log('added delivery information successfully')
+        }
+
         return res.status(200).json(newOrder)
     } catch(error) {
         const {message, parent} = error
