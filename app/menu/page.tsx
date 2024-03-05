@@ -53,8 +53,10 @@ function Menu () {
     const userLoged = lookingForUserLoged(handleAddUser)
     if (userLoged) {
       const modal = modalSaved()
-      handleOpenModal(modal)
-      localStorage.removeItem('modalToOpen')
+      if (modal) {
+        handleOpenModal(modal)
+        localStorage.removeItem('modalToOpen')
+      }
     }
   }, [])
 
