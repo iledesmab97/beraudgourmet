@@ -42,7 +42,7 @@ function DataPanel() {
                 Historial de Ordenes
             </Typography>
             <TabBar tabSelected={tabSelected} handleChange={handleChange} />
-            <DataTable orders={orders} />
+            <DataTable orders={orders} updateOrders={updateOrders} />
         </Grid>
     )
 }
