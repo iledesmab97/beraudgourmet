@@ -9,6 +9,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 16px;
+}
+
+.containerTitles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .containerPrimaryTitle svg {

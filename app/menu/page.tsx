@@ -19,17 +19,21 @@ import { useLoadScript } from "@react-google-maps/api"
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
 import useGetUser from '@/hooks/useGetUser';
+import useGetModal from '@/hooks/useGetModal'
 import {userDataFromBackToFront} from '@/utils/preparingData'
+import { modalSaved } from '@/utils/modal'
+
 
 function lookingForUserLoged(updateUser){
   const tokenUser = Cookies.get('tokenUser')
-  if (!tokenUser) return
+  if (!tokenUser) return false
   try {
     const dataUser = jwt.decode(tokenUser)
     const userDataFront = userDataFromBackToFront(dataUser)
-    return updateUser(userDataFront)
+    updateUser(userDataFront)
+    return true
   } catch(error) {
-    return console.log('error:', error.message)
+    return alert('error:', error.message)
   }
 }
 
@@ -43,9 +47,15 @@ function Menu () {
     libraries: ['places'],
   });
   const { handleAddUser } = useGetUser()
+  const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
   useEffect(() => {
-    lookingForUserLoged(handleAddUser)
+    const userLoged = lookingForUserLoged(handleAddUser)
+    if (userLoged) {
+      const modal = modalSaved()
+      handleOpenModal(modal)
+      localStorage.removeItem('modalToOpen')
+    }
   }, [])
 
   return (
