@@ -28,17 +28,23 @@ function Order(database) {
             allowNull: false
         },
         paymentMethod: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'transfer',
         },
         delivery: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false,
         },
         closed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
         paid: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         }
     }, {
         timestamps: false

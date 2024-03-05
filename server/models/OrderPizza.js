@@ -16,7 +16,8 @@ function OrderPizza(database) {
             allowNull: false
         },
         quantity: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
     }, {
         timestamps: false

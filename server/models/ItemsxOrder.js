@@ -24,7 +24,8 @@ function ItemsxOrder(database) {
             allowNull: false
         },
         description:{
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false
         }
     }, {
         timestamps: false,
