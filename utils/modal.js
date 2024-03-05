@@ -12,3 +12,11 @@ export function showScrollPosition (contenedor) {
     const content = document.querySelector(contenedor)
     return {vertical: content.scrollTop}
 }
+
+export function saveModal(modal) {
+    localStorage.setItem('modalToOpen', modal)
+}
+
+export function modalSaved() {
+    return localStorage.getItem('modalToOpen')
+}
