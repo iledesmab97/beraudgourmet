@@ -203,7 +203,29 @@ async function addOrder(req, res) {
     }
 }
 
+async function changeProperty(req, res) {
+    const { id } = req.params
+    const { property, value } = req.body
+    console.log('id:', id, 'property:', property, 'value:', value)
+    try {
+        if (!id) throw new Error('The id can not to be undefined or null')
+        const updated = await Order.update({
+            [property]: value
+        }, {
+            where: {
+                id
+            }
+        })
+        if (!updated[0]) throw new Error(`There is not order with id = ${id}`)
+        return res.status(200).json(`The order with id = ${id} has been updated successfully`)
+    } catch(error) {
+        const { message } = error
+        return res.status(400).json({ message })
+    }
+}
+
 module.exports = {
     getAllOrders,
     addOrder,
+    changeProperty
 }

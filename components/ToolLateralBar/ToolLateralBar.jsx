@@ -28,7 +28,7 @@ function ToolLateralBar({ toolSelected }) {
             <List>
                 {
                     listTools.map(tool => (
-                        <ListItem >
+                        <ListItem key={tool} >
                             <ListItemButton
                                 selected={ toolSelected === tool }
                                 disabled={ toolSelected === tool }
