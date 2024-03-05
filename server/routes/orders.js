@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const { Order } = require('../db')
-const { getAllOrders, addOrder } = require('../controllers/orders.controller')
+const { getAllOrders, addOrder, changeProperty } = require('../controllers/orders.controller')
 
 const router = Router()
 
@@ -21,5 +21,8 @@ router.delete('/', async (req, res) => {
         res.status(400).json({message: error.message})
     }
 })
+
+router.put('/', changeProperty )
+router.put('/:id', changeProperty )
 
 module.exports = router
