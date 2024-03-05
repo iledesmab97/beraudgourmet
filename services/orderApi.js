@@ -8,3 +8,13 @@ export function getAllOrders() {
             return data
         })
 }
+
+export function updateOrder(id, body) {
+    return fetch(`${PATH_BACK}/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-type': 'application/json'},
+        body: JSON.stringify(body),
+    })
+        .then(res => res.json())
+        .then(data => data)
+}
