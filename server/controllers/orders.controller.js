@@ -203,12 +203,21 @@ async function addOrder(req, res) {
     }
 }
 
-async function changeProperty(req, res) {
-    const { id } = req.params
-    const { property, value } = req.body
-    console.log('id:', id, 'property:', property, 'value:', value)
+async function removeOrder(req, res) {
+    const {id} = req.query
     try {
-        if (!id) throw new Error('The id can not to be undefined or null')
+        if (!id) return res.status(300).json({message: 'id can\'t be undefined'})
+        const orderToRemove = await Order.findByPk(id)
+        if (!orderToRemove) return res.status(200).json({message: `order with id:${id} does not exist`})
+        await orderToRemove.destroy()
+        res.status(200).json({message: `order with id:${id} had been removed successfully`})
+    } catch(error) {
+        res.status(400).json({message: error.message})
+    }
+}
+
+async function changePropertiesOrder(id, property, value) {
+    try {
         const updated = await Order.update({
             [property]: value
         }, {
@@ -216,8 +225,20 @@ async function changeProperty(req, res) {
                 id
             }
         })
+        return updated
+    } catch(error) {
+        return {message: error.message}
+    }
+}
+
+async function changeProperty(req, res) {
+    const { id } = req.params
+    const { property, value } = req.body
+    try {
+        if (!id) throw new Error('The id can not to be undefined or null')
+        const updated = await changePropertiesOrder(id, property, value)
         if (!updated[0]) throw new Error(`There is not order with id = ${id}`)
-        return res.status(200).json(`The order with id = ${id} has been updated successfully`)
+        return res.status(200).json({ message: `The order with id = ${id} has been updated successfully`})
     } catch(error) {
         const { message } = error
         return res.status(400).json({ message })
@@ -227,5 +248,7 @@ async function changeProperty(req, res) {
 module.exports = {
     getAllOrders,
     addOrder,
-    changeProperty
+    removeOrder,
+    changeProperty,
+    changePropertiesOrder
 }
