@@ -34,6 +34,8 @@ function DataPanel() {
         <Grid
             item
             xs={9}
+            direction='column'
+            gap={1}
             className={styles.DataPanel}
         >
             <Typography
