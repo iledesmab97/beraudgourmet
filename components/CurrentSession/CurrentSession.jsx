@@ -16,8 +16,10 @@ import useHandleUser from '@/hooks/useHandleUser'
 function CurrentSession() {
 
     const [ anchorEl, setAnchorEl ] = useState(null)
-    const { signOff } = useHandleUser()
+    const { user, signOff } = useHandleUser()
     const router = useRouter()
+
+    if (!user || !user.role || user.role === 'client' ) return
 
     function handleOpenUserMenu(event) {
         setAnchorEl(event.currentTarget)
@@ -28,6 +30,7 @@ function CurrentSession() {
     }
 
     function logOut() {
+        handleCloseUserMenu()
         signOff()
         router.push('/menu')
     }
@@ -48,9 +51,9 @@ function CurrentSession() {
                 }}
             >
                 <CardHeader
-                    avatar={<Avatar>R</Avatar>}
-                    title='Rubén Blades'
-                    subheader='Administrador'
+                    avatar={<Avatar>{user.name[0]}</Avatar>}
+                    title={user.name}
+                    subheader={user.role}
                 />
             </Card>
             <Menu
