@@ -1,5 +1,11 @@
 .DataTable {
     /* border: solid 1px blue; */
+    height: 75%;
+    /* overflow-y: auto; */
+}
+
+.DataTableBody {
+    overflow-y: auto;
 }
 
 .fileInput {
