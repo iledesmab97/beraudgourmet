@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography'
 
 import itemsJSON from '@/menuStore.json'
 
-import { fetchingData, fetchExtraIngredients } from '@/services/products'
+import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -24,16 +24,18 @@ function ContainerItems () {
 
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
   const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
-  const { handleAddExtraIngredinetsList } = useGetExtraIngredients()
+  const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
 
   useEffect(() => {
-    fetchingData().then(data => {
+    if (products && products.pizzas) return
+    getPizzasWithCosts().then(data => {
       handleAddProductsList({
         type: 'pizzas',
         products: data
       })
     })
-    fetchExtraIngredients()
+    if (extraIngredients && Object.keys(extraIngredients).length) return
+    getExtraIngredients()
       .then(data => {
         handleAddExtraIngredinetsList({ extraIngredientsList: data })
       })

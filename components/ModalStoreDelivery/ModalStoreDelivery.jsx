@@ -57,6 +57,7 @@ export default function ModalStoreDelivery() {
   const { storeList, handleAddStoreList } = useGetStoreList()
 
   useEffect(() => {
+    if (storeList && Object.keys(storeList).length) return
     updateStores().then(storeList => {
       handleAddStoreList(storeList)
     })

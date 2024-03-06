@@ -1,7 +1,7 @@
 import { twoDecimals } from '@/utils/priceCar'
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
-export function fetchPizzas() {
+export function getPizzas() {
     return fetch(`${PATH_BACK}/pizzas`)
       .then(response => response.json())
       .then(data => {
@@ -20,7 +20,7 @@ export function fetchPizzas() {
     })
 }
 
-export function fetchPizzaCosts({type}) {
+export function getPizzaCosts({type}) {
     return fetch(`${PATH_BACK}/pizzaCosts`)
       .then(response => response.json())
       .then(data => {
@@ -74,7 +74,7 @@ export function fetchPizzaCosts({type}) {
     })
 }
 
-export async function fetchExtraIngredients() {
+export async function getExtraIngredients() {
     return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
       .then(response => response.json())
       .then(data => {
@@ -91,9 +91,9 @@ export async function fetchExtraIngredients() {
     })
 }
 
-export async function fetchingData() {
-    const pizzasList = await fetchPizzas()
-    const pizzaCharacteristicsList = await fetchPizzaCosts({type: 'object'})
+export async function getPizzasWithCosts() {
+    const pizzasList = await getPizzas()
+    const pizzaCharacteristicsList = await getPizzaCosts({type: 'object'})
     const totalPizzasList = pizzasList.map(pizza => ({
       ...pizza,
       price: pizzaCharacteristicsList[pizza.name]

@@ -189,6 +189,7 @@ function ModalCheckoutForm() {
                                         checkout={checkout}
                                         payment_method={payment_method}
                                         handlePaymentMethod={handlePaymentMethod}
+                                        handleCloseModal={handleCloseModal}
                                     />
                                 </Elements>
                             )

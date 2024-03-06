@@ -33,11 +33,12 @@ async function registerOrder(data) {
         })
 }
 
-export default function CheckoutForm({user, place, orders, checkout, payment_method, handlePaymentMethod}) {
+export default function CheckoutForm({user, place, orders, checkout, payment_method, handlePaymentMethod, handleCloseModal}) {
 
     const stripe = useStripe()
     const elements = useElements()
     const router = useRouter()
+    const firstTime = useRef(true)
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -118,6 +119,16 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         })
 
     }, [stripe])
+
+    useEffect(() => {
+        return () => {
+            if (firstTime.current) {
+                firstTime.current = false
+            } else {
+                handleCloseModal('pay')
+            }
+        }
+    }, [])
 
     async function handleSubmit(event) {
         event.preventDefault()
