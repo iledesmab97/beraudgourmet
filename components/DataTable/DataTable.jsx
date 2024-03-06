@@ -69,7 +69,7 @@ function DataTable({ orders, updateOrders }) {
     return (
         <>
             <TableContainer className={styles.DataTable} component={Paper}>
-                <Table>
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             {
@@ -79,7 +79,7 @@ function DataTable({ orders, updateOrders }) {
                             }
                         </TableRow>
                     </TableHead>
-                    <TableBody>
+                    <TableBody className={styles.DataTableBody}>
                         {
                             orders.map((order) => (
                                 <TableRow key={order.id}>
