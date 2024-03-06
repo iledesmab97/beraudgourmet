@@ -4,6 +4,7 @@ import useDebounce from "./useDebounce"
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
 import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
+import { useRouter } from 'next/navigation'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -95,6 +96,7 @@ function useHandleUser() {
     const lastDataSet = useRef('')
 
     const [currentUser, setCurrentUser] = useState(null)
+    const router = useRouter()
 
     useEffect(() => {
         debounceSetValue(() => {
@@ -130,6 +132,11 @@ function useHandleUser() {
         } else {
             setInputs(initialInputs)
         }
+    }, [user])
+
+    useEffect(() => {
+        if (user.role === 'client' || !user.role) return
+        router.push('/admin')
     }, [user])
 
     function handleChange(event) {

@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import { Typography } from '@mui/material'
+import CurrentSession from '@/components/CurrentSession/CurrentSession'
 
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
 import links from '../NavBar/navbarpaths.json'
@@ -39,10 +40,18 @@ function Header() {
   return (
     <AppBar color='default' sx={{ position: 'relative'}}>
       <Container maxWidth="lg">
-        <Toolbar sx={{borderBottom: 1, borderColor: 'divider'}}>
+        <Toolbar
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
           <Box>
             <Image src={logoBeraund} alt={'logoBeraund'} width={130}/>
           </Box>
+          <CurrentSession />
         </Toolbar>
         {
           pathname !== '/admin' ? (
