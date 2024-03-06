@@ -16,8 +16,6 @@ import itemsJSON from '@/menuStore.json'
 
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 
-const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
-
 // import style from './ContainerItems.module.css'
 
 function ContainerItems () {
@@ -40,18 +38,6 @@ function ContainerItems () {
         handleAddExtraIngredinetsList({ extraIngredientsList: data })
       })
   }, [])
-
-  async function handleChange(event) {
-    const file = event.target.files[0]
-    const formData = new FormData()
-    formData.append('file', file)
-    const response = await fetch(`${PATH_BACK}/pizzas/image`, {
-      method: 'POST',
-      body: formData,
-    })
-    const data = await response.json()
-    console.log('data:', data)
-  }
 
   return (
     <Grid id='Pizza-Section' item xs={12}>
@@ -95,7 +81,6 @@ function ContainerItems () {
           ))
         }
       </Grid>
-      {/* <input type='file' onChange={handleChange} /> */}
     </Grid>
   )
 }
