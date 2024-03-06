@@ -12,10 +12,12 @@ import IconButton from '@mui/material/IconButton'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { updateOrder, getAllOrders } from '@/services/orderApi'
 
 import styles from './DataTable.module.css'
+
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 const tableHeaders = {
     orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
@@ -26,6 +28,7 @@ function DataTable({ orders, updateOrders }) {
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
     const open = Boolean(anchorEl)
+    const fileInput = useRef()
 
     function handleClick(event, order) {
         setAnchorEl(event.currentTarget)
@@ -45,6 +48,23 @@ function DataTable({ orders, updateOrders }) {
         await handleClose()
         getAllOrders().then(data => updateOrders(data))
     }
+
+    async function addUrl() {
+        fileInput.current.click()
+    }
+
+    async function handleFileSelected(event) {
+        const file = event.target.files[0]
+        const formData = new FormData()
+        formData.append('file', file)
+        const response = await fetch(`${PATH_BACK}/pizzas/image/${currentOrder.id}`, {
+          method: 'POST',
+          body: formData,
+        })
+        const data = await response.json()
+        console.log(data.message)
+        handleClose()
+      }
 
     return (
         <>
@@ -94,6 +114,14 @@ function DataTable({ orders, updateOrders }) {
                     onClick={changeStatus}
                 >
                     { currentOrder?.closed ? 'Pendiente' : 'Entregado' }
+                </MenuItem>
+                <MenuItem
+                    onClick={addUrl}
+                >
+                    <>
+                        subir imagen
+                        <input type='file' onChange={handleFileSelected} ref={fileInput} className={styles.fileInput} />
+                    </>
                 </MenuItem>
             </Menu>
         </>

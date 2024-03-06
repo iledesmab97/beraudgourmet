@@ -45,6 +45,9 @@ function Order(database) {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false
+        },
+        url: {
+            type: DataTypes.STRING
         }
     }, {
         timestamps: false
