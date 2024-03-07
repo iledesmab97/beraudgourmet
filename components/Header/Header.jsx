@@ -72,6 +72,7 @@ function Header() {
                 {
                   subNav.map(link => (
                     <Link
+                      key={link.title}
                       color='#000'
                       sx={{textDecoration: 'none', cursor: 'pointer'}}
                       onClick={() => { scrollToSection(link.path, -192) }}
