@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ToolLateralBar from '@/components/ToolLateralBar/ToolLateralBar'
 import DataPanel from '@/components/DataPanel/DataPanel'
 
@@ -9,11 +9,21 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 
+import useGetUser from '@/hooks/useGetUser';
+import { lookingForUserLoged } from '@/services/userApi'
+
 import styles from './page.module.css'
 
 function AdminPlace() {
 
     const [ toolSelected, setToolSelected] = useState('Client')
+    const { handleAddUser } = useGetUser()
+
+    useEffect(() => {
+        const userLoged = lookingForUserLoged()
+        if (!userLoged) return
+        handleAddUser(userLoged)
+    }, [])
 
     return (
         <Container maxWidth='lg'>

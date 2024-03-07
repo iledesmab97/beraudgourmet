@@ -16,26 +16,11 @@ import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 
 import { useLoadScript } from "@react-google-maps/api"
-import Cookies from 'js-cookie'
-import jwt from 'jsonwebtoken'
 import useGetUser from '@/hooks/useGetUser';
 import useGetModal from '@/hooks/useGetModal'
-import {userDataFromBackToFront} from '@/utils/preparingData'
 import { modalSaved } from '@/utils/modal'
+import { lookingForUserLoged } from '@/services/userApi'
 
-
-function lookingForUserLoged(updateUser){
-  const tokenUser = Cookies.get('tokenUser')
-  if (!tokenUser) return false
-  try {
-    const dataUser = jwt.decode(tokenUser)
-    const userDataFront = userDataFromBackToFront(dataUser)
-    updateUser(userDataFront)
-    return true
-  } catch(error) {
-    return alert('error:', error.message)
-  }
-}
 
 function Menu () {
 
@@ -50,13 +35,13 @@ function Menu () {
   const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
   useEffect(() => {
-    const userLoged = lookingForUserLoged(handleAddUser)
-    if (userLoged) {
-      const modal = modalSaved()
-      if (modal) {
-        handleOpenModal(modal)
-        localStorage.removeItem('modalToOpen')
-      }
+    const userLoged = lookingForUserLoged()
+    if (!userLoged) return
+    handleAddUser(userLoged)
+    const modal = modalSaved()
+    if (modal) {
+      handleOpenModal(modal)
+      localStorage.removeItem('modalToOpen')
     }
   }, [])
 
