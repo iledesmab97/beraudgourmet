@@ -1,3 +1,7 @@
+import Cookies from 'js-cookie'
+import jwt from 'jsonwebtoken'
+import { userDataFromBackToFront } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function verifyEmailUser(token) {
@@ -53,4 +57,16 @@ export function getAllOrders(userId) {
     return fetch(`${PATH_BACK}/orders/${userId}`, { cache: 'no-store' })
         .then(res => res.json())
         .then(data => data)
+}
+
+export function lookingForUserLoged(){
+    const tokenUser = Cookies.get('tokenUser')
+    if (!tokenUser) return false
+    try {
+      const dataUser = jwt.verify(tokenUser, 'secret')
+      const userDataFront = userDataFromBackToFront(dataUser)
+      return userDataFront
+    } catch(error) {
+      return alert('error:', error.message)
+    }
 }
