@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAllOrders } from '@/services/orderApi'
+import { getAllOrders, sortOrders } from '@/services/orderApi'
 
 import TabBar from '@/components/TabBar/TabBar'
 import DataTable from '@/components/DataTable/DataTable'
@@ -18,7 +18,9 @@ function DataPanel() {
     const [orders, setOrders] = useState([])
 
     useEffect(() => {
-        getAllOrders().then(data => updateOrders(data))
+        getAllOrders()
+            .then(data => sortOrders(data))
+            .then(data => updateOrders(data))
     }, [])
 
 
