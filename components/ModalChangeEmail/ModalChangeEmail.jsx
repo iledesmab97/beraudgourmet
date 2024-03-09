@@ -30,7 +30,7 @@ const style = {
 function ModalChangeEmail() {
 
     const { open, handleChangeModal } = useGetModal({ modalType: 'changeEmail' })
-    const { inputsEdit, errors, handleChangeEdit, changeEmail } = useHandleUser()
+    const { inputsEdit, errorsEdit, handleChangeEdit, changeEmail } = useHandleUser()
 
     return (
         <Modal
@@ -51,8 +51,8 @@ function ModalChangeEmail() {
                     name='email'
                     value={inputsEdit.email}
                     onChange={handleChangeEdit}
-                    error={errors.email ? true : false}
-                    helperText={errors.email ? errors.email : ''}
+                    error={errorsEdit.email ? true : false}
+                    helperText={errorsEdit.email ? errorsEdit.email : ''}
                 />
                 <TextField
                     fullWidth
@@ -61,8 +61,8 @@ function ModalChangeEmail() {
                     name='password'
                     value={inputsEdit.password}
                     onChange={handleChangeEdit}
-                    error={errors.password ? true : false}
-                    helperText={errors.password ? errors.password : ''}
+                    error={errorsEdit.password ? true : false}
+                    helperText={errorsEdit.password ? errorsEdit.password : ''}
                 />
                 <Button
                     variant='contained'
