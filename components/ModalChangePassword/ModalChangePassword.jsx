@@ -30,7 +30,7 @@ const style = {
 function ModalChangePassword() {
 
     const { open, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
-    const { inputsEdit, errors, handleChangeEdit, changePassword } = useHandleUser()
+    const { inputsEdit, errorsEdit, handleChangeEdit, changePassword } = useHandleUser()
 
     return (
         <Modal
@@ -51,8 +51,8 @@ function ModalChangePassword() {
                     name='passwordConfirmation'
                     value={inputsEdit.passwordConfirmation}
                     onChange={handleChangeEdit}
-                    error={errors.passwordConfirmation ? true : false}
-                    helperText={errors.passwordConfirmation ? errors.passwordConfirmation : ''}
+                    error={errorsEdit.passwordConfirmation ? true : false}
+                    helperText={errorsEdit.passwordConfirmation ? errorsEdit.passwordConfirmation : ''}
                 />
                 <TextField
                     fullWidth
@@ -61,8 +61,8 @@ function ModalChangePassword() {
                     name='password'
                     value={inputsEdit.password}
                     onChange={handleChangeEdit}
-                    error={errors.password ? true : false}
-                    helperText={errors.password ? errors.password : ''}
+                    error={errorsEdit.password ? true : false}
+                    helperText={errorsEdit.password ? errorsEdit.password : ''}
                 />
                 <Button
                     variant='contained'
