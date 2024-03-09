@@ -88,6 +88,7 @@ function useHandleUser() {
         passwordConfirmation: ''
     })
     const [errors, setErrors] = useState(validation(inputs))
+    const [errorsEdit, setErrorsEdit] = useState(validation(inputs))
     const [editing, setEditing] = useState({
         name: false,
         numberPhone: false
@@ -117,7 +118,8 @@ function useHandleUser() {
             if ( !newError.email && inputsEdit.email === user.email ) {
                 newError.email = 'Debe ingresar otro correo electrónico'
             }
-            setErrors(newError)
+            // setErrors(newError)
+            setErrorsEdit(newError)
         }, 500)
     }, [inputsEdit])
 
@@ -307,6 +309,7 @@ function useHandleUser() {
         handleChange,
         handleChangeEdit,
         errors,
+        errorsEdit,
         currentUser: currentUser,
         userLoged,
         user,
