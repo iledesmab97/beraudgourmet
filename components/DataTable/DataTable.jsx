@@ -115,14 +115,19 @@ function DataTable({ orders, updateOrders }) {
                 >
                     { currentOrder?.closed ? 'Pendiente' : 'Entregado' }
                 </MenuItem>
-                <MenuItem
-                    onClick={addUrl}
-                >
-                    <>
-                        subir imagen
-                        <input type='file' onChange={handleFileSelected} ref={fileInput} className={styles.fileInput} />
-                    </>
-                </MenuItem>
+                {
+                    currentOrder && !currentOrder.url ?
+                    (
+                        <MenuItem
+                            onClick={addUrl}
+                        >
+                            <>
+                                subir imagen
+                                <input type='file' onChange={handleFileSelected} ref={fileInput} className={styles.fileInput} />
+                            </>
+                        </MenuItem>
+                    ) : null
+                }
             </Menu>
         </>
     )
