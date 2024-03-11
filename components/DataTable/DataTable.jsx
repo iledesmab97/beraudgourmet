@@ -14,6 +14,7 @@ import Paper from '@mui/material/Paper';
 
 import { useState, useRef } from 'react';
 import { updateOrder, getAllOrders } from '@/services/orderApi'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import styles from './DataTable.module.css'
 
@@ -23,12 +24,13 @@ const tableHeaders = {
     orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
 }
 
-function DataTable({ orders, updateOrders, handleChecked, handleText, handleStatus }) {
+function DataTable({ orders, updateOrders }) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
     const open = Boolean(anchorEl)
     const fileInput = useRef()
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     function handleClick(event, order) {
         setAnchorEl(event.currentTarget)
@@ -62,9 +64,11 @@ function DataTable({ orders, updateOrders, handleChecked, handleText, handleStat
           body: formData,
         })
         const data = await response.json()
-        handleStatus(data.status)
-        handleText(data.message)
-        handleChecked(true)
+        handleUpdateAlertMessage({
+            checked: true,
+            text: data.message,
+            status: data.status
+        })
         handleClose()
       }
 
