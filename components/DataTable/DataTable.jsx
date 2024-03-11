@@ -23,7 +23,7 @@ const tableHeaders = {
     orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
 }
 
-function DataTable({ orders, updateOrders }) {
+function DataTable({ orders, updateOrders, handleChecked, handleText, handleStatus }) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
@@ -62,7 +62,9 @@ function DataTable({ orders, updateOrders }) {
           body: formData,
         })
         const data = await response.json()
-        console.log(data.message)
+        handleStatus(data.status)
+        handleText(data.message)
+        handleChecked(true)
         handleClose()
       }
 

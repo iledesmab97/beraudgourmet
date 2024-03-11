@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 
 import styles from './DataPanel.module.css'
 
-function DataPanel() {
+function DataPanel({ handleChecked, handleText, handleStatus }) {
 
     const [tabSelected, setTabSelected] = useState(0)
     const [orders, setOrders] = useState([])
@@ -46,7 +46,7 @@ function DataPanel() {
                 Historial de Ordenes
             </Typography>
             <TabBar tabSelected={tabSelected} handleChange={handleChange} />
-            <DataTable orders={orders} updateOrders={updateOrders} />
+            <DataTable orders={orders} updateOrders={updateOrders} handleChecked={handleChecked} handleText={handleText} handleStatus={handleStatus} />
         </Grid>
     )
 }

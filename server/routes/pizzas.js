@@ -38,7 +38,7 @@ router.post('/image/:id', [upload.single('file')],async (req, res) => {
         const url = response.secure_url
         const addImage = await changePropertiesOrder(id, 'url', url)
         if (!addImage[0]) throw new Error(`There is not order with id = ${id}`)
-        res.status(200).json({message: 'Imagen subida exitosamente', url })
+        res.status(200).json({message: 'Imagen subida exitosamente', url, status: 'success' })
     } catch(error) {
         res.status(400).json({message: error.message})
     }
