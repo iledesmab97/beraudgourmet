@@ -7,6 +7,7 @@ import checkoutReducer from './checkout/slice'
 import storeListReducer from './storeList/slice'
 import productsReducer from './products/slice'
 import extraIngredientsReducer from './extraIngredients/slice'
+import alertMessageReducer from './alertMessage/slice'
 
 export const store = configureStore({
     reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
         checkout: checkoutReducer,
         storeList: storeListReducer,
         products: productsReducer,
-        extraIngredients: extraIngredientsReducer
+        extraIngredients: extraIngredientsReducer,
+        alertMessage: alertMessageReducer
     }
 })
