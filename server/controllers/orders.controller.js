@@ -1,6 +1,18 @@
+require('dotenv').config({ path: '.env.local'})
+
 const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza, User, Store, DeliveryInformation } = require('../db')
 const { findPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
 const { Op } = require('sequelize')
+
+const {v2} = require('cloudinary')
+
+const {CLOUD_NAME, CLOUD_API_KEY, CLOUD_API_SECRET, PATH_BACK} = process.env
+
+v2.config({ 
+    cloud_name: CLOUD_NAME, 
+    api_key: CLOUD_API_KEY, 
+    api_secret: CLOUD_API_SECRET 
+})
 
 async function findAllOrders({userId}) {
     const orderList = await Order.findAll({
@@ -218,12 +230,11 @@ async function removeOrder(req, res) {
 
 async function changePropertiesOrder(id, property, value) {
     try {
+        const filter = id ? {id} : {}
         const updated = await Order.update({
             [property]: value
         }, {
-            where: {
-                id
-            }
+            where: filter
         })
         return updated
     } catch(error) {
@@ -245,10 +256,42 @@ async function changeProperty(req, res) {
     }
 }
 
+async function changePropertyForAll(req, res) {
+    const { property, value } = req.body
+    try {
+        const updated = await changePropertiesOrder(undefined, property, value)
+        return res.status(200).json(updated)
+    } catch(error) {
+        const { message } = error
+        return res.status(400).json({ message })
+    }
+}
+
+async function uploadImageOrder(req, res) {
+    const { id } = req.params
+    try {
+        const image = req.file.buffer
+        const response = await new Promise((resolve, reject) => {
+            v2.uploader.upload_stream({}, (err, result) => {
+                if (err) reject(err)
+                resolve(result)
+            }).end(image)
+        })
+        const url = response.secure_url
+        const addImage = await changePropertiesOrder(id, 'url', url)
+        if (!addImage[0]) throw new Error(`There is not order with id = ${id}`)
+        res.status(200).json({message: 'Imagen subida exitosamente', url, status: 'success' })
+    } catch(error) {
+        res.status(400).json({message: error.message, status: 'error'})
+    }
+}
+
 module.exports = {
     getAllOrders,
     addOrder,
     removeOrder,
     changeProperty,
-    changePropertiesOrder
+    changePropertiesOrder,
+    changePropertyForAll,
+    uploadImageOrder
 }
