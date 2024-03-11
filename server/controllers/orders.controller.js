@@ -17,7 +17,7 @@ async function getAllOrders(req, res) {
     try {
         const allOrders = await findAllOrders({userId})
         const ordersToReturn = allOrders.map(async (order) => {
-            const {id, totalCost, applicationDate, deliveryDate, StripeId, paymentMethod, delivery, closed, paid} = order
+            const {id, totalCost, applicationDate, deliveryDate, StripeId, paymentMethod, delivery, closed, paid, url} = order
             // Find the User
             const user = await User.findByPk(order.UserId, {
                 attributes: ['id', 'name', 'phoneNumber']
@@ -53,7 +53,7 @@ async function getAllOrders(req, res) {
                 closed,
                 paid,
                 deliveryInformation,
-                itemsxOrder
+                url
             }
             return newOrder
         })
