@@ -13,7 +13,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 
 import { useState, useRef } from 'react';
-import { updateOrder, getAllOrders } from '@/services/orderApi'
+import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import styles from './DataTable.module.css'
@@ -48,7 +48,7 @@ function DataTable({ orders, updateOrders }) {
         }
         const response = await updateOrder(currentOrder.id, body)
         await handleClose()
-        getAllOrders().then(data => updateOrders(data))
+        await getAllOrders().then(data => updateOrders(data))
     }
 
     async function addUrl() {
@@ -59,11 +59,13 @@ function DataTable({ orders, updateOrders }) {
         const file = event.target.files[0]
         const formData = new FormData()
         formData.append('file', file)
-        const response = await fetch(`${PATH_BACK}/pizzas/image/${currentOrder.id}`, {
-          method: 'POST',
-          body: formData,
-        })
+        // const response = await fetch(`${PATH_BACK}/orders/image/${currentOrder.id}`, {
+        //   method: 'POST',
+        //   body: formData,
+        // })
+        const response = await sendImage(currentOrder.id, formData)
         const data = await response.json()
+        await getAllOrders().then(data => updateOrders(data))
         handleUpdateAlertMessage({
             checked: true,
             text: data.message,
