@@ -58,3 +58,10 @@ export function sortOrders(orders) {
 
     return newOrdersSorted
 }
+
+export async function sendImage(id, formData) {
+    return fetch(`${PATH_BACK}/orders/image/${id}`, {
+        method: 'POST',
+        body: formData,
+    })
+}
