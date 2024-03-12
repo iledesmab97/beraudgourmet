@@ -4,7 +4,7 @@ const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY)
 
 const controllerCheckout = {
     requestPayment: async function(req, res) {
-        const { amount, userId, email, description } = req.body
+        const { amount, userId, email, description, capture } = req.body
         try {
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: Math.round(amount * 100),
@@ -13,7 +13,7 @@ const controllerCheckout = {
                 automatic_payment_methods: {
                     enabled: true
                 },
-                capture_method: 'manual',
+                capture_method: capture,
                 // customer: userId,
                 receipt_email: email
             })
