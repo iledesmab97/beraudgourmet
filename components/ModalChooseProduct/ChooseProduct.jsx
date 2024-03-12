@@ -86,7 +86,6 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 container
                 sx={{
                     height: '90%',
-                    overflow: 'scroll'
                 }}
             >
                 <Grid
