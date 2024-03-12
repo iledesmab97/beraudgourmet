@@ -10,6 +10,7 @@ import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
 import {totalPrice} from '@/utils/priceCar'
+import { sendRequestPayment } from '@/services/checkoutApi'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -82,17 +83,7 @@ function ModalCheckoutForm() {
             return acc + '; ' + newText
         }, '')
         const {totalClient} = totalPrice(orders)
-        fetch('api/checkout', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                userId: `${user.id}`,
-                email: user.email,
-                amount: totalClient,
-                description: orderDescription
-            })
-        })
-            .then(res => res.json())
+        sendRequestPayment({userId: user.id, email: user.email, amount: totalClient, description: orderDescription, payInPlace: false})
             .then(data => {
                 if (data.clientSecret) setClientSecret(data.clientSecret)
                 else console.log('Error:', data.message)
