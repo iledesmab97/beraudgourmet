@@ -1,8 +1,9 @@
 require('dotenv').config({ path: '.env.local'})
-
+const dayjs = require('dayjs')
 const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza, User, Store, DeliveryInformation } = require('../db')
 const { findPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
 const { Op } = require('sequelize')
+const { dateStringToDate } = require('../libs/dates')
 
 const {v2} = require('cloudinary')
 
@@ -70,7 +71,10 @@ async function getAllOrders(req, res) {
             return newOrder
         })
         return Promise.all(ordersToReturn)
-            .then(result => res.status(200).json(result))
+            .then(result => {
+                const sortedResult = sortOrders(result)
+                res.status(200).json(sortedResult)
+            })
             .catch(error => {throw new Error({message: error.message})})
     } catch(error) {
         res.status(400).json({message: error.message})
@@ -284,6 +288,33 @@ async function uploadImageOrder(req, res) {
     } catch(error) {
         res.status(400).json({message: error.message, status: 'error'})
     }
+}
+
+function sortOrders(orders) {
+    const newOrders = [...orders]
+
+    const newOrdersSorted = newOrders.sort((a, b) => {
+        // ordenar por estatus
+        if (a.closed !== b.closed) return a.closed ? 1 : -1
+
+        // ordenar por relación con el presente
+        const dateA = dateStringToDate(a.deliveryDate)
+        const dateB = dateStringToDate(b.deliveryDate)
+        const now = dayjs()
+
+        if (dateA.isBefore(now) !== dateB.isBefore(now)) return dateA.isBefore(now) ? -1 : 1
+
+        // ordenar por diferencia con el presenten
+        if (dateA.isBefore(now)) {
+            const dateAisFirst = Math.abs(dateA.diff(now)) > Math.abs(dateB.diff(now))
+            return dateAisFirst ? -1 : 1
+        } else {
+            const dateAisFirst = Math.abs(dateA.diff(now)) < Math.abs(dateB.diff(now))
+            return dateAisFirst ? -1 : 1
+        }
+    })
+
+    return newOrdersSorted
 }
 
 module.exports = {

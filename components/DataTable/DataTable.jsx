@@ -59,10 +59,6 @@ function DataTable({ orders, updateOrders }) {
         const file = event.target.files[0]
         const formData = new FormData()
         formData.append('file', file)
-        // const response = await fetch(`${PATH_BACK}/orders/image/${currentOrder.id}`, {
-        //   method: 'POST',
-        //   body: formData,
-        // })
         const response = await sendImage(currentOrder.id, formData)
         const data = await response.json()
         await getAllOrders().then(data => updateOrders(data))
