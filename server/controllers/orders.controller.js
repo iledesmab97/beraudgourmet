@@ -66,7 +66,8 @@ async function getAllOrders(req, res) {
                 closed,
                 paid,
                 deliveryInformation,
-                url
+                url,
+                itemsxOrder
             }
             return newOrder
         })
