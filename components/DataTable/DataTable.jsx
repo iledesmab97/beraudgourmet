@@ -11,17 +11,23 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 import { useState, useRef } from 'react';
-import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
+import { howMuchLeft } from '@/utils/hours'
 
 import styles from './DataTable.module.css'
 
-const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
-
 const tableHeaders = {
     orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
+}
+
+const colorsCell = {
+    late: 'red',
+    today: '#D99914',
+    early: 'green'
 }
 
 function DataTable({ orders, updateOrders }) {
@@ -68,7 +74,13 @@ function DataTable({ orders, updateOrders }) {
             status: data.status
         })
         handleClose()
-      }
+    }
+
+    function bColorCell(order) {
+        if (order.closed) return '#4e5762'
+        const when = howMuchLeft(order.deliveryDate)
+        return colorsCell[when]
+    }
 
     return (
         <>
@@ -90,9 +102,23 @@ function DataTable({ orders, updateOrders }) {
                                     <TableCell align='center'>{ order.user.name }</TableCell>
                                     <TableCell align='center'>{ order.user.phoneNumber }</TableCell>
                                     <TableCell align='center'>{ order.paymentMethod === 'transfer' ? 'Transferencia' : 'Stripe' }</TableCell>
-                                    <TableCell align='center'>{ order.deliveryDate }</TableCell>
+                                    <TableCell
+                                        align='center'
+                                    >
+                                        <Typography
+                                            sx={{
+                                                fontSize: '0.9rem',
+                                                bgcolor: bColorCell(order),
+                                                borderRadius: '5px',
+                                                p: '5px',
+                                                color: 'white',
+                                            }}
+                                        >
+                                            { order.deliveryDate }
+                                        </Typography>
+                                    </TableCell>
                                     <TableCell align='center'>{ order.delivery ? 'Delivery' : 'Recoger' }</TableCell>
-                                    <TableCell align='center'>{ order.closed ? 'Entregado' : 'Pendiente' }</TableCell>
+                                    <TableCell align='center' sx={ order.closed ? {color:'green'} : {color:'red'} }>{ order.closed ? 'Entregado' : 'Pendiente' }</TableCell>
                                     <TableCell align='center'>{ order.totalCost }</TableCell>
                                     <TableCell align='center'>
                                         <IconButton
