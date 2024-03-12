@@ -35,14 +35,22 @@ function Menu () {
   const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
   useEffect(() => {
-    const userLoged = lookingForUserLoged()
-    if (!userLoged) return
-    handleAddUser(userLoged)
-    const modal = modalSaved()
-    if (modal) {
-      handleOpenModal(modal)
-      localStorage.removeItem('modalToOpen')
-    }
+    lookingForUserLoged()
+      .then(user => {
+        if (!user) return false
+        if (user.error) throw new Error(user.error)
+        handleAddUser(user)
+        return true
+      })
+      .then((response) => {
+        if (!response) return
+        const modal = modalSaved()
+        if (modal) {
+          handleOpenModal(modal)
+          localStorage.removeItem('modalToOpen')
+        }
+      })
+      .catch(error => alert(error.message))
   }, [])
 
   return (

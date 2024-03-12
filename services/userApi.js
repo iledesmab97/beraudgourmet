@@ -59,14 +59,14 @@ export function getAllOrders(userId) {
         .then(data => data)
 }
 
-export function lookingForUserLoged(){
+export async function lookingForUserLoged(){
     const tokenUser = Cookies.get('tokenUser')
     if (!tokenUser) return false
     try {
-      const dataUser = jwt.verify(tokenUser, 'secret')
-      const userDataFront = userDataFromBackToFront(dataUser)
-      return userDataFront
+        const user = await fetchwhoAmI()
+        const userDataFront = userDataFromBackToFront(user)
+        return userDataFront
     } catch(error) {
-      return alert('error:', error.message)
+      return {error: error.message}
     }
 }
