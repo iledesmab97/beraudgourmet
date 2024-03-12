@@ -6,6 +6,7 @@
     align-items: center;
     color: #295386;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .buttonPaymentMethodToSelect:hover {
@@ -31,6 +32,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .card {
