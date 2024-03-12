@@ -78,19 +78,17 @@ function ModalUserOrders() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell >Pedido</TableCell>
+                                    <TableCell >Emición</TableCell>
+                                    <TableCell >Entrega</TableCell>
                                     <TableCell
                                         align='right'
-                                        sx={{
-                                            width: 'fit-content'
-                                        }}
                                     >
                                         Precio($)
                                     </TableCell>
                                     <TableCell
-                                        sx={{
-                                            width: 'fit-content'
-                                        }}
-                                    >Estatus</TableCell>
+                                    >
+                                        Estatus
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -108,8 +106,14 @@ function ModalUserOrders() {
                                                         )
                                                     }).join('; ')
                                                 }}/>
+                                            <TableCell align='right'>{order.applicationDate}</TableCell>
+                                            <TableCell align='right'>{order.deliveryDate}</TableCell>
                                             <TableCell align='right'>{order.totalCost}</TableCell>
-                                            <TableCell >{order.closed ? 'Entregado' : 'Pendiente'}</TableCell>
+                                            <TableCell
+                                                sx={ order.closed ? {color: 'green'} : {color: 'red'} }
+                                            >
+                                                {order.closed ? 'Entregado' : 'Pendiente'}
+                                            </TableCell>
                                         </TableRow>
                                     ))
                                 }
