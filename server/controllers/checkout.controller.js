@@ -22,6 +22,20 @@ const controllerCheckout = {
         } catch(error) {
             return res.status(400).json({message: error.message})
         }
+    },
+    updatePaymentRequest: async function(req, res) {
+        const { amount, stripeId, description, capture } = req.body
+        try {
+            const paymentIntentUpdated = await stripe.paymentIntents.update(stripeId, {
+                amount: amount ? Math.round(amount * 100) : undefined,
+                description,
+                capture_method: capture,
+            })
+            const { status, client_secret, id} = paymentIntentUpdated
+            return res.status(200).json({clientSecret: client_secret, status, id})
+        } catch(error) {
+            return res.status(400).json({message: error.message})
+        }
     }
 }
 
