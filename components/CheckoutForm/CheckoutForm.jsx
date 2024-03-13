@@ -177,7 +177,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 ...dataOrders,
                 stripeId: paymentIntent.id,
                 paymentMethod: 'stripe',
-                paid: false,
+                paid: !checked,
             })
 
             return router.push('/success')
