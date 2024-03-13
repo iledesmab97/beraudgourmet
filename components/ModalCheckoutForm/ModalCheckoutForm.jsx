@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import { loadStripe } from '@stripe/stripe-js'
 import {Elements} from '@stripe/react-stripe-js'
@@ -62,6 +62,9 @@ function ModalCheckoutForm() {
     const [clientSecret, setClientSecret] = useState('')
     const [dataStripe, setDataStripe] = useState(null)
     const [payment_method, setPayment_metod] = useState('null')
+    const orderDescription = useMemo(() => {
+        return orders.map(order => descriptionOrder(order)).join("; ")
+    }, [orders])
 
     useEffect(() => {
         if (!place.deadLine) return
@@ -81,7 +84,6 @@ function ModalCheckoutForm() {
     useEffect(() => {
         if (!orders.length) return
         if (!dataStripe) {
-            const orderDescription = orders.map(order => descriptionOrder(order)).join("; ")
             const {totalClient} = totalPrice(orders)
             createPaymentRequest({userId: user.id, email: user.email, amount: totalClient, description: orderDescription, payInPlace: false})
                 .then(data => {
@@ -93,7 +95,6 @@ function ModalCheckoutForm() {
                     else console.log('Error:', data.message)
                 })
         } else {
-            const orderDescription = orders.map(order => descriptionOrder(order)).join("; ")
             const {totalClient} = totalPrice(orders)
             updatePaymentRequest({amount: totalClient, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
                 .then(data => {
