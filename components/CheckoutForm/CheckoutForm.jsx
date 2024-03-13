@@ -7,6 +7,7 @@ import useGetProducts from '@/hooks/useGetProducts'
 import dayjs from 'dayjs'
 import { contactUs } from '@/utils/contact'
 import { descriptionOrder } from '@/utils/preparingData'
+import { updatePaymentRequest } from '@/services/checkoutApi'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -15,6 +16,9 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 import styles from './CheckoutForm.module.css'
 
@@ -33,7 +37,7 @@ async function registerOrder(data) {
         })
 }
 
-export default function CheckoutForm({user, place, orders, checkout, payment_method, handlePaymentMethod, handleCloseModal}) {
+export default function CheckoutForm({user, place, orders, checkout, payment_method, dataStripe, handlePaymentMethod, handleCloseModal, handleDataStripe}) {
 
     const stripe = useStripe()
     const elements = useElements()
@@ -79,6 +83,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         card: false,
         bank: false
     })
+    const [checked, setChecked] = useState(false)
 
     function handleOpenTooltip(paymentMethod) {
         setOpenTooltip(prevState => ({
@@ -130,6 +135,17 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         }
     }, [])
 
+    useEffect(() => {
+        updatePaymentRequest({payInPlace: checked, stripeId: dataStripe.id})
+                .then(data => {
+                    if (data.clientSecret) {
+                        const { clientSecret, id, status } = data
+                        handleDataStripe({clientSecret, id, status})
+                    }
+                    else console.log('Error:', data.message)
+                })
+    }, [checked])
+
     async function handleSubmit(event) {
         event.preventDefault()
 
@@ -143,7 +159,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         const {paymentIntent, error} = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                // return_url: 'http://localhost:3000/success'
+                // return_url: 'http://localhost:3000/success',
+                // capture_method: 'manual'
             },
             redirect: 'if_required'
         })
@@ -161,7 +178,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 stripeId: paymentIntent.id,
                 paymentMethod: 'stripe',
                 paid: false,
-
             })
 
             return router.push('/success')
@@ -176,6 +192,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const paymentElementOptions = {
         layout: 'tabs'
         // layout: 'accordion'
+    }
+
+    function handleChange() {
+        setChecked((prev) => !prev)
     }
 
     return (
@@ -275,6 +295,22 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                             >
                                                 <PaymentElement id='payment-element' options={paymentElementOptions} />
                                             </Box>
+                                            <FormGroup
+                                                sx={{
+                                                    position: 'absolute',
+                                                    left: '0px',
+                                                    bottom: '0px'
+                                                }}
+                                            >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={checked}
+                                                            onChange={handleChange} />
+                                                    }
+                                                    label="Pagar al recoger"
+                                                />
+                                            </FormGroup>
                                             <Button
                                                 variant='contained'
                                                 onClick={handleSubmit}

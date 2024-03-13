@@ -10,6 +10,8 @@ import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
 import useGetCheckout from '@/hooks/useGetCheckout'
 import {totalPrice} from '@/utils/priceCar'
+import { createPaymentRequest, updatePaymentRequest } from '@/services/checkoutApi'
+import { descriptionOrder } from '@/utils/preparingData'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -58,6 +60,7 @@ function ModalCheckoutForm() {
     const [preMessageDelivery, setPreMessageDelivery] = useState('')
 
     const [clientSecret, setClientSecret] = useState('')
+    const [dataStripe, setDataStripe] = useState(null)
     const [payment_method, setPayment_metod] = useState('null')
 
     useEffect(() => {
@@ -77,26 +80,31 @@ function ModalCheckoutForm() {
 
     useEffect(() => {
         if (!orders.length) return
-        const orderDescription = orders.reduce((acc, cur) => {
-            const newText = `${cur.mass}${Object.keys(cur.extra).map(ingredient => `, ${cur.extra[ingredient]}x ${ingredient}`).join('')}`
-            return acc + '; ' + newText
-        }, '')
-        const {totalClient} = totalPrice(orders)
-        fetch('api/checkout', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                userId: `${user.id}`,
-                email: user.email,
-                amount: totalClient,
-                description: orderDescription
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.clientSecret) setClientSecret(data.clientSecret)
-                else console.log('Error:', data.message)
-            })
+        if (!dataStripe) {
+            const orderDescription = orders.map(order => descriptionOrder(order)).join("; ")
+            const {totalClient} = totalPrice(orders)
+            createPaymentRequest({userId: user.id, email: user.email, amount: totalClient, description: orderDescription, payInPlace: false})
+                .then(data => {
+                    if (data.clientSecret) {
+                        const { clientSecret, id, status } = data
+                        setClientSecret(data.clientSecret)
+                        setDataStripe({clientSecret, id, status})
+                    }
+                    else console.log('Error:', data.message)
+                })
+        } else {
+            const orderDescription = orders.map(order => descriptionOrder(order)).join("; ")
+            const {totalClient} = totalPrice(orders)
+            updatePaymentRequest({amount: totalClient, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
+                .then(data => {
+                    if (data.clientSecret) {
+                        const { clientSecret, id, status } = data
+                        setClientSecret(data.clientSecret)
+                        setDataStripe({clientSecret, id, status})
+                    }
+                    else console.log('Error:', data.message)
+                })
+        }
     }, [orders])
 
     const appearance = {
@@ -106,6 +114,10 @@ function ModalCheckoutForm() {
     const options = {
         clientSecret,
         appearance
+    }
+
+    function handleDataStripe(value) {
+        setDataStripe(value)
     }
 
     function handlePaymentMethod(paymethod) {
@@ -188,8 +200,10 @@ function ModalCheckoutForm() {
                                         orders={orders}
                                         checkout={checkout}
                                         payment_method={payment_method}
+                                        dataStripe={dataStripe}
                                         handlePaymentMethod={handlePaymentMethod}
                                         handleCloseModal={handleCloseModal}
+                                        handleDataStripe={handleDataStripe}
                                     />
                                 </Elements>
                             )
