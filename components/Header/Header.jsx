@@ -8,7 +8,7 @@ import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import CurrentSession from '@/components/CurrentSession/CurrentSession'
 
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
