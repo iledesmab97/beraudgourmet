@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 
-import { getAllOrders } from '@/services/userApi'
+import { getAllOrders } from '@/services/orderApi'
 import { extractIngredientsOut } from '@/utils/preparingData'
 
 import styles from './ModalUserOrders.module.css'
