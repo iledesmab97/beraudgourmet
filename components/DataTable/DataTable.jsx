@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
 
 import { useState, useRef } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -34,9 +35,15 @@ function DataTable({ orders, updateOrders }) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
+    const [openOrderDetail, setOpenOrderDetail] = useState(null)
     const open = Boolean(anchorEl)
     const fileInput = useRef()
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+
+    function handleOpenOrderDetail(value) {
+        setOpenOrderDetail(value)
+        handleClose()
+    }
 
     function handleClick(event, order) {
         setAnchorEl(event.currentTarget)
@@ -158,7 +165,17 @@ function DataTable({ orders, updateOrders }) {
                         </MenuItem>
                     ) : null
                 }
+                <MenuItem
+                    onClick={() => { handleOpenOrderDetail(true) }}
+                >
+                    Ver Detalle
+                </MenuItem>
             </Menu>
+            {
+                currentOrder ? (
+                    <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
+                ) : null
+            }
         </>
     )
 }
