@@ -53,12 +53,6 @@ export function verifyProperty(data) {
         .then(data => data)
 }
 
-export function getAllOrders(userId) {
-    return fetch(`${PATH_BACK}/orders/${userId}`, { cache: 'no-store' })
-        .then(res => res.json())
-        .then(data => data)
-}
-
 export async function lookingForUserLoged(){
     const tokenUser = Cookies.get('tokenUser')
     if (!tokenUser) return false
