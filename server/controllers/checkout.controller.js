@@ -36,6 +36,27 @@ const controllerCheckout = {
         } catch(error) {
             return res.status(400).json({message: error.message})
         }
+    },
+    listAllUsers: async function(req, res) {
+        try {
+            const customers = await stripe.customers.list()
+            return res.status(200).json(customers)
+        } catch(error) {
+            return res.status(400).json({message: error.message})
+        }
+    },
+    addUser: async function(req, res) {
+        const { name, email, phone } = req.body
+        try {
+            const customer = await stripe.customers.create({
+                name,
+                email,
+                phone
+            })
+            return res.status(200).json(customer)
+        } catch(error) {
+            return res.status(400).json({message: error.message})
+        }
     }
 }
 
