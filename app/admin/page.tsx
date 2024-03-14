@@ -21,9 +21,11 @@ function AdminPlace() {
     const { handleAddUser } = useGetUser()
 
     useEffect(() => {
-        const userLoged = lookingForUserLoged()
-        if (!userLoged) return
-        handleAddUser(userLoged)
+        lookingForUserLoged()
+            .then( userLoged => {
+                if (!userLoged) return
+                handleAddUser(userLoged)
+            })
     }, [])
 
     return (
