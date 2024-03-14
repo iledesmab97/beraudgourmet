@@ -1,7 +1,8 @@
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
-export function getAllOrders() {
-    return fetch(`${PATH_BACK}/orders`)
+export function getAllOrders(userId) {
+    const lastPath = userId ? `/${userId}` : ''
+    return fetch(`${PATH_BACK}/orders${lastPath}`, { cache: 'no-store' })
         .then(response => response.json())
         .then(data => {
             if (data.message) return console.log('Ha ocurrido el siguiente error:', data.message)
