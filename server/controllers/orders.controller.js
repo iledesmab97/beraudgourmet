@@ -37,7 +37,7 @@ async function getAllOrders(req, res) {
             })
             // Find the Store
             const store = await Store.findByPk(order.StoreId, {
-                attributes: ['id', 'name']
+                attributes: ['id', 'name', 'address', 'phoneNumber']
             })
             // Find the DeliveryInformation
             const deliveryInformation = await DeliveryInformation.findOne({
