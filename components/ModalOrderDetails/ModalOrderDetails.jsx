@@ -21,8 +21,9 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
-import DataOrder from '@/components/ModalOrderDetails/DataOrder'
-import DataPrice from '@/components/ModalCheckoutForm/DataPrice'
+import OrderData from '@/components/ModalOrderDetails/OrderData'
+import OtherData from '@/components/ModalOrderDetails/OtherData'
+import PriceData from '@/components/ModalOrderDetails/PriceData'
 
 import styles from './ModalOrderDetails.module.css'
 import dayjs from 'dayjs'
@@ -46,8 +47,6 @@ const style = {
 }
 
 function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrder }) {
-
-    console.log('currentOrder:', currentOrder)
 
     // const { open, handleCloseModal } = useGetModal({modalType: 'pay'})
     // const {user} = useGetUser()
@@ -152,29 +151,21 @@ function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrde
                         boxSizing: 'border-box'
                     }}
                 >
-                    <Typography
-                        className={ currentOrder.closed ? styles.closed : styles.pending }
-                        align='center'
-                        sx={{
-                            width: '100%',
-                            p: 1,
-                            borderRadius: 3
-                        }}
-                    >
-                        {currentOrder.closed ? 'ENTREGADO' : 'PENDIENTE'}
-                    </Typography>
-                    <DataOrder
+                    <OrderData currentOrder={currentOrder} />
+                    <Divider sx={{ width: '100%'}} />
+
+                    <PriceData
+                        orders={currentOrder}
+                    />
+                    <Divider sx={{ width: '100%'}} />
+                    
+                    <OtherData
                         user={currentOrder.user}
                         store={currentOrder.store}
                         dateEmited={currentOrder.applicationDate}
                         dateToRecive={currentOrder.deliveryDate}
                         deliveryInformation={currentOrder.deliveryInformation}
                     />   
-                    {/* <DataPrice
-                        orders={orders}
-                        payment_method={payment_method}
-                        checkout={checkout}
-                    /> */}
                 </Box>                
             </Grid>
         </Modal> 

@@ -6,7 +6,7 @@ import StoreData from './StoreData'
 import DatesData from './DatesData'
 import DeliveryData from './DeliveryData'
 
-function DataOrder({ user, store, dateEmited, dateToRecive, deliveryInformation }) {
+function OtherData({ user, store, dateEmited, dateToRecive, deliveryInformation }) {
     return (
         <Box
             sx={{
@@ -27,11 +27,14 @@ function DataOrder({ user, store, dateEmited, dateToRecive, deliveryInformation 
             <Divider sx={{ width: '100%'}} />
 
             {
-                deliveryInformation ? <DeliveryData deliveryInformation={deliveryInformation} /> : null
+                deliveryInformation ?
+                    <>
+                        <DeliveryData deliveryInformation={deliveryInformation} />
+                        <Divider sx={{ width: '100%'}} />
+                    </> : null
             }
-            <Divider sx={{ width: '100%'}} />
         </Box>
     )
 }
 
-export default DataOrder
+export default OtherData
