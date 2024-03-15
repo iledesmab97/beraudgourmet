@@ -19,6 +19,9 @@ function OrderPizza(database) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        cost: {
+            type: DataTypes.STRING
+        }
     }, {
         timestamps: false
     })
