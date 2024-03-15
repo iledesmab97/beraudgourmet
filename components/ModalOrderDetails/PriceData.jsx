@@ -135,8 +135,7 @@ function PriceData({ orders }) {
                                                                     color: 'rgba(0, 0, 0, 0.6)'
                                                                 }}
                                                             >
-                                                                $4
-                                                                {/* ${order.totalCostByItem} */}
+                                                                ${order.genericCost}
                                                             </Typography>
                                                         </Box>
                                                         {
