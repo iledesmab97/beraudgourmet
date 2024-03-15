@@ -25,7 +25,7 @@ function Order(database) {
         },
         StripeId: {
             type: DataTypes.STRING,
-            allowNull: false
+            // allowNull: false
         },
         paymentMethod: {
             type: DataTypes.STRING,

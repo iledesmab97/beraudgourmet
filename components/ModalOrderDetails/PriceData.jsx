@@ -15,8 +15,6 @@ import { extractElements, descriptionWithoutIngredientsOut } from '@/utils/prepa
 
 function PriceData({ orders }) {
 
-    console.log('orders:', orders)
-
     const [subElements, setSubElements] = useState(() => {
         const listOrders = orders.itemsxOrder.map(order => extractElements(order.description))
         return listOrders
@@ -27,15 +25,6 @@ function PriceData({ orders }) {
         const newOpenCollapse = openCollapse.map((element, index) => index === indexCollapse ? !element : element )
         setOpenCollapse(newOpenCollapse)
     }
-
-    console.log('subElements:', subElements)
-
-    // function extractElementOfDescription(orderDescription) {
-    //     console.log('orderDescription:', orderDescription)
-    //     return extractElements(orderDescription)
-    // }
-
-
 
     return (
         <Grid
@@ -48,9 +37,8 @@ function PriceData({ orders }) {
                     <>
                         {
                             orders.itemsxOrder.map((order, index) => (
-                                <>
+                                <Box key={order.id}>
                                     <List key={order.id}>
-                                        {/* <Divider /> */}
                                         <ListItem
                                             sx={{
                                                 px: '0px',
@@ -60,7 +48,6 @@ function PriceData({ orders }) {
                                             <ListItemText
                                                 onClick={() => {
                                                     handleChangeCollapse(index)
-                                                    // changeBooleanArray(index)
                                                 }}
                                                 primary={
                                                 <Box
@@ -72,43 +59,17 @@ function PriceData({ orders }) {
                                                 >
                                                     <Typography>
                                                         {descriptionWithoutIngredientsOut(order.description)}
-                                                        {/* {
-                                                            subElements[index].ingredientsOut.map(item => (
-                                                                <>
-                                                                    , <CrossText component={'span'}>{item}</CrossText>
-                                                                </>
-                                                            ))
-                                                        } */}
                                                     </Typography>
                                                     <Typography>
                                                         ${order.totalCostByItem}
                                                     </Typography>
                                                 </Box>
                                                 }
-                                                // secondary={
-                                                // <>
-                                                //     {
-                                                //         `${order.mass}${Object.keys(order.extra).map(ingredient => {
-                                                //             return `, ${order.extra[ingredient]}x ${ingredient}`
-                                                //         }).join('')
-                                                //         }`
-                                                //     }
-                                                //     {
-                                                //         order.ingredientsModal.map((ingredient, index) => (
-                                                //             <Box
-                                                //                 key={ingredient + index}
-                                                //                 component={'label'}
-                                                //             >, <CrossText component={'span'}>{ingredient}</CrossText>
-                                                //             </Box>
-                                                //         ))
-                                                //     }
-                                                // </>
-                                                // }
                                             />
                                         </ListItem>
                                         <Divider />
                                     </List>
-                                    {/* <Collapse in={openCollapse[index]} timeout={'auto'} unmountOnExit > */}
+
                                     <Collapse in={openCollapse[index]} timeout={'auto'} unmountOnExit >
                                         <List>
                                             <ListItemText
@@ -141,6 +102,7 @@ function PriceData({ orders }) {
                                                         {
                                                             order.extraIngredients.map(extraIngredient => (
                                                                 <Box
+                                                                    key={extraIngredient.name}
                                                                     component={'div'}
                                                                     sx={{
                                                                     display: 'flex',
@@ -171,7 +133,7 @@ function PriceData({ orders }) {
                                             />
                                         </List>
                                     </Collapse>
-                                </>
+                                </Box>
                             ))
                         }
 

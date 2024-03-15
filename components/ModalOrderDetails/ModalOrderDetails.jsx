@@ -1,26 +1,10 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import useGetModal from '@/hooks/useGetModal'
-import { loadStripe } from '@stripe/stripe-js'
-import {Elements} from '@stripe/react-stripe-js'
-import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
-import useGetUser from '@/hooks/useGetUser'
-import useGetPlace from '@/hooks/useGetPlace'
-import useGetOrders from '@/hooks/useGetOrders'
-import useGetCheckout from '@/hooks/useGetCheckout'
-import {totalPrice} from '@/utils/priceCar'
-import { createPaymentRequest, updatePaymentRequest } from '@/services/checkoutApi'
-import { descriptionOrder } from '@/utils/preparingData'
-
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
 import OrderData from '@/components/ModalOrderDetails/OrderData'
 import OtherData from '@/components/ModalOrderDetails/OtherData'
 import PriceData from '@/components/ModalOrderDetails/PriceData'
@@ -47,80 +31,6 @@ const style = {
 }
 
 function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrder }) {
-
-    // const { open, handleCloseModal } = useGetModal({modalType: 'pay'})
-    // const {user} = useGetUser()
-    // const {place} = useGetPlace()
-    // const {orders} = useGetOrders()
-    // const {checkout} = useGetCheckout()
-    // const [messageDelivery, setMessageDelivery] = useState('')
-    // const [preMessageDelivery, setPreMessageDelivery] = useState('')
-
-    // const [clientSecret, setClientSecret] = useState('')
-    // const [dataStripe, setDataStripe] = useState(null)
-    // const [payment_method, setPayment_metod] = useState('null')
-    // const orderDescription = useMemo(() => {
-    //     return orders.map(order => descriptionOrder(order)).join("; ")
-    // }, [orders])
-
-    // useEffect(() => {
-    //     if (!place.deadLine) return
-    //     let newMessageDeliver
-    //     let newPreMessageDelivery
-    //     if (dayjs().isSame(dayjs(place.deadLine.date.realDate, 'D/M/YYYY'), 'day')) {
-    //         newMessageDeliver = `${place.deadLine.time.realTime} (${place.deadLine.time.relativeTime})`
-    //         newPreMessageDelivery = 'Se espera a las:'
-    //     } else {
-    //         newMessageDeliver = `${place.deadLine.date.relativeDate.split(", ")[1]} a las ${place.deadLine.time.realTime}`
-    //         newPreMessageDelivery = 'Se espera el:'
-    //     }
-    //     setMessageDelivery(newMessageDeliver)
-    //     setPreMessageDelivery(newPreMessageDelivery)
-    // }, [place])
-
-    // useEffect(() => {
-    //     if (!orders.length) return
-    //     if (!dataStripe) {
-    //         const {totalClient} = totalPrice(orders)
-    //         createPaymentRequest({userId: user.id, email: user.email, amount: totalClient, description: orderDescription, payInPlace: false})
-    //             .then(data => {
-    //                 if (data.clientSecret) {
-    //                     const { clientSecret, id, status } = data
-    //                     setClientSecret(data.clientSecret)
-    //                     setDataStripe({clientSecret, id, status})
-    //                 }
-    //                 else console.log('Error:', data.message)
-    //             })
-    //     } else {
-    //         const {totalClient} = totalPrice(orders)
-    //         updatePaymentRequest({amount: totalClient, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
-    //             .then(data => {
-    //                 if (data.clientSecret) {
-    //                     const { clientSecret, id, status } = data
-    //                     setClientSecret(data.clientSecret)
-    //                     setDataStripe({clientSecret, id, status})
-    //                 }
-    //                 else console.log('Error:', data.message)
-    //             })
-    //     }
-    // }, [orders])
-
-    // const appearance = {
-    //     theme: 'stripe'
-    // }
-
-    // const options = {
-    //     clientSecret,
-    //     appearance
-    // }
-
-    // function handleDataStripe(value) {
-    //     setDataStripe(value)
-    // }
-
-    // function handlePaymentMethod(paymethod) {
-    //     setPayment_metod(paymethod)
-    // }
 
     return (
         <Modal

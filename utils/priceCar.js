@@ -5,7 +5,7 @@ export function twoDecimals(number) {
     return numberBefore
 }
 
-export function calculateTotalPay(totalCar) {
+export function calculateTotalPay(totalCar, stripe) {
     if (totalCar === 0) return {
         totalClient: 0,
         totalPriceCar: 0
@@ -13,7 +13,7 @@ export function calculateTotalPay(totalCar) {
     const tasaIVA = 0.16
     const commissionIVA = totalCar * tasaIVA
     // const commissionStripe = totalCar * 0.036 + 3
-    const commissionStripe = (totalCar + commissionIVA) * 0.036 + 3
+    const commissionStripe = stripe ? (totalCar + commissionIVA) * 0.036 + 3 : 0
     const IVA = (commissionStripe) * tasaIVA
     const totalClient = totalCar + commissionStripe + IVA
     return ({
@@ -25,9 +25,9 @@ export function calculateTotalPay(totalCar) {
     })
 }
 
-export function totalPrice(orders) {
+export function totalPrice(orders, stripe) {
     const totalPriceCar = orders.reduce((acc, cur) => {
         return acc + cur.totalPrice
     }, 0)
-    return calculateTotalPay(totalPriceCar)
+    return calculateTotalPay(totalPriceCar, stripe)
 }

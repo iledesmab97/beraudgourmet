@@ -55,7 +55,7 @@ function ModalCheckoutForm() {
     const {user} = useGetUser()
     const {place} = useGetPlace()
     const {orders} = useGetOrders()
-    const {checkout} = useGetCheckout()
+    const {checkout, handleAddCheckout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
     const [preMessageDelivery, setPreMessageDelivery] = useState('')
 
@@ -123,6 +123,8 @@ function ModalCheckoutForm() {
 
     function handlePaymentMethod(paymethod) {
         setPayment_metod(paymethod)
+        if (paymethod === 'card') handleAddCheckout(totalPrice(orders, true))
+        else handleAddCheckout(totalPrice(orders))
     }
 
     return (

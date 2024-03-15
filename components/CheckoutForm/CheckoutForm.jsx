@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import { contactUs } from '@/utils/contact'
 import { descriptionOrder } from '@/utils/preparingData'
 import { updatePaymentRequest } from '@/services/checkoutApi'
+import { registerOrder } from '@/services/orderApi'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -23,19 +24,6 @@ import Checkbox from '@mui/material/Checkbox'
 import styles from './CheckoutForm.module.css'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
-
-async function registerOrder(data) {
-    fetch(`${PATH_BACK}/orders`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-        .then(res => res.json())
-        .then(data => {
-            console.log('The new order has been created successfully')
-            return data
-        })
-}
 
 export default function CheckoutForm({user, place, orders, checkout, payment_method, dataStripe, handlePaymentMethod, handleCloseModal, handleDataStripe}) {
 
@@ -198,6 +186,16 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         setChecked((prev) => !prev)
     }
 
+    async function bayByTransferens() {
+        await registerOrder({
+            ...dataOrders,
+            paymentMethod: 'transfer',
+            paid: false,
+        })
+        contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })
+        handleCloseModal('pay')
+    }
+
     return (
         <Box
             id='payment-form'
@@ -335,7 +333,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                             </Box>
                                             <Button
                                                 variant='contained'
-                                                onClick={() => contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })}
+                                                onClick={bayByTransferens}
                                             >
                                                 {
                                                     'Contactar con nostros'

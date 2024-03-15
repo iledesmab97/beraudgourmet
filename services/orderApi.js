@@ -26,3 +26,18 @@ export async function sendImage(id, formData) {
         body: formData,
     })
 }
+
+export async function registerOrder(data) {
+    fetch(`${PATH_BACK}/orders`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            console.log('La orden fue creada exitosamente')
+            return data
+        })
+        .catch(error => alert(error.message))
+}
