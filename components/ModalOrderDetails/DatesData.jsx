@@ -13,6 +13,7 @@ function DatesData({dates}) {
             {
                 userInformation.map((item) => (
                     <Box
+                        key={dates[item.name]}
                         sx={{
                             width: '100%',
                             display: 'flex',
