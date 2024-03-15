@@ -17,7 +17,8 @@ function DataPanel() {
     const [tabSelected, setTabSelected] = useState(0)
     const [orders, setOrders] = useState([])
 
-    useEffect(() => {        getAllOrders()
+    useEffect(() => {
+        getAllOrders()
             .then(data => updateOrders(data))
     }, [])
 
