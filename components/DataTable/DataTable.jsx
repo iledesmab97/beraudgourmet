@@ -35,7 +35,7 @@ function DataTable({ orders, updateOrders }) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
-    const [openOrderDetail, setOpenOrderDetail] = useState(null)
+    const [openOrderDetail, setOpenOrderDetail] = useState(false)
     const open = Boolean(anchorEl)
     const fileInput = useRef()
     const { handleUpdateAlertMessage } = useGetAlertMessage()
