@@ -15,6 +15,7 @@ function StoreData({store}) {
             {
                 userInformation.map((item) => (
                     <Box
+                        key={store[item.name] + store[item.id]}
                         sx={{
                             width: '100%',
                             display: 'flex',

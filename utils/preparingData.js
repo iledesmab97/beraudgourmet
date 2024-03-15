@@ -2,6 +2,7 @@ import { ROLES } from '@/config/user'
 
 const sameProperties = [ 'name', 'email', 'promotion', 'verified']
 const regExpIngredientsOut = /\~(.*?)\~/g
+const regExpSize = /\((.*?)\)/
 
 export function userDataFromBackToFront(userBack) {
     const {id, name, email, phoneNumber, promotion, verified, RoleId} = userBack
@@ -48,4 +49,41 @@ export function descriptionOrder(order) {
 export function extractIngredientsOut(text) {
     const resultados = [...text.matchAll(regExpIngredientsOut)]
     return resultados.map(ingredient => ingredient[1])
+}
+
+export function extractElements(text) {
+    const allElements = text.split(", ")
+    console.log('allElements:', allElements)
+    const genericPizza = [allElements[0], allElements[1]].join(', ')
+    const pizza =  allElements[0]
+    const destructuringX = pizza.split(" x ")
+    const quantityPizza = destructuringX[0]
+    const name = destructuringX[1].split(' (')[0]
+    const masaType = allElements[1]
+    const size = [...text.match(regExpSize)][1]
+    const extraIngredients = allElements.filter((item, index) => (index > 1) && !item.includes('~')).map(item => {
+        const itemDivided = item.split('x ')
+        return {
+            quantity: itemDivided[0],
+            name: itemDivided[1]
+        }
+    })
+    const ingredientsOut = extractIngredientsOut(text)
+    return {
+        ingredientsOut,
+        extraIngredients,
+        pizza: {
+            name,
+            masaType,
+            size,
+            quantityPizza
+        },
+        genericPizza
+    }
+}
+
+export function descriptionWithoutIngredientsOut(description) {
+    const allElements = description.split(", ")
+    const descriptionWithOutIngredientsOut = allElements.filter(item => !item.includes('~')).join(', ')
+    return descriptionWithOutIngredientsOut
 }

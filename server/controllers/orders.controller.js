@@ -27,10 +27,11 @@ async function findAllOrders({userId}) {
 
 async function getAllOrders(req, res) {
     const { userId } = req.params
+    console.log('todo esta bien al iniciar la request')
     try {
         const allOrders = await findAllOrders({userId})
         const ordersToReturn = allOrders.map(async (order) => {
-            const {id, totalCost, applicationDate, deliveryDate, StripeId, paymentMethod, delivery, closed, paid, url} = order
+            const {id, totalCostByItems, commissions, totalCost, applicationDate, deliveryDate, StripeId, paymentMethod, delivery, closed, paid, url} = order
             // Find the User
             const user = await User.findByPk(order.UserId, {
                 attributes: ['id', 'name', 'phoneNumber']
@@ -53,8 +54,41 @@ async function getAllOrders(req, res) {
                     OrderId: id
                 }
             })
+                .then(data => data.map( extraIngredient => extraIngredient.dataValues))
+
+            // Find Extra ingredients by OrderPizza
+            const listExtraIngredientsByOrdersPizza = []
+
+            for (item of itemsxOrder) {
+                const extraIngredientsByOrderPizza = await ExtraIngredientsxOrderPizza.findAll({
+                    where: {
+                        OrderPizzaId: item.OrderItemId
+                    }    
+                })
+                    .then(data => data.map( extraIngredient => extraIngredient.dataValues))
+                    .then(async (data) => {
+                        const listIdExtraIngredients = data.map(ingredientExtra => ingredientExtra.PizzaExtraIngredientId)
+                        const extraIngredient = await PizzaExtraIngredient.findAll({
+                            where: {
+                                id: listIdExtraIngredients
+                            }
+                        })
+                        return data.map((extraIngredinet, index) => ({
+                            name: extraIngredient[index].name,
+                            costPerUnit: extraIngredient[index].cost,
+                            quantity: extraIngredinet.quantity,
+                            cost: extraIngredinet.cost
+                        }))
+                    })
+                // const extraIngredient = await PizzaExtraIngredient.findByPk()
+                listExtraIngredientsByOrdersPizza.push(extraIngredientsByOrderPizza)
+            }
+
+            // make new order
             const newOrder = {
                 id,
+                totalCostByItems,
+                commissions,
                 totalCost,
                 applicationDate,
                 deliveryDate,
@@ -67,7 +101,10 @@ async function getAllOrders(req, res) {
                 paid,
                 deliveryInformation,
                 url,
-                itemsxOrder
+                itemsxOrder: itemsxOrder.map((item, index) => ({
+                    ...item,
+                    extraIngredients: listExtraIngredientsByOrdersPizza[index]
+                }))
             }
             return newOrder
         })

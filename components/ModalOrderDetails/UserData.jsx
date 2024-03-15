@@ -14,6 +14,7 @@ function UserData({user}) {
             {
                 userInformation.map((item) => (
                     <Box
+                        key={user[item.name]}
                         sx={{
                             width: '100%',
                             display: 'flex',
