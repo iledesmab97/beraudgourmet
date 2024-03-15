@@ -53,7 +53,6 @@ export function extractIngredientsOut(text) {
 
 export function extractElements(text) {
     const allElements = text.split(", ")
-    console.log('allElements:', allElements)
     const genericPizza = [allElements[0], allElements[1]].join(', ')
     const pizza =  allElements[0]
     const destructuringX = pizza.split(" x ")
