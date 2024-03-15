@@ -1,6 +1,16 @@
 const {PizzaCost, PizzaCharacteristic, Pizza, PizzaMass, PizzaSize } = require('../db')
 const { findOrCreatedPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
 
+async function findPizzaCost({PizzaCharacteristicId, PizzaId}) {
+    const pizzaCost = await PizzaCost.findOne({
+        where: {
+            PizzaCharacteristicId,
+            PizzaId
+        }
+    })
+    return pizzaCost
+}
+
 async function getAllPizzaCosts(req, res) {
     try {
         const allPizzaCosts = await PizzaCost.findAll()
@@ -131,5 +141,6 @@ module.exports = {
     getAllPizzaCosts,
     addPizzaCosts,
     removePizzaCosts,
-    makePizzaCost
+    makePizzaCost,
+    findPizzaCost
 }

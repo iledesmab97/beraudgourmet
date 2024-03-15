@@ -2,6 +2,7 @@ require('dotenv').config({ path: '.env.local'})
 const dayjs = require('dayjs')
 const {Order, KindProduct, OrderPizza, ExtraIngredientsxOrderPizza, ItemsxOrder, PizzaCharacteristic, PizzaMass, PizzaSize, PizzaExtraIngredient, PizzaIngredient, Pizza, User, Store, DeliveryInformation } = require('../db')
 const { findPizzaCharacteristic } = require('./pizzaCharacteristics.controller')
+const { findPizzaCost } = require('./pizzaCosts.controller')
 const { Op } = require('sequelize')
 const { dateStringToDate } = require('../libs/dates')
 
@@ -27,7 +28,6 @@ async function findAllOrders({userId}) {
 
 async function getAllOrders(req, res) {
     const { userId } = req.params
-    console.log('todo esta bien al iniciar la request')
     try {
         const allOrders = await findAllOrders({userId})
         const ordersToReturn = allOrders.map(async (order) => {
@@ -56,6 +56,14 @@ async function getAllOrders(req, res) {
             })
                 .then(data => data.map( extraIngredient => extraIngredient.dataValues))
 
+            // Find generic const Pizza
+            const listGenericCostPizza = []
+
+            for (pizza of itemsxOrder) {
+                const orderPizza = await OrderPizza.findByPk(pizza.OrderItemId).then(data => data.dataValues)
+                listGenericCostPizza.push(orderPizza.cost)
+            }
+
             // Find Extra ingredients by OrderPizza
             const listExtraIngredientsByOrdersPizza = []
 
@@ -80,7 +88,6 @@ async function getAllOrders(req, res) {
                             cost: extraIngredinet.cost
                         }))
                     })
-                // const extraIngredient = await PizzaExtraIngredient.findByPk()
                 listExtraIngredientsByOrdersPizza.push(extraIngredientsByOrderPizza)
             }
 
@@ -103,7 +110,8 @@ async function getAllOrders(req, res) {
                 url,
                 itemsxOrder: itemsxOrder.map((item, index) => ({
                     ...item,
-                    extraIngredients: listExtraIngredientsByOrdersPizza[index]
+                    extraIngredients: listExtraIngredientsByOrdersPizza[index],
+                    genericCost: listGenericCostPizza[index]
                 }))
             }
             return newOrder
@@ -145,11 +153,18 @@ async function addOrder(req, res) {
                     // find pizza characteristics
                     const pizzaCharacteristics = await findPizzaCharacteristic({ size, mass })
 
+                    // find cost of pizza
+                    const pizzaCost = await findPizzaCost({
+                        PizzaCharacteristicId: pizzaCharacteristics.id,
+                        PizzaId: pizza.id
+                    })
+
                     // add order pizza
                     const newOrderPizza = await OrderPizza.create({
                         idCharacteristicsPizza: pizzaCharacteristics.id,
                         quantity,
-                        idPizza: pizza.id
+                        idPizza: pizza.id,
+                        cost: Math.ceil(pizzaCost.costIVA)
                     })
                     console.log('added new OrderPizza successfully')
     
