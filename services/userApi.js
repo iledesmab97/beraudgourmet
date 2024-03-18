@@ -61,6 +61,6 @@ export async function lookingForUserLoged(){
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
     } catch(error) {
-      return {error: error.message}
+      return {message: error.message}
     }
 }
