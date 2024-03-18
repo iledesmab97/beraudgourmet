@@ -11,7 +11,7 @@ const port = process.env.SERVER_PORT
 async function bootstap() {
     
     await initDB()
-    const app = next({ dev, hostname, port })
+    const app = dev ? next({ dev, hostname, port }) : next({ dev, hostname })
     const handle = app.getRequestHandler()
 
     app.prepare().then(() => {
@@ -23,7 +23,11 @@ async function bootstap() {
         createRoot()
         server.listen(port, (error) => {
             if (error) throw error
-            console.log(`> Server listening at http://${hostname}:${port} as ${dev ? 'development' : process.env.NODE_ENV}`)
+            if (dev) {
+                console.log(`> Server listening at http://${hostname}:${port} as ${dev ? 'development' : process.env.NODE_ENV}`)
+            } else {
+                console.log(`> Server listening at http://${hostname} as ${dev ? 'development' : process.env.NODE_ENV}`)
+            }
         })
     })
 }

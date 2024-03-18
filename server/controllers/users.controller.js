@@ -39,7 +39,6 @@ async function getUser (req, res) {
 }
 
 async function isEmailRegistered (req, res) {
-    console.log('pasando por isEmailRegistered')
     const { email } = req.query
     try {
         if (!email) throw new Error('Identifier can not to be null')
