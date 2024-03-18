@@ -18,6 +18,7 @@ function DeliveryData({deliveryInformation}) {
                     
                     deliveryInformation[item.name] ? (
                         <Box
+                            key={item.name}
                             sx={{
                                 width: '100%',
                                 display: 'flex',
