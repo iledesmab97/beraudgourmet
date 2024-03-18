@@ -38,7 +38,7 @@ function Menu () {
     lookingForUserLoged()
       .then(user => {
         if (!user) return false
-        if (user.error) throw new Error(user.error)
+        // if (user.message) throw new Error(user.message)
         handleAddUser(user)
         return true
       })
