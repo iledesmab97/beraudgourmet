@@ -36,9 +36,9 @@ function Menu () {
 
   useEffect(() => {
     lookingForUserLoged()
-      .then(user => {
+      .then((user: any) => {
         if (!user) return false
-        // if (user.message) throw new Error(user.message)
+        if (user.message) throw new Error(user.message)
         handleAddUser(user)
         return true
       })
