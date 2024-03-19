@@ -14,7 +14,10 @@ export function verifyEmailUser(token) {
 }
 
 export function fetchwhoAmI() {
-    return fetch(`${PATH_BACK}/users/loged`)
+    return fetch(`${PATH_BACK}/users/loged`, {
+        method: 'GET',
+        credentials: "include",
+    })
         .then(response => response.json())
         .then(data => {
             if (data.message) return null
