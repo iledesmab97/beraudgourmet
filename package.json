@@ -6,7 +6,7 @@
     "dev": "next dev",
     "server": "nodemon",
     "build": "next build",
-    "start": "node index.js",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
