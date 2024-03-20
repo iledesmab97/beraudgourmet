@@ -66,6 +66,7 @@ function searchUser(email) {
 function requestLogout() {
     return fetch(`${PATH_BACK}/users/logout`, {
         method: 'POST',
+        credentials: "include",
         headers: { "Content-Type": "application/json" }
     })
         .then(response => response.json())
