@@ -1,5 +1,7 @@
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+
 export function createPaymentRequest({userId, email, amount, description, payInPlace}) {
-    return fetch('api/checkout', {
+    return fetch(`${PATH_BACK}/checkout`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -15,7 +17,7 @@ export function createPaymentRequest({userId, email, amount, description, payInP
 }
 
 export function updatePaymentRequest({amount, stripeId, description, payInPlace}) {
-    return fetch('api/checkout', {
+    return fetch(`${PATH_BACK}/checkout`, {
         method: 'PUT',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
