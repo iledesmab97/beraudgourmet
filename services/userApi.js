@@ -14,7 +14,10 @@ export function verifyEmailUser(token) {
 }
 
 export function fetchwhoAmI() {
-    return fetch(`${PATH_BACK}/users/loged`)
+    return fetch(`${PATH_BACK}/users/loged`, {
+        method: 'GET',
+        credentials: "include",
+    })
         .then(response => response.json())
         .then(data => {
             if (data.message) return null
@@ -35,6 +38,7 @@ export function newAccount(data) {
 export function updateMyAccount(data) {
     return fetch(`${PATH_BACK}/users/update`, {
         method: 'PUT',
+        credentials: "include",
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(data)
     })
@@ -46,6 +50,7 @@ export function verifyProperty(data) {
     const { property } = data
     return fetch(`${PATH_BACK}/users/verify/${property}`, {
         method: 'POST',
+        credentials: "include",
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(data)
     })
