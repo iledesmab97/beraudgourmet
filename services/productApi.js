@@ -2,7 +2,6 @@ import { twoDecimals } from '@/utils/priceCar'
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getPizzas() {
-  console.log('URL:', `${PATH_BACK}/pizzas`)
   return fetch(`${PATH_BACK}/pizzas`)
     .then(response => response.json())
     .then(data => {
@@ -76,7 +75,6 @@ export function getPizzaCosts({type}) {
 }
 
 export async function getExtraIngredients() {
-  console.log('URL:', `${PATH_BACK}/pizzaExtraIngredients`)
   return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
     .then(response => response.json())
     .then(data => {
