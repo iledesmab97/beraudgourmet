@@ -20,7 +20,7 @@ export function fetchwhoAmI() {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.message) return null
+            if (data.message) return data.message
             return data
         })
 }
