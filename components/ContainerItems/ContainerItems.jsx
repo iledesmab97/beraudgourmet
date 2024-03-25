@@ -11,10 +11,12 @@ import CardMedia from '@mui/material/CardMedia'
 import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 
 import itemsJSON from '@/menuStore.json'
 
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
+import { fetchwhoAmI } from '@/services/userApi'
 
 // import style from './ContainerItems.module.css'
 
@@ -81,6 +83,13 @@ function ContainerItems () {
           ))
         }
       </Grid>
+        <Button
+          onClick={() => {
+            fetchwhoAmI().then(data => console.log('data:', data))
+          }}
+        >
+          Quien soy
+        </Button>
     </Grid>
   )
 }
