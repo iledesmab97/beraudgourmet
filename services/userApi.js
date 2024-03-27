@@ -72,5 +72,5 @@ export async function lookingForUserLoged(){
 
 export async function saveToken({ tokenUser, SameSite, Path, expires, Secure }) {
     Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
-    const currentCookie = Cookies.get('tokenUser')
+    window.location.href = "/menu"
 }
