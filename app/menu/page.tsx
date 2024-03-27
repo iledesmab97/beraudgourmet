@@ -16,10 +16,10 @@ import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 
 import { useLoadScript } from "@react-google-maps/api"
-import useGetUser from '@/hooks/useGetUser';
+import useGetUser from '@/hooks/useGetUser'
 import useGetModal from '@/hooks/useGetModal'
 import { modalSaved } from '@/utils/modal'
-import { lookingForUserLoged, saveToken } from '@/services/userApi'
+import { lookingForUserLoged, saveToken, saveUserLogedInLocalStorage } from '@/services/userApi'
 
 
 function Menu ({ searchParams }: { searchParams: any }) {
@@ -27,8 +27,8 @@ function Menu ({ searchParams }: { searchParams: any }) {
   const userJWT = searchParams
 
   if (Object.keys(userJWT).length && typeof window !== 'undefined') {
-    const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
-    saveToken({...userJWT, expires , Secure: userJWT.Secure === '' ? true : false })
+    // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
+    saveToken( userJWT )
   }
 
   const [open, setOpen] = useState(false);
@@ -42,6 +42,9 @@ function Menu ({ searchParams }: { searchParams: any }) {
   const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    const loged = localStorage.getItem('loged')
+    if (!loged) return
     lookingForUserLoged()
       .then((user: any) => {
         if (!user) return false
