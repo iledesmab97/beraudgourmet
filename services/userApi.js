@@ -20,7 +20,7 @@ export function fetchwhoAmI() {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.message) return data.message
+            if (data.message) throw new Error(data.message)
             return data
         })
 }
@@ -59,8 +59,8 @@ export function verifyProperty(data) {
 }
 
 export async function lookingForUserLoged(){
-    const tokenUser = Cookies.get('tokenUser')
-    if (!tokenUser) return false
+    // const tokenUser = Cookies.get('tokenUser')
+    // if (!tokenUser) return false
     try {
         const user = await fetchwhoAmI()
         const userDataFront = userDataFromBackToFront(user)
