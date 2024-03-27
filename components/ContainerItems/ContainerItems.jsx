@@ -83,13 +83,13 @@ function ContainerItems () {
           ))
         }
       </Grid>
-        {/* <Button
+        <Button
           onClick={() => {
             fetchwhoAmI().then(data => console.log('data:', data))
           }}
         >
           Quien soy
-        </Button> */}
+        </Button>
     </Grid>
   )
 }

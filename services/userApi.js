@@ -62,15 +62,19 @@ export async function lookingForUserLoged(){
     // const tokenUser = Cookies.get('tokenUser')
     // if (!tokenUser) return false
     try {
+        console.log('quiero saber quien soy')
         const user = await fetchwhoAmI()
+        console.log('mi respuesta es:', user)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
     } catch(error) {
+        console.log('algo salió mal y entré en el error de lookingForUserLoged')
       return {message: error.message}
     }
 }
 
 export function requestCookie(data) {
+    console.log('la data debe ser igual al tokenUser pero encerrado en un objeto:', data)
     return fetch(`${PATH_BACK}/users/verify-token`, {
         method: 'POST',
         credentials: "include",
@@ -84,9 +88,11 @@ export function requestCookie(data) {
 
 export async function saveToken({ tokenUser }) {
     // Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
+    console.log('tokenUser desde saveToken:', tokenUser)
     const response = await requestCookie({ tokenUser })
+    console.log('la response de la solicitud de la cookie')
     if (response.message !== 'valid token') return alert(response.message)
-    saveUserLogedInLocalStorage()
+    // saveUserLogedInLocalStorage()
     window.location.href = "/menu"
 }
 
