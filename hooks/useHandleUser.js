@@ -5,6 +5,7 @@ import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
 import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
 import { useRouter } from 'next/navigation'
+import { removeUserLogedInLocalStorage } from '@/services/userApi'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -256,6 +257,7 @@ function useHandleUser() {
     async function signOff() {
         const {message} = await requestLogout()
         if (message === 'No hay usuario con la sesión activa') return
+        removeUserLogedInLocalStorage()
         setInputs(initialInputs)
         handleRemoveUser()
         console.log(message)
