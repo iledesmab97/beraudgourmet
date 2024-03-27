@@ -93,7 +93,7 @@ export async function saveToken({ tokenUser }) {
     console.log('la response de la solicitud de la cookie')
     if (response.message !== 'valid token') return alert(response.message)
     // saveUserLogedInLocalStorage()
-    // window.location.href = "/menu"
+    window.location.href = "/menu"
 }
 
 export function saveUserLogedInLocalStorage() {
