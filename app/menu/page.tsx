@@ -25,7 +25,7 @@ import { lookingForUserLoged, saveToken } from '@/services/userApi'
 function Menu ({ searchParams }: { searchParams: any }) {
 
   const userJWT = searchParams
-
+  console.log('userJWT desde el front:', userJWT)
   if (Object.keys(userJWT).length && typeof window !== 'undefined') {
     // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
     saveToken( userJWT )
@@ -42,6 +42,7 @@ function Menu ({ searchParams }: { searchParams: any }) {
   const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
   useEffect(() => {
+    console.log('entrando en el useEffect')
     lookingForUserLoged()
       .then((user: any) => {
         if (!user) return false
@@ -58,6 +59,7 @@ function Menu ({ searchParams }: { searchParams: any }) {
         }
       })
       .catch(error => {
+        console.log('algo salió mal y entré en el catch del useEffect')
         if (error.message === 'No token provided') return
         alert(error.message)})
   }, [])
