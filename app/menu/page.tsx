@@ -19,10 +19,17 @@ import { useLoadScript } from "@react-google-maps/api"
 import useGetUser from '@/hooks/useGetUser';
 import useGetModal from '@/hooks/useGetModal'
 import { modalSaved } from '@/utils/modal'
-import { lookingForUserLoged } from '@/services/userApi'
+import { lookingForUserLoged, saveToken } from '@/services/userApi'
 
 
-function Menu () {
+function Menu ({ searchParams }: { searchParams: any }) {
+
+  const userJWT = searchParams
+
+  if (Object.keys(userJWT).length && typeof window !== 'undefined') {
+    const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
+    saveToken({...userJWT, expires , Secure: userJWT.Secure === '' ? true : false })
+  }
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);

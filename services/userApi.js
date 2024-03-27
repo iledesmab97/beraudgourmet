@@ -69,3 +69,8 @@ export async function lookingForUserLoged(){
       return {message: error.message}
     }
 }
+
+export async function saveToken({ tokenUser, SameSite, Path, expires, Secure }) {
+    Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
+    window.location.href = "/menu"
+}
