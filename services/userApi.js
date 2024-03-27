@@ -70,7 +70,30 @@ export async function lookingForUserLoged(){
     }
 }
 
-export async function saveToken({ tokenUser, SameSite, Path, expires, Secure }) {
-    Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
+export function requestCookie(data) {
+    return fetch(`${PATH_BACK}/users/verify-token`, {
+        method: 'POST',
+        credentials: "include",
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(data => {
+            return data.json()
+        })
+}
+
+export async function saveToken({ tokenUser }) {
+    // Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
+    const response = await requestCookie({ tokenUser })
+    if (response.message !== 'valid token') return alert(response.message)
+    saveUserLogedInLocalStorage()
     window.location.href = "/menu"
+}
+
+export function saveUserLogedInLocalStorage() {
+    localStorage.setItem('loged', 'true')
+}
+
+export function removeUserLogedInLocalStorage() {
+    localStorage.removeItem('loged')
 }
