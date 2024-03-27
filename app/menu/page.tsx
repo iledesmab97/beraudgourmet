@@ -19,7 +19,7 @@ import { useLoadScript } from "@react-google-maps/api"
 import useGetUser from '@/hooks/useGetUser'
 import useGetModal from '@/hooks/useGetModal'
 import { modalSaved } from '@/utils/modal'
-import { lookingForUserLoged, saveToken, saveUserLogedInLocalStorage } from '@/services/userApi'
+import { lookingForUserLoged, saveToken } from '@/services/userApi'
 
 
 function Menu ({ searchParams }: { searchParams: any }) {
@@ -42,9 +42,6 @@ function Menu ({ searchParams }: { searchParams: any }) {
   const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const loged = localStorage.getItem('loged')
-    if (!loged) return
     lookingForUserLoged()
       .then((user: any) => {
         if (!user) return false
@@ -60,7 +57,9 @@ function Menu ({ searchParams }: { searchParams: any }) {
           localStorage.removeItem('modalToOpen')
         }
       })
-      .catch(error => alert(error.message))
+      .catch(error => {
+        if (error.message === 'No token provided') return
+        alert(error.message)})
   }, [])
 
   return (
