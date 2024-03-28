@@ -6,20 +6,15 @@ import { modalSaved } from '@/utils/modal'
 import useGetModal from '@/hooks/useGetModal'
 
 function useLogedUser() {
-    console.log('entrando en useLogedUser')
-    // const [ userIsLoged, setUserIsLoged ] = useState(false)
+
     const searchParams = useSearchParams()
     const { handleAddUser } = useGetUser()
     const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
     const tokenUser = searchParams.get('tokenUser')
-    console.log('tokenUser que es parte del state del useLogedUser:', tokenUser)
 
     const gerUserLoged = useCallback(async () => {
-        console.log('entrando en gerUserLoged con tokeUser:', tokenUser)
         if (tokenUser) {
-            console.log('entrando en el condicional if de getUserLoged')
-            // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
             await saveToken( tokenUser )
         }
         lookingForUserLoged()
@@ -38,7 +33,6 @@ function useLogedUser() {
                 }
             })
             .catch(error => {
-                console.log('algo salió mal y entré en el catch del useEffect')
                 if (error.message === 'No token provided') return
                 alert(error.message)
             })

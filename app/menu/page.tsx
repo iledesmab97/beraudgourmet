@@ -16,58 +16,17 @@ import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 
 import { useLoadScript } from "@react-google-maps/api"
-import useGetUser from '@/hooks/useGetUser'
-import useGetModal from '@/hooks/useGetModal'
-import { modalSaved } from '@/utils/modal'
-import { lookingForUserLoged, saveToken } from '@/services/userApi'
 import useLogedUser from '@/hooks/useLogedUser'
 
-function Menu ({ searchParams }: { searchParams: any }) {
+function Menu () {
 
-  const userJWT = searchParams
-  // console.log('userJWT desde el front:', userJWT)
-  // if (Object.keys(userJWT).length && typeof window !== 'undefined') {
-  //   // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
-  //   saveToken( userJWT )
-  // }
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyDc8oY7zb9QuGqlkM4kJoOui0lxPv6sOAg',
     libraries: ['places'],
   });
-  const { handleAddUser } = useGetUser()
-  const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
   const { gerUserLoged } = useLogedUser()
 
   useEffect(() => {
-    console.log('entrando en el useEffect')
-    // if (Object.keys(userJWT).length) {
-    //   // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
-    //   saveToken( userJWT )
-    // }
-    // lookingForUserLoged()
-    //   .then((user: any) => {
-    //     if (!user) return false
-    //     if (user.message) throw new Error(user.message)
-    //     handleAddUser(user)
-    //     return true
-    //   })
-    //   .then((response) => {
-    //     if (!response) return
-    //     const modal = modalSaved()
-    //     if (modal) {
-    //       handleOpenModal(modal)
-    //       localStorage.removeItem('modalToOpen')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log('algo salió mal y entré en el catch del useEffect')
-    //     if (error.message === 'No token provided') return
-    //     alert(error.message)
-    //   })
     gerUserLoged()
   }, [])
 

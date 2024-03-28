@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie'
-import jwt from 'jsonwebtoken'
 import { userDataFromBackToFront } from '@/utils/preparingData'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
@@ -59,8 +57,6 @@ export function verifyProperty(data) {
 }
 
 export async function lookingForUserLoged(){
-    // const tokenUser = Cookies.get('tokenUser')
-    // if (!tokenUser) return false
     try {
         console.log('quiero saber quien soy')
         const user = await fetchwhoAmI()
@@ -74,7 +70,6 @@ export async function lookingForUserLoged(){
 }
 
 export function requestCookie(tokenUser) {
-    console.log('la data debe ser igual al tokenUser pero encerrado en un objeto:', tokenUser)
     return fetch(`${PATH_BACK}/users/verify-token`, {
         method: 'POST',
         credentials: "include",
@@ -87,19 +82,7 @@ export function requestCookie(tokenUser) {
 }
 
 export async function saveToken( tokenUser ) {
-    // Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
-    console.log('tokenUser desde saveToken:', tokenUser)
     const response = await requestCookie( tokenUser )
-    console.log('la response de la solicitud de la cookie')
     if (response.message !== 'valid token') return alert(response.message)
-    // saveUserLogedInLocalStorage()
     window.location.href = "/menu"
-}
-
-export function saveUserLogedInLocalStorage() {
-    localStorage.setItem('loged', 'true')
-}
-
-export function removeUserLogedInLocalStorage() {
-    localStorage.removeItem('loged')
 }
