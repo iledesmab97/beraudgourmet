@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie'
-import jwt from 'jsonwebtoken'
 import { userDataFromBackToFront } from '@/utils/preparingData'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
@@ -14,10 +12,13 @@ export function verifyEmailUser(token) {
 }
 
 export function fetchwhoAmI() {
-    return fetch(`${PATH_BACK}/users/loged`)
+    return fetch(`${PATH_BACK}/users/loged`, {
+        method: 'GET',
+        credentials: "include",
+    })
         .then(response => response.json())
         .then(data => {
-            if (data.message) return null
+            if (data.message) throw new Error(data.message)
             return data
         })
 }
@@ -35,6 +36,7 @@ export function newAccount(data) {
 export function updateMyAccount(data) {
     return fetch(`${PATH_BACK}/users/update`, {
         method: 'PUT',
+        credentials: "include",
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(data)
     })
@@ -46,6 +48,7 @@ export function verifyProperty(data) {
     const { property } = data
     return fetch(`${PATH_BACK}/users/verify/${property}`, {
         method: 'POST',
+        credentials: "include",
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify(data)
     })
@@ -54,13 +57,32 @@ export function verifyProperty(data) {
 }
 
 export async function lookingForUserLoged(){
-    const tokenUser = Cookies.get('tokenUser')
-    if (!tokenUser) return false
     try {
+        console.log('quiero saber quien soy')
         const user = await fetchwhoAmI()
+        console.log('mi respuesta es:', user)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
     } catch(error) {
-      return {error: error.message}
+        console.log('algo salió mal y entré en el error de lookingForUserLoged')
+      return {message: error.message}
     }
+}
+
+export function requestCookie(tokenUser) {
+    return fetch(`${PATH_BACK}/users/verify-token`, {
+        method: 'POST',
+        credentials: "include",
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({tokenUser})
+    })
+        .then(data => {
+            return data.json()
+        })
+}
+
+export async function saveToken( tokenUser ) {
+    const response = await requestCookie( tokenUser )
+    if (response.message !== 'valid token') return alert(response.message)
+    window.location.href = "/menu"
 }

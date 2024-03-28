@@ -35,6 +35,9 @@ const initialState = {
     },
     userOrders: {
         open: false
+    },
+    legal: {
+        open: false
     }
 }
 

@@ -66,6 +66,7 @@ function searchUser(email) {
 function requestLogout() {
     return fetch(`${PATH_BACK}/users/logout`, {
         method: 'POST',
+        credentials: "include",
         headers: { "Content-Type": "application/json" }
     })
         .then(response => response.json())
@@ -175,6 +176,7 @@ function useHandleUser() {
         if ( errors.email || errors.password) return setErrors(errors)
         return fetch(`${PATH_BACK}/users/login`, {
             method: 'POST',
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         })

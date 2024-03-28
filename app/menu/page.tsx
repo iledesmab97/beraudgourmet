@@ -14,43 +14,28 @@ import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePas
 import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
 import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
+import ModalPDF from '@/components/ModalPDF/ModalPDF'
 
 import { useLoadScript } from "@react-google-maps/api"
-import useGetUser from '@/hooks/useGetUser';
-import useGetModal from '@/hooks/useGetModal'
-import { modalSaved } from '@/utils/modal'
-import { lookingForUserLoged } from '@/services/userApi'
+import useLogedUser from '@/hooks/useLogedUser'
+// import { pdfjs } from 'react-pdf';
+// pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
+// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+//   'pdfjs-dist/build/pdf.worker.min.js',
+//   import.meta.url,
+// ).toString();
 
 function Menu () {
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyDc8oY7zb9QuGqlkM4kJoOui0lxPv6sOAg',
     libraries: ['places'],
   });
-  const { handleAddUser } = useGetUser()
-  const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
+  const { gerUserLoged } = useLogedUser()
 
   useEffect(() => {
-    lookingForUserLoged()
-      .then(user => {
-        if (!user) return false
-        if (user.error) throw new Error(user.error)
-        handleAddUser(user)
-        return true
-      })
-      .then((response) => {
-        if (!response) return
-        const modal = modalSaved()
-        if (modal) {
-          handleOpenModal(modal)
-          localStorage.removeItem('modalToOpen')
-        }
-      })
-      .catch(error => alert(error.message))
+    gerUserLoged()
   }, [])
 
   return (
@@ -74,6 +59,7 @@ function Menu () {
       <ModalChangeEmail />
       <ModalCheckoutForm />
       <ModalUserOrders />
+      <ModalPDF />
     </Container>
   )
 }

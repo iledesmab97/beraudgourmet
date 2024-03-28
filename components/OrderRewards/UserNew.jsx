@@ -2,15 +2,19 @@
 
 import UserLoged from './UserLoged'
 
+import Link from 'next/link'
+
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
-
 import GoogleIcon from '@mui/icons-material/Google';
 
+import useGetModal from '@/hooks/useGetModal'
+
 import { fetchAuthGoogle } from '@/services/authApi'
+import { Typography } from '@mui/material'
 
 const styleButtons = {
     textTransform: 'none',
@@ -18,11 +22,20 @@ const styleButtons = {
     marginBottom: '4px'
 }
 
+const stylesLegal = {
+    color: 'rgb(28, 58, 93)',
+    textDecoration: 'underline',
+    cursor: 'pointer'
+}
+
 async function signInGoogle() {
     fetchAuthGoogle()
 }
 
 function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, logInUser, signUp }) {
+
+    const {handleOpenModal} = useGetModal({modalType: 'legal'})
+
     return (
         <>
             <Button
@@ -130,13 +143,23 @@ function UserNew({ inputs, handleChange, errors, editing, currentUser, handleCha
 
             {
                 !errors.email && !(errors.email === false) && !currentUser && (
-                    <Button
-                        variant='contained'
-                        disabled={false}
-                        onClick={signUp}
-                    >
-                        Registrarse
-                    </Button>
+                    <>
+                        <Typography
+                            align='center'
+                            sx={{
+                                fontSize: '0.9rem'
+                            }}
+                        >
+                            Al ser parte de Beraud acepto los <span style={stylesLegal} onClick={() => {handleOpenModal('legal')}}>términos y condiciones de uso</span>
+                        </Typography>
+                        <Button
+                            variant='contained'
+                            disabled={false}
+                            onClick={signUp}
+                        >
+                            Registrarse
+                        </Button>
+                    </>
                 )
             }
         </>

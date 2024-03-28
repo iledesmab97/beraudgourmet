@@ -2,22 +2,22 @@ import { twoDecimals } from '@/utils/priceCar'
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getPizzas() {
-    return fetch(`${PATH_BACK}/pizzas`)
-      .then(response => response.json())
-      .then(data => {
-        const pizzaList = data.map(pizza => {
-            const { id, name, text, image, ingredients } = pizza
-            const newPizzaData = {
-              id,
-              name,
-              text,
-              image,
-              ingredients
-            }
-            return newPizzaData
-        })
-        return pizzaList
-    })
+  return fetch(`${PATH_BACK}/pizzas`)
+    .then(response => response.json())
+    .then(data => {
+      const pizzaList = data.map(pizza => {
+          const { id, name, text, image, ingredients } = pizza
+          const newPizzaData = {
+            id,
+            name,
+            text,
+            image,
+            ingredients
+          }
+          return newPizzaData
+      })
+      return pizzaList
+  })
 }
 
 export function getPizzaCosts({type}) {
@@ -75,20 +75,20 @@ export function getPizzaCosts({type}) {
 }
 
 export async function getExtraIngredients() {
-    return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
-      .then(response => response.json())
-      .then(data => {
-        const extraIngredinetList = {}
-        data.forEach(extraIngredient => {
-          const {id, name, cost} = extraIngredient
-          extraIngredinetList[name] = {
-            id,
-            name,
-            price: cost
-          }
-        })
-        return extraIngredinetList
-    })
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
+    .then(response => response.json())
+    .then(data => {
+      const extraIngredinetList = {}
+      data.forEach(extraIngredient => {
+        const {id, name, cost} = extraIngredient
+        extraIngredinetList[name] = {
+          id,
+          name,
+          price: cost
+        }
+      })
+      return extraIngredinetList
+  })
 }
 
 export async function getPizzasWithCosts() {
