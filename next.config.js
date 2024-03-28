@@ -35,7 +35,11 @@ const nextConfig = {
       },
     ]
   },
-  // allowImportingTsExtensions: true,
+
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+      config.resolve.alias.canvas = false
+      return config
+  }
 };
 
 module.exports = nextConfig;

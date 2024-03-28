@@ -14,9 +14,17 @@ import ModalChangePassword from '@/components/ModalChangePassword/ModalChangePas
 import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
 import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
+import ModalPDF from '@/components/ModalPDF/ModalPDF'
 
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
+// import { pdfjs } from 'react-pdf';
+// pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+//   'pdfjs-dist/build/pdf.worker.min.js',
+//   import.meta.url,
+// ).toString();
 
 function Menu () {
 
@@ -51,6 +59,7 @@ function Menu () {
       <ModalChangeEmail />
       <ModalCheckoutForm />
       <ModalUserOrders />
+      <ModalPDF />
     </Container>
   )
 }
