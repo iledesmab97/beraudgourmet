@@ -25,7 +25,7 @@ import useLogedUser from '@/hooks/useLogedUser'
 function Menu ({ searchParams }: { searchParams: any }) {
 
   const userJWT = searchParams
-  console.log('userJWT desde el front:', userJWT)
+  // console.log('userJWT desde el front:', userJWT)
   // if (Object.keys(userJWT).length && typeof window !== 'undefined') {
   //   // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
   //   saveToken( userJWT )
@@ -40,7 +40,7 @@ function Menu ({ searchParams }: { searchParams: any }) {
   });
   const { handleAddUser } = useGetUser()
   const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
-  const { gerUserLoged } = useLogedUser(userJWT)
+  const { gerUserLoged } = useLogedUser()
 
   useEffect(() => {
     console.log('entrando en el useEffect')

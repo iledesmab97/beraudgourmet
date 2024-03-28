@@ -73,23 +73,23 @@ export async function lookingForUserLoged(){
     }
 }
 
-export function requestCookie(data) {
-    console.log('la data debe ser igual al tokenUser pero encerrado en un objeto:', data)
+export function requestCookie(tokenUser) {
+    console.log('la data debe ser igual al tokenUser pero encerrado en un objeto:', tokenUser)
     return fetch(`${PATH_BACK}/users/verify-token`, {
         method: 'POST',
         credentials: "include",
         headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify({tokenUser})
     })
         .then(data => {
             return data.json()
         })
 }
 
-export async function saveToken({ tokenUser }) {
+export async function saveToken( tokenUser ) {
     // Cookies.set('tokenUser', tokenUser, { SameSite, Path, expires, Secure })
     console.log('tokenUser desde saveToken:', tokenUser)
-    const response = await requestCookie({ tokenUser })
+    const response = await requestCookie( tokenUser )
     console.log('la response de la solicitud de la cookie')
     if (response.message !== 'valid token') return alert(response.message)
     // saveUserLogedInLocalStorage()
