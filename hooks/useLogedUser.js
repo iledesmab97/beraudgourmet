@@ -1,20 +1,26 @@
-import { useCallback } from "react"
+import { useCallback, useState, useEffect } from "react"
+import { useSearchParams } from 'next/navigation'
 import { lookingForUserLoged, saveToken } from '@/services/userApi'
 import useGetUser from '@/hooks/useGetUser'
 import { modalSaved } from '@/utils/modal'
 import useGetModal from '@/hooks/useGetModal'
 
-function useLogedUser(userJWT) {
-    console.log('userJWT desde useLogedUser:', userJWT)
+function useLogedUser() {
+    console.log('entrando en useLogedUser')
     // const [ userIsLoged, setUserIsLoged ] = useState(false)
-
+    const searchParams = useSearchParams()
     const { handleAddUser } = useGetUser()
     const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
+    const tokenUser = searchParams.get('tokenUser')
+    console.log('tokenUser que es parte del state del useLogedUser:', tokenUser)
+
     const gerUserLoged = useCallback(async () => {
-        if (Object.keys(userJWT).length) {
+        console.log('entrando en gerUserLoged con tokeUser:', tokenUser)
+        if (tokenUser) {
+            console.log('entrando en el condicional if de getUserLoged')
             // const expires = Number(userJWT["Max-Age"])/(1000*60*60*24)
-            await saveToken( userJWT )
+            await saveToken( tokenUser )
         }
         lookingForUserLoged()
             .then(( user ) => {
