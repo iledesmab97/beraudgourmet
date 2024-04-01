@@ -51,7 +51,10 @@ function ModalUserOrders() {
     return (
         <Modal
             open={open}
-            onClose={() => { handleChangeModal('userOrders', 'user') }}
+            onClose={() => {
+                handleChangeModal('userOrders', 'user')
+                localStorage.removeItem('modalToOpen')
+            }}
         >
             <Box
                 sx={style}
