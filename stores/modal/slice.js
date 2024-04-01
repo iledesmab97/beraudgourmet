@@ -1,13 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const modal = {
-    email: '',
-    name: '',
-    phone: '',
-    password: '',
-    notifications: ''
-}
-
 const initialState = {
     order: {
         open: false
@@ -128,6 +120,9 @@ export const modalSlice = createSlice({
                     [nameProduct]: action.payload
                 }
             }
+        },
+        updateModalToInitialState: (state, action) => {
+            return initialState
         }
     }
 })
@@ -140,5 +135,6 @@ export const {
     closeModalPlace,
     openModalOrder,
     closeModalOrder,
-    updateModalOrder
+    updateModalOrder,
+    updateModalToInitialState
 } = modalSlice.actions
