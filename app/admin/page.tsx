@@ -17,7 +17,7 @@ import styles from './page.module.css'
 
 function AdminPlace() {
 
-    const [ toolSelected, setToolSelected] = useState('Client')
+    const [ toolSelected, setToolSelected] = useState('Orders')
     const { handleAddUser } = useGetUser()
 
     useEffect(() => {
@@ -29,18 +29,21 @@ function AdminPlace() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    function handleToolSelected(event: any) {
+        setToolSelected(event.target.textContent)
+    }
+
     return (
         <Container maxWidth='lg'>
             <Grid
                 container
                 spacing={1}
-                direction='row'
                 alignItems='stretch'
                 justifyContent='space-between'
                 className={styles.AdminContainer}
             >
-                <ToolLateralBar toolSelected={toolSelected} />
-                <DataPanel />
+                <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                <DataPanel toolSelected={toolSelected} />
             </Grid>
             <AlertMessage/>
         </Container>
