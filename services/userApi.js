@@ -18,7 +18,6 @@ export function fetchwhoAmI() {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.message) throw new Error(data.message)
             return data
         })
 }
