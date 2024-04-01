@@ -58,13 +58,10 @@ export function verifyProperty(data) {
 
 export async function lookingForUserLoged(){
     try {
-        console.log('quiero saber quien soy')
         const user = await fetchwhoAmI()
-        console.log('mi respuesta es:', user)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
     } catch(error) {
-        console.log('algo salió mal y entré en el error de lookingForUserLoged')
       return {message: error.message}
     }
 }
