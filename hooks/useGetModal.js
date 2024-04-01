@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { openModal, closeModal, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder } from '@/stores/modal/slice'
+import { openModal, closeModal, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder, updateModalToInitialState } from '@/stores/modal/slice'
 
 export default function useGetModal({modalType}) {
 
@@ -43,6 +43,10 @@ export default function useGetModal({modalType}) {
         dispatch(updateModalOrder(newProduct))
     }
 
+    function handleUpdateModalToInitialState() {
+        dispatch(updateModalToInitialState())
+    }
+
     return {
         open: modal.open,
         product,
@@ -53,6 +57,7 @@ export default function useGetModal({modalType}) {
         handleCloseModalPlace,
         handleOpenModalOrder,
         handleCloseModalOrder,
-        handleUpdateModalOrder
+        handleUpdateModalOrder,
+        handleUpdateModalToInitialState
     }
 } 
