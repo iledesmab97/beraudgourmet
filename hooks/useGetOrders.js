@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { addOrder, removeOrder, updateOrder } from '@/stores/order/slice'
+import { addOrder, removeOrder, updateOrder, updateOrderToInitialState } from '@/stores/order/slice'
 
 export default function useGetOrders () {
 
@@ -17,6 +17,10 @@ export default function useGetOrders () {
     function handleUpdateOrder(newOrder) {
         dispatch(updateOrder(newOrder))
     }
+
+    function handleUpdateOrderToInitialState() {
+        dispatch(updateOrderToInitialState())
+    }
     
-    return {orders, handleAddOrder, handleRemoveOrder, handleUpdateOrder}
+    return {orders, handleAddOrder, handleRemoveOrder, handleUpdateOrder, handleUpdateOrderToInitialState}
 }
