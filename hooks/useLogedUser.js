@@ -29,7 +29,6 @@ function useLogedUser() {
                 const modal = modalSaved()
                 if (modal) {
                     handleOpenModal(modal)
-                    localStorage.removeItem('modalToOpen')
                 }
             })
             .catch(error => {

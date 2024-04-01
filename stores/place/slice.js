@@ -1,13 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const place = {
-    email: '',
-    name: '',
-    phone: '',
-    password: '',
-    notifications: ''
-}
-
 const initialState = {}
 
 export const placeSlice = createSlice({
@@ -52,10 +44,13 @@ export const placeSlice = createSlice({
                 ...state,
                 typeDelivery: {name, totalName}
             }
+        },
+        updatePlaceToInitialState: (state, action) => {
+            return initialState
         }
     }
 })
 
 export default placeSlice.reducer
 
-export const { addPlace, removePlace, addDeadLine, addTypeDelivery } = placeSlice.actions
+export const { addPlace, removePlace, addDeadLine, addTypeDelivery, updatePlaceToInitialState } = placeSlice.actions

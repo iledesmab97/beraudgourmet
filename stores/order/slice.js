@@ -17,10 +17,13 @@ export const ordersSlice = createSlice({
             let newOrders = [...state]
             newOrders[index] = item
             return newOrders
+        },
+        updateOrderToInitialState: (state, action) => {
+            return initialState
         }
     }
 })
 
 export default ordersSlice.reducer
 
-export const { addOrder, removeOrder, updateOrder } = ordersSlice.actions
+export const { addOrder, removeOrder, updateOrder, updateOrderToInitialState } = ordersSlice.actions
