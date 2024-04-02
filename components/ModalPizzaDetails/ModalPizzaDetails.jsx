@@ -1,35 +1,14 @@
 'use client'
 
-import Image from 'next/image'
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
-import Input from '@mui/material/Input'
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-
-import OrderData from '@/components/ModalOrderDetails/OrderData'
-import OtherData from '@/components/ModalOrderDetails/OtherData'
-import PriceData from '@/components/ModalOrderDetails/PriceData'
-
-import { useState } from 'react'
-
-// import styles from './ModalOrderDetails.module.css'
-import dayjs from 'dayjs'
+import PizzaImage from './PizzaImage'
+import PizzaText from './PizzaText'
+import PizzaIngredients from './PizzaIngredients'
+import PizzaCharacteristics from './PizzaCharacteristics'
 
 const style = {
     position: 'absolute',
@@ -50,12 +29,6 @@ const style = {
 }
 
 function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizza }) {
-
-    const [openColapse, setOpenColapse] = useState(false)
-
-    function handleOpenColapse() {
-        setOpenColapse(prevState => !prevState)
-    }
 
     return (
         <Modal
@@ -87,149 +60,20 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         boxSizing: 'border-box'
                     }}
                 >
-                    <Box
-                        sx={{
-                            width: '100%',
-                            height: '200px',
-                            minHeight: '200px',
-                            position: 'relative'
-                        }}
-                    >
-                        <Image
-                            src={currentPizza.image}
-                            alt={currentPizza.name}
-                            fill={true}
-                            sizes='auto'
-                            style={{
-                                objectFit: 'contain'
-                            }}
-                        />    
-                    </Box>
-                    <Divider sx={{ width: '100%'}} />
-                    <Input
-                        fullWidth={true}
-                        readOnly={true}
-                        // disabled={true}
-                        value={currentPizza.text}
-                    />
-                    <Divider sx={{ width: '100%'}} />
-                    <Box
-                        sx={{
-                            width: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            // alignItems: 'center'
-                        }}
-                    >
-                        <Typography variant='title' sx={{ alignSelf: 'center' }}>
-                            Ingredientes
-                        </Typography>
-                        <List
-                            // sx={{
-                            //     display: 'flex',
-                            //     flexDirection: 'column',
-                            //     alignItems: 'flex-start'
-                            // }}
-                        >
-                            {
-                                currentPizza.ingredients.map(ingredient => (
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={
-                                                <Input
-                                                    // fullWidth={true}
-                                                    readOnly={true}
-                                                    // disabled={true}
-                                                    value={ingredient}
-                                                />
-                                                // <Typography variant='p'>
-                                                //     {ingredient}
-                                                // </Typography>
-                                            }
-                                        />
-                                    </ListItem>
-                                ))
-                            }       
-                        </List>
-                    </Box>
-                    <Divider sx={{ width: '100%'}} />
-                    <Box>
-                        <Typography variant='title'>
-                            Tamaños y Masas Disponibles
-                        </Typography>
-                        <List>
-                            {
-                                Object.entries(currentPizza.size).map(([size, masses]) => (
-                                    <>
-                                        <ListItem
-                                            onClick={handleOpenColapse}
-                                        >
-                                            <ListItemText>
-                                                <Input
-                                                    readOnly={true}
-                                                    value={size}
-                                                />
-                                            </ListItemText>
-                                            {openColapse ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItem>
-                                        <Collapse in={openColapse} timeout={'auto'}>
-                                            <TableContainer>
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>Masa</TableCell>
-                                                            <TableCell>Costo</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {
-                                                            Object.entries(masses).map(([mass, cost]) => (
-                                                                <TableRow>
-                                                                    <TableCell>
-                                                                        <Input
-                                                                            readOnly={true}
-                                                                            value={mass}
-                                                                        />
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        <Input
-                                                                            readOnly={true}
-                                                                            value={cost}
-                                                                        />
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            ))
-                                                        }
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </Collapse>
-                                    </>
+                    <PizzaImage pizza={currentPizza} />
 
-                                ))
-                            }
-                        </List>
-                    </Box>
-                    <Divider/>
-                    {/* <h1>hola </h1>
-                    <h1>hola </h1>
-                    <h1>hola </h1>
-                    <h1>hola </h1> */}
-                    {/* <OrderData currentPizza={currentPizza} />
-                    <Divider sx={{ width: '100%'}} />
-
-                    <PriceData
-                        orders={currentPizza}
-                    />
                     <Divider sx={{ width: '100%'}} />
                     
-                    <OtherData
-                        user={currentPizza.user}
-                        store={currentPizza.store}
-                        dateEmited={currentPizza.applicationDate}
-                        dateToRecive={currentPizza.deliveryDate}
-                        deliveryInformation={currentPizza.deliveryInformation}
-                    />    */}
+                    <PizzaText text={currentPizza.text} />
+                    
+                    <Divider sx={{ width: '100%'}} />
+                    
+                    <PizzaIngredients ingredients={currentPizza.ingredients} />
+                    
+                    <Divider sx={{ width: '100%'}} />
+                    
+                    <PizzaCharacteristics sizes={currentPizza.size} />
+
                 </Box>                
             </Grid>
         </Modal> 
