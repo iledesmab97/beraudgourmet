@@ -6,6 +6,8 @@ import ListItemText from '@mui/material/ListItemText'
 import Input from '@mui/material/Input'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import Collapse from '@mui/material/Collapse'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -25,16 +27,34 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     return (
-        <Box>
-            <Typography variant='title'>
+        <Box
+            sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start'
+            }}
+        >
+            <Typography variant='title' sx={{ alignSelf: 'center' }}>
                 Tamaños y Masas Disponibles
             </Typography>
             <List>
                 {
                     Object.entries(sizes).map(([size, masses]) => (
-                        <>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignSelf: 'flex-start',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}
+                        >
                             <ListItem
                                 onClick={handleOpenColapse}
+                                sx={{
+                                    // display: 'inline',
+                                    width: 'fit-content'
+                                }}
                             >
                                 <ListItemText>
                                     <Input
@@ -42,17 +62,24 @@ function PizzaCharacteristics({ sizes }) {
                                         value={size}
                                     />
                                 </ListItemText>
-                                {openColapse ? <ExpandLess /> : <ExpandMore />}
+                                {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
                             </ListItem>
-                            <Collapse in={openColapse} timeout={'auto'}>
+                            <Collapse
+                                in={openColapse}
+                                timeout={'auto'}
+                                orientation='horizontal'
+                                // sx={{
+                                //     display: 'inline'
+                                // }}
+                            >
                                 <TableContainer>
                                     <Table>
-                                        <TableHead>
+                                        {/* <TableHead>
                                             <TableRow>
                                                 <TableCell>Masa</TableCell>
                                                 <TableCell>Costo</TableCell>
                                             </TableRow>
-                                        </TableHead>
+                                        </TableHead> */}
                                         <TableBody>
                                             {
                                                 Object.entries(masses).map(([mass, cost]) => (
@@ -76,7 +103,7 @@ function PizzaCharacteristics({ sizes }) {
                                     </Table>
                                 </TableContainer>
                             </Collapse>
-                        </>
+                        </Box>
                     ))
                 }
             </List>
