@@ -20,7 +20,7 @@ const listToolOptions = {
     },
     Pizzas: {
         title: 'Lista de Pizzas',
-        listTabs: ['Todas las pizzas', 'Pizzas incompletas']
+        listTabs: ['Todas las pizzas']
     }
 }
 
@@ -67,7 +67,7 @@ function DataPanel({ toolSelected }) {
                 toolSelected === 'Orders' ? <TableOrders orders={orders} updateOrders={updateOrders} /> : null
             }
             {
-                toolSelected === 'Pizzas' ? <TablePizzas pizzas={list} updateList={updateList} /> : null
+                toolSelected === 'Pizzas' ? <TablePizzas /> : null
             }
         </Grid>
     )
