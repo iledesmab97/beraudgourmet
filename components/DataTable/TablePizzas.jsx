@@ -20,7 +20,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
-import { getPizzas } from '@/services/productApi'
+import { getPizzas, getPizzaCosts } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
 
 import styles from './DataTable.module.css'
@@ -50,8 +50,15 @@ function TablePizzas() {
     }, [])
 
     async function updatePizzas() {
-        const response = await getPizzas()
-        setPizzas(response)
+        const responsePizzas = await getPizzas()
+        const responseCosts = await getPizzaCosts({type: 'object'})
+        const pizzas = responsePizzas.map(pizza => ({
+            ...pizza,
+            size: {
+                ...responseCosts[pizza.name]
+            }
+        }))
+        setPizzas(pizzas)
     }
 
     function handleOpenPizzaDetail(value) {
