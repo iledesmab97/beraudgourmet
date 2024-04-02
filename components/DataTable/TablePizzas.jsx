@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,16 +14,19 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
+import EditIcon from '@mui/icons-material/Edit'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
+import { getPizzas } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
 
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    pizzas: [ 'Nombre', 'Ingredientes' ,'Maza','Tamaños', 'Imagen', 'Acción' ]
+    pizzas: [ 'Nombre', 'Ingredientes', 'Imagen', 'Acción' ]
 }
 
 const colorsCell = {
@@ -31,28 +35,38 @@ const colorsCell = {
     early: 'green'
 }
 
-function TablePizzas({ pizzas, updatePizzas }) {
+function TablePizzas() {
 
-    // const [anchorEl, setAnchorEl] = useState(null)
-    // const [currentPizza, setCurrentPizza] = useState(null)
+    const [anchorEl, setAnchorEl] = useState(null)
+    const [currentPizza, setCurrentPizza] = useState(null)
     // const [openPizzaDetail, setOpenPizzaDetail] = useState(false)
-    // const open = Boolean(anchorEl)
+    const open = Boolean(anchorEl)
     // const fileInput = useRef()
     // const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [pizzas, setPizzas] = useState([])
+
+    useEffect(() => {
+        updatePizzas()
+    }, [])
+
+    async function updatePizzas() {
+        const response = await getPizzas()
+        setPizzas(response)
+    }
 
     // function handleOpenPizzaDetail(value) {
     //     setOpenPizzaDetail(value)
     //     handleClose()
     // }
 
-    // function handleClick(event, order) {
-    //     setAnchorEl(event.currentTarget)
-    //     setCurrentPizza(order)
-    // }
+    function handleClickButtonAction(event, pizza) {
+        setAnchorEl(event.currentTarget)
+        setCurrentPizza(pizza)
+    }
 
-    // function handleClose() {
-    //     setAnchorEl(null)
-    // }
+    function handleClose() {
+        setAnchorEl(null)
+    }
 
     // async function changeStatus() {
     //     const body = {
@@ -83,11 +97,11 @@ function TablePizzas({ pizzas, updatePizzas }) {
     //     handleClose()
     // }
 
-    function bColorCell(order) {
-        if (order.closed) return '#4e5762'
-        const when = howMuchLeft(order.deliveryDate)
-        return colorsCell[when]
-    }
+    // function bColorCell(order) {
+    //     if (order.closed) return '#4e5762'
+    //     const when = howMuchLeft(order.deliveryDate)
+    //     return colorsCell[when]
+    // }
 
     return (
         <>
@@ -106,15 +120,27 @@ function TablePizzas({ pizzas, updatePizzas }) {
                         {
                             pizzas.map((pizza) => (
                                 <TableRow key={pizza.id}>
-                                    <TableCell align='center'>Vegetariana</TableCell>
-                                    <TableCell align='center'>Calabaza, Ají, Champiñones</TableCell>
-                                    <TableCell align='center'>Tradicional</TableCell>
-                                    <TableCell align='center'>30cm, 45cm, 60cm</TableCell>
-                                    <TableCell align='center'>https://www.imagenes.com</TableCell>
+                                    <TableCell align='center'>{pizza.name}</TableCell>
+                                    <TableCell align='center'>{pizza.ingredients.join(', ')}</TableCell>
+                                    <TableCell align='center'>
+                                        {
+                                            pizza.image ? (
+                                                <Image
+                                                    src={pizza.image}
+                                                    alt={pizza.name}
+                                                    width={130}
+                                                    height={100}
+                                                    style={{
+                                                        objectFit: 'contain'
+                                                    }}
+                                                />
+                                            ) : null
+                                        }
+                                    </TableCell>
                                     <TableCell align='center'>
                                         <IconButton
                                             onClick={(event) => {
-                                                handleClick(event, pizza)
+                                                handleClickButtonAction(event, pizza)
                                             }}
                                         >
                                             <MoreHorizIcon />
@@ -126,17 +152,21 @@ function TablePizzas({ pizzas, updatePizzas }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/* <Menu
+            <Menu
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
             >
                 <MenuItem
-                    onClick={changeStatus}
+                    // onClick={changeStatus}
                 >
-                    { currentPizza?.closed ? 'Pendiente' : 'Entregado' }
+                    {/* <IconButton>
+                        <EditIcon />
+                    </IconButton> */}
+                    Editar
+                    {/* { currentPizza?.closed ? 'Pendiente' : 'Entregado' } */}
                 </MenuItem>
-                {
+                {/* {
                     currentPizza && !currentPizza.url ?
                     (
                         <MenuItem
@@ -148,13 +178,16 @@ function TablePizzas({ pizzas, updatePizzas }) {
                             </>
                         </MenuItem>
                     ) : null
-                }
+                } */}
                 <MenuItem
-                    onClick={() => { handleOpenPizzaDetail(true) }}
+                    // onClick={() => { handleOpenPizzaDetail(true) }}
                 >
-                    Ver Detalle
+                    {/* <IconButton>
+                        <VisibilityIcon />
+                    </IconButton> */}
+                    Ver Detalles
                 </MenuItem>
-            </Menu> */}
+            </Menu>
             {/* {
                 currentPizza ? (
                     <ModalOrderDetail openPizzaDetail={openPizzaDetail} handleOpenPizzaDetail={handleOpenPizzaDetail} currentPizza={currentPizza} />
