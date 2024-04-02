@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
+import ModalPizzaDetail from '@/components/ModalPizzaDetails/ModalPizzaDetails'
 import EditIcon from '@mui/icons-material/Edit'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 
@@ -39,7 +39,7 @@ function TablePizzas() {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentPizza, setCurrentPizza] = useState(null)
-    // const [openPizzaDetail, setOpenPizzaDetail] = useState(false)
+    const [openPizzaDetail, setOpenPizzaDetail] = useState(false)
     const open = Boolean(anchorEl)
     // const fileInput = useRef()
     // const { handleUpdateAlertMessage } = useGetAlertMessage()
@@ -54,17 +54,17 @@ function TablePizzas() {
         setPizzas(response)
     }
 
-    // function handleOpenPizzaDetail(value) {
-    //     setOpenPizzaDetail(value)
-    //     handleClose()
-    // }
+    function handleOpenPizzaDetail(value) {
+        setOpenPizzaDetail(value)
+        handleCloseMenu()
+    }
 
     function handleClickButtonAction(event, pizza) {
         setAnchorEl(event.currentTarget)
         setCurrentPizza(pizza)
     }
 
-    function handleClose() {
+    function handleCloseMenu() {
         setAnchorEl(null)
     }
 
@@ -74,7 +74,7 @@ function TablePizzas() {
     //         value: !currentPizza.closed
     //     }
     //     const response = await updateOrder(currentPizza.id, body)
-    //     await handleClose()
+    //     await handleCloseMenu()
     //     await getAllOrders().then(data => updatePizzas(data))
     // }
 
@@ -94,7 +94,7 @@ function TablePizzas() {
     //         text: data.message,
     //         status: data.status
     //     })
-    //     handleClose()
+    //     handleCloseMenu()
     // }
 
     // function bColorCell(order) {
@@ -155,7 +155,7 @@ function TablePizzas() {
             <Menu
                 anchorEl={anchorEl}
                 open={open}
-                onClose={handleClose}
+                onClose={handleCloseMenu}
             >
                 <MenuItem
                     // onClick={changeStatus}
@@ -180,7 +180,7 @@ function TablePizzas() {
                     ) : null
                 } */}
                 <MenuItem
-                    // onClick={() => { handleOpenPizzaDetail(true) }}
+                    onClick={() => { handleOpenPizzaDetail(true) }}
                 >
                     {/* <IconButton>
                         <VisibilityIcon />
@@ -188,11 +188,11 @@ function TablePizzas() {
                     Ver Detalles
                 </MenuItem>
             </Menu>
-            {/* {
+            {
                 currentPizza ? (
-                    <ModalOrderDetail openPizzaDetail={openPizzaDetail} handleOpenPizzaDetail={handleOpenPizzaDetail} currentPizza={currentPizza} />
+                    <ModalPizzaDetail openPizzaDetail={openPizzaDetail} handleOpenPizzaDetail={handleOpenPizzaDetail} currentPizza={currentPizza} />
                 ) : null
-            } */}
+            }
         </>
     )
 }
