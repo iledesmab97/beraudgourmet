@@ -42,6 +42,7 @@ function PizzaCharacteristics({ sizes }) {
                 {
                     Object.entries(sizes).map(([size, masses]) => (
                         <Box
+                            key={size}
                             sx={{
                                 display: 'flex',
                                 alignSelf: 'flex-start',
@@ -68,22 +69,13 @@ function PizzaCharacteristics({ sizes }) {
                                 in={openColapse}
                                 timeout={'auto'}
                                 orientation='horizontal'
-                                // sx={{
-                                //     display: 'inline'
-                                // }}
                             >
                                 <TableContainer>
                                     <Table>
-                                        {/* <TableHead>
-                                            <TableRow>
-                                                <TableCell>Masa</TableCell>
-                                                <TableCell>Costo</TableCell>
-                                            </TableRow>
-                                        </TableHead> */}
                                         <TableBody>
                                             {
                                                 Object.entries(masses).map(([mass, cost]) => (
-                                                    <TableRow>
+                                                    <TableRow key={mass}>
                                                         <TableCell>
                                                             <Input
                                                                 readOnly={true}
