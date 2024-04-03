@@ -1,14 +1,17 @@
 'use client'
 
 import Modal from '@mui/material/Modal'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import PizzaImage from './PizzaImage'
 import PizzaText from './PizzaText'
 import PizzaIngredients from './PizzaIngredients'
 import PizzaCharacteristics from './PizzaCharacteristics'
+
+import InputUpdate from '@/components/InputUpdate/InputUpdate'
+
+import useGetProducts from '@/hooks/useGetProducts'
+import { updatePizza } from '@/services/productApi'
 
 const style = {
     position: 'absolute',
@@ -30,22 +33,38 @@ const style = {
 
 function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizza }) {
 
+    const { products, handleUpdateProduct } = useGetProducts({type:'pizzas'})
+
+    function updateProductList(newProduct) {
+        const { type, id, property, value } = newProduct
+        let index
+        const [productToUpdate] = products.filter((element, i) => {
+            if (element.id !== id) return false
+            index = i
+            return true
+        })
+        const productUpdated = {...productToUpdate}
+        productUpdated[property] = value
+        const newProductList = [...products]
+        newProductList[index] = productUpdated
+        handleUpdateProduct({type, newProductList})
+    }
+
     return (
         <Modal
             open={ openPizzaDetail }
             onClose={() => {handleOpenPizzaDetail(false)}}
         >
-            <Grid
-                container
+            <Box
                 sx={style}
-                alignItems={'stretch'}
             >
-                <Typography
-                    variant='title'
-                    gutterBottom
-                >
-                    {`Pizza ${currentPizza.name} Nº ${currentPizza.id}`}
-                </Typography>
+                <InputUpdate
+                    value={currentPizza.name}
+                    updateProperty={updatePizza}
+                    updateState={updateProductList}
+                    properties={{ property: 'name', id: currentPizza.id}}
+                />
+
                 <Box
                     sx={{
                         height: '90%',
@@ -72,10 +91,10 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     
                     <Divider sx={{ width: '100%'}} />
                     
-                    <PizzaCharacteristics sizes={currentPizza.size} />
+                    <PizzaCharacteristics sizes={currentPizza.price} />
 
                 </Box>                
-            </Grid>
+            </Box>
         </Modal> 
     )
 }
