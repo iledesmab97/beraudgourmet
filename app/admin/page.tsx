@@ -11,7 +11,9 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 
 import useGetUser from '@/hooks/useGetUser';
+import useGetProducts from '@/hooks/useGetProducts'
 import { lookingForUserLoged } from '@/services/userApi'
+import { getPizzasWithCosts } from '@/services/productApi'
 
 import styles from './page.module.css'
 
@@ -19,6 +21,7 @@ function AdminPlace() {
 
     const [ toolSelected, setToolSelected] = useState('Orders')
     const { handleAddUser } = useGetUser()
+    const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
 
     useEffect(() => {
         lookingForUserLoged()
@@ -26,6 +29,13 @@ function AdminPlace() {
                 if (!userLoged) return
                 handleAddUser(userLoged)
             })
+        if (products && products.pizzas) return
+        getPizzasWithCosts().then(data => {
+            handleAddProductsList({
+            type: 'pizzas',
+            products: data
+            })
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
