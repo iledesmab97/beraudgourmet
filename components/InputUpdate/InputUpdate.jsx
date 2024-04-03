@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-function InputUpdate({value, updateProperty, properties, updateState}) {
+function InputUpdate({value, updateProperty, properties, updateState, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(false)
@@ -65,6 +65,7 @@ function InputUpdate({value, updateProperty, properties, updateState}) {
                     </IconButton>
                 )
             }}
+            {...props}
         />
     )
 }
