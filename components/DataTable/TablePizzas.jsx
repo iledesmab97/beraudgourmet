@@ -19,6 +19,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import useGetProducts from '@/hooks/useGetProducts'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { getPizzas, getPizzaCosts } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
@@ -43,23 +44,12 @@ function TablePizzas() {
     const open = Boolean(anchorEl)
     // const fileInput = useRef()
     // const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const [pizzas, setPizzas] = useState([])
+    const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
+    const [pizzas, setPizzas] = useState( products ? products : [])
 
     useEffect(() => {
-        updatePizzas()
-    }, [])
-
-    async function updatePizzas() {
-        const responsePizzas = await getPizzas()
-        const responseCosts = await getPizzaCosts({type: 'object'})
-        const pizzas = responsePizzas.map(pizza => ({
-            ...pizza,
-            size: {
-                ...responseCosts[pizza.name]
-            }
-        }))
-        setPizzas(pizzas)
-    }
+        if (products) setPizzas(products)
+    }, [products])
 
     function handleOpenPizzaDetail(value) {
         setOpenPizzaDetail(value)
