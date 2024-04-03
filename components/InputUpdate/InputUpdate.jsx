@@ -33,12 +33,14 @@ function InputUpdate({value, updateProperty, properties, updateState}) {
                 text,
                 status
             })
-            if (!response.message) updateState({
-                type: 'pizzas',
-                id,
-                property,
-                value: myValue
-            })
+            if (!response.message) {
+                updateState({
+                    type: 'pizzas',
+                    id,
+                    property,
+                    value: myValue
+                })
+            }
         }
         setEdit(prevState => !prevState)
     }
