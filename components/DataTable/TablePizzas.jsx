@@ -160,7 +160,7 @@ function TablePizzas() {
                     {/* <IconButton>
                         <EditIcon />
                     </IconButton> */}
-                    Editar
+                    Eliminar
                     {/* { currentPizza?.closed ? 'Pendiente' : 'Entregado' } */}
                 </MenuItem>
                 {/* {
