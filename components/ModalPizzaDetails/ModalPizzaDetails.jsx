@@ -10,6 +10,7 @@ import PizzaCharacteristics from './PizzaCharacteristics'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
+import { useEffect, useState } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import { updatePizza } from '@/services/productApi'
 
@@ -34,6 +35,13 @@ const style = {
 function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizza }) {
 
     const { products, handleUpdateProduct } = useGetProducts({type:'pizzas'})
+    const [pizza, setPizza] = useState(currentPizza)
+
+    useEffect(() => {
+        if (!openPizzaDetail) return
+        const [newPizza] = products.filter(element => element.id === pizza.id)
+        setPizza(newPizza)
+    }, [products])
 
     function updateProductList(newProduct) {
         const { type, id, property, value } = newProduct
@@ -59,10 +67,10 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                 sx={style}
             >
                 <InputUpdate
-                    value={currentPizza.name}
+                    value={pizza.name}
                     updateProperty={updatePizza}
                     updateState={updateProductList}
-                    properties={{ property: 'name', id: currentPizza.id}}
+                    properties={{ property: 'name', id: pizza.id}}
                 />
 
                 <Box
