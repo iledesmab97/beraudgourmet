@@ -30,7 +30,7 @@ const style = {
     gap: 2,
 }
 
-function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrder }) {
+function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrder }) {
 
     return (
         <Modal
@@ -82,4 +82,4 @@ function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrde
     )
 }
 
-export default ModalCheckoutForm
+export default ModalOrderDetails

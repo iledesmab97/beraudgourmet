@@ -22,10 +22,17 @@ export const productsSlice = createSlice({
                     [type]: [...products]
                 }
             }
+        },
+        updateProductsList: (state, action) => {
+            const { type, newProductList } = action.payload
+            return {
+                ...state,
+                [type]: newProductList
+            }
         }
     }
 })
 
 export default productsSlice.reducer
 
-export const { addProductsList } = productsSlice.actions
+export const { addProductsList, updateProductsList } = productsSlice.actions
