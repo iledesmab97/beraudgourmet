@@ -100,3 +100,19 @@ export async function getPizzasWithCosts() {
     }))
     return totalPizzasList
 }
+
+export async function updatePizza(id, body) {
+  return fetch(`${PATH_BACK}/pizzas/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
