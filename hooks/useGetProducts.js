@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { addProductsList } from '@/stores/products/slice'
+import { addProductsList, updateProductsList } from '@/stores/products/slice'
 
 export default function useGetProducts ({type}) {
 
@@ -9,6 +9,10 @@ export default function useGetProducts ({type}) {
     function handleAddProductsList({type, products}) {
         dispatch(addProductsList({type, products}))
     }
+
+    function handleUpdateProduct(newProduct) {
+        dispatch(updateProductsList(newProduct))
+    }
     
-    return { products, handleAddProductsList }
+    return { products, handleAddProductsList, handleUpdateProduct }
 }
