@@ -91,7 +91,13 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
 
                     <Divider sx={{ width: '100%'}} />
                     
-                    <PizzaText text={currentPizza.text} />
+                    <InputUpdate
+                        value={pizza.text}
+                        updateProperty={updatePizza}
+                        updateState={updateProductList}
+                        properties={{ property: 'text', id: pizza.id}}
+                        fullWidth={true}
+                    />
                     
                     <Divider sx={{ width: '100%'}} />
                     
