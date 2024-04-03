@@ -5,6 +5,8 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Input from '@mui/material/Input'
 
+import InputUpdate from '@/components/InputUpdate/InputUpdate'
+
 function PizzaIngredients({ ingredients }) {
     return (
         <Box
@@ -20,13 +22,10 @@ function PizzaIngredients({ ingredients }) {
             <List>
                 {
                     ingredients.map(ingredient => (
-                        <ListItem>
+                        <ListItem key={ingredient}>
                             <ListItemText
                                 primary={
-                                    <Input
-                                        readOnly={true}
-                                        value={ingredient}
-                                    />
+                                    <InputUpdate value={ingredient} />
                                 }
                             />
                         </ListItem>
