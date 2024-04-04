@@ -6,6 +6,10 @@ import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
 
 import { useState } from 'react'
+import useGetProducts from '@/hooks/useGetProducts'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+
+import { updatePizza } from '@/services/productApi'
 
 const regexImage = /^https?:\/\/.*\.(jpeg|jpg|png|gif|bmp)$/i
 
@@ -18,6 +22,9 @@ function PizzaImage({ pizza }) {
     const [openInput, setOpenInput] = useState(false)
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
+    const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image)
+    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     function handleClick() {
         setOpenInput(prevState => !prevState)
@@ -30,6 +37,32 @@ function PizzaImage({ pizza }) {
 
     function handleError() {
         setUrlFallback('/icon-image-not-found-free-vector.jpg')
+    }
+
+    async function saveImage() {
+        const response = await updatePizza( pizza.id, {property: 'image', value: url})
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            handleUpdateProduct({
+                type: 'pizzas',
+                id: pizza.id,
+                property: 'image',
+                value: url
+            })
+            setUrlCurrentPiza(url)
+        }
     }
 
     return (
@@ -45,7 +78,7 @@ function PizzaImage({ pizza }) {
                 }}
             >
                 <Image
-                    src={ urlFallback || (urlValid(url) ? url : pizza.image) }
+                    src={ urlFallback || (urlValid(url) ? url : urlCurrentPizza) }
                     alt={ pizza.name }
                     fill={true}
                     sizes='auto'
@@ -73,11 +106,12 @@ function PizzaImage({ pizza }) {
                     <TextField
                         value={url}
                         onChange={handleChange}
+                        fullWidth
                         InputProps={{
                             endAdornment: (
                                 <IconButton
-                                    onClick={() => {}}
-                                    disabled={urlFallback !== ''}
+                                    onClick={saveImage}
+                                    disabled={(urlFallback !== '') || (url === '') || (url === urlCurrentPizza ) || (!urlValid(url))}
                                 >
                                     <CheckIcon />
                                 </IconButton>
