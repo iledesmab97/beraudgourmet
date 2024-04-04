@@ -43,21 +43,6 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
         setPizza(newPizza)
     }, [products])
 
-    function updateProductList(newProduct) {
-        const { type, id, property, value } = newProduct
-        let index
-        const [productToUpdate] = products.filter((element, i) => {
-            if (element.id !== id) return false
-            index = i
-            return true
-        })
-        const productUpdated = {...productToUpdate}
-        productUpdated[property] = value
-        const newProductList = [...products]
-        newProductList[index] = productUpdated
-        handleUpdateProduct({type, newProductList})
-    }
-
     return (
         <Modal
             open={ openPizzaDetail }
@@ -69,7 +54,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                 <InputUpdate
                     value={pizza.name}
                     updateProperty={updatePizza}
-                    updateState={updateProductList}
+                    updateState={handleUpdateProduct}
                     properties={{ property: 'name', id: pizza.id}}
                 />
 
@@ -94,7 +79,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     <InputUpdate
                         value={pizza.text}
                         updateProperty={updatePizza}
-                        updateState={updateProductList}
+                        updateState={handleUpdateProduct}
                         properties={{ property: 'text', id: pizza.id}}
                         fullWidth={true}
                     />
