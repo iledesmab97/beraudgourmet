@@ -21,7 +21,7 @@ import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
-import { getPizzas, getPizzaCosts } from '@/services/productApi'
+import { getPizzas, getPizzaCosts, removePizza } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
 
 import styles from './DataTable.module.css'
@@ -44,8 +44,9 @@ function TablePizzas() {
     const open = Boolean(anchorEl)
     // const fileInput = useRef()
     // const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
+    const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'pizzas'})
     const [pizzas, setPizzas] = useState( products ? products : [])
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     useEffect(() => {
         if (products) setPizzas(products)
@@ -63,6 +64,30 @@ function TablePizzas() {
 
     function handleCloseMenu() {
         setAnchorEl(null)
+    }
+
+    async function handleRemovePizza() {
+        const response = await removePizza(currentPizza.id)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            handleDeleteProduct({
+                type: 'pizzas',
+                id: currentPizza.id
+            })
+        }
+        handleCloseMenu()
     }
 
     // async function changeStatus() {
@@ -154,15 +179,6 @@ function TablePizzas() {
                 open={open}
                 onClose={handleCloseMenu}
             >
-                <MenuItem
-                    // onClick={changeStatus}
-                >
-                    {/* <IconButton>
-                        <EditIcon />
-                    </IconButton> */}
-                    Eliminar
-                    {/* { currentPizza?.closed ? 'Pendiente' : 'Entregado' } */}
-                </MenuItem>
                 {/* {
                     currentPizza && !currentPizza.url ?
                     (
@@ -183,6 +199,15 @@ function TablePizzas() {
                         <VisibilityIcon />
                     </IconButton> */}
                     Ver Detalles
+                </MenuItem>
+                <MenuItem
+                    onClick={handleRemovePizza}
+                >
+                    {/* <IconButton>
+                        <EditIcon />
+                    </IconButton> */}
+                    Eliminar
+                    {/* { currentPizza?.closed ? 'Pendiente' : 'Entregado' } */}
                 </MenuItem>
             </Menu>
             {
