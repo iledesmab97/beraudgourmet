@@ -24,6 +24,15 @@ export default function useGetProducts ({type}) {
         newProductList[index] = productUpdated
         dispatch(updateProductsList({type, newProductList}))
     }
+
+    function handleDeleteProduct(newProduct) {
+        const { type, id } = newProduct
+        const newProductList = products.filter(element => {
+            if (element.id !== id) return true
+            return false
+        })
+        dispatch(updateProductsList({type, newProductList}))
+    }
     
-    return { products, handleAddProductsList, handleUpdateProduct }
+    return { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct }
 }
