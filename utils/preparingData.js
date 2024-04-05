@@ -110,3 +110,11 @@ export function isSamePizza(pizza1, pizza2) {
     }
     return true
 }
+
+export function isSameArray(array1, array2) {
+    if (array1.length !== array2.length) return false
+    for (let element of array1) {
+        if (!array2.includes(element)) return false
+    }
+    return true
+}
