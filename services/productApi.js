@@ -133,3 +133,9 @@ export async function removePizza(id) {
     })
     .catch(error => ({message: error.message}))
 }
+
+export async function getAllIngredients() {
+  return fetch(`${PATH_BACK}/pizzaIngredients`)
+    .then(response => response.json())
+    .then(data => data)
+}
