@@ -15,7 +15,8 @@ import Select from '@mui/material/Select'
 
 import { useState, useEffect } from 'react'
 
-import { getAllIngredients } from '@/services/productApi'
+import { getAllIngredients, updatePizza } from '@/services/productApi'
+import { isSameArray } from '@/utils/preparingData'
 
 function PizzaIngredients({ ingredients }) {
 
@@ -23,6 +24,11 @@ function PizzaIngredients({ ingredients }) {
     const [edit, setEdit] = useState(false)
     const [allIngredients, setAllIngredients] = useState([])
     
+    useEffect(() => {
+        getAllIngredients()
+            .then(totalListIngredients => setAllIngredients(totalListIngredients.map(ingredient => ingredient.name)))
+    }, [])
+
     function handleChange(event) {
         const {name, value} = event.target
         const newCurrentIngredientList = [...currentIngredientList]
@@ -31,12 +37,16 @@ function PizzaIngredients({ ingredients }) {
     }
 
     function handleEdit() {
+        // if (edit && isSameArray(currentIngredientList, ingredients)) {
+        if (edit && !isSameArray(currentIngredientList, ingredients)) {
+            saveIngredients()
+        }
         setEdit(prevState => !prevState)
     }
 
-    useEffect(() => {
-        getAllIngredients().then(totalListIngredients => setAllIngredients(totalListIngredients.map(ingredient => ingredient.name)))
-    }, [])
+    function saveIngredients() {
+        console.log('voy a modifivar los ingredientes de la base de datos')
+    }
 
     return (
         <Box
@@ -58,8 +68,8 @@ function PizzaIngredients({ ingredients }) {
                         }}
                     >
                         {
-                            currentIngredientList.map((ingredient, index) => (
-                                <ListItem key={`currentIngredientList:${ingredient}`}>
+                            currentIngredientList.map((currentIngredient, index) => (
+                                <ListItem key={`currentIngredientList:${currentIngredient}`}>
                                     <ListItemText
                                         primary={
                                             <>
@@ -68,12 +78,18 @@ function PizzaIngredients({ ingredients }) {
                                                     disabled={!edit}
                                                     name={String(index)}
                                                     label={`Ingrediente ${index+1}`}
-                                                    value={ingredient}
+                                                    value={currentIngredient}
                                                     onChange={handleChange}
                                                 >
                                                     {
-                                                        allIngredients.map(ingredient => (
-                                                            <MenuItem key={`allIngredients:${ingredient}`} value={ingredient} >{ingredient}</MenuItem>
+                                                        allIngredients.map(ingredientOption => (
+                                                            <MenuItem
+                                                                key={`allIngredients:${ingredientOption}`}
+                                                                value={ingredientOption}
+                                                                disabled={currentIngredientList.includes(ingredientOption)}
+                                                            >
+                                                                {ingredientOption}
+                                                            </MenuItem>
                                                         ))
                                                     }
                                                 </Select>
