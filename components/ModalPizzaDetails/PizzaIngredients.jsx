@@ -8,6 +8,8 @@ import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -22,7 +24,8 @@ import { isSameArray } from '@/utils/preparingData'
 
 function PizzaIngredients({ ingredients, id }) {
 
-    const [currentIngredientList, setCurrentIngredientList] = useState(ingredients)
+    const [ingredientsList, setIngredientsList] = useState(ingredients)
+    const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
     const [edit, setEdit] = useState(false)
     const [allIngredients, setAllIngredients] = useState([])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
@@ -40,15 +43,21 @@ function PizzaIngredients({ ingredients, id }) {
         setCurrentIngredientList(newCurrentIngredientList)
     }
 
-    function handleEdit() {
-        if (edit && !isSameArray(currentIngredientList, ingredients)) {
-            saveIngredients()
+    async function handleEdit() {
+        if (edit && !isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
+            await saveIngredients()
+            setIngredientsList(currentIngredientList)
         }
         setEdit(prevState => !prevState)
     }
 
+    function removeIngredient(index) {
+        const newCurrentIngredientList = [...currentIngredientList].filter((ingredient, i) => i !== index)
+        setCurrentIngredientList(newCurrentIngredientList)
+    }
+
     async function saveIngredients() {
-        const response = updatePizza( id, {
+        const response = await updatePizza( id, {
             property: 'ingredients',
             value: currentIngredientList
         })
@@ -75,6 +84,12 @@ function PizzaIngredients({ ingredients, id }) {
         }
     }
 
+    function addIngredient() {
+        const newCurrentIngredientList = [...currentIngredientList]
+        newCurrentIngredientList.push('')
+        setCurrentIngredientList(newCurrentIngredientList)
+    }
+
     return (
         <Box
             sx={{
@@ -90,36 +105,66 @@ function PizzaIngredients({ ingredients, id }) {
                 allIngredients.length ? (
                     <List
                         sx={{
-                            width: '50%',
+                            width: 'fit-content',
                             position: 'relative'
                         }}
                     >
                         {
                             currentIngredientList.map((currentIngredient, index) => (
-                                <ListItem key={`currentIngredientList:${currentIngredient}`}>
+                                <ListItem
+                                    key={`currentIngredientList:${currentIngredient}`}
+                                >
                                     <ListItemText
                                         primary={
                                             <>
-                                                <InputLabel>{`Ingrediente ${index+1}`}</InputLabel>
-                                                <Select
-                                                    disabled={!edit}
-                                                    name={String(index)}
-                                                    label={`Ingrediente ${index+1}`}
-                                                    value={currentIngredient}
-                                                    onChange={handleChange}
+                                                {/* <InputLabel>{`Ingrediente ${index+1}`}</InputLabel> */}
+                                                <Box
+                                                    sx={{
+                                                        width: 'fit-content',
+                                                        position: 'relative'
+                                                    }}
                                                 >
+                                                    <Select
+                                                        disabled={!edit}
+                                                        name={String(index)}
+                                                        label={`Ingrediente ${index+1}`}
+                                                        value={currentIngredient}
+                                                        onChange={handleChange}
+                                                        displayEmpty={true}
+                                                        renderValue={ function(value) {
+                                                            if (!value) return 'Agregar...'
+                                                            return value
+                                                        }}
+                                                    >
+                                                        {
+                                                            allIngredients.map(ingredientOption => (
+                                                                <MenuItem
+                                                                    key={`allIngredients:${ingredientOption}`}
+                                                                    value={ingredientOption}
+                                                                    disabled={currentIngredientList.includes(ingredientOption)}
+                                                                >
+                                                                    {ingredientOption}
+                                                                </MenuItem>
+                                                            ))
+                                                        }
+                                                    </Select>
                                                     {
-                                                        allIngredients.map(ingredientOption => (
-                                                            <MenuItem
-                                                                key={`allIngredients:${ingredientOption}`}
-                                                                value={ingredientOption}
-                                                                disabled={currentIngredientList.includes(ingredientOption)}
+                                                        edit ? (
+                                                            <IconButton
+                                                                name={index}
+                                                                sx={{
+                                                                    position: 'absolute',
+                                                                    top: '50%',
+                                                                    left: '100%',
+                                                                    transform: 'translateY(-50%)'
+                                                                }}
+                                                                onClick={() => {removeIngredient(index)}}
                                                             >
-                                                                {ingredientOption}
-                                                            </MenuItem>
-                                                        ))
+                                                                <DeleteForeverIcon />
+                                                            </IconButton>
+                                                        ) : null
                                                     }
-                                                </Select>
+                                                </Box>
                                             </>
                                         }
                                     />
@@ -130,7 +175,7 @@ function PizzaIngredients({ ingredients, id }) {
                             sx={{
                                 position: 'absolute',
                                 bottom: '0px',
-                                right: '0px'
+                                left: '100%'
                             }}
                             onClick={handleEdit}
                         >
@@ -143,6 +188,17 @@ function PizzaIngredients({ ingredients, id }) {
                             }
                         </IconButton>
                     </List>
+                ) : null
+            }
+            {
+                edit ? (
+                    <Box>
+                        <IconButton
+                            onClick={addIngredient}
+                        >
+                            <AddCircleOutlineIcon />
+                        </IconButton>
+                    </Box>
                 ) : null
             }
         </Box>
