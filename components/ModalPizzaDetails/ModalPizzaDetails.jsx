@@ -86,7 +86,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     
                     <Divider sx={{ width: '100%'}} />
                     
-                    <PizzaIngredients ingredients={currentPizza.ingredients} />
+                    <PizzaIngredients ingredients={currentPizza.ingredients} id={currentPizza.id} />
                     
                     <Divider sx={{ width: '100%'}} />
                     
