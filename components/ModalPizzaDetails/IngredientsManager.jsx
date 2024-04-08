@@ -8,13 +8,44 @@ import FormControl from '@mui/material/FormControl'
 import Button from '@mui/material/Button'
 
 import { useState } from 'react'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+
+import { addIngredient } from '@/services/ingredientApi'
 
 function IngredientsManager({ allIngredients }) {
 
     const [ingredientSelected, setIngredientSelected] = useState('')
+    const [ingredientName, setIngredientName] = useState('')
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     function handleChange(event) {
         setIngredientSelected(event.target.value)
+    }
+
+    async function addNewIngredient() {
+        console.log('agregando nuevo ingrediente')
+        const newIngredient = await addIngredient(ingredientName)
+        let text, status
+        if (newIngredient.message) {
+            text = newIngredient.message
+            status = 'error'
+        } else {
+            text = 'Successfully created ingredient'
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+    }
+
+    function removeIngredient() {
+        console.log('eliminando ingrediente')
+    }
+
+    function changeIngredientName(event) {
+        setIngredientName(event.target.value)
     }
 
     return (
@@ -40,8 +71,17 @@ function IngredientsManager({ allIngredients }) {
                             <MenuItem value={ingredient} key={ingredient}>{ingredient}</MenuItem>
                         ))
                     }
+                    <MenuItem value='Nuevo Ingrediente'>Nuevo Ingrediente</MenuItem>
                 </Select>
             </FormControl>
+            {
+                ingredientSelected === 'Nuevo Ingrediente' ? (
+                    <TextField
+                        value={ingredientName}
+                        onChange={changeIngredientName}
+                    />
+                ) : null
+            }
             <Box
                 sx={{
                     width: '100%',
@@ -50,8 +90,23 @@ function IngredientsManager({ allIngredients }) {
                     alignItems: 'center'
                 }}
             >
-                <Button variant='contained'>Agregar</Button>
-                <Button variant='contained'>Eliminar</Button>
+                {
+                    ingredientSelected === 'Nuevo Ingrediente' ? (
+                        <Button
+                            variant='contained'
+                            onClick={addNewIngredient}
+                        >
+                            Agregar
+                        </Button>
+                    ) : (
+                        <Button
+                            variant='contained'
+                            onClick={removeIngredient}
+                        >
+                            Eliminar
+                        </Button>
+                    )
+                }
             </Box>
         </Box>
     )
