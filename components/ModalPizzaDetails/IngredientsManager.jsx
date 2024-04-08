@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { addIngredient } from '@/services/ingredientApi'
+import { addIngredient, removeIngredient } from '@/services/ingredientApi'
 
 function IngredientsManager({ allIngredients }) {
 
@@ -40,8 +40,22 @@ function IngredientsManager({ allIngredients }) {
         })
     }
 
-    function removeIngredient() {
+    async function deleteIngredient() {
         console.log('eliminando ingrediente')
+        const response = await removeIngredient({name: ingredientSelected})
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
     }
 
     function changeIngredientName(event) {
@@ -101,7 +115,7 @@ function IngredientsManager({ allIngredients }) {
                     ) : (
                         <Button
                             variant='contained'
-                            onClick={removeIngredient}
+                            onClick={deleteIngredient}
                         >
                             Eliminar
                         </Button>
