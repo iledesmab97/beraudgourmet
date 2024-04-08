@@ -89,7 +89,8 @@ function ListPizzaIngredients({ ingredients, id }) {
     return (
         <Box
             sx={{
-                width: 'fit-content'
+                width: 'fit-content',
+                position: 'relative'
             }}
         >
             {
@@ -161,22 +162,6 @@ function ListPizzaIngredients({ ingredients, id }) {
                                 </ListItem>
                             ))
                         }
-                        <IconButton
-                            sx={{
-                                position: 'absolute',
-                                bottom: '0px',
-                                left: '100%'
-                            }}
-                            onClick={handleEdit}
-                        >
-                            {
-                                edit ? (
-                                    <CheckIcon />
-                                ) : (
-                                    <EditIcon />
-                                )
-                            }
-                        </IconButton>
                     </List>
                 ) : null
             }
@@ -191,6 +176,22 @@ function ListPizzaIngredients({ ingredients, id }) {
                     </Box>
                 ) : null
             }
+            <IconButton
+                sx={{
+                    position: 'absolute',
+                    bottom: '0px',
+                    left: '100%'
+                }}
+                onClick={handleEdit}
+            >
+                {
+                    edit ? (
+                        <CheckIcon />
+                    ) : (
+                        <EditIcon />
+                    )
+                }
+            </IconButton>
         </Box>
     )
 }
