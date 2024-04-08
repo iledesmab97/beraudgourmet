@@ -11,26 +11,20 @@ import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
 
-import { getAllIngredients, updatePizza } from '@/services/productApi'
+import { updatePizza } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
-function ListPizzaIngredients({ ingredients, id }) {
+function ListPizzaIngredients({ ingredients, id, allIngredients }) {
 
     const [ingredientsList, setIngredientsList] = useState(ingredients)
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
     const [edit, setEdit] = useState(false)
-    const [allIngredients, setAllIngredients] = useState([])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
-
-    useEffect(() => {
-        getAllIngredients()
-            .then(totalListIngredients => setAllIngredients(totalListIngredients.map(ingredient => ingredient.name)))
-    }, [])
 
     function handleChange(event) {
         const {name, value} = event.target
@@ -89,7 +83,8 @@ function ListPizzaIngredients({ ingredients, id }) {
     return (
         <Box
             sx={{
-                width: 'fit-content'
+                width: 'fit-content',
+                position: 'relative'
             }}
         >
             {
@@ -161,22 +156,6 @@ function ListPizzaIngredients({ ingredients, id }) {
                                 </ListItem>
                             ))
                         }
-                        <IconButton
-                            sx={{
-                                position: 'absolute',
-                                bottom: '0px',
-                                left: '100%'
-                            }}
-                            onClick={handleEdit}
-                        >
-                            {
-                                edit ? (
-                                    <CheckIcon />
-                                ) : (
-                                    <EditIcon />
-                                )
-                            }
-                        </IconButton>
                     </List>
                 ) : null
             }
@@ -191,6 +170,22 @@ function ListPizzaIngredients({ ingredients, id }) {
                     </Box>
                 ) : null
             }
+            <IconButton
+                sx={{
+                    position: 'absolute',
+                    bottom: '0px',
+                    left: '100%'
+                }}
+                onClick={handleEdit}
+            >
+                {
+                    edit ? (
+                        <CheckIcon />
+                    ) : (
+                        <EditIcon />
+                    )
+                }
+            </IconButton>
         </Box>
     )
 }
