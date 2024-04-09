@@ -62,3 +62,20 @@ export function addNewMass(mass) {
     })
     .catch(error => ({message: error.message}))
 }
+
+export function deleteMass(mass) {
+  return fetch(`${PATH_BACK}/pizzaMasses`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({name: mass})
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(response => {
+        if (response.message) throw new Error(response.message)
+        return response
+      })
+      .catch(error => ({message: error.message}))
+}
