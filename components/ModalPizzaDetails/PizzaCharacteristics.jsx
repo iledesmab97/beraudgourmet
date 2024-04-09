@@ -160,8 +160,10 @@ function PizzaCharacteristics({ sizes }) {
 
     function handleChangeMass(mass, indexSize, indexMass) {
         const newCurrentSizesList = [...currentSizesList]
-        const newMass = { [mass]: Object.values(newCurrentSizesList[indexSize][1])[indexMass]}
-        newCurrentSizesList[indexSize][1] = newMass
+        const newMassesList = Object.entries(newCurrentSizesList[indexSize][1])
+        newMassesList[indexMass] = [mass, newMassesList[indexMass][1]]
+        const newMassesObject = Object.fromEntries(newMassesList)
+        newCurrentSizesList[indexSize][1] = newMassesObject
         setCurrentSizesList(newCurrentSizesList)
     }
 
