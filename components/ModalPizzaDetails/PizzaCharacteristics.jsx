@@ -148,12 +148,56 @@ function PizzaCharacteristics({ sizes }) {
         // console.log('response:', response)
     }
 
+    async function addNewLineSize() {
+        // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
+        console.log('currentSizesList:', currentSizesList)
+        // console.log('massesList:', massesList)
+        const currentSizes = currentSizesList.map(sizeArray => sizeArray[0])
+        console.log('currentSizes:', currentSizes)
+        let newSize = ''
+        for (let size of sizesList) {
+            if (!currentSizes.includes(size)) {
+                newSize = size
+                break
+            }
+        }
+        console.log('newSize:', newSize)
+        
+        const mass = {
+            [massesList[0]]: ''
+        }
+        const newCurrentSizesList = [...currentSizesList]
+        newCurrentSizesList.push([newSize, mass])
+        console.log('newCurrentSizesList:', newCurrentSizesList)
+        // newCurrentSizesList[indexSize][1] = {
+        //     ...newCurrentSizesList[indexSize][1],
+        //     [newMass]: ''
+        // }
+
+        // newCurrentSizesList[indexSize] = [newCurrentSizesList[index][0], {
+        //     ...newCurrentSizesList[index][1],
+        //     'Nueva Masa': ''
+        // }]
+        setCurrentSizesList(newCurrentSizesList)
+        // const response = await getAllMasses()
+        // console.log('response:', response)
+    }
+
     async function closeLineMass(indexSize, mass) {
         const currentMassesOfSize = currentSizesList[indexSize][1]
         delete currentMassesOfSize[mass]
 
         const newCurrentSizesList = [...currentSizesList]
         newCurrentSizesList[indexSize][1] = currentMassesOfSize
+
+        setCurrentSizesList(newCurrentSizesList)
+    }
+
+    async function closeLineSize(size) {
+        const newCurrentSizesObject = Object.fromEntries([...currentSizesList])
+        delete newCurrentSizesObject[size]
+
+        const newCurrentSizesList = Object.entries(newCurrentSizesObject)
 
         setCurrentSizesList(newCurrentSizesList)
     }
@@ -231,7 +275,7 @@ function PizzaCharacteristics({ sizes }) {
             sx={{
                 position: 'relative',
                 width: '100%',
-                pb: '40px',
+                // pb: '40px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start'
@@ -259,6 +303,9 @@ function PizzaCharacteristics({ sizes }) {
                                         container
                                         spacing={1}
                                         alignItems='flex-start'
+                                        sx={{
+                                            position: 'relative'
+                                        }}
                                     >
                                         <Grid
                                             item xs={4}
@@ -488,6 +535,23 @@ function PizzaCharacteristics({ sizes }) {
                                                 ))
                                             }
                                         </Grid>
+                                        {
+                                            edit && indexSize ? (
+                                                <Box
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '8px',
+                                                        right: '95%'
+                                                    }}
+                                                >
+                                                    <IconButton
+                                                        onClick={() => {closeLineSize(size)}}
+                                                    >
+                                                        <CloseIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            ) : null
+                                        }
                                     </Grid>
                                 </ListItem>
                                 // <Box
@@ -510,29 +574,32 @@ function PizzaCharacteristics({ sizes }) {
                 edit ? (
                     <Box>
                         <IconButton
-                            // onClick={addNewPizzaSize}
+                            onClick={addNewLineSize}
                         >
                             <AddCircleOutlineIcon />
                         </IconButton>
                     </Box>
                 ) : null
             }
-            <IconButton
+            <Box
                 sx={{
                     position: 'absolute',
                     bottom: '0px',
                     right: '0px'
                 }}
-                onClick={handleEdit}
             >
-                {
-                    edit ? (
-                        <CheckIcon />
-                    ) : (
-                        <EditIcon />
-                    )
-                }
-            </IconButton>
+                <IconButton
+                    onClick={handleEdit}
+                >
+                    {
+                        edit ? (
+                            <CheckIcon />
+                        ) : (
+                            <EditIcon />
+                        )
+                    }
+                </IconButton>
+            </Box>
         </Box>
     )
 }
