@@ -10,12 +10,15 @@ import TableRow from '@mui/material/TableRow';
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ModalPizzaDetail from '@/components/ModalPizzaDetails/ModalPizzaDetails'
 import EditIcon from '@mui/icons-material/Edit'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import AddIcon from '@mui/icons-material/Add';
 
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -47,14 +50,22 @@ function TablePizzas() {
     const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'pizzas'})
     const [pizzas, setPizzas] = useState( products ? products : [])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const pizzaNew = useRef(false)
 
     useEffect(() => {
         if (products) setPizzas(products)
     }, [products])
 
+    useEffect(() => {
+        if (!pizzaNew.current) return
+        setOpenPizzaDetail(true)
+    }, [currentPizza])
+
     function handleOpenPizzaDetail(value) {
         setOpenPizzaDetail(value)
         handleCloseMenu()
+        pizzaNew.current = false
+        if (!value) setCurrentPizza(null)
     }
 
     function handleClickButtonAction(event, pizza) {
@@ -88,6 +99,24 @@ function TablePizzas() {
             })
         }
         handleCloseMenu()
+    }
+
+    function addNewPizza() {
+        console.log('entrando en addNewPizza')
+        setCurrentPizza({
+            id: 0,
+            name: '',
+            text: '',
+            image: '',
+            ingredients: [''],
+            price: {
+                '30cm': {
+                    'Masa Tradicional': ''
+                }
+            }
+        })
+        pizzaNew.current = true
+        // handleOpenPizzaDetail(true)
     }
 
     // async function changeStatus() {
@@ -126,7 +155,12 @@ function TablePizzas() {
     // }
 
     return (
-        <>
+        <Box
+            sx={{
+                position: 'relative',
+                height: '70%'
+            }}
+        >
             <TableContainer className={styles.DataTable} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
@@ -212,10 +246,25 @@ function TablePizzas() {
             </Menu>
             {
                 currentPizza ? (
-                    <ModalPizzaDetail openPizzaDetail={openPizzaDetail} handleOpenPizzaDetail={handleOpenPizzaDetail} currentPizza={currentPizza} />
+                    <ModalPizzaDetail openPizzaDetail={openPizzaDetail} handleOpenPizzaDetail={handleOpenPizzaDetail} currentPizza={currentPizza} pizzaNew={pizzaNew.current} />
                 ) : null
             }
-        </>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    bottom: '102%',
+                    right: '16px'
+                }}
+            >
+                <Button
+                    variant='contained'
+                    startIcon={<AddIcon />}
+                    onClick={addNewPizza}
+                >
+                    Nueva Pizza
+                </Button>
+            </Box>
+        </Box>
     )
 }
 
