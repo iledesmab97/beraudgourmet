@@ -186,51 +186,59 @@ function PizzaCharacteristics({ sizes }) {
                                             container
                                             justifyContent={'flex-end'}
                                         >
-                                            {
-                                                edit ? (
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            justifyContent: 'center'
-                                                        }}
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {removeSize(size, indexSize)}}
-                                                        >
-                                                            <DeleteForeverIcon />
-                                                        </IconButton>
-                                                    </Box>
-                                                ) : null
-                                            }
-                                            <FormControl>
-                                                <Select
-                                                    disabled={!edit}
-                                                    value={size}
-                                                    // variant="standard"
-                                                    onChange={(event) => {handleChangeSize(event.target.value, indexSize)}}
-                                                    ref={selectSize}
-                                                >
-                                                    {
-                                                        sizesList.map(size => (
-                                                            <MenuItem key={`allSizes(${size})`} value={size}>{size}</MenuItem>
-                                                        ))
-                                                    }
-                                                    <MenuItem value={'Nuevo Tamaño'}>Nuevo Tamaño</MenuItem>
-                                                </Select>
-                                            </FormControl>
                                             <Box
                                                 sx={{
                                                     display: 'flex',
-                                                    flexDirection: 'column',
                                                     justifyContent: 'center'
                                                 }}
                                             >
-                                                <IconButton
-                                                    onClick={handleOpenColapse}
+                                                {
+                                                    edit ? (
+                                                        <Box
+                                                            sx={{
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                justifyContent: 'center'
+                                                            }}
+                                                        >
+                                                            <IconButton
+                                                                onClick={() => {removeSize(size, indexSize)}}
+                                                            >
+                                                                <DeleteForeverIcon />
+                                                            </IconButton>
+                                                        </Box>
+                                                    ) : null
+                                                }
+                                                <FormControl>
+                                                    <Select
+                                                        disabled={!edit}
+                                                        value={size}
+                                                        // variant="standard"
+                                                        onChange={(event) => {handleChangeSize(event.target.value, indexSize)}}
+                                                        ref={selectSize}
+                                                        size='small'
+                                                    >
+                                                        {
+                                                            sizesList.map(size => (
+                                                                <MenuItem key={`allSizes(${size})`} value={size}>{size}</MenuItem>
+                                                            ))
+                                                        }
+                                                        <MenuItem value={'Nuevo Tamaño'}>Nuevo Tamaño</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                                <Box
+                                                    sx={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center'
+                                                    }}
                                                 >
-                                                    {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
-                                                </IconButton>
+                                                    <IconButton
+                                                        onClick={handleOpenColapse}
+                                                    >
+                                                        {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
+                                                    </IconButton>
+                                                </Box>
                                             </Box>
                                             {
                                                 edit && size === 'Nuevo Tamaño' ? (
@@ -280,6 +288,7 @@ function PizzaCharacteristics({ sizes }) {
                                                                         value={mass}
                                                                         disabled={!edit}
                                                                         onChange={(event) => {handleChangeMass(event, indexSize, indexMass)}}
+                                                                        size='small'
                                                                     >
                                                                         {
                                                                             massesList.map(m => (
