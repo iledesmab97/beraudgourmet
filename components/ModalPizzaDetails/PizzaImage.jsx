@@ -17,7 +17,7 @@ function urlValid(url) {
     return regexImage.test(url)
 }
 
-function PizzaImage({ pizza }) {
+function PizzaImage({ pizza, property, handleChangeInput, pizzaNew }) {
 
     const [openInput, setOpenInput] = useState(false)
     const [url, setUrl] = useState('')
@@ -33,6 +33,7 @@ function PizzaImage({ pizza }) {
     function handleChange(event) {
         setUrlFallback('')
         setUrl(event.target.value)
+        handleChangeInput({value: event.target.value, property})
     }
 
     function handleError() {
@@ -78,7 +79,7 @@ function PizzaImage({ pizza }) {
                 }}
             >
                 <Image
-                    src={ urlFallback || (urlValid(url) ? url : urlCurrentPizza) }
+                    src={ urlFallback || (urlValid(url) ? url : urlValid(urlCurrentPizza) ? urlCurrentPizza : '/icon-image-not-found-free-vector.jpg' ) }
                     alt={ pizza.name }
                     fill={true}
                     sizes='auto'
@@ -107,7 +108,7 @@ function PizzaImage({ pizza }) {
                         value={url}
                         onChange={handleChange}
                         fullWidth
-                        InputProps={{
+                        InputProps={ !pizzaNew && {
                             endAdornment: (
                                 <IconButton
                                     onClick={saveImage}
