@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
@@ -90,7 +91,11 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     return (
-        <>
+        <Box
+            sx={{
+                height: '75%'
+            }}
+        >
             <TableContainer className={styles.DataTable} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
@@ -176,7 +181,7 @@ function TableOrders({ orders, updateOrders }) {
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
                 ) : null
             }
-        </>
+        </Box>
     )
 }
 
