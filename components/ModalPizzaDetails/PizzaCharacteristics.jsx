@@ -30,7 +30,7 @@ import FormControl from '@mui/material/FormControl'
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass } from '@/services/pizzaCharacteristicsApi'
+import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
 
 function PizzaCharacteristics({ sizes }) {
 
@@ -97,9 +97,7 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     async function addMass(indexSize, indexMass) {
-        console.log('voy a agregar la la masa:', inputMass)
         const response = await addNewMass(inputMass)
-        console.log('response:', response)
         let text, status
         if (response.message) {
             text = response.message
@@ -172,6 +170,28 @@ function PizzaCharacteristics({ sizes }) {
         
         const newSizesList = [...sizesList].filter(sizeOfList => sizeOfList !== size)
         setSizesList(newSizesList)
+    }
+
+    async function removeMass(mass, indexSize, indexMass) {
+        const response = await deleteMass(mass)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+
+        handleChangeMass(Object.keys(Object.entries(sizes)[indexSize][1])[indexMass], indexSize, indexMass)
+        
+        const newMassesList = [...massesList].filter(massOfList => massOfList !== mass)
+        setMassesList(newMassesList)
     }
 
     return (
@@ -334,7 +354,7 @@ function PizzaCharacteristics({ sizes }) {
                                                                                 }}
                                                                             >
                                                                                 <IconButton
-                                                                                    // onClick={() => {removeSize(size, indexSize)}}
+                                                                                    onClick={() => {removeMass(mass, indexSize, indexMass)}}
                                                                                 >
                                                                                     <DeleteForeverIcon />
                                                                                 </IconButton>
