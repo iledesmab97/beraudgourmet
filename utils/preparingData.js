@@ -86,3 +86,35 @@ export function descriptionWithoutIngredientsOut(description) {
     const descriptionWithOutIngredientsOut = allElements.filter(item => !item.includes('~')).join(', ')
     return descriptionWithOutIngredientsOut
 }
+
+export function isSamePizza(pizza1, pizza2) {
+    for (let property in pizza1) {
+        if (property !== 'ingredients' || property !== 'price') {
+            if (pizza1[property] !== pizza2[property]) return false
+        } else if (property === 'ingredients') {
+            if (pizza1[property].length !== pizza2[property].length ) return false
+            for (let ingredient of pizza1[property]) {
+                if (!pizza2[property].includes(ingredient)) return false
+            }
+        } else if (property === 'price') {
+            if (Object.keys(pizza1.price).length !== Object.keys(pizza2.price).length) return false
+            for (let [size, masses] of Object.entries(pizza1.price)) {
+                if ( !(size in pizza2.price) ) return false
+                if ( Object.keys(masses).length !== Object.keys(pizza2.price[size]).length) return false
+                for (let [mass, cost] of Object.entries(masses) ) {
+                    if ( !(mass in pizza2.price[size]) ) return false
+                    if ( cost !== pizza2.price[size][mass] ) return false
+                }
+            }
+        }
+    }
+    return true
+}
+
+export function isSameArray(array1, array2) {
+    if (array1.length !== array2.length) return false
+    for (let element of array1) {
+        if (!array2.includes(element)) return false
+    }
+    return true
+}

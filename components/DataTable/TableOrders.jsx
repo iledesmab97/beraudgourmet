@@ -31,7 +31,7 @@ const colorsCell = {
     early: 'green'
 }
 
-function DataTable({ orders, updateOrders }) {
+function TableOrders({ orders, updateOrders }) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
@@ -180,4 +180,4 @@ function DataTable({ orders, updateOrders }) {
     )
 }
 
-export default DataTable
+export default TableOrders

@@ -11,14 +11,22 @@ import Typography from '@mui/material/Typography';
 
 import InboxIcon from '@mui/icons-material/Inbox'
 import GroupIcon from '@mui/icons-material/Group';
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 
 import styles from './ToolLateralBar.module.css'
 
 const listTools = [
-    'Client'
+    {
+        name: 'Orders',
+        icon: GroupIcon
+    },
+    {
+        name: 'Pizzas',
+        icon: LocalPizzaIcon
+    }
 ]
 
-function ToolLateralBar({ toolSelected }) {
+function ToolLateralBar({ toolSelected, handleToolSelected }) {
 
     return(
         <Grid
@@ -28,10 +36,10 @@ function ToolLateralBar({ toolSelected }) {
             <List>
                 {
                     listTools.map(tool => (
-                        <ListItem key={tool} >
+                        <ListItem key={tool.name} >
                             <ListItemButton
-                                selected={ toolSelected === tool }
-                                disabled={ toolSelected === tool }
+                                selected={ toolSelected === tool.name }
+                                disabled={ toolSelected === tool.name }
                                 sx={{
                                     borderRadius: '10px',
                                     '&.Mui-selected': {
@@ -42,16 +50,17 @@ function ToolLateralBar({ toolSelected }) {
                                         opacity: 1
                                     }
                                 }}
+                                onClick={handleToolSelected}
                             >
                                 <ListItemIcon
-                                    sx={ toolSelected === tool && {
+                                    sx={ toolSelected === tool.name ? {
                                         color: 'white'
-                                    }}
+                                    }: null}
                                 >
-                                    <GroupIcon />
+                                    <tool.icon />
                                 </ListItemIcon>
                                 <ListItemText primary={
-                                    <Typography variant='texto'>{tool}</Typography>
+                                    <Typography variant='texto'>{tool.name}</Typography>
                                 }
                                 />
                             </ListItemButton>

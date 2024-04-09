@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { getAllOrders } from '@/services/orderApi'
 
 import TabBar from '@/components/TabBar/TabBar'
-import DataTable from '@/components/DataTable/DataTable'
+import TableOrders from '@/components/DataTable/TableOrders'
+import TablePizzas from '@/components/DataTable/TablePizzas'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -12,10 +13,22 @@ import Typography from '@mui/material/Typography'
 
 import styles from './DataPanel.module.css'
 
-function DataPanel() {
+const listToolOptions = {
+    Orders: {
+        title: 'Historial de Ordenes',
+        listTabs: ['Todas las ordenes', 'Entregadas', 'Pendientes'],
+    },
+    Pizzas: {
+        title: 'Lista de Pizzas',
+        listTabs: ['Todas las pizzas']
+    }
+}
+
+function DataPanel({ toolSelected }) {
 
     const [tabSelected, setTabSelected] = useState(0)
     const [orders, setOrders] = useState([])
+    const [list, setList] = useState([])
 
     useEffect(() => {
         getAllOrders()
@@ -27,6 +40,10 @@ function DataPanel() {
         setOrders(newListOrders)
     }
 
+    function updateList(newList) {
+        setList(newList)
+    }
+
     function handleChange(event, newValue) {
         setTabSelected(newValue)
     }
@@ -34,6 +51,7 @@ function DataPanel() {
     return (
         <Grid
             item
+            container
             xs={9}
             direction='column'
             gap={1}
@@ -42,10 +60,15 @@ function DataPanel() {
             <Typography
                 variant='encabezado'
             >
-                Historial de Ordenes
+                {listToolOptions[toolSelected].title}
             </Typography>
-            <TabBar tabSelected={tabSelected} handleChange={handleChange} />
-            <DataTable orders={orders} updateOrders={updateOrders} />
+            <TabBar tabSelected={tabSelected} handleChange={handleChange} listTabs={listToolOptions[toolSelected].listTabs} />
+            {
+                toolSelected === 'Orders' ? <TableOrders orders={orders} updateOrders={updateOrders} /> : null
+            }
+            {
+                toolSelected === 'Pizzas' ? <TablePizzas /> : null
+            }
         </Grid>
     )
 }

@@ -33,6 +33,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cicciopizza.ro'
       },
+      {
+        protocol: 'https',
+        hostname: '*'
+      },
     ]
   },
 

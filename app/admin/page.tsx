@@ -11,14 +11,17 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 
 import useGetUser from '@/hooks/useGetUser';
+import useGetProducts from '@/hooks/useGetProducts'
 import { lookingForUserLoged } from '@/services/userApi'
+import { getPizzasWithCosts } from '@/services/productApi'
 
 import styles from './page.module.css'
 
 function AdminPlace() {
 
-    const [ toolSelected, setToolSelected] = useState('Client')
+    const [ toolSelected, setToolSelected] = useState('Orders')
     const { handleAddUser } = useGetUser()
+    const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
 
     useEffect(() => {
         lookingForUserLoged()
@@ -26,21 +29,31 @@ function AdminPlace() {
                 if (!userLoged) return
                 handleAddUser(userLoged)
             })
+        if (products && products.pizzas) return
+        getPizzasWithCosts().then(data => {
+            handleAddProductsList({
+            type: 'pizzas',
+            products: data
+            })
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    function handleToolSelected(event: any) {
+        setToolSelected(event.target.textContent)
+    }
 
     return (
         <Container maxWidth='lg'>
             <Grid
                 container
                 spacing={1}
-                direction='row'
                 alignItems='stretch'
                 justifyContent='space-between'
                 className={styles.AdminContainer}
             >
-                <ToolLateralBar toolSelected={toolSelected} />
-                <DataPanel />
+                <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                <DataPanel toolSelected={toolSelected} />
             </Grid>
             <AlertMessage/>
         </Container>
