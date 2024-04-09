@@ -78,29 +78,29 @@ const themeOptions = {
     }
   },
   components: {
-    MuiTextField: {
-      variants: [
-       {
-        props: {
-          variant: 'standard'
-        },
-        style: {
-          root: {
-            borderRadius: "4px",
-          },
-          input: {
-            width: "242px",
-            fontSize: "1.8rem",
-            fontFamily: "inherit",
-            border: "none",
-            backgroundColor: "#CCC",
-            borderRadius: "2px",
-            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
-          },
-        }
-       } 
-      ],
-    },
+    // MuiTextField: {
+    //   variants: [
+    //    {
+    //     props: {
+    //       variant: 'standard'
+    //     },
+    //     style: {
+    //       root: {
+    //         borderRadius: "4px",
+    //       },
+    //       input: {
+    //         width: "242px",
+    //         fontSize: "1.8rem",
+    //         fontFamily: "inherit",
+    //         border: "none",
+    //         backgroundColor: "#CCC",
+    //         borderRadius: "2px",
+    //         boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+    //       },
+    //     }
+    //    } 
+    //   ],
+    // },
     MuiGrid: {
       variants: [
        {
