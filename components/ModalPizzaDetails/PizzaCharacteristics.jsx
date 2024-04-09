@@ -21,6 +21,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -117,15 +118,44 @@ function PizzaCharacteristics({ sizes }) {
         handleChangeMass(inputMass, indexSize, indexMass)
     }
 
-    async function addNewPizzaMass(index) {
+    async function addNewLineMass(indexSize) {
+        // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
+        console.log('currentSizesList[indexSize][1]:', currentSizesList[indexSize][1])
+        // console.log('massesList:', massesList)
+        const currentMassesToSize = Object.keys(currentSizesList[indexSize][1])
+        // console.log('currentMassesToSize:', currentMassesToSize)
+        let newMass = ''
+        for (let mass of massesList) {
+            if (!currentMassesToSize.includes(mass)) {
+                newMass = mass
+                break
+            }
+        }
+        console.log('newMass:', newMass)
+        
         const newCurrentSizesList = [...currentSizesList]
-        newCurrentSizesList[index] = [newCurrentSizesList[index][0], {
-            ...newCurrentSizesList[index][1],
-            'Nueva Masa': ''
-        }]
+        newCurrentSizesList[indexSize][1] = {
+            ...newCurrentSizesList[indexSize][1],
+            [newMass]: ''
+        }
+
+        // newCurrentSizesList[indexSize] = [newCurrentSizesList[index][0], {
+        //     ...newCurrentSizesList[index][1],
+        //     'Nueva Masa': ''
+        // }]
         setCurrentSizesList(newCurrentSizesList)
         // const response = await getAllMasses()
         // console.log('response:', response)
+    }
+
+    async function closeLineMass(indexSize, mass) {
+        const currentMassesOfSize = currentSizesList[indexSize][1]
+        delete currentMassesOfSize[mass]
+
+        const newCurrentSizesList = [...currentSizesList]
+        newCurrentSizesList[indexSize][1] = currentMassesOfSize
+
+        setCurrentSizesList(newCurrentSizesList)
     }
 
     function handleChangeMass(mass, indexSize, indexMass) {
@@ -314,6 +344,9 @@ function PizzaCharacteristics({ sizes }) {
                                         <Grid
                                             item
                                             xs={8}
+                                            sx={{
+                                                pb: '32px'
+                                            }}
                                         >
                                         {
                                                 Object.entries(masses).map(([mass, cost], indexMass) => (
@@ -326,9 +359,11 @@ function PizzaCharacteristics({ sizes }) {
                                                         <Box
                                                             sx={{
                                                                 width: '400px',
+                                                                position: 'relative',
                                                                 display: 'flex',
                                                                 alignItems: 'flex-start',
-                                                                justifyContent: 'space-around'
+                                                                justifyContent: 'flex-end',
+                                                                mb: '8px'
                                                             }}
                                                         >
                                                             <Box
@@ -381,24 +416,23 @@ function PizzaCharacteristics({ sizes }) {
                                                                 </Box>
                                                                 {
                                                                     edit && mass === 'Nueva Masa' ? (
-                                                                        <TextField
-                                                                            size='small'
-                                                                            variant="standard"
-                                                                            value={inputMass}
-                                                                            onChange={handleChangeInputMass}
-                                                                            InputProps={{
-                                                                                endAdornment: (
-                                                                                    <IconButton
-                                                                                        onClick={() => {addMass(indexSize, indexMass)}}
-                                                                                    >
-                                                                                        <CheckIcon />
-                                                                                    </IconButton>
-                                                                                )
-                                                                            }}
-                                                                            sx={{
-                                                                                width: '70%'
-                                                                            }}
-                                                                        />
+                                                                        <Box>
+                                                                            <TextField
+                                                                                size='small'
+                                                                                variant="standard"
+                                                                                value={inputMass}
+                                                                                onChange={handleChangeInputMass}
+                                                                                InputProps={{
+                                                                                    endAdornment: (
+                                                                                        <IconButton
+                                                                                            onClick={() => {addMass(indexSize, indexMass)}}
+                                                                                        >
+                                                                                            <CheckIcon />
+                                                                                        </IconButton>
+                                                                                    )
+                                                                                }}
+                                                                            />
+                                                                        </Box>
                                                                     ) : null
                                                                 }
                                                             </Box>
@@ -408,8 +442,45 @@ function PizzaCharacteristics({ sizes }) {
                                                                     size='small'
                                                                     value={cost}
                                                                     disabled={!edit}
+                                                                    sx={{
+                                                                        width: '160px'
+                                                                    }}
                                                                 />
                                                             </Box>
+                                                            {
+                                                                edit && (Object.keys(masses).length - 1 === indexMass) ? (
+                                                                    <Box
+                                                                        sx={{
+                                                                            position: 'absolute',
+                                                                            top: '100%',
+                                                                            left: '40%'
+                                                                        }}
+                                                                    >
+                                                                        <IconButton
+                                                                            onClick={() => {addNewLineMass(indexSize)}}
+                                                                        >
+                                                                            <AddCircleOutlineIcon />
+                                                                        </IconButton>
+                                                                    </Box>
+                                                                ) : null
+                                                            }
+                                                            {
+                                                                edit && indexMass ? (
+                                                                    <Box
+                                                                        sx={{
+                                                                            position: 'absolute',
+                                                                            top: '0px',
+                                                                            right: '100%'
+                                                                        }}
+                                                                    >
+                                                                        <IconButton
+                                                                            onClick={() => {closeLineMass(indexSize, mass)}}
+                                                                        >
+                                                                            <CloseIcon />
+                                                                        </IconButton>
+                                                                    </Box>
+                                                                ) : null
+                                                            }
                                                         </Box>
                                                     </Collapse>
                                                 ))
