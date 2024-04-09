@@ -33,6 +33,12 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
 
+function validation(input) {
+    const error = {}
+    if (!input) error.input = 'Este campo no puede estar vacio'
+    return error
+}
+
 function PizzaCharacteristics({ sizes }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
@@ -41,7 +47,9 @@ function PizzaCharacteristics({ sizes }) {
     const [massesList, setMassesList] = useState([])
     const [sizesList, setSizesList] = useState([])
     const [inputSize, setInputSize] = useState('')
+    const [errorInputSize, setErrorInputSize] = useState({})
     const [inputMass, setInputMass] = useState('')
+    const [errorInputMass, setErrorInputMass] = useState({})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const selectSize = useRef()
 
@@ -69,6 +77,10 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     async function addSize(indexSize) {
+        const error = validation(inputSize)
+        if (error.input) {
+            return setErrorInputSize(error)
+        }
         const response = await addNewSize(inputSize)
         let text, status
         if (response.message) {
@@ -98,6 +110,10 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     async function addMass(indexSize, indexMass) {
+        const error = validation(inputMass)
+        if (error.input) {
+            return setErrorInputMass(error)
+        }
         const response = await addNewMass(inputMass)
         let text, status
         if (response.message) {
@@ -219,10 +235,12 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     function handleChangeInputSize(event) {
+        setErrorInputSize({})
         setInputSize(event.target.value)
     }
 
     function handleChangeInputMass(event) {
+        setErrorInputMass({})
         setInputMass(event.target.value)
     }
 
@@ -374,6 +392,8 @@ function PizzaCharacteristics({ sizes }) {
                                                         variant="standard"
                                                         value={inputSize}
                                                         onChange={handleChangeInputSize}
+                                                        error={Boolean(errorInputSize.input)}
+                                                        helperText={errorInputSize.input}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <IconButton
@@ -465,12 +485,19 @@ function PizzaCharacteristics({ sizes }) {
                                                                 </Box>
                                                                 {
                                                                     edit && mass === 'Nueva Masa' ? (
-                                                                        <Box>
+                                                                        <Box
+                                                                            sx={{
+                                                                                display: 'flex',
+                                                                                justifyContent: 'flex-end'
+                                                                            }}
+                                                                        >
                                                                             <TextField
                                                                                 size='small'
                                                                                 variant="standard"
                                                                                 value={inputMass}
                                                                                 onChange={handleChangeInputMass}
+                                                                                error={Boolean(errorInputMass.input)}
+                                                                                helperText={errorInputMass.input}
                                                                                 InputProps={{
                                                                                     endAdornment: (
                                                                                         <IconButton
@@ -479,6 +506,9 @@ function PizzaCharacteristics({ sizes }) {
                                                                                             <CheckIcon />
                                                                                         </IconButton>
                                                                                     )
+                                                                                }}
+                                                                                sx={{
+                                                                                    width: '70%'
                                                                                 }}
                                                                             />
                                                                         </Box>
