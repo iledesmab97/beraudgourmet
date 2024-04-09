@@ -30,7 +30,7 @@ import FormControl from '@mui/material/FormControl'
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { getAllMasses, getAllSizes, addNewSize, deleteSize } from '@/services/pizzaCharacteristicsApi'
+import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
 
 function PizzaCharacteristics({ sizes }) {
 
@@ -39,7 +39,8 @@ function PizzaCharacteristics({ sizes }) {
     const [edit, setEdit] = useState(false)
     const [massesList, setMassesList] = useState([])
     const [sizesList, setSizesList] = useState([])
-    const [input, setInput] = useState('')
+    const [inputSize, setInputSize] = useState('')
+    const [inputMass, setInputMass] = useState('')
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const selectSize = useRef()
 
@@ -67,7 +68,7 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     async function addSize(indexSize) {
-        const response = await addNewSize(input)
+        const response = await addNewSize(inputSize)
         let text, status
         if (response.message) {
             text = response.message
@@ -95,6 +96,27 @@ function PizzaCharacteristics({ sizes }) {
         // }
     }
 
+    async function addMass(indexSize, indexMass) {
+        const response = await addNewMass(inputMass)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = 'Mass created successfully'
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        const newMassesList = [...massesList]
+        newMassesList.push(response.name)
+        setMassesList(newMassesList)
+        handleChangeMass(inputMass, indexSize, indexMass)
+    }
+
     async function addNewPizzaMass(index) {
         const newCurrentSizesList = [...currentSizesList]
         newCurrentSizesList[index] = [newCurrentSizesList[index][0], {
@@ -106,8 +128,7 @@ function PizzaCharacteristics({ sizes }) {
         // console.log('response:', response)
     }
 
-    function handleChangeMass(event, indexSize, indexMass) {
-        const mass = event.target.value
+    function handleChangeMass(mass, indexSize, indexMass) {
         const newCurrentSizesList = [...currentSizesList]
         const newMass = { [mass]: Object.values(newCurrentSizesList[indexSize][1])[indexMass]}
         newCurrentSizesList[indexSize][1] = newMass
@@ -121,8 +142,12 @@ function PizzaCharacteristics({ sizes }) {
         setCurrentSizesList(newCurrentSizesList)
     }
 
-    function handleChangeInput(event) {
-        setInput(event.target.value)
+    function handleChangeInputSize(event) {
+        setInputSize(event.target.value)
+    }
+
+    function handleChangeInputMass(event) {
+        setInputMass(event.target.value)
     }
 
     async function removeSize(size, indexSize) {
@@ -145,6 +170,28 @@ function PizzaCharacteristics({ sizes }) {
         
         const newSizesList = [...sizesList].filter(sizeOfList => sizeOfList !== size)
         setSizesList(newSizesList)
+    }
+
+    async function removeMass(mass, indexSize, indexMass) {
+        const response = await deleteMass(mass)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+
+        handleChangeMass(Object.keys(Object.entries(sizes)[indexSize][1])[indexMass], indexSize, indexMass)
+        
+        const newMassesList = [...massesList].filter(massOfList => massOfList !== mass)
+        setMassesList(newMassesList)
     }
 
     return (
@@ -179,66 +226,75 @@ function PizzaCharacteristics({ sizes }) {
                                     <Grid
                                         container
                                         spacing={1}
-                                        alignItems={'baseline'}
+                                        alignItems='flex-start'
                                     >
                                         <Grid
                                             item xs={4}
                                             container
-                                            justifyContent={'flex-end'}
+                                            direction='column'
+                                            // justifyContent='flex-end'
+                                            alignItems='center'
                                         >
-                                            {
-                                                edit ? (
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            justifyContent: 'center'
-                                                        }}
-                                                    >
-                                                        <IconButton
-                                                            onClick={() => {removeSize(size, indexSize)}}
-                                                        >
-                                                            <DeleteForeverIcon />
-                                                        </IconButton>
-                                                    </Box>
-                                                ) : null
-                                            }
-                                            <FormControl>
-                                                <Select
-                                                    disabled={!edit}
-                                                    value={size}
-                                                    // variant="standard"
-                                                    onChange={(event) => {handleChangeSize(event.target.value, indexSize)}}
-                                                    ref={selectSize}
-                                                >
-                                                    {
-                                                        sizesList.map(size => (
-                                                            <MenuItem key={`allSizes(${size})`} value={size}>{size}</MenuItem>
-                                                        ))
-                                                    }
-                                                    <MenuItem value={'Nuevo Tamaño'}>Nuevo Tamaño</MenuItem>
-                                                </Select>
-                                            </FormControl>
                                             <Box
                                                 sx={{
                                                     display: 'flex',
-                                                    flexDirection: 'column',
                                                     justifyContent: 'center'
                                                 }}
                                             >
-                                                <IconButton
-                                                    onClick={handleOpenColapse}
+                                                {
+                                                    edit ? (
+                                                        <Box
+                                                            sx={{
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                justifyContent: 'center'
+                                                            }}
+                                                        >
+                                                            <IconButton
+                                                                onClick={() => {removeSize(size, indexSize)}}
+                                                            >
+                                                                <DeleteForeverIcon />
+                                                            </IconButton>
+                                                        </Box>
+                                                    ) : null
+                                                }
+                                                <FormControl>
+                                                    <Select
+                                                        disabled={!edit}
+                                                        value={size}
+                                                        onChange={(event) => {handleChangeSize(event.target.value, indexSize)}}
+                                                        ref={selectSize}
+                                                        size='small'
+                                                    >
+                                                        {
+                                                            sizesList.map(size => (
+                                                                <MenuItem key={`allSizes(${size})`} value={size}>{size}</MenuItem>
+                                                            ))
+                                                        }
+                                                        <MenuItem value={'Nuevo Tamaño'}>Nuevo Tamaño</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                                <Box
+                                                    sx={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center'
+                                                    }}
                                                 >
-                                                    {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
-                                                </IconButton>
+                                                    <IconButton
+                                                        onClick={handleOpenColapse}
+                                                    >
+                                                        {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
+                                                    </IconButton>
+                                                </Box>
                                             </Box>
                                             {
                                                 edit && size === 'Nuevo Tamaño' ? (
                                                     <TextField
                                                         size='small'
                                                         variant="standard"
-                                                        value={input}
-                                                        onChange={handleChangeInput}
+                                                        value={inputSize}
+                                                        onChange={handleChangeInputSize}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <IconButton
@@ -247,6 +303,9 @@ function PizzaCharacteristics({ sizes }) {
                                                                     <CheckIcon />
                                                                 </IconButton>
                                                             )
+                                                        }}
+                                                        sx={{
+                                                            width: '70%'
                                                         }}
                                                     />
                                                 ) : null
@@ -268,42 +327,85 @@ function PizzaCharacteristics({ sizes }) {
                                                             sx={{
                                                                 width: '400px',
                                                                 display: 'flex',
-                                                                alignItems: 'baseline',
+                                                                alignItems: 'flex-start',
                                                                 justifyContent: 'space-around'
                                                             }}
                                                         >
-                                                            <Box>
-                                                                <FormControl>
-                                                                    <Select
-                                                                        variant="standard"
-                                                                        label='Ingredientes'
-                                                                        value={mass}
-                                                                        disabled={!edit}
-                                                                        onChange={(event) => {handleChangeMass(event, indexSize, indexMass)}}
-                                                                    >
-                                                                        {
-                                                                            massesList.map(m => (
-                                                                                <MenuItem key={m} value={m}>{m}</MenuItem>
-                                                                            ))
-                                                                        }
-                                                                        <MenuItem value='Nueva Masa'>Nueva Masa</MenuItem>
-                                                                    </Select>
-                                                                </FormControl>
-                                                                {
-                                                                    edit ? (
-                                                                        <Box>
-                                                                            <IconButton
-                                                                                onClick={() => {addNewPizzaMass(index)}}
+                                                            <Box
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                    alignItems: 'flex-end',
+                                                                    pr: '40px'
+                                                                }}
+                                                            >
+                                                                <Box
+                                                                    sx={{
+                                                                        display: 'flex'
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        edit ? (
+                                                                            <Box
+                                                                                sx={{
+                                                                                    display: 'flex',
+                                                                                    flexDirection: 'column',
+                                                                                    justifyContent: 'center'
+                                                                                }}
                                                                             >
-                                                                                <AddCircleOutlineIcon />
-                                                                            </IconButton>
-                                                                        </Box>
+                                                                                <IconButton
+                                                                                    onClick={() => {removeMass(mass, indexSize, indexMass)}}
+                                                                                >
+                                                                                    <DeleteForeverIcon />
+                                                                                </IconButton>
+                                                                            </Box>
+                                                                        ) : null
+                                                                    }
+                                                                    <FormControl>
+                                                                        <Select
+                                                                            // variant="standard"
+                                                                            // label='Ingredientes'
+                                                                            value={mass}
+                                                                            disabled={!edit}
+                                                                            onChange={(event) => {handleChangeMass(event.target.value, indexSize, indexMass)}}
+                                                                            size='small'
+                                                                        >
+                                                                            {
+                                                                                massesList.map(m => (
+                                                                                    <MenuItem key={m} value={m}>{m}</MenuItem>
+                                                                                ))
+                                                                            }
+                                                                            <MenuItem value='Nueva Masa'>Nueva Masa</MenuItem>
+                                                                        </Select>
+                                                                    </FormControl>
+                                                                </Box>
+                                                                {
+                                                                    edit && mass === 'Nueva Masa' ? (
+                                                                        <TextField
+                                                                            size='small'
+                                                                            variant="standard"
+                                                                            value={inputMass}
+                                                                            onChange={handleChangeInputMass}
+                                                                            InputProps={{
+                                                                                endAdornment: (
+                                                                                    <IconButton
+                                                                                        onClick={() => {addMass(indexSize, indexMass)}}
+                                                                                    >
+                                                                                        <CheckIcon />
+                                                                                    </IconButton>
+                                                                                )
+                                                                            }}
+                                                                            sx={{
+                                                                                width: '70%'
+                                                                            }}
+                                                                        />
                                                                     ) : null
                                                                 }
                                                             </Box>
                                                             <Box>
                                                                 <TextField
-                                                                    variant="standard"
+                                                                    // variant="standard"
+                                                                    size='small'
                                                                     value={cost}
                                                                     disabled={!edit}
                                                                 />
