@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-function InputUpdate({value, updateProperty, properties, updateState, ...props}) {
+function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(false)
@@ -14,6 +14,7 @@ function InputUpdate({value, updateProperty, properties, updateState, ...props})
 
     function handleChange(event) {
         setMyValue(event.target.value)
+        handleChangeInput({value: event.target.value, property: properties.property})
     }   
 
     async function handleEdit() {
@@ -49,8 +50,8 @@ function InputUpdate({value, updateProperty, properties, updateState, ...props})
         <TextField
             value={myValue}
             onChange={handleChange}
-            disabled={!edit}
-            InputProps={{
+            disabled={!(pizzaNew || edit )}
+            InputProps={ !pizzaNew && {
                 endAdornment: (
                     <IconButton
                         onClick={handleEdit}
