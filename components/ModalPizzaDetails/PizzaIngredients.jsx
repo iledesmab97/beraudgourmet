@@ -7,7 +7,7 @@ import IngredientsManager from './IngredientsManager'
 import { useState, useEffect } from 'react'
 import { getAllIngredients } from '@/services/productApi'
 
-function PizzaIngredients({ ingredients, id }) {
+function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, property }) {
 
     const [allIngredients, setAllIngredients] = useState([])
 
@@ -35,7 +35,14 @@ function PizzaIngredients({ ingredients, id }) {
                     justifyContent: 'space-between'
                 }}
             >
-                <ListPizzaIngredients ingredients={ingredients} id={id} allIngredients={allIngredients} />
+                <ListPizzaIngredients
+                    ingredients={ingredients}
+                    id={id}
+                    allIngredients={allIngredients}
+                    handleChangeInput={handleChangeInput}
+                    pizzaNew={pizzaNew}
+                    property={property}
+                />
                 <IngredientsManager allIngredients={allIngredients} />
             </Box>
         </Box>
