@@ -2,7 +2,10 @@
 
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
 import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
 import PizzaImage from './PizzaImage'
 import PizzaText from './PizzaText'
 import PizzaIngredients from './PizzaIngredients'
@@ -12,7 +15,8 @@ import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
 import { useEffect, useState } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
-import { updatePizza } from '@/services/productApi'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import { getPizzasWithCosts, updatePizza, addNewPizza } from '@/services/productApi'
 
 const style = {
     position: 'absolute',
@@ -25,6 +29,7 @@ const style = {
     boxShadow: 24,
     borderRadius: 5,
     p: 5,
+    pb: 10,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -32,16 +37,67 @@ const style = {
     gap: 2,
 }
 
-function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizza }) {
+function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizza, pizzaNew }) {
 
-    const { products, handleUpdateProduct } = useGetProducts({type:'pizzas'})
+    const { products, handleUpdateProduct, handleAddProductsList } = useGetProducts({type:'pizzas'})
     const [pizza, setPizza] = useState(currentPizza)
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [processing, setProcessing] = useState(false)
 
     useEffect(() => {
         if (!openPizzaDetail) return
         const [newPizza] = products.filter(element => element.id === pizza.id)
         setPizza(newPizza)
     }, [products])
+
+    function handleChangeInput({value, property}) {
+        setPizza(prevState => ({
+            ...prevState,
+            [property]: value
+        }))
+    }
+
+    async function addPizza() {
+        console.log('agregando pizza:', pizza)
+        setProcessing(true)
+        const pizzaToCreate = {
+            ...pizza
+        }
+        delete pizzaToCreate.price
+        const costs = []
+        Object.keys(pizza.price).forEach(size => {
+            Object.keys(pizza.price[size]).forEach(mass => {
+                const cost = pizza.price[size][mass]
+                costs.push({size, mass, cost})
+            })
+        })
+        pizzaToCreate.costs = costs
+        const response = await addNewPizza(pizzaToCreate)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = 'Pizza created successfully'
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            await getPizzasWithCosts().then(data => {
+                handleAddProductsList({
+                type: 'pizzas',
+                products: data
+                })
+            })
+            console.log('Pizza agregada exitosamente')
+            handleOpenPizzaDetail(false)
+        }
+        setProcessing(false)
+    }
 
     return (
         <Modal
@@ -56,6 +112,8 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     updateProperty={updatePizza}
                     updateState={handleUpdateProduct}
                     properties={{ property: 'name', id: pizza.id}}
+                    handleChangeInput={handleChangeInput}
+                    pizzaNew={pizzaNew}
                 />
 
                 <Box
@@ -72,7 +130,12 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         boxSizing: 'border-box'
                     }}
                 >
-                    <PizzaImage pizza={currentPizza} />
+                    <PizzaImage
+                        pizza={pizza}
+                        property={'image'}
+                        handleChangeInput={handleChangeInput}
+                        pizzaNew={pizzaNew}
+                    />
 
                     <Divider sx={{ width: '100%'}} />
                     
@@ -82,17 +145,45 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         updateState={handleUpdateProduct}
                         properties={{ property: 'text', id: pizza.id}}
                         fullWidth={true}
+                        handleChangeInput={handleChangeInput}
+                        pizzaNew={pizzaNew}
                     />
                     
                     <Divider sx={{ width: '100%'}} />
                     
-                    <PizzaIngredients ingredients={currentPizza.ingredients} id={currentPizza.id} />
+                    <PizzaIngredients
+                        ingredients={pizza.ingredients}
+                        id={pizza.id}
+                        handleChangeInput={handleChangeInput}
+                        pizzaNew={pizzaNew}
+                        property={'ingredients'}
+                    />
                     
                     <Divider sx={{ width: '100%'}} />
                     
-                    <PizzaCharacteristics sizes={currentPizza.price} />
+                    <PizzaCharacteristics
+                        sizes={pizza.price}
+                        handleChangeInput={handleChangeInput}
+                        pizzaNew={pizzaNew}
+                        property={'price'}
+                    />
 
-                </Box>                
+                </Box>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: '24px',
+                        right: '40px'
+                    }}
+                >
+                    <Button
+                        variant='contained'
+                        onClick={addPizza}
+                        disabled={processing}
+                    >
+                        { processing ? 'Procesando' : 'Agregar'}
+                    </Button>                
+                </Box>
             </Box>
         </Modal> 
     )
