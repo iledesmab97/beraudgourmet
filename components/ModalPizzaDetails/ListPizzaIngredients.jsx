@@ -18,11 +18,11 @@ import useGetProducts from '@/hooks/useGetProducts'
 import { updatePizza } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
-function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew }) {
+function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, ...props }) {
 
     const [ingredientsList, setIngredientsList] = useState(ingredients)
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
-    const [edit, setEdit] = useState(false)
+    const [edit, setEdit] = useState(pizzaNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
 
@@ -121,6 +121,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
                                                             if (!value) return 'Agregar...'
                                                             return value
                                                         }}
+                                                        {...props}
                                                     >
                                                         {
                                                             allIngredients.map(ingredientOption => (
