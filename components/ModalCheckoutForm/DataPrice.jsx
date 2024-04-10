@@ -79,13 +79,14 @@ function DataPrice({ orders, payment_method, checkout }) {
                                 }}
                             >
                                 <Typography>
-                                    {`Total Carrito (MXN) incl. $${checkout.commissionIVA} IVA`} 
+                                    {/* {`Total Carrito (MXN) incl. $${checkout.commissionIVA} IVA`}  */}
+                                    {`Total Carrito (MXN) incl. IVA`} 
                                 </Typography>
                                 <Typography>
                                     ${checkout.totalPriceCar}
                                 </Typography>
                             </ListItem>
-                            {
+                            {/* {
                                 payment_method === 'card' && (
                                     <>
                                         <ListItem
@@ -105,7 +106,7 @@ function DataPrice({ orders, payment_method, checkout }) {
                                         </ListItem>
                                     </>
                                 )
-                            }
+                            } */}
                         </List>
 
                     </>
@@ -124,12 +125,13 @@ function DataPrice({ orders, payment_method, checkout }) {
                 </Typography>
                 <Typography>
                     {
-                        payment_method === 'card' ?
-                            (
-                                `$${ Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
-                            ) : (
-                                `$${ Number(checkout.totalPriceCar) }`
-                            )
+                        // payment_method === 'card' ?
+                        //     (
+                        //         `$${ Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
+                        //     ) : (
+                        //         `$${ Number(checkout.totalPriceCar) }`
+                        //     )
+                        `$${ Number(checkout.totalPriceCar) }`
                     }
                 </Typography>
             </Box>
