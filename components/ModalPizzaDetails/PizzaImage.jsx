@@ -1,15 +1,18 @@
 import TextField from '@mui/material/TextField'
 import Image from 'next/image'
 import Box from '@mui/material/Box'
+import Input from '@mui/material/Input'
+import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { updatePizza } from '@/services/productApi'
+import { updatePizza, sendImage } from '@/services/productApi'
 
 const regexImage = /^https?:\/\/.*\.(jpeg|jpg|png|gif|bmp)$/i
 
@@ -25,15 +28,16 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
     const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image)
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const fileInput = useRef()
 
     function handleClick() {
         setOpenInput(prevState => !prevState)
     }
 
-    function handleChange(event) {
+    function handleChange(newUrl) {
         setUrlFallback('')
-        setUrl(event.target.value)
-        handleChangeInput({value: event.target.value, property})
+        setUrl(newUrl)
+        handleChangeInput({value: newUrl, property})
     }
 
     function handleError() {
@@ -64,6 +68,28 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
             })
             setUrlCurrentPiza(url)
         }
+    }
+
+    function uploadImage() {
+        console.log('cargando imagen')
+        fileInput.current.click()
+    }
+
+    async function handleFileSelected(event) {
+        const file = event.target.files[0]
+        const formData = new FormData()
+        formData.append('file', file)
+        const response = await sendImage(formData)
+        const {message, status, url} = response
+        handleUpdateAlertMessage({
+            checked: true,
+            text: message,
+            status: status
+        })
+        if (status === 'success' ) {
+            handleChange(url)
+        }
+        console.log('imagen cargada exitosamente')
     }
 
     return (
@@ -104,22 +130,50 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
             </Box>
             {
                 openInput ? (
-                    <TextField
-                        value={url}
-                        onChange={handleChange}
-                        fullWidth
-                        InputProps={ !pizzaNew && {
-                            endAdornment: (
-                                <IconButton
-                                    onClick={saveImage}
-                                    disabled={(urlFallback !== '') || (url === '') || (url === urlCurrentPizza ) || (!urlValid(url))}
-                                >
-                                    <CheckIcon />
-                                </IconButton>
-                            )
-                        }}
-                        {...props}
-                    />
+                    <>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width: '80%'
+                                }}
+                            >
+                                <TextField
+                                    value={url}
+                                    onChange={(event) => {handleChange(event.target.value)}}
+                                    fullWidth
+                                    InputProps={ !pizzaNew && {
+                                        endAdornment: (
+                                            <IconButton
+                                                onClick={saveImage}
+                                                disabled={(urlFallback !== '') || (url === '') || (url === urlCurrentPizza ) || (!urlValid(url))}
+                                            >
+                                                <CheckIcon />
+                                            </IconButton>
+                                        )
+                                    }}
+                                    {...props}
+                                />
+                            </Box>
+                            <Button
+                                variant='contained'
+                                size='large'
+                                sx={{
+                                    mr: '16px'
+                                }}
+                                onClick={uploadImage}
+                            >
+                                <CloudUploadIcon />
+                                <input type='file' onChange={handleFileSelected} ref={fileInput} style={{display: 'none'}} />
+                            </Button>
+                        </Box>
+                    </>
                 ) : null
             }
         </>
