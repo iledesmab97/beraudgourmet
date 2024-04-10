@@ -205,21 +205,25 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     />
 
                 </Box>
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: '24px',
-                        right: '40px'
-                    }}
-                >
-                    <Button
-                        variant='contained'
-                        onClick={addPizza}
-                        disabled={processing}
-                    >
-                        { processing ? 'Procesando' : 'Agregar'}
-                    </Button>                
-                </Box>
+                {
+                    pizzaNew ? (
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                bottom: '24px',
+                                right: '40px'
+                            }}
+                        >
+                            <Button
+                                variant='contained'
+                                onClick={addPizza}
+                                disabled={processing}
+                            >
+                                { processing ? 'Procesando' : 'Agregar'}
+                            </Button>                
+                        </Box>
+                    ) : null
+                }
             </Box>
         </Modal> 
     )
