@@ -139,3 +139,20 @@ export async function getAllIngredients() {
     .then(response => response.json())
     .then(data => data)
 }
+
+export async function addNewPizza(pizza) {
+  return fetch(`${PATH_BACK}/pizzas`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(pizza)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
