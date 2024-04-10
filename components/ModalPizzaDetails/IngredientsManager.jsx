@@ -12,14 +12,14 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { addIngredient, removeIngredient } from '@/services/ingredientApi'
 
-function IngredientsManager({ allIngredients }) {
+function IngredientsManager({ allIngredients, handleIngredients }) {
 
     const [ingredientSelected, setIngredientSelected] = useState('')
     const [ingredientName, setIngredientName] = useState('')
     const { handleUpdateAlertMessage } = useGetAlertMessage()
 
-    function handleChange(event) {
-        setIngredientSelected(event.target.value)
+    function handleChange(value) {
+        setIngredientSelected(value)
     }
 
     async function addNewIngredient() {
@@ -38,6 +38,12 @@ function IngredientsManager({ allIngredients }) {
             text,
             status
         })
+        if (!newIngredient.message) {
+            const newListIngredients = [...allIngredients]
+            newListIngredients.push(ingredientName)
+            handleIngredients(newListIngredients)
+            handleChange(ingredientName)
+        }
     }
 
     async function deleteIngredient() {
@@ -78,7 +84,7 @@ function IngredientsManager({ allIngredients }) {
                 <Select
                     label='Ingredientes'
                     value={ingredientSelected}
-                    onChange={handleChange}
+                    onChange={(event) => { handleChange(event.target.value) }}
                 >
                     {
                         allIngredients.map(ingredient => (

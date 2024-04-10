@@ -16,6 +16,10 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
             .then(totalListIngredients => setAllIngredients(totalListIngredients.map(ingredient => ingredient.name)))
     }, [])
 
+    function handleIngredients(value) {
+        setAllIngredients(value)
+    }
+
     return (
         <Box
             sx={{
@@ -44,7 +48,10 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
                     property={property}
                     {...props}
                 />
-                <IngredientsManager allIngredients={allIngredients} />
+                <IngredientsManager
+                    allIngredients={allIngredients}
+                    handleIngredients={handleIngredients}
+                />
             </Box>
         </Box>
     )
