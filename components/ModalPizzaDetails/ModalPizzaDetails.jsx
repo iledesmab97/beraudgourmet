@@ -37,15 +37,38 @@ const style = {
     gap: 2,
 }
 
+function validate(pizza) {
+    const errors = {}
+    const { name, ingredients, price } = pizza
+    if (!name) errors.name = 'Debes ingresar algún nombre'
+    // Ingredients
+
+    // Price
+    Object.keys(price).forEach(size => {
+        Object.keys(price[size]).forEach(mass => {
+            if (!price[size][mass]) {
+                errors.price = {
+                    [size]: {
+                        [mass]: 'Debes ingresar un costo'
+                    }
+                }
+            }
+        })
+    })
+
+    return errors
+}
+
 function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizza, pizzaNew }) {
 
     const { products, handleUpdateProduct, handleAddProductsList } = useGetProducts({type:'pizzas'})
     const [pizza, setPizza] = useState(currentPizza)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [processing, setProcessing] = useState(false)
+    const [errors, setErrors] = useState({})
 
     useEffect(() => {
-        if (!openPizzaDetail) return
+        if (!openPizzaDetail || pizzaNew) return
         const [newPizza] = products.filter(element => element.id === pizza.id)
         setPizza(newPizza)
     }, [products])
@@ -60,6 +83,13 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     async function addPizza() {
         console.log('agregando pizza:', pizza)
         setProcessing(true)
+
+        // Validación de datos
+        const newErrors = validate(pizza)
+        if (Object.keys(newErrors).length) {
+            setProcessing(false)
+            return setErrors(newErrors)
+        }
         const pizzaToCreate = {
             ...pizza
         }
@@ -114,6 +144,9 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     properties={{ property: 'name', id: pizza.id}}
                     handleChangeInput={handleChangeInput}
                     pizzaNew={pizzaNew}
+                    error={Boolean(errors.name)}
+                    helperText={errors.name}
+                    placeholder={'Nombre'}
                 />
 
                 <Box
@@ -135,6 +168,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         property={'image'}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
+                        placeholder={'URL de la pizza'}
                     />
 
                     <Divider sx={{ width: '100%'}} />
@@ -147,6 +181,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
+                        placeholder={'Texto de la pizza'}
                     />
                     
                     <Divider sx={{ width: '100%'}} />
@@ -166,6 +201,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
                         property={'price'}
+                        errors={errors}
                     />
 
                 </Box>
