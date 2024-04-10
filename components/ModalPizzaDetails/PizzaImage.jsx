@@ -17,9 +17,9 @@ function urlValid(url) {
     return regexImage.test(url)
 }
 
-function PizzaImage({ pizza, property, handleChangeInput, pizzaNew }) {
+function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) {
 
-    const [openInput, setOpenInput] = useState(false)
+    const [openInput, setOpenInput] = useState( pizzaNew || false)
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
     const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image)
@@ -118,6 +118,7 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew }) {
                                 </IconButton>
                             )
                         }}
+                        {...props}
                     />
                 ) : null
             }
