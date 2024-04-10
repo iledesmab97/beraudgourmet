@@ -156,3 +156,19 @@ export async function addNewPizza(pizza) {
     })
     .catch(error => ({message: error.message}))
 }
+
+export async function sendImage(formData) {
+  return fetch(`${PATH_BACK}/pizzas/image`, {
+      method: 'POST',
+      body: formData,
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        return data
+      } else {
+        throw new Error(data.message)
+      }
+    })
+    .catch(error => ({message: error.message, status: 'error'}))
+}

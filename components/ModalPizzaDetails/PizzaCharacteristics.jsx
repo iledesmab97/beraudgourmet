@@ -39,11 +39,11 @@ function validation(input) {
     return error
 }
 
-function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property }) {
+function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
-    const [openColapse, setOpenColapse] = useState(false)
-    const [edit, setEdit] = useState(false)
+    const [openColapse, setOpenColapse] = useState(pizzaNew || false)
+    const [edit, setEdit] = useState(pizzaNew || false)
     const [massesList, setMassesList] = useState([])
     const [sizesList, setSizesList] = useState([])
     const [inputSize, setInputSize] = useState('')
@@ -539,6 +539,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property }) 
                                                                     value={cost}
                                                                     onChange={(event) => {handleChangeCost(event.target.value, indexSize, mass)}}
                                                                     disabled={!edit}
+                                                                    error={Boolean(errors.price ? errors.price[size][mass] : false)}
+                                                                    helperText={errors.price ? errors.price[size][mass] : ''}
+                                                                    placeholder={'Precio $'}
                                                                     sx={{
                                                                         width: '160px'
                                                                     }}

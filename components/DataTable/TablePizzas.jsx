@@ -64,8 +64,10 @@ function TablePizzas() {
     function handleOpenPizzaDetail(value) {
         setOpenPizzaDetail(value)
         handleCloseMenu()
-        pizzaNew.current = false
-        if (!value) setCurrentPizza(null)
+        if (!value) {
+            setCurrentPizza(null)
+            pizzaNew.current = false
+        }
     }
 
     function handleClickButtonAction(event, pizza) {
@@ -115,7 +117,7 @@ function TablePizzas() {
             }
         })
         pizzaNew.current = true
-        // handleOpenPizzaDetail(true)
+        handleOpenPizzaDetail(true)
     }
 
     // async function changeStatus() {
@@ -259,6 +261,7 @@ function TablePizzas() {
                     variant='contained'
                     startIcon={<AddIcon />}
                     onClick={addNewPizza}
+                    disabled={!products}
                 >
                     Nueva Pizza
                 </Button>
