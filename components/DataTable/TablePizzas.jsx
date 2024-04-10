@@ -102,7 +102,6 @@ function TablePizzas() {
     }
 
     function addNewPizza() {
-        console.log('entrando en addNewPizza')
         setCurrentPizza({
             id: 0,
             name: '',
