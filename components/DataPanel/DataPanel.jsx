@@ -56,6 +56,7 @@ function DataPanel({ toolSelected }) {
             direction='column'
             gap={1}
             className={styles.DataPanel}
+            wrap='nowrap'
         >
             <Typography
                 variant='encabezado'
