@@ -18,7 +18,7 @@ import useGetProducts from '@/hooks/useGetProducts'
 import { updatePizza } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
-function ListPizzaIngredients({ ingredients, id, allIngredients }) {
+function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew }) {
 
     const [ingredientsList, setIngredientsList] = useState(ingredients)
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
@@ -40,8 +40,9 @@ function ListPizzaIngredients({ ingredients, id, allIngredients }) {
 
     async function handleEdit() {
         if (edit && !isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
-            await saveIngredients()
+            if (!pizzaNew) await saveIngredients()
             setIngredientsList(currentIngredientList)
+            handleChangeInput({value: currentIngredientList, property})
         }
         setEdit(prevState => !prevState)
     }

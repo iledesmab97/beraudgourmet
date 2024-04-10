@@ -21,6 +21,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -32,7 +33,13 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
 
-function PizzaCharacteristics({ sizes }) {
+function validation(input) {
+    const error = {}
+    if (!input) error.input = 'Este campo no puede estar vacio'
+    return error
+}
+
+function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
     const [openColapse, setOpenColapse] = useState(false)
@@ -40,7 +47,10 @@ function PizzaCharacteristics({ sizes }) {
     const [massesList, setMassesList] = useState([])
     const [sizesList, setSizesList] = useState([])
     const [inputSize, setInputSize] = useState('')
+    const [errorInputSize, setErrorInputSize] = useState({})
     const [inputMass, setInputMass] = useState('')
+    const [inputCost, setInputCost] = useState('')
+    const [errorInputMass, setErrorInputMass] = useState({})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const selectSize = useRef()
 
@@ -64,10 +74,21 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     function handleEdit() {
+        if (edit) {
+            if (pizzaNew) {
+                handleChangeInput({value: Object.fromEntries(currentSizesList), property})
+            } else {
+
+            }
+        }
         setEdit(prevState => !prevState)
     }
 
     async function addSize(indexSize) {
+        const error = validation(inputSize)
+        if (error.input) {
+            return setErrorInputSize(error)
+        }
         const response = await addNewSize(inputSize)
         let text, status
         if (response.message) {
@@ -97,6 +118,10 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     async function addMass(indexSize, indexMass) {
+        const error = validation(inputMass)
+        if (error.input) {
+            return setErrorInputMass(error)
+        }
         const response = await addNewMass(inputMass)
         let text, status
         if (response.message) {
@@ -117,21 +142,96 @@ function PizzaCharacteristics({ sizes }) {
         handleChangeMass(inputMass, indexSize, indexMass)
     }
 
-    async function addNewPizzaMass(index) {
+    async function addNewLineMass(indexSize) {
+        // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
+        console.log('currentSizesList[indexSize][1]:', currentSizesList[indexSize][1])
+        // console.log('massesList:', massesList)
+        const currentMassesToSize = Object.keys(currentSizesList[indexSize][1])
+        // console.log('currentMassesToSize:', currentMassesToSize)
+        let newMass = ''
+        for (let mass of massesList) {
+            if (!currentMassesToSize.includes(mass)) {
+                newMass = mass
+                break
+            }
+        }
+        console.log('newMass:', newMass)
+        
         const newCurrentSizesList = [...currentSizesList]
-        newCurrentSizesList[index] = [newCurrentSizesList[index][0], {
-            ...newCurrentSizesList[index][1],
-            'Nueva Masa': ''
-        }]
+        newCurrentSizesList[indexSize][1] = {
+            ...newCurrentSizesList[indexSize][1],
+            [newMass]: ''
+        }
+
+        // newCurrentSizesList[indexSize] = [newCurrentSizesList[index][0], {
+        //     ...newCurrentSizesList[index][1],
+        //     'Nueva Masa': ''
+        // }]
         setCurrentSizesList(newCurrentSizesList)
         // const response = await getAllMasses()
         // console.log('response:', response)
     }
 
+    async function addNewLineSize() {
+        // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
+        console.log('currentSizesList:', currentSizesList)
+        // console.log('massesList:', massesList)
+        const currentSizes = currentSizesList.map(sizeArray => sizeArray[0])
+        console.log('currentSizes:', currentSizes)
+        let newSize = ''
+        for (let size of sizesList) {
+            if (!currentSizes.includes(size)) {
+                newSize = size
+                break
+            }
+        }
+        console.log('newSize:', newSize)
+        
+        const mass = {
+            [massesList[0]]: ''
+        }
+        const newCurrentSizesList = [...currentSizesList]
+        newCurrentSizesList.push([newSize, mass])
+        console.log('newCurrentSizesList:', newCurrentSizesList)
+        // newCurrentSizesList[indexSize][1] = {
+        //     ...newCurrentSizesList[indexSize][1],
+        //     [newMass]: ''
+        // }
+
+        // newCurrentSizesList[indexSize] = [newCurrentSizesList[index][0], {
+        //     ...newCurrentSizesList[index][1],
+        //     'Nueva Masa': ''
+        // }]
+        setCurrentSizesList(newCurrentSizesList)
+        // const response = await getAllMasses()
+        // console.log('response:', response)
+    }
+
+    async function closeLineMass(indexSize, mass) {
+        const currentMassesOfSize = currentSizesList[indexSize][1]
+        delete currentMassesOfSize[mass]
+
+        const newCurrentSizesList = [...currentSizesList]
+        newCurrentSizesList[indexSize][1] = currentMassesOfSize
+
+        setCurrentSizesList(newCurrentSizesList)
+    }
+
+    async function closeLineSize(size) {
+        const newCurrentSizesObject = Object.fromEntries([...currentSizesList])
+        delete newCurrentSizesObject[size]
+
+        const newCurrentSizesList = Object.entries(newCurrentSizesObject)
+
+        setCurrentSizesList(newCurrentSizesList)
+    }
+
     function handleChangeMass(mass, indexSize, indexMass) {
         const newCurrentSizesList = [...currentSizesList]
-        const newMass = { [mass]: Object.values(newCurrentSizesList[indexSize][1])[indexMass]}
-        newCurrentSizesList[indexSize][1] = newMass
+        const newMassesList = Object.entries(newCurrentSizesList[indexSize][1])
+        newMassesList[indexMass] = [mass, newMassesList[indexMass][1]]
+        const newMassesObject = Object.fromEntries(newMassesList)
+        newCurrentSizesList[indexSize][1] = newMassesObject
         setCurrentSizesList(newCurrentSizesList)
     }
 
@@ -143,10 +243,12 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     function handleChangeInputSize(event) {
+        setErrorInputSize({})
         setInputSize(event.target.value)
     }
 
     function handleChangeInputMass(event) {
+        setErrorInputMass({})
         setInputMass(event.target.value)
     }
 
@@ -194,12 +296,21 @@ function PizzaCharacteristics({ sizes }) {
         setMassesList(newMassesList)
     }
 
+    function handleChangeCost(cost, indexSize, mass) {
+        const newCurrentSizesList = [...currentSizesList]
+        newCurrentSizesList[indexSize][1] = {
+            ...newCurrentSizesList[indexSize][1],
+            [mass]: cost
+        }
+        setCurrentSizesList(newCurrentSizesList)
+    }
+
     return (
         <Box
             sx={{
                 position: 'relative',
                 width: '100%',
-                pb: '40px',
+                // pb: '40px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start'
@@ -227,6 +338,9 @@ function PizzaCharacteristics({ sizes }) {
                                         container
                                         spacing={1}
                                         alignItems='flex-start'
+                                        sx={{
+                                            position: 'relative'
+                                        }}
                                     >
                                         <Grid
                                             item xs={4}
@@ -295,6 +409,8 @@ function PizzaCharacteristics({ sizes }) {
                                                         variant="standard"
                                                         value={inputSize}
                                                         onChange={handleChangeInputSize}
+                                                        error={Boolean(errorInputSize.input)}
+                                                        helperText={errorInputSize.input}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <IconButton
@@ -314,6 +430,9 @@ function PizzaCharacteristics({ sizes }) {
                                         <Grid
                                             item
                                             xs={8}
+                                            sx={{
+                                                pb: '32px'
+                                            }}
                                         >
                                         {
                                                 Object.entries(masses).map(([mass, cost], indexMass) => (
@@ -326,9 +445,11 @@ function PizzaCharacteristics({ sizes }) {
                                                         <Box
                                                             sx={{
                                                                 width: '400px',
+                                                                position: 'relative',
                                                                 display: 'flex',
                                                                 alignItems: 'flex-start',
-                                                                justifyContent: 'space-around'
+                                                                justifyContent: 'flex-end',
+                                                                mb: '8px'
                                                             }}
                                                         >
                                                             <Box
@@ -381,24 +502,33 @@ function PizzaCharacteristics({ sizes }) {
                                                                 </Box>
                                                                 {
                                                                     edit && mass === 'Nueva Masa' ? (
-                                                                        <TextField
-                                                                            size='small'
-                                                                            variant="standard"
-                                                                            value={inputMass}
-                                                                            onChange={handleChangeInputMass}
-                                                                            InputProps={{
-                                                                                endAdornment: (
-                                                                                    <IconButton
-                                                                                        onClick={() => {addMass(indexSize, indexMass)}}
-                                                                                    >
-                                                                                        <CheckIcon />
-                                                                                    </IconButton>
-                                                                                )
-                                                                            }}
+                                                                        <Box
                                                                             sx={{
-                                                                                width: '70%'
+                                                                                display: 'flex',
+                                                                                justifyContent: 'flex-end'
                                                                             }}
-                                                                        />
+                                                                        >
+                                                                            <TextField
+                                                                                size='small'
+                                                                                variant="standard"
+                                                                                value={inputMass}
+                                                                                onChange={handleChangeInputMass}
+                                                                                error={Boolean(errorInputMass.input)}
+                                                                                helperText={errorInputMass.input}
+                                                                                InputProps={{
+                                                                                    endAdornment: (
+                                                                                        <IconButton
+                                                                                            onClick={() => {addMass(indexSize, indexMass)}}
+                                                                                        >
+                                                                                            <CheckIcon />
+                                                                                        </IconButton>
+                                                                                    )
+                                                                                }}
+                                                                                sx={{
+                                                                                    width: '70%'
+                                                                                }}
+                                                                            />
+                                                                        </Box>
                                                                     ) : null
                                                                 }
                                                             </Box>
@@ -407,14 +537,69 @@ function PizzaCharacteristics({ sizes }) {
                                                                     // variant="standard"
                                                                     size='small'
                                                                     value={cost}
+                                                                    onChange={(event) => {handleChangeCost(event.target.value, indexSize, mass)}}
                                                                     disabled={!edit}
+                                                                    sx={{
+                                                                        width: '160px'
+                                                                    }}
                                                                 />
                                                             </Box>
+                                                            {
+                                                                edit && (Object.keys(masses).length - 1 === indexMass) ? (
+                                                                    <Box
+                                                                        sx={{
+                                                                            position: 'absolute',
+                                                                            top: '100%',
+                                                                            left: '40%'
+                                                                        }}
+                                                                    >
+                                                                        <IconButton
+                                                                            onClick={() => {addNewLineMass(indexSize)}}
+                                                                        >
+                                                                            <AddCircleOutlineIcon />
+                                                                        </IconButton>
+                                                                    </Box>
+                                                                ) : null
+                                                            }
+                                                            {
+                                                                edit && indexMass ? (
+                                                                    <Box
+                                                                        sx={{
+                                                                            position: 'absolute',
+                                                                            top: '0px',
+                                                                            right: '100%'
+                                                                        }}
+                                                                    >
+                                                                        <IconButton
+                                                                            onClick={() => {closeLineMass(indexSize, mass)}}
+                                                                        >
+                                                                            <CloseIcon />
+                                                                        </IconButton>
+                                                                    </Box>
+                                                                ) : null
+                                                            }
                                                         </Box>
                                                     </Collapse>
                                                 ))
                                             }
                                         </Grid>
+                                        {
+                                            edit && indexSize ? (
+                                                <Box
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '8px',
+                                                        right: '95%'
+                                                    }}
+                                                >
+                                                    <IconButton
+                                                        onClick={() => {closeLineSize(size)}}
+                                                    >
+                                                        <CloseIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            ) : null
+                                        }
                                     </Grid>
                                 </ListItem>
                                 // <Box
@@ -437,29 +622,32 @@ function PizzaCharacteristics({ sizes }) {
                 edit ? (
                     <Box>
                         <IconButton
-                            // onClick={addNewPizzaSize}
+                            onClick={addNewLineSize}
                         >
                             <AddCircleOutlineIcon />
                         </IconButton>
                     </Box>
                 ) : null
             }
-            <IconButton
+            <Box
                 sx={{
                     position: 'absolute',
                     bottom: '0px',
                     right: '0px'
                 }}
-                onClick={handleEdit}
             >
-                {
-                    edit ? (
-                        <CheckIcon />
-                    ) : (
-                        <EditIcon />
-                    )
-                }
-            </IconButton>
+                <IconButton
+                    onClick={handleEdit}
+                >
+                    {
+                        edit ? (
+                            <CheckIcon />
+                        ) : (
+                            <EditIcon />
+                        )
+                    }
+                </IconButton>
+            </Box>
         </Box>
     )
 }
