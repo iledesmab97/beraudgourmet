@@ -39,7 +39,7 @@ function validation(input) {
     return error
 }
 
-function PizzaCharacteristics({ sizes }) {
+function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
     const [openColapse, setOpenColapse] = useState(false)
@@ -49,6 +49,7 @@ function PizzaCharacteristics({ sizes }) {
     const [inputSize, setInputSize] = useState('')
     const [errorInputSize, setErrorInputSize] = useState({})
     const [inputMass, setInputMass] = useState('')
+    const [inputCost, setInputCost] = useState('')
     const [errorInputMass, setErrorInputMass] = useState({})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const selectSize = useRef()
@@ -73,6 +74,13 @@ function PizzaCharacteristics({ sizes }) {
     }
 
     function handleEdit() {
+        if (edit) {
+            if (pizzaNew) {
+                handleChangeInput({value: Object.fromEntries(currentSizesList), property})
+            } else {
+
+            }
+        }
         setEdit(prevState => !prevState)
     }
 
@@ -286,6 +294,15 @@ function PizzaCharacteristics({ sizes }) {
         
         const newMassesList = [...massesList].filter(massOfList => massOfList !== mass)
         setMassesList(newMassesList)
+    }
+
+    function handleChangeCost(cost, indexSize, mass) {
+        const newCurrentSizesList = [...currentSizesList]
+        newCurrentSizesList[indexSize][1] = {
+            ...newCurrentSizesList[indexSize][1],
+            [mass]: cost
+        }
+        setCurrentSizesList(newCurrentSizesList)
     }
 
     return (
@@ -520,6 +537,7 @@ function PizzaCharacteristics({ sizes }) {
                                                                     // variant="standard"
                                                                     size='small'
                                                                     value={cost}
+                                                                    onChange={(event) => {handleChangeCost(event.target.value, indexSize, mass)}}
                                                                     disabled={!edit}
                                                                     sx={{
                                                                         width: '160px'
