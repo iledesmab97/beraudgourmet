@@ -10,6 +10,8 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 
 import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -17,6 +19,14 @@ import useGetProducts from '@/hooks/useGetProducts'
 
 import { updatePizza } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
+
+function validation(listIngredients) {
+    const errors = []
+    listIngredients.forEach((ingredient, index) => {
+        if (!ingredient) errors.push(index)
+    })
+    return errors
+}
 
 function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, ...props }) {
 
@@ -26,12 +36,14 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState([])
 
     function handleChange(event) {
         const {name, value} = event.target
         const newCurrentIngredientList = [...currentIngredientList]
         newCurrentIngredientList[name] = value
         setCurrentIngredientList(newCurrentIngredientList)
+        setErrors([])
     }
 
     function removeIngredient(index) {
@@ -40,10 +52,17 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     }
 
     async function handleEdit() {
+        if (!edit) return setEdit(prevState => !prevState)
         setLoading(true)
-        if (edit && !isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
-            if (!pizzaNew) await saveIngredients()
-            setIngredientsList(currentIngredientList)
+        console.log('validando datos...')
+        const newErrors = validation(currentIngredientList)
+        if (newErrors.length) {
+            console.log('Error en la validación de datos')
+            setErrors(newErrors)
+            return setLoading(false)    
+        }
+        if (!isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
+            if (!pizzaNew) await saveIngredients()    
             handleChangeInput({value: currentIngredientList, property})
         }
         setLoading(false)
@@ -57,6 +76,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     }
 
     async function saveIngredients() {
+        console.log('Guardando información...')  
         const response = await updatePizza( id, {
             property: 'ingredients',
             value: currentIngredientList
@@ -75,12 +95,14 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
             status
         })
         if (!response.message) {
+            setIngredientsList(currentIngredientList)
             handleUpdateProduct({
                 type: 'pizzas',
                 id: id,
                 property: 'ingredients',
                 value: currentIngredientList
             })
+            console.log('Datos guardados exitosamente')
         }
     }
 
@@ -114,30 +136,35 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
                                                         position: 'relative'
                                                     }}
                                                 >
-                                                    <Select
-                                                        disabled={!edit}
-                                                        name={String(index)}
-                                                        value={currentIngredient}
-                                                        onChange={handleChange}
-                                                        displayEmpty={true}
-                                                        renderValue={ function(value) {
-                                                            if (!value) return 'Agregar...'
-                                                            return value
-                                                        }}
-                                                        {...props}
-                                                    >
+                                                    <FormControl error={errors.includes(index)}>
+                                                        <Select
+                                                            disabled={!edit}
+                                                            name={String(index)}
+                                                            value={currentIngredient}
+                                                            onChange={handleChange}
+                                                            displayEmpty={true}
+                                                            renderValue={ function(value) {
+                                                                if (!value) return 'Agregar...'
+                                                                return value
+                                                            }}
+                                                            {...props}
+                                                        >
+                                                            {
+                                                                allIngredients.map(ingredientOption => (
+                                                                    <MenuItem
+                                                                        key={`allIngredients:${ingredientOption}`}
+                                                                        value={ingredientOption}
+                                                                        disabled={currentIngredientList.includes(ingredientOption)}
+                                                                    >
+                                                                        {ingredientOption}
+                                                                    </MenuItem>
+                                                                ))
+                                                            }
+                                                        </Select>
                                                         {
-                                                            allIngredients.map(ingredientOption => (
-                                                                <MenuItem
-                                                                    key={`allIngredients:${ingredientOption}`}
-                                                                    value={ingredientOption}
-                                                                    disabled={currentIngredientList.includes(ingredientOption)}
-                                                                >
-                                                                    {ingredientOption}
-                                                                </MenuItem>
-                                                            ))
+                                                            errors.includes(index) ? <FormHelperText>Agrega un ingrediente</FormHelperText> : null
                                                         }
-                                                    </Select>
+                                                    </FormControl>
                                                     {
                                                         edit ? (
                                                             <IconButton
