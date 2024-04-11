@@ -14,7 +14,7 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
 
     function handleChange(event) {
         setMyValue(event.target.value)
-        handleChangeInput({value: event.target.value, property: properties.property})
+        if (pizzaNew) handleChangeInput({value: event.target.value, property: properties.property})
     }   
 
     async function handleEdit() {

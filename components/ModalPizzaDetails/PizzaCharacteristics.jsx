@@ -30,8 +30,10 @@ import FormControl from '@mui/material/FormControl'
 
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import useGetProducts from '@/hooks/useGetProducts'
 
 import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
+import { updateCharacteristicsPizza } from '@/services/productApi'
 
 function validation(input) {
     const error = {}
@@ -39,7 +41,7 @@ function validation(input) {
     return error
 }
 
-function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors }) {
+function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
     const [openColapse, setOpenColapse] = useState(pizzaNew || false)
@@ -51,7 +53,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     const [inputMass, setInputMass] = useState('')
     const [inputCost, setInputCost] = useState('')
     const [errorInputMass, setErrorInputMass] = useState({})
+    const [loading, setLoading] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const selectSize = useRef()
 
     useEffect(() => {
@@ -73,14 +77,53 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         setOpenColapse(prevState => !prevState)
     }
 
-    function handleEdit() {
+    async function handleEdit() {
+        setLoading(true)
         if (edit) {
             if (pizzaNew) {
                 handleChangeInput({value: Object.fromEntries(currentSizesList), property})
             } else {
-
+                const listNewCharacteristicsOfPizza = []
+                const currentSizesListObject = Object.fromEntries(currentSizesList)
+                for (let size in currentSizesListObject) {
+                    for (let mass in currentSizesListObject[size]) {
+                        const cost = currentSizesListObject[size][mass]
+                        listNewCharacteristicsOfPizza.push({
+                            cost,
+                            characteristics: {
+                                mass,
+                                size
+                            }
+                        })
+                    }
+                }
+                console.log('Actualizando datos...')
+                const response = await updateCharacteristicsPizza(pizzaId, listNewCharacteristicsOfPizza)
+                let text, status
+                if (response.message) {
+                    text = response.message
+                    status = 'error'
+                } else {
+                    text = response
+                    status = 'success'
+                }
+                handleUpdateAlertMessage({
+                    checked: true,
+                    text,
+                    status
+                })
+                if (!response.message) {
+                    handleUpdateProduct({
+                        type: 'pizzas',
+                        id: pizzaId,
+                        property: 'price',
+                        value: currentSizesListObject
+                    })
+                    console.log('Datos actualizados')
+                }
             }
         }
+        setLoading(false)
         setEdit(prevState => !prevState)
     }
 
@@ -641,6 +684,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             >
                 <IconButton
                     onClick={handleEdit}
+                    disabled={loading}
                 >
                     {
                         edit ? (
