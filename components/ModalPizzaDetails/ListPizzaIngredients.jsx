@@ -28,7 +28,15 @@ function validation(listIngredients) {
     return errors
 }
 
-function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, ...props }) {
+function errorStyles(error) {
+    if (!error) return {}
+    return {
+        bgcolor: '#d32f2f',
+        color:'#FFFDFF'
+    }
+}
+
+function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, errorsIngredients, ...props }) {
 
     const [ingredientsList, setIngredientsList] = useState(ingredients)
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
@@ -203,7 +211,12 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
                 ) : null
             }
             <IconButton
-                sx={{
+                sx={ errorsIngredients ? {
+                    ...errorStyles(errorsIngredients),
+                    position: 'absolute',
+                    bottom: '0px',
+                    left: '100%'
+                } : {
                     position: 'absolute',
                     bottom: '0px',
                     left: '100%'
