@@ -45,7 +45,7 @@ function validation(input) {
 function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
-    const [openColapse, setOpenColapse] = useState(pizzaNew || false)
+    const [arrayOpenColapse, setArrayOpencopase] = useState(currentSizesList.map(() => pizzaNew || false ))
     const [edit, setEdit] = useState(pizzaNew || false)
     const [massesList, setMassesList] = useState([])
     const [sizesList, setSizesList] = useState([])
@@ -74,8 +74,10 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         setSizesList(response.map(size => size.size))
     }
 
-    function handleOpenColapse() {
-        setOpenColapse(prevState => !prevState)
+    function handleOpenColapse(indexSize) {
+        const newArrayOpenCollapse = [...arrayOpenColapse]
+        newArrayOpenCollapse[indexSize] = !newArrayOpenCollapse[indexSize]
+        setArrayOpencopase(newArrayOpenCollapse)
     }
 
     async function handleEdit() {
@@ -381,8 +383,13 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                         spacing={1}
                                         alignItems='flex-start'
                                         sx={{
-                                            position: 'relative'
+                                            position: 'relative',
+                                            boxSizing: 'content-box',
+                                            height: '48px',
+                                            overflow: 'hidden',
+                                            transition: 'height 0.3s'
                                         }}
+                                        style={ arrayOpenColapse[indexSize] ? { height: 'auto'} : null}
                                     >
                                         <Grid
                                             item xs={4}
@@ -438,9 +445,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                     }}
                                                 >
                                                     <IconButton
-                                                        onClick={handleOpenColapse}
+                                                        onClick={() => {handleOpenColapse(indexSize)}}
                                                     >
-                                                        {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
+                                                        {arrayOpenColapse[indexSize] ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
                                                     </IconButton>
                                                 </Box>
                                             </Box>
@@ -472,15 +479,12 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                         <Grid
                                             item
                                             xs={8}
-                                            sx={{
-                                                pb: '32px'
-                                            }}
                                         >
                                         {
                                                 Object.entries(masses).map(([mass, cost], indexMass) => (
                                                     <Collapse
                                                         key={`massesAvailable(${mass})`}
-                                                        in={openColapse}
+                                                        in={arrayOpenColapse[indexSize]}
                                                         timeout={'auto'}
                                                         orientation='horizontal'
                                                     >
@@ -677,7 +681,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             <Box
                 sx={{
                     position: 'absolute',
-                    bottom: '0px',
+                    bottom: '-32px',
                     right: '0px'
                 }}
             >
