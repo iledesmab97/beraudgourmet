@@ -12,7 +12,15 @@ function validation(input) {
     return error
 }
 
-function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, ...props}) {
+function errorStyles(error) {
+    if (!error) return {}
+    return {
+        bgcolor: '#d32f2f',
+        color:'#FFFDFF'
+    }
+}
+
+function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(pizzaNew || false)
@@ -84,6 +92,7 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
                     <IconButton
                         onClick={handleEdit}
                         disabled={loading}
+                        sx={errorStyles(errors)}
                     >
                         {
                             edit ? (
