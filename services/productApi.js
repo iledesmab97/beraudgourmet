@@ -172,3 +172,20 @@ export async function sendImage(formData) {
     })
     .catch(error => ({message: error.message, status: 'error'}))
 }
+
+export async function updateCharacteristicsPizza(id, body) {
+  return fetch(`${PATH_BACK}/pizzaCosts/${id}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
