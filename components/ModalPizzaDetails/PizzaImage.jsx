@@ -28,7 +28,15 @@ function validation(input, lastInput) {
     return error
 }
 
-function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) {
+function errorStyles(error) {
+    if (!error) return {}
+    return {
+        bgcolor: '#d32f2f',
+        color:'#FFFDFF'
+    }
+}
+
+function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, ...props }) {
 
     const [edit, setEdit] = useState( pizzaNew || false)
     const [loading, setLoading] = useState(false)
@@ -185,6 +193,7 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
                                             <IconButton
                                                 onClick={saveImage}
                                                 disabled={Boolean(error) || loading}
+                                                sx={errorStyles(errors)}
                                             >
                                                 <CheckIcon />
                                             </IconButton>
