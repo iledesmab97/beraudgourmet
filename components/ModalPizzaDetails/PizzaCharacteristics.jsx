@@ -55,6 +55,14 @@ function totalValidation(sizesList) {
     return errors
 }
 
+function errorStyles(error) {
+    if (!error) return {}
+    return {
+        bgcolor: '#d32f2f',
+        color:'#FFFDFF'
+    }
+}
+
 function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
@@ -706,6 +714,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                 <IconButton
                     onClick={handleEdit}
                     disabled={loading}
+                    sx={errorStyles(errors)}
                 >
                     {
                         edit ? (
