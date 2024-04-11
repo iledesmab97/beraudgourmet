@@ -27,6 +27,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -42,18 +43,38 @@ function validation(input) {
     return error
 }
 
+function totalValidation(sizesList) {
+    const errors = {}
+    for (let size in sizesList) {
+        if (size === 'Nuevo Tamaño') errors[size] = 'Selecciona una opción válida'
+        for (let mass in sizesList[size]) {
+            if (mass === 'Nueva Masa') errors[`${size}x${mass}`] = 'Selecciona una opción válida'
+            if (!sizesList[size][mass]) errors[`${size}x${mass}xcost`] = 'Agrega un valor'
+        }
+    }
+    return errors
+}
+
+function errorStyles(error) {
+    if (!error) return {}
+    return {
+        bgcolor: '#d32f2f',
+        color:'#FFFDFF'
+    }
+}
+
 function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
-    const [openColapse, setOpenColapse] = useState(pizzaNew || false)
+    const [arrayOpenColapse, setArrayOpencopase] = useState(currentSizesList.map(() => pizzaNew || false ))
     const [edit, setEdit] = useState(pizzaNew || false)
     const [massesList, setMassesList] = useState([])
     const [sizesList, setSizesList] = useState([])
     const [inputSize, setInputSize] = useState('')
     const [errorInputSize, setErrorInputSize] = useState({})
     const [inputMass, setInputMass] = useState('')
-    const [inputCost, setInputCost] = useState('')
     const [errorInputMass, setErrorInputMass] = useState({})
+    const [errorsCurrentSizesList, setErrorsCurrentSizesList] = useState({})
     const [loading, setLoading] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
@@ -74,13 +95,21 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         setSizesList(response.map(size => size.size))
     }
 
-    function handleOpenColapse() {
-        setOpenColapse(prevState => !prevState)
+    function handleOpenColapse(indexSize) {
+        const newArrayOpenCollapse = [...arrayOpenColapse]
+        newArrayOpenCollapse[indexSize] = !newArrayOpenCollapse[indexSize]
+        setArrayOpencopase(newArrayOpenCollapse)
     }
 
     async function handleEdit() {
         setLoading(true)
         if (edit) {
+            console.log('validando datos...')
+            const currentErrors = totalValidation(Object.fromEntries(currentSizesList))
+            if (Object.keys(currentErrors).length) {
+                setErrorsCurrentSizesList(currentErrors)
+                return setLoading(false)
+            }
             if (pizzaNew) {
                 handleChangeInput({value: Object.fromEntries(currentSizesList), property})
             } else {
@@ -189,11 +218,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     }
 
     async function addNewLineMass(indexSize) {
-        // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
-        console.log('currentSizesList[indexSize][1]:', currentSizesList[indexSize][1])
-        // console.log('massesList:', massesList)
         const currentMassesToSize = Object.keys(currentSizesList[indexSize][1])
-        // console.log('currentMassesToSize:', currentMassesToSize)
         let newMass = ''
         for (let mass of massesList) {
             if (!currentMassesToSize.includes(mass)) {
@@ -201,7 +226,6 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                 break
             }
         }
-        console.log('newMass:', newMass)
         
         const newCurrentSizesList = [...currentSizesList]
         newCurrentSizesList[indexSize][1] = {
@@ -215,12 +239,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         // }]
         setCurrentSizesList(newCurrentSizesList)
         // const response = await getAllMasses()
-        // console.log('response:', response)
     }
 
     async function addNewLineSize() {
-        // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
-        // console.log('massesList:', massesList)
         const currentSizes = currentSizesList.map(sizeArray => sizeArray[0])
         let newSize = ''
         for (let size of sizesList) {
@@ -246,7 +267,6 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         // }]
         setCurrentSizesList(newCurrentSizesList)
         // const response = await getAllMasses()
-        // console.log('response:', response)
     }
 
     async function closeLineMass(indexSize, mass) {
@@ -381,8 +401,13 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                         spacing={1}
                                         alignItems='flex-start'
                                         sx={{
-                                            position: 'relative'
+                                            position: 'relative',
+                                            boxSizing: 'content-box',
+                                            height: '48px',
+                                            overflow: 'hidden',
+                                            transition: 'height 0.3s'
                                         }}
+                                        style={ arrayOpenColapse[indexSize] ? { height: 'auto'} : null}
                                     >
                                         <Grid
                                             item xs={4}
@@ -414,7 +439,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                         </Box>
                                                     ) : null
                                                 }
-                                                <FormControl>
+                                                <FormControl error={Boolean(errorsCurrentSizesList[size])}>
                                                     <Select
                                                         disabled={!edit}
                                                         value={size}
@@ -429,6 +454,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                         }
                                                         <MenuItem value={'Nuevo Tamaño'}>Nuevo Tamaño</MenuItem>
                                                     </Select>
+                                                    {
+                                                        errorsCurrentSizesList[size] && <FormHelperText>{errorsCurrentSizesList[size]}</FormHelperText>
+                                                    }
                                                 </FormControl>
                                                 <Box
                                                     sx={{
@@ -438,9 +466,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                     }}
                                                 >
                                                     <IconButton
-                                                        onClick={handleOpenColapse}
+                                                        onClick={() => {handleOpenColapse(indexSize)}}
                                                     >
-                                                        {openColapse ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
+                                                        {arrayOpenColapse[indexSize] ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
                                                     </IconButton>
                                                 </Box>
                                             </Box>
@@ -472,15 +500,12 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                         <Grid
                                             item
                                             xs={8}
-                                            sx={{
-                                                pb: '32px'
-                                            }}
                                         >
                                         {
                                                 Object.entries(masses).map(([mass, cost], indexMass) => (
                                                     <Collapse
                                                         key={`massesAvailable(${mass})`}
-                                                        in={openColapse}
+                                                        in={arrayOpenColapse[indexSize]}
                                                         timeout={'auto'}
                                                         orientation='horizontal'
                                                     >
@@ -524,7 +549,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                             </Box>
                                                                         ) : null
                                                                     }
-                                                                    <FormControl>
+                                                                    <FormControl error={Boolean(errorsCurrentSizesList[`${size}x${mass}`])}>
                                                                         <Select
                                                                             // variant="standard"
                                                                             // label='Ingredientes'
@@ -540,6 +565,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                             }
                                                                             <MenuItem value='Nueva Masa'>Nueva Masa</MenuItem>
                                                                         </Select>
+                                                                        {
+                                                                            errorsCurrentSizesList[`${size}x${mass}`] && <FormHelperText>{errorsCurrentSizesList[`${size}x${mass}`]}</FormHelperText>
+                                                                        }
                                                                     </FormControl>
                                                                 </Box>
                                                                 {
@@ -581,8 +609,10 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                     value={cost}
                                                                     onChange={(event) => {handleChangeCost(event.target.value, indexSize, mass)}}
                                                                     disabled={!edit}
-                                                                    error={Boolean(errors.price ? errors.price[size][mass] : false)}
-                                                                    helperText={errors.price ? errors.price[size][mass] : ''}
+                                                                    // error={Boolean(errors.price ? errors.price[size][mass] : false)}
+                                                                    // helperText={errors.price ? errors.price[size][mass] : ''}
+                                                                    error={Boolean(errorsCurrentSizesList[`${size}x${mass}xcost`])}
+                                                                    helperText={errorsCurrentSizesList[`${size}x${mass}xcost`]}
                                                                     placeholder={'Precio $'}
                                                                     sx={{
                                                                         width: '160px'
@@ -677,13 +707,14 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             <Box
                 sx={{
                     position: 'absolute',
-                    bottom: '0px',
+                    bottom: '-32px',
                     right: '0px'
                 }}
             >
                 <IconButton
                     onClick={handleEdit}
                     disabled={loading}
+                    sx={errorStyles(errors)}
                 >
                     {
                         edit ? (

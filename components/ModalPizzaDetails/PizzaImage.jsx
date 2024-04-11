@@ -20,9 +20,27 @@ function urlValid(url) {
     return regexImage.test(url)
 }
 
-function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) {
+function validation(input, lastInput) {
+    let error = ''
+    if (!input) error = 'Este campo no puede estar vacío'
+    else if (!urlValid(input)) error = 'URL inválido'
+    else if (input === lastInput) error = 'Es el mismo URL anterior'
+    return error
+}
 
-    const [openInput, setOpenInput] = useState( pizzaNew || false)
+function errorStyles(error) {
+    if (!error) return {}
+    return {
+        bgcolor: '#d32f2f',
+        color:'#FFFDFF'
+    }
+}
+
+function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, ...props }) {
+
+    const [edit, setEdit] = useState( pizzaNew || false)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
     const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image)
@@ -31,20 +49,33 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
     const fileInput = useRef()
 
     function handleClick() {
-        setOpenInput(prevState => !prevState)
+        setEdit(prevState => !prevState)
     }
 
     function handleChange(newUrl) {
         setUrlFallback('')
         setUrl(newUrl)
-        handleChangeInput({value: newUrl, property})
+        setError(validation(newUrl, urlCurrentPizza))
     }
 
     function handleError() {
         setUrlFallback('/icon-image-not-found-free-vector.jpg')
+        setError('No podemos encontrar la imagen indicada')
     }
 
     async function saveImage() {
+        console.log('Validando datos...')
+        const newError = validation(url, urlCurrentPizza)
+        if (newError) {
+            console.log('Error en la validación de datos')
+            return setError(newError)
+        }
+        console.log('Datos validados')
+        if (pizzaNew) {
+            return handleChangeInput({value: url, property})
+        }
+        console.log('Guardando los datos...')
+        setLoading(true)
         const response = await updatePizza( pizza.id, {property: 'image', value: url})
         let text, status
         if (response.message) {
@@ -67,7 +98,9 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
                 value: url
             })
             setUrlCurrentPiza(url)
+            console.log('Datos guardados')
         }
+        setLoading(false)
     }
 
     function uploadImage() {
@@ -123,13 +156,20 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
                 >
                     <IconButton
                         onClick={handleClick}
+                        disabled={loading}
                     >
-                        <EditIcon />
+                        {
+                            edit ? (
+                                <CheckIcon />
+                            ) : (
+                                <EditIcon />
+                            )
+                        }
                     </IconButton>
                 </Box>
             </Box>
             {
-                openInput ? (
+                edit ? (
                     <>
                         <Box
                             sx={{
@@ -148,16 +188,19 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, ...props }) 
                                     value={url}
                                     onChange={(event) => {handleChange(event.target.value)}}
                                     fullWidth
-                                    InputProps={ !pizzaNew && {
+                                    InputProps={{
                                         endAdornment: (
                                             <IconButton
                                                 onClick={saveImage}
-                                                disabled={(urlFallback !== '') || (url === '') || (url === urlCurrentPizza ) || (!urlValid(url))}
+                                                disabled={Boolean(error) || loading}
+                                                sx={errorStyles(errors)}
                                             >
                                                 <CheckIcon />
                                             </IconButton>
                                         )
                                     }}
+                                    error={Boolean(error)}
+                                    helperText={error}
                                     {...props}
                                 />
                             </Box>
