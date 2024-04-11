@@ -49,7 +49,7 @@ function validate(pizza) {
             if (!price[size][mass]) {
                 errors.price = {
                     [size]: {
-                        [mass]: 'Debes ingresar un costo'
+                        [mass]: 'Debes ingresar un precio'
                     }
                 }
             }
@@ -81,7 +81,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     }
 
     async function addPizza() {
-        console.log('agregando pizza:', pizza)
+        console.log('agregando nueva pizza...')
         setProcessing(true)
 
         // Validación de datos
@@ -90,6 +90,8 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
             setProcessing(false)
             return setErrors(newErrors)
         }
+
+        // Peparando los datos
         const pizzaToCreate = {
             ...pizza
         }
@@ -102,6 +104,8 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
             })
         })
         pizzaToCreate.costs = costs
+
+        // Haciendo la solicitud
         const response = await addNewPizza(pizzaToCreate)
         let text, status
         if (response.message) {
@@ -197,6 +201,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     <Divider sx={{ width: '100%'}} />
                     
                     <PizzaCharacteristics
+                        pizzaId={pizza.id}
                         sizes={pizza.price}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
