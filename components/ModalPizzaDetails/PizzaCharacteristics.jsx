@@ -34,6 +34,7 @@ import useGetProducts from '@/hooks/useGetProducts'
 
 import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
 import { updateCharacteristicsPizza } from '@/services/productApi'
+import { deepEqual } from '@/utils/preparingData'
 
 function validation(input) {
     const error = {}
@@ -83,43 +84,45 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             if (pizzaNew) {
                 handleChangeInput({value: Object.fromEntries(currentSizesList), property})
             } else {
-                const listNewCharacteristicsOfPizza = []
-                const currentSizesListObject = Object.fromEntries(currentSizesList)
-                for (let size in currentSizesListObject) {
-                    for (let mass in currentSizesListObject[size]) {
-                        const cost = currentSizesListObject[size][mass]
-                        listNewCharacteristicsOfPizza.push({
-                            cost,
-                            characteristics: {
-                                mass,
-                                size
-                            }
-                        })
+                if (!deepEqual(sizes, Object.fromEntries(currentSizesList))) {
+                    const listNewCharacteristicsOfPizza = []
+                    const currentSizesListObject = Object.fromEntries(currentSizesList)
+                    for (let size in currentSizesListObject) {
+                        for (let mass in currentSizesListObject[size]) {
+                            const cost = currentSizesListObject[size][mass]
+                            listNewCharacteristicsOfPizza.push({
+                                cost,
+                                characteristics: {
+                                    mass,
+                                    size
+                                }
+                            })
+                        }
                     }
-                }
-                console.log('Actualizando datos...')
-                const response = await updateCharacteristicsPizza(pizzaId, listNewCharacteristicsOfPizza)
-                let text, status
-                if (response.message) {
-                    text = response.message
-                    status = 'error'
-                } else {
-                    text = response
-                    status = 'success'
-                }
-                handleUpdateAlertMessage({
-                    checked: true,
-                    text,
-                    status
-                })
-                if (!response.message) {
-                    handleUpdateProduct({
-                        type: 'pizzas',
-                        id: pizzaId,
-                        property: 'price',
-                        value: currentSizesListObject
+                    console.log('Actualizando datos...')
+                    const response = await updateCharacteristicsPizza(pizzaId, listNewCharacteristicsOfPizza)
+                    let text, status
+                    if (response.message) {
+                        text = response.message
+                        status = 'error'
+                    } else {
+                        text = response
+                        status = 'success'
+                    }
+                    handleUpdateAlertMessage({
+                        checked: true,
+                        text,
+                        status
                     })
-                    console.log('Datos actualizados')
+                    if (!response.message) {
+                        handleUpdateProduct({
+                            type: 'pizzas',
+                            id: pizzaId,
+                            property: 'price',
+                            value: currentSizesListObject
+                        })
+                        console.log('Datos actualizados')
+                    }
                 }
             }
         }
@@ -147,9 +150,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             status
         })
         const newSizesList = [...sizesList]
-        newSizesList.push(input)
-        setSizesList(newSizesList)
-        handleChangeSize(input, indexSize)
+        newSizesList.push(inputSize)
+        await setSizesList(newSizesList)
+        handleChangeSize(inputSize, indexSize)
         // if (!response.message) {
         //     handleUpdateProduct({
         //         type: 'pizzas',
@@ -181,7 +184,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         })
         const newMassesList = [...massesList]
         newMassesList.push(response.name)
-        setMassesList(newMassesList)
+        await setMassesList(newMassesList)
         handleChangeMass(inputMass, indexSize, indexMass)
     }
 
@@ -217,10 +220,8 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
 
     async function addNewLineSize() {
         // console.log('currentSizesList[indexSize]:', currentSizesList[indexSize])
-        console.log('currentSizesList:', currentSizesList)
         // console.log('massesList:', massesList)
         const currentSizes = currentSizesList.map(sizeArray => sizeArray[0])
-        console.log('currentSizes:', currentSizes)
         let newSize = ''
         for (let size of sizesList) {
             if (!currentSizes.includes(size)) {
@@ -228,14 +229,12 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                 break
             }
         }
-        console.log('newSize:', newSize)
         
         const mass = {
             [massesList[0]]: ''
         }
         const newCurrentSizesList = [...currentSizesList]
         newCurrentSizesList.push([newSize, mass])
-        console.log('newCurrentSizesList:', newCurrentSizesList)
         // newCurrentSizesList[indexSize][1] = {
         //     ...newCurrentSizesList[indexSize][1],
         //     [newMass]: ''
