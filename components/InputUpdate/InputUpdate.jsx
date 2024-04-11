@@ -6,19 +6,43 @@ import CheckIcon from '@mui/icons-material/Check'
 import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
+function validation(input) {
+    let error = ''
+    if (!input) error = 'Este campo no puede estar vacío'
+    return error
+}
+
 function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
-    const [edit, setEdit] = useState(false)
+    const [edit, setEdit] = useState(pizzaNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
 
     function handleChange(event) {
+        setError('')
         setMyValue(event.target.value)
-        if (pizzaNew) handleChangeInput({value: event.target.value, property: properties.property})
-    }   
+    }
 
     async function handleEdit() {
+        if (!edit) return setEdit(true)
+        console.log('Validando datos...')
+        const newError = validation(myValue)
+        if (newError) {
+            console.log('Error en la validación de datos')
+            return setError(newError)
+        }
+        console.log('Datos validados')
+        
+        if (pizzaNew) {
+            handleChangeInput({value: myValue, property: properties.property})
+            return setEdit(prevState => !prevState)
+        }
+
         if (edit && myValue !== value) {
+            console.log('Guardando información...')
+            setLoading(true)
             const { property, id } = properties
             const response = await updateProperty( id, {property, value: myValue})
             let text, status
@@ -42,6 +66,8 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
                     value: myValue
                 })
             }
+            console.log('Información guardada con exito')
+            setLoading(false)
         }
         setEdit(prevState => !prevState)
     }
@@ -51,10 +77,13 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
             value={myValue}
             onChange={handleChange}
             disabled={!(pizzaNew || edit )}
-            InputProps={ !pizzaNew && {
+            error={Boolean(error)}
+            helperText={error}
+            InputProps={{
                 endAdornment: (
                     <IconButton
                         onClick={handleEdit}
+                        disabled={loading}
                     >
                         {
                             edit ? (
