@@ -25,6 +25,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     const [edit, setEdit] = useState(pizzaNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
+    const [loading, setLoading] = useState(false)
 
     function handleChange(event) {
         const {name, value} = event.target
@@ -39,11 +40,13 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     }
 
     async function handleEdit() {
+        setLoading(true)
         if (edit && !isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
             if (!pizzaNew) await saveIngredients()
             setIngredientsList(currentIngredientList)
             handleChangeInput({value: currentIngredientList, property})
         }
+        setLoading(false)
         setEdit(prevState => !prevState)
     }
 
@@ -179,6 +182,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
                     left: '100%'
                 }}
                 onClick={handleEdit}
+                disabled={loading}
             >
                 {
                     edit ? (
