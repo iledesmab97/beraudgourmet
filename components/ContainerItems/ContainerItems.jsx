@@ -21,6 +21,12 @@ import { fetchwhoAmI } from '@/services/userApi'
 
 // import style from './ContainerItems.module.css'
 
+function updatePrice(price) {
+  const priceWithIVA = Number(price) * 1.16
+  const priceWithIVA_and_ComissionStripe = (priceWithIVA * 0.036 + 3) * 1.16
+  return Math.ceil(priceWithIVA + priceWithIVA_and_ComissionStripe)
+}
+
 function ContainerItems () {
 
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
@@ -29,7 +35,20 @@ function ContainerItems () {
 
   useEffect(() => {
     if (products && products.pizzas) return
-    getPizzasWithCosts().then(data => {
+    getPizzasWithCosts()
+      .then(data => {
+        const priceUpdated = data.map(pizza => {
+          const {price} = pizza
+          for (let size in price) {
+            for (let mass in price[size]) {
+              price[size][mass] = updatePrice(price[size][mass])
+            }
+          }
+          return {...pizza, price}
+        })
+        return priceUpdated
+      })
+      .then(data => {
       handleAddProductsList({
         type: 'pizzas',
         products: data

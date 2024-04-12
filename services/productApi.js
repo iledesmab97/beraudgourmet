@@ -25,11 +25,12 @@ export function getPizzaCosts({type}) {
       .then(response => response.json())
       .then(data => {
         const pizzaCostsList = data.map(pizzaCost => {
-          const { id, cost, costIVA, pizza, pizzaCharacteristics } = pizzaCost
+          const { id, cost, costIVA, costIVAStripe, pizza, pizzaCharacteristics } = pizzaCost
           const newPizzaCost = {
             id,
             cost,
             costIVA: twoDecimals(costIVA),
+            costIVAStripe,
             pizza,
             pizzaCharacteristics
           }
@@ -38,14 +39,14 @@ export function getPizzaCosts({type}) {
         if (type === 'object') {
           const listCostsObject = {}
           pizzaCostsList.forEach(pizzaCost => {
-            const { costIVA, pizza, pizzaCharacteristics } = pizzaCost
+            const { cost, pizza, pizzaCharacteristics } = pizzaCost
             const { mass, size } = pizzaCharacteristics
   
             if (listCostsObject[pizza]) {
               // cost per mass
               const costPerMass = {
                 ...listCostsObject[pizza][size],
-                [mass]: costIVA
+                [mass]: cost
               }
               // mass per size
               const massPerSize = {
@@ -58,7 +59,7 @@ export function getPizzaCosts({type}) {
             } else {
               // cost per mass
               const costPerMass = {
-                [mass]: costIVA
+                [mass]: cost
               }
               // mass per size
               const massPerSize = {
