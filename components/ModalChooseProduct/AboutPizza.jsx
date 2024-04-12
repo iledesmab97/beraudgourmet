@@ -14,6 +14,10 @@ export default function AboutPizza ({ product }) {
             xs={12}
             md={4.5}
             pr={4}
+            sx={{
+                height: '85%',
+                overflowY: 'auto'
+            }}
         >
             <Box
                 sx={{
@@ -22,9 +26,23 @@ export default function AboutPizza ({ product }) {
                     aspectRatio: 3/2
             }}
             >
-                <Image src={product.image} alt={product.name} fill/>
+                <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={280}
+                    height={280}
+                    style={{
+                        objectFit: 'contain'
+                    }}
+                />
             </Box>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+                id="modal-modal-title"
+                component="p"
+                sx={{
+                    fontSize: '1rem'
+                }}
+            >
                 {product.text}
             </Typography>
 

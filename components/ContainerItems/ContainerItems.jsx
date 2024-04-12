@@ -6,6 +6,7 @@ import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
 import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import CardActionArea from '@mui/material/CardActionArea'
@@ -68,14 +69,36 @@ function ContainerItems () {
                     }}
                     image={item.image}
                   />
-                  <CardContent sx={{ flexGrow: 1}}>
+                  <CardContent
+                    sx={{
+                      flexGrow: 1,
+                    }}
+                  >
                     <Typography gutterBottom variant='title' component='h2'>
                       {item.name}
                     </Typography>
                     <br/>
-                    <Typography variant='texto'>
-                      {item.text}
-                    </Typography>
+                    <Box
+                      sx={{
+                        height: '60px',
+                        overflow: 'hidden',
+                        position: 'relative'
+                      }}
+                    >
+                      <Typography variant='texto'>
+                        {item.text}
+                      </Typography>
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: '0px',
+                          left: '0px',
+                          width: '100%',
+                          height: '100%',
+                          background: 'linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0))'
+                        }}
+                      />
+                    </Box>
                   </CardContent>
                 </Card>
               </CardActionArea>
