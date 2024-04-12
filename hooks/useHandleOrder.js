@@ -23,10 +23,11 @@ export default function useHandleOrder({ product }) {
             return acc + quantity * extraIngredients[cur].price
         }, 0)
         const pizzaWithExtras = Number(price) + totalExtras
-        const stripeCommission = pizzaWithExtras * 0.041 + 3
-        const ivaStripeCommission = stripeCommission * 0.16
-        const pizzaWithStripeCommissionAndIva = pizzaWithExtras + stripeCommission + ivaStripeCommission
-        const totalPrice = inputs.quantity * (pizzaWithStripeCommissionAndIva)
+        // const stripeCommission = pizzaWithExtras * 0.041 + 3
+        // const ivaStripeCommission = stripeCommission * 0.16
+        // const pizzaWithStripeCommissionAndIva = pizzaWithExtras + stripeCommission + ivaStripeCommission
+        // const totalPrice = inputs.quantity * (pizzaWithStripeCommissionAndIva)
+        const totalPrice = inputs.quantity * (pizzaWithExtras)
         return Math.ceil(totalPrice)
     }, [inputs])
 
