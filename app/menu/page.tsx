@@ -18,6 +18,7 @@ import ModalPDF from '@/components/ModalPDF/ModalPDF'
 
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
+import useLocalData from '@/hooks/useLocalData'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
@@ -28,6 +29,7 @@ function Menu () {
     libraries: ['places'],
   });
   const { gerUserLoged } = useLogedUser()
+  useLocalData()
 
   useEffect(() => {
     gerUserLoged()
