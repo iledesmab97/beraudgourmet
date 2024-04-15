@@ -14,9 +14,12 @@ import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
+import useLocalData from '@/hooks/useLocalData'
+
 export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
+    const { saveLocalData } = useLocalData()
 
     return (
         <>
@@ -176,6 +179,7 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                         }}
                                         onClick={() => {
                                             handleAddPlace({closerStore: store})
+                                            saveLocalData('place', {closerStore: store})
                                             handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
                                             handleCloseModal('place')
                                         }}
