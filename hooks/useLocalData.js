@@ -33,7 +33,11 @@ function useLocalData() {
         localStorage.setItem(key, JSON.stringify(value))
     }, [])
 
-    return { getLocalData, saveLocalData }
+    const removeLocalData = useCallback((key) => {
+        localStorage.removeItem(key)
+    }, [])
+
+    return { getLocalData, saveLocalData, removeLocalData }
 }
 
 export default useLocalData
