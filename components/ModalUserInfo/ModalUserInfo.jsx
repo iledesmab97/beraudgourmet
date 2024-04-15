@@ -5,6 +5,7 @@ import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
 import UserLoged from '../OrderRewards/UserLoged'
+import useHandleSession from '@/hooks/useHandleSession'
 
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -38,6 +39,7 @@ function ModalUserInfo() {
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
     const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
+    const { closeSession } = useHandleSession()
 
     return (
         <Modal
@@ -158,6 +160,7 @@ function ModalUserInfo() {
                     <Button
                         onClick={ () => {
                             signOff()
+                            closeSession()
                             handleCloseModal('user')
                         }}
                     >
