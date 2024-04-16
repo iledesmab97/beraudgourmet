@@ -26,8 +26,15 @@ function OrderRewards () {
   return (
     <Grid
       item
-      sx={{ width: '100%' }}
-      >
+      xs={12}
+      md={4}
+      sx={{
+        display: {
+          xs: 'none',
+          md: 'block'
+        }
+      }}
+    >
       <Container
         sx={{
           bgcolor: '#EAEDF2',
@@ -37,16 +44,22 @@ function OrderRewards () {
           alignItems: 'center',
           justifyContent: 'space-around'}}
       >
-        <Image
-          src={logoBeraud}
-          alt={'logoBeraud'}
-          style={{
-            width: '100%',
+        <Box
+          sx={{
+            width: '90%',
             height: 'auto',
-            objectFit: 'contain',
-            aspectRatio: 3/2
           }}
-        />
+        >
+          <Image
+            src={logoBeraud}
+            alt={'logoBeraud'}
+            style={{
+              width: '100%',
+              objectFit: 'contain',
+              aspectRatio: 3/2,
+            }}
+          />
+        </Box>
         <Box
           component='form'
           noValidate
