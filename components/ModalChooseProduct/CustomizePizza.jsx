@@ -204,7 +204,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                             {ingredient.name}
                                         </TableCell>
                                         <TableCell>
-                                            {'$' + ingredient.price}
+                                            {'$' + ingredient.totalPrice}
                                         </TableCell>                                
                                     </TableRow>
                                     )

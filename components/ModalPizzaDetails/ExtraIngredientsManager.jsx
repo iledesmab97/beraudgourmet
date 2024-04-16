@@ -85,6 +85,10 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                 property: 'cost',
                 value: inputCost
             }, 'update')
+            setCurrentExtraIngredient(prevState => ({
+                ...prevState,
+                cost: inputCost
+            }))
         }
         console.log('Información guardada con exito')
         setLoading(false)
@@ -243,7 +247,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                         <Button
                             variant='contained'
                             onClick={updatedeExtraIngredient}
-                            disabled={loading}
+                            disabled={loading || currentExtraIngredient.cost === inputCost}
                         >
                             Actualizar</Button>
                         <Button

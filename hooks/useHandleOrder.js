@@ -20,13 +20,9 @@ export default function useHandleOrder({ product }) {
         const price = product.price[inputs.size][inputs.mass]
         const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
             const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0
-            return acc + quantity * extraIngredients[cur].price
+            return acc + quantity * extraIngredients[cur].totalPrice
         }, 0)
         const pizzaWithExtras = Number(price) + totalExtras
-        // const stripeCommission = pizzaWithExtras * 0.041 + 3
-        // const ivaStripeCommission = stripeCommission * 0.16
-        // const pizzaWithStripeCommissionAndIva = pizzaWithExtras + stripeCommission + ivaStripeCommission
-        // const totalPrice = inputs.quantity * (pizzaWithStripeCommissionAndIva)
         const totalPrice = inputs.quantity * (pizzaWithExtras)
         return Math.ceil(totalPrice)
     }, [inputs])

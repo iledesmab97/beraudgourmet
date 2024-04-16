@@ -39,14 +39,14 @@ export function getPizzaCosts({type}) {
         if (type === 'object') {
           const listCostsObject = {}
           pizzaCostsList.forEach(pizzaCost => {
-            const { cost, pizza, pizzaCharacteristics } = pizzaCost
+            const { costIVAStripe, pizza, pizzaCharacteristics } = pizzaCost
             const { mass, size } = pizzaCharacteristics
   
             if (listCostsObject[pizza]) {
               // cost per mass
               const costPerMass = {
                 ...listCostsObject[pizza][size],
-                [mass]: cost
+                [mass]: costIVAStripe
               }
               // mass per size
               const massPerSize = {
@@ -59,7 +59,7 @@ export function getPizzaCosts({type}) {
             } else {
               // cost per mass
               const costPerMass = {
-                [mass]: cost
+                [mass]: costIVAStripe
               }
               // mass per size
               const massPerSize = {
@@ -81,11 +81,12 @@ export async function getExtraIngredients() {
     .then(data => {
       const extraIngredinetList = {}
       data.forEach(extraIngredient => {
-        const {id, name, cost} = extraIngredient
+        const {id, name, cost, costIVAStripe} = extraIngredient
         extraIngredinetList[name] = {
           id,
           name,
-          price: cost
+          price: cost,
+          totalPrice: costIVAStripe
         }
       })
       return extraIngredinetList
