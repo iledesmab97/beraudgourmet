@@ -50,6 +50,12 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
         setAllExtraIngredients(newListExtraIngredinets)
     }
 
+    function removeExtraIngredientOfList(data) {
+        const {id} = data
+        const newAllExtraIngredients = [...allExtraIngredients].filter(extra => extra.id !== id)
+        setAllExtraIngredients(newAllExtraIngredients)
+    }
+
     function handleExtraIngredients(data, operation) {
         switch (operation) {
             case 'update': {
@@ -58,6 +64,10 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
             }
             case 'add': {
                 addExtraIngredient(data)
+                break
+            }
+            case 'remove': {
+                removeExtraIngredientOfList(data)
                 break
             }
             default: {
