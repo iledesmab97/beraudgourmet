@@ -28,35 +28,38 @@ function OrderRewards () {
       item
       xs={12}
       md={4}
-      sx={{
-        display: {
-          xs: 'none',
-          md: 'block'
-        }
-      }}
     >
       <Container
         sx={{
+          height: {
+            xs: '100%',
+            md: 'auto'
+          },
           bgcolor: '#EAEDF2',
           pb: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-around'}}
+          justifyContent: 'flex-start'
+        }}
       >
         <Box
           sx={{
+            position: 'relative',
             width: '90%',
+            aspectRatio: 16/9,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             height: 'auto',
           }}
         >
           <Image
             src={logoBeraud}
             alt={'logoBeraud'}
+            fill={true}
             style={{
-              width: '100%',
               objectFit: 'contain',
-              aspectRatio: 3/2,
             }}
           />
         </Box>
