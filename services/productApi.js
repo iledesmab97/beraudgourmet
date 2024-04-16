@@ -213,3 +213,20 @@ export function updateExtraIngredient(id, properties) {
     })
     .catch(error => ({message: error.message}))
 }
+
+export function makeExtraIngredient(properties) {
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(properties)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
