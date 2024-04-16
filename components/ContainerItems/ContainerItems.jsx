@@ -37,18 +37,6 @@ function ContainerItems () {
     if (products && products.pizzas) return
     getPizzasWithCosts()
       .then(data => {
-        const priceUpdated = data.map(pizza => {
-          const {price} = pizza
-          for (let size in price) {
-            for (let mass in price[size]) {
-              price[size][mass] = updatePrice(price[size][mass])
-            }
-          }
-          return {...pizza, price}
-        })
-        return priceUpdated
-      })
-      .then(data => {
       handleAddProductsList({
         type: 'pizzas',
         products: data
