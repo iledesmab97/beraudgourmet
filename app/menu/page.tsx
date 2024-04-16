@@ -41,9 +41,9 @@ function Menu () {
         container
         spacing={5}
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'auto 350px',
-          pb: 3}}>
+          pb: 3
+        }}
+      >
         <ContainerItems />
         <OrderRewards />
       </Grid>
