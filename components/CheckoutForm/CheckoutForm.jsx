@@ -9,6 +9,7 @@ import { contactUs } from '@/utils/contact'
 import { descriptionOrder } from '@/utils/preparingData'
 import { updatePaymentRequest } from '@/services/checkoutApi'
 import { registerOrder } from '@/services/orderApi'
+import useLocalData from '@/hooks/useLocalData'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -31,6 +32,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const elements = useElements()
     const router = useRouter()
     const firstTime = useRef(true)
+    const { removeAllLocalData } = useLocalData()
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -168,6 +170,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 paid: !checked,
             })
 
+            removeAllLocalData()
+
             return router.push('/success')
         }
 
@@ -192,8 +196,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             paymentMethod: 'transfer',
             paid: false,
         })
+        removeAllLocalData()
         contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })
         handleCloseModal('pay')
+        return router.push('/success')
     }
 
     return (
