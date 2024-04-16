@@ -230,3 +230,19 @@ export function makeExtraIngredient(properties) {
     })
     .catch(error => ({message: error.message}))
 }
+
+export function removeExtraIngredient(id) {
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
