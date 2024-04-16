@@ -12,7 +12,7 @@ import InputUpdate from '../InputUpdate/InputUpdate'
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { updateExtraIngredient, makeExtraIngredient } from '@/services/productApi'
+import { updateExtraIngredient, makeExtraIngredient, removeExtraIngredient } from '@/services/productApi'
 
 function validation(extra) {
     const errors = {}
@@ -90,8 +90,37 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
         setLoading(false)
     }
 
-    function removeExtraIngredient() {
-        console.log('eliminando ingrediente extra')
+    async function deleteExtraIngredient() {
+        console.log('eliminando ingrediente extra...')
+        setLoading(true)
+        const response = await removeExtraIngredient(currentExtraIngredient.id)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            let newExtra
+            for (let extra of allExtraIngredients) {
+                if (extra.id !== currentExtraIngredient.id) {
+                    newExtra = extra
+                    break
+                }
+            }
+            newExtraSElected.current = null
+            await handleChangeSelect(newExtra.name)
+            handleExtraIngredients(currentExtraIngredient, 'remove')
+        }
+        console.log('Ingediente eliminado exitosamente')
+        setLoading(false)
     }
 
     async function addExtraIngredient() {
@@ -219,7 +248,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                             Actualizar</Button>
                         <Button
                             variant='contained'
-                            onClick={removeExtraIngredient}
+                            onClick={deleteExtraIngredient}
                             disabled={loading}
                         >
                             Eliminar
