@@ -55,12 +55,11 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                 onClick={() => {
                     if (edit) {
                         handleUpdateOrder({item: currentProduct, index: edit.index})
-                        handleCloseModalOrder()
                     } else {
                         handleAddOrder(currentProduct)
                         handleAddedItem()
-                        handleCloseModalOrder()
                     }
+                    handleCloseModalOrder()
                 }}
             >
                 {edit ? 'Actualizar' : 'Agregar'}

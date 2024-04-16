@@ -141,6 +141,12 @@ export async function getAllIngredients() {
     .then(data => data)
 }
 
+export async function getAllExtraIngredients() {
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
+    .then(response => response.json())
+    .then(data => data)
+}
+
 export async function addNewPizza(pizza) {
   return fetch(`${PATH_BACK}/pizzas`, {
     method: 'POST',
@@ -180,6 +186,56 @@ export async function updateCharacteristicsPizza(id, body) {
     credentials: 'include',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify(body)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
+
+export function updateExtraIngredient(id, properties) {
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(properties)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
+
+export function makeExtraIngredient(properties) {
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(properties)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
+
+export function removeExtraIngredient(id) {
+  return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
   })
     .then(response => {
       return response.json()
