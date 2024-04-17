@@ -27,7 +27,9 @@ import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 import IconButton from '@mui/material/IconButton'
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
-import Link from '@mui/material/Link';
+import Link from '@mui/material/Link'
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove'
 
 import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
@@ -38,20 +40,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
 
     const [visibilityArrow, setVisibilityArrow] = useState(true)
     const { extraIngredients } = useGetExtraIngredients()
-
-    useEffect(() => {
-        const container = document.querySelector('#modal-container-customizePizza')
-        container.addEventListener('scroll', handleVisibilityArrow)
-
-        return () => {
-            container.removeEventListener('scroll', handleVisibilityArrow)
-        }
-    }, [])
-
-    function handleVisibilityArrow() {
-        const { vertical } = showScrollPosition('#modal-container-customizePizza')
-        setVisibilityArrow(vertical === 0 ? true : false)
-    }
 
     const {
         size,
@@ -66,155 +54,187 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
 
     return (
         <Grid
+            id='modal-container-customizePizza'
             item
+            container
             md
-            // xs
-            // xs={12}
-            pr={4}
+            direction={'column'}
+            wrap='nowrap'
+            alignItems={'flex-start'}
+            spacing={2}
             sx={{
-                height: '85%'
+                height: '85%',
+                overflowY: 'auto'
             }}
         >
-            <Box
-                id='modal-container-customizePizza'
-                sx={{
-                    height: '100%',
-                    width: '100%',
-                    overflowY: 'scroll',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2
-                }}
+            <Grid
+                item
+                container
+                direction={'column'}
+                spacing={1}
             >
-
-                <Typography
-                    id="modal-modal-description"
-                    variant='title'
-                    sx={{ mt: 2 }}
-                >
-                    ELIGE EL TAMAÑO
-                </Typography>
-
-                <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
-
-                <Typography
-                    id="modal-subtitle-ELIGE_LA_MASA"
-                    variant='title'
-                    sx={{ mt: 2 }}>
-                    ELIGE LA MASA
-                </Typography>
-
-                <MasaTypesPizza listMass={currentProduct.price[size]} mass={mass} handleMass={handleMass} />
-            
-                <Typography
-                    id="modal-modal-description"
-                    variant='title'
-                    sx={{ mt: 2 }}>
-                    QUITAR INGREDIENTES
-                </Typography>
-
-                <FormGroup onChange={handleIngredientsModal}>
-                    {
-                        ingredientsProduct.map((ingredient, index) => (
-                            <FormControlLabel
-                                key={ingredient + index}
-                                control={
-                                    <Checkbox
-                                        checked={ ingredientsModal.includes(ingredient) ? false : true} 
-                                    />
-                                }
-                                label={ingredient}
-                                sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
-                            />        
-                        ))
-                    }
-                </FormGroup>
-
-                <Typography
-                    id="modal-subtitle-AGREGAR_INGREDIENTES"
-                    variant='title'
-                    sx={{ mt: 2 }}>
-                    AGREGAR INGREDIENTES
-                </Typography>
-
+                <Grid item>
+                    <Typography
+                        id="modal-modal-description"
+                        variant='title'
+                    >
+                        ELIGE EL TAMAÑO
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
+                </Grid>
+            </Grid>
+            <Grid
+                item
+                container
+                direction={'column'}
+                alignItems={'flex-start'}
+                wrap='nowrap'
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-subtitle-ELIGE_LA_MASA"
+                        variant='title'
+                    >
+                        ELIGE LA MASA
+                    </Typography>
+                </Grid>
                 <Grid
-                    container
-                    direction='row'
+                    item
                     sx={{
-                        justifyContent: 'start'
+                        width: '95%'
                     }}
                 >
-                    <Grid
-                        item
-                        xs={11}
+                    <MasaTypesPizza listMass={currentProduct.price[size]} mass={mass} handleMass={handleMass} />
+                </Grid>
+            </Grid>
+
+            <Grid
+                item
+                container
+                direction={'column'}
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-modal-description"
+                        variant='title'
                     >
-                        <TableContainer component={Paper}>
-                            <Table
+                        QUITAR INGREDIENTES
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <FormGroup onChange={handleIngredientsModal}>
+                        {
+                            ingredientsProduct.map((ingredient, index) => (
+                                <FormControlLabel
+                                    key={ingredient + index}
+                                    control={
+                                        <Checkbox
+                                            checked={ ingredientsModal.includes(ingredient) ? false : true} 
+                                        />
+                                    }
+                                    label={ingredient}
+                                    sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
+                                />        
+                            ))
+                        }
+                    </FormGroup>
+                </Grid>
+            </Grid>
+
+            <Grid
+                item
+                container
+                direction={'column'}
+                alignItems={'flex-start'}
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-subtitle-AGREGAR_INGREDIENTES"
+                        variant='title'
+                    >
+                        AGREGAR INGREDIENTES
+                    </Typography>
+                </Grid>
+
+                <Grid
+                    item
+                >
+                    <TableContainer component={Paper}>
+                        <Table
                             size='small'
-                            // dense={true}
-                            // table
-                            >
-                            <TableBody>
-                                {
-                                Object.values(extraIngredients).map((ingredient) => {
-                                    return (
-                                    <TableRow
-                                        key={ingredient.name}
-                                        // sx={{
-                                        //     display: 'flex',
-                                        //     alignItems: 'center' 
-                                        // }}
+                        >
+                        <TableBody>
+                            {
+                            Object.values(extraIngredients).map((ingredient) => {
+                                return (
+                                <TableRow
+                                    key={ingredient.name}
+                                >
+                                    <TableCell
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 1,
+                                            alignItems: 'center' 
+                                        }}
                                     >
-                                        <TableCell
+                                        <IconButton
+                                            size='small'
+                                            variant='contained'
+                                            onClick={() => { handleExtra({ingredient, operation: '-'}) }}
+                                            name='-'
+                                            value={ingredient.name}
+                                            disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
                                             sx={{
-                                                display: 'flex',
-                                                gap: 1,
-                                                alignItems: 'center' 
+                                                bgcolor: '#295386',
+                                                color: '#FFFDFF',
+                                                '&:hover': {
+                                                    color: '#295386'
+                                                }
                                             }}
                                         >
-                                            <Button
-                                                size='small'
-                                                variant='contained'
-                                                onClick={() => { handleExtra({ingredient, operation: '-'}) }}
-                                                name='-'
-                                                value={ingredient.name}
-                                                disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
-                                                // sx={{
-                                                //     width: '10px',
-                                                //     height: '20px',
-                                                //     borderRadius: '50%'
-                                                // }}
-                                            >
-                                                -
-                                            </Button>
-                                            <Typography id="modal-modal-description">
-                                                { extra[ingredient.name] ? extra[ingredient.name] : 0 }
-                                            </Typography>
-                                            <Button
-                                                size='small'
-                                                variant='contained'
-                                                onClick={() => { handleExtra({ingredient, operation: '+'}) }}
-                                                name='+'
-                                                value={ingredient.name}
-                                            >
-                                                +
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell>
-                                            {ingredient.name}
-                                        </TableCell>
-                                        <TableCell>
-                                            {'$' + ingredient.totalPrice}
-                                        </TableCell>                                
-                                    </TableRow>
-                                    )
-                                })
-                                }
-                            </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
+                                            <RemoveIcon />
+                                        </IconButton>
+                                        <Typography id="modal-modal-description">
+                                            { extra[ingredient.name] ? extra[ingredient.name] : 0 }
+                                        </Typography>
+                                        <IconButton
+                                            size='small'
+                                            onClick={() => { handleExtra({ingredient, operation: '+'}) }}
+                                            name='+'
+                                            value={ingredient.name}
+                                            sx={{
+                                                bgcolor: '#295386',
+                                                color: '#FFFDFF',
+                                                '&:hover': {
+                                                    color: '#295386'
+                                                }
+                                            }}
+                                        >
+                                            <AddIcon />
+                                            {/* + */}
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell>
+                                        {ingredient.name}
+                                    </TableCell>
+                                    <TableCell>
+                                        {'$' + ingredient.totalPrice}
+                                    </TableCell>                                
+                                </TableRow>
+                                )
+                            })
+                            }
+                        </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
+            </Grid>
+
                 {
                     visibilityArrow
                     ? (
@@ -231,7 +251,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                         </IconButton>
                     ): null
                 }
-            </Box>
+            {/* </Box> */}
         </Grid>
     )
 }
