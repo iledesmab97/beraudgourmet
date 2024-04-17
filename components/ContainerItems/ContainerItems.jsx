@@ -50,14 +50,27 @@ function ContainerItems () {
   }, [])
 
   return (
-    <Grid id='Pizza-Section' item xs={12}>
+    <Grid
+      id='Pizza-Section'
+      item
+      xs={12}
+      md={8}
+    >
       <Typography  variant='encabezado'>
         Pizzas
       </Typography>
-      <Grid container spacing={4}>
+      <Grid
+        container
+        spacing={2}
+      >
         {
           products && products.map((item, index) => (
-            <Grid item key={item.name + index} xs={12} sm={6} md={4}>
+            <Grid
+              item
+              key={item.name + index}
+              xs={12}
+              sm={4}
+            >
               <CardActionArea
                 onClick={() => {
                   handleOpenModalOrder({item})
