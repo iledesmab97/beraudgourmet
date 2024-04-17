@@ -12,18 +12,21 @@ export default function AboutPizza ({ product }) {
         <Grid 
             item
             xs={12}
-            md={4.5}
-            pr={4}
+            md={4.7}
             sx={{
-                height: '85%',
-                overflowY: 'auto'
+                height: 'fit-content',
+                overflowY: 'auto',
+                pb: 4
             }}
         >
             <Box
                 sx={{
                     position: 'relative',
                     width: '100%',
-                    aspectRatio: 3/2
+                    aspectRatio: 3/2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
             }}
             >
                 <Image
@@ -40,7 +43,7 @@ export default function AboutPizza ({ product }) {
                 id="modal-modal-title"
                 component="p"
                 sx={{
-                    fontSize: '1rem'
+                    fontSize: '1rem',
                 }}
             >
                 {product.text}
