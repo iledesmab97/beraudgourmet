@@ -26,8 +26,14 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                     xs: '15%',
                     sm: '10%'
                 },
-                pr: 4,
-                pl: 4
+                pr: {
+                    xs: 2,
+                    sm: 4
+                },
+                pl: {
+                    xs: 2,
+                    sm: 4
+                }
             }}
         >
             <Grid
