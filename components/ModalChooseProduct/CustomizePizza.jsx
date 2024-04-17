@@ -150,7 +150,10 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 container
                 direction={'column'}
                 alignItems={'flex-start'}
-                spacing={1}
+                spacing={{
+                    xs: 0,
+                    sm: 1
+                }}
             >
                 <Grid item>
                     <Typography
@@ -164,7 +167,12 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 <Grid
                     item
                 >
-                    <TableContainer component={Paper}>
+                    <TableContainer
+                        component={Paper}
+                        sx={{
+                            width: '95%'
+                        }}
+                    >
                         <Table
                             size='small'
                         >
@@ -174,12 +182,20 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                 return (
                                 <TableRow
                                     key={ingredient.name}
+                                    sx={{
+                                        borderBottom: '1px solid rgba(224, 224, 224, 1)'
+                                    }}
                                 >
                                     <TableCell
                                         sx={{
+                                            height: '100%',
                                             display: 'flex',
-                                            gap: 1,
-                                            alignItems: 'center' 
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            px: {
+                                                xs: 1,
+                                            },
+                                            borderBottom: 'none'
                                         }}
                                     >
                                         <IconButton
@@ -190,6 +206,10 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                             value={ingredient.name}
                                             disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
                                             sx={{
+                                                scale: {
+                                                    xs: '0.65',
+                                                    md: '0.70'
+                                                },
                                                 bgcolor: '#295386',
                                                 color: '#FFFDFF',
                                                 '&:hover': {
@@ -208,6 +228,10 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                             name='+'
                                             value={ingredient.name}
                                             sx={{
+                                                scale: {
+                                                    xs: '0.65',
+                                                    md: '0.70'
+                                                },
                                                 bgcolor: '#295386',
                                                 color: '#FFFDFF',
                                                 '&:hover': {
@@ -219,7 +243,14 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                                             {/* + */}
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell
+                                        sx={{
+                                            px: {
+                                                xs: 1,
+                                                sm: 2
+                                            }
+                                        }}
+                                    >
                                         {ingredient.name}
                                     </TableCell>
                                     <TableCell>
@@ -251,7 +282,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                         </IconButton>
                     ): null
                 }
-            {/* </Box> */}
         </Grid>
     )
 }
