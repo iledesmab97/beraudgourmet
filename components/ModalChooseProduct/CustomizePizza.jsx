@@ -150,6 +150,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 container
                 direction={'column'}
                 alignItems={'flex-start'}
+                wrap='nowrap'
                 spacing={{
                     xs: 0,
                     sm: 1
@@ -166,6 +167,9 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
 
                 <Grid
                     item
+                    sx={{
+                        width: '100%'
+                    }}
                 >
                     <TableContainer
                         component={Paper}
