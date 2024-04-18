@@ -77,8 +77,14 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
             alignItems={'flex-start'}
             spacing={2}
             sx={{
-                height: '85%',
-                overflowY: 'auto'
+                height: {
+                    xs: 'auto',
+                    md: '85%'
+                },
+                overflowY: {
+                    xs: 'hidden',
+                    md: 'auto'
+                }
             }}
         >
             <Grid
