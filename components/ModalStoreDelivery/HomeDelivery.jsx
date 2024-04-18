@@ -28,7 +28,11 @@ export default function HomeDelivery({
             <Box
                 sx={{
                     width: '100%',
-                    maxHeight: '430px',
+                    maxHeight: {
+                        xs: '335px',
+                        sm: '490px',
+                        md: '430px'
+                    },
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
