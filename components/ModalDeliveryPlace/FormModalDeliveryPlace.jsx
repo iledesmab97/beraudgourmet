@@ -102,6 +102,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                                     {
                                         Object.keys(inputsHome.other).map((input, index) => (
                                             <Grid
+                                                key={`${input}/${index}`}
                                                 item
                                                 sx={{
                                                     width: {
@@ -157,6 +158,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                 {
                     Object.keys(inputsHome.street).map((input, index) => (
                         <Grid
+                            key={`${input}:${index}`}
                             item
                             sx={{
                                 width: {
