@@ -94,7 +94,10 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                         xs: '85%',
                         sm: '90%'
                     },
-                    overflowY: 'auto',
+                    overflowY: {
+                        xs: 'auto',
+                        md: 'hidden'
+                    },
                     pr: {
                         xs: 2,
                         sm: 4
