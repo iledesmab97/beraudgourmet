@@ -292,33 +292,37 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                             <Box
                                                 component='div'
                                                 sx={{
+                                                    position: 'relative',
                                                     width: '100%',
                                                     py: '8px',
                                                     px: '16px'
                                                 }}
                                             >
                                                 <PaymentElement id='payment-element' options={paymentElementOptions} />
+                                                <FormGroup
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        left: '0px',
+                                                        top: '100%'
+                                                    }}
+                                                >
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Checkbox
+                                                                checked={checked}
+                                                                onChange={handleChange} />
+                                                        }
+                                                        label="Pagar al recoger"
+                                                    />
+                                                </FormGroup>
                                             </Box>
-                                            <FormGroup
-                                                sx={{
-                                                    position: 'absolute',
-                                                    left: '0px',
-                                                    bottom: '0px'
-                                                }}
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            checked={checked}
-                                                            onChange={handleChange} />
-                                                    }
-                                                    label="Pagar al recoger"
-                                                />
-                                            </FormGroup>
                                             <Button
                                                 variant='contained'
                                                 onClick={handleSubmit}
                                                 disabled={isLoading}
+                                                sx={{
+                                                    mt: '32px'
+                                                }}
                                             >
                                                 {
                                                     isLoading ? 'Procesando pago' : 'Pagar ahora'
