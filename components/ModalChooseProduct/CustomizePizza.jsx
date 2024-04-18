@@ -277,8 +277,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                             onClick={() => {scrollToSection('#modal-subtitle-ELIGE_LA_MASA')}}
                             sx={{
                                 position: 'fixed',
-                                bottom: '50px',
-                                right: '30px',
+                                bottom: '76px',
+                                right: '48px',
                                 width: 'fit-content'
                             }}
                         >
