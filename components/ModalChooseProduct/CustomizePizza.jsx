@@ -5,6 +5,8 @@ import { scrollToSection, showScrollPosition } from '@/utils/modal'
 import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -40,6 +42,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
 
     const [visibilityArrow, setVisibilityArrow] = useState(true)
     const { extraIngredients } = useGetExtraIngredients()
+    const theme = useTheme()
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
     const {
         size,
@@ -52,6 +56,22 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         handleExtra
     } = customizePizza
 
+    useEffect(() => {
+        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
+        const container = document.querySelector(idContainer)
+        container.addEventListener('scroll', handleVisibilityArrow)
+
+        return () => {
+            container.removeEventListener('scroll', handleVisibilityArrow)
+        }
+    }, [])
+
+    function handleVisibilityArrow() {
+        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
+        const { vertical } = showScrollPosition(idContainer)
+        setVisibilityArrow(vertical === 0 ? true : false)
+    }
+
     return (
         <Grid
             id='modal-container-customizePizza'
@@ -63,8 +83,14 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
             alignItems={'flex-start'}
             spacing={2}
             sx={{
-                height: '85%',
-                overflowY: 'auto'
+                height: {
+                    xs: 'auto',
+                    md: '85%'
+                },
+                overflowY: {
+                    xs: 'hidden',
+                    md: 'auto'
+                }
             }}
         >
             <Grid
@@ -277,8 +303,12 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                             onClick={() => {scrollToSection('#modal-subtitle-ELIGE_LA_MASA')}}
                             sx={{
                                 position: 'fixed',
-                                bottom: '50px',
-                                right: '30px',
+                                bottom: '76px',
+                                right: {
+                                    xs: '16px',
+                                    sm: '32px',
+                                    md: '48px'
+                                },
                                 width: 'fit-content'
                             }}
                         >

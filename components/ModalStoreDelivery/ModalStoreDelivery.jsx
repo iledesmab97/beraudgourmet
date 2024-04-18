@@ -21,17 +21,23 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 700,
-  height: 700,
+  width: {
+    xs: '324px',
+    sm: '700px',
+    md: '700px'
+  },
+  height: {
+    xs: '80%',
+    sm: '60%',
+    md: '700px'
+  },
   bgcolor: 'background.paper',
   boxShadow: 24,
   borderRadius: 5,
-  p: 5,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  gap: 2,
+  p: {
+    xs: 2,
+    sm: 5
+  }
 }
 
 export default function ModalStoreDelivery() {
@@ -76,71 +82,87 @@ export default function ModalStoreDelivery() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant='title'
-            component="h2"
-            align='center'
+          <Box
             sx={{
-              mb: 5
+              height: '100%',
+              pr: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: 2,
+              overflowY: {
+                xs: 'auto',
+                sm: 'hidden'
+              }
             }}
           >
-            {delivery === 'store' ? 'Encuentre su tienda' : 'Indique el lugar de entrega'}
-          </Typography>
+            <Typography
+              id="modal-modal-title"
+              variant='title'
+              component="h2"
+              align='center'
+              sx={{
+                mb: 5
+              }}
+            >
+              {delivery === 'store' ? 'Encuentre su tienda' : 'Indique el lugar de entrega'}
+            </Typography>
 
-          <ButtonGroup
-            size='large'
-            variant='contained'
-            aria-label="contained large button group"
-            sx={{
-              mb: 3
-            }}
-          >
-            <Button
-              onClick={() => handlePlace('store')}
-              sx={delivery === 'store'
-                ? {
-                  backgroundColor: 'rgb(28, 58, 93)'
-                }: {}
-              }
+            <ButtonGroup
+              size='large'
+              variant='contained'
+              aria-label="contained large button group"
+              sx={{
+                mb: 3
+              }}
             >
-              Recoger en la tienda
-            </Button>
-            <Button
-              onClick={() => handlePlace('home')}
-              sx={delivery === 'home'
-                ? {
-                  backgroundColor: 'rgb(28, 58, 93)'
-                }: {}
-              }
-            >
-              Entrega a domicilio
-            </Button>
-          </ButtonGroup>
-          {
-            delivery === 'store'
-            ?
-              <StorePickup
-                storeList={storeList}
-                inputsStore={inputsStore}
-                handleInputsStore={handleInputsStore}
-                handleCloseModal={handleCloseModal}
-              />
-            : 
-              <HomeDelivery
-                handleInputsAddress={handleInputsAddress}
-                inputsHome={inputsHome}
-                typeLocation={typeLocation}
-                withinLimitSaved={inputsHome.withinLimitSaved}
-                distanceSaved={inputsHome.distanceSaved}
-                closerStore={closerStore}
-                changeWithinLimitSaved={changeWithinLimitSaved}
-                handleDistanceSaved={handleDistanceSaved}
-                handleInputsHome={handleInputsHome}
-                handleTypeLocation={handleTypeLocation}
-                handleCloserStore={handleCloserStore}
-              />
-          }
+              <Button
+                onClick={() => handlePlace('store')}
+                sx={delivery === 'store'
+                  ? {
+                    backgroundColor: 'rgb(28, 58, 93)'
+                  }: {}
+                }
+              >
+                Recoger en la tienda
+              </Button>
+              <Button
+                onClick={() => handlePlace('home')}
+                sx={delivery === 'home'
+                  ? {
+                    backgroundColor: 'rgb(28, 58, 93)'
+                  }: {}
+                }
+              >
+                Entrega a domicilio
+              </Button>
+            </ButtonGroup>
+            {
+              delivery === 'store'
+              ?
+                <StorePickup
+                  storeList={storeList}
+                  inputsStore={inputsStore}
+                  handleInputsStore={handleInputsStore}
+                  handleCloseModal={handleCloseModal}
+                />
+              : 
+                <HomeDelivery
+                  handleInputsAddress={handleInputsAddress}
+                  inputsHome={inputsHome}
+                  typeLocation={typeLocation}
+                  withinLimitSaved={inputsHome.withinLimitSaved}
+                  distanceSaved={inputsHome.distanceSaved}
+                  closerStore={closerStore}
+                  changeWithinLimitSaved={changeWithinLimitSaved}
+                  handleDistanceSaved={handleDistanceSaved}
+                  handleInputsHome={handleInputsHome}
+                  handleTypeLocation={handleTypeLocation}
+                  handleCloserStore={handleCloserStore}
+                />
+            }
+          </Box>
         </Box>
       </Modal>
     </div>
