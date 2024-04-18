@@ -5,6 +5,8 @@ import { scrollToSection, showScrollPosition } from '@/utils/modal'
 import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -40,6 +42,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
 
     const [visibilityArrow, setVisibilityArrow] = useState(true)
     const { extraIngredients } = useGetExtraIngredients()
+    const theme = useTheme()
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
     const {
         size,
@@ -53,7 +57,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
     } = customizePizza
 
     useEffect(() => {
-        const container = document.querySelector('#modal-container-customizePizza')
+        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
+        const container = document.querySelector(idContainer)
         container.addEventListener('scroll', handleVisibilityArrow)
 
         return () => {
@@ -62,7 +67,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
     }, [])
 
     function handleVisibilityArrow() {
-        const { vertical } = showScrollPosition('#modal-container-customizePizza')
+        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
+        const { vertical } = showScrollPosition(idContainer)
         setVisibilityArrow(vertical === 0 ? true : false)
     }
 
