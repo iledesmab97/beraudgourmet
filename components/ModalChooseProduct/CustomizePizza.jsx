@@ -52,6 +52,20 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         handleExtra
     } = customizePizza
 
+    useEffect(() => {
+        const container = document.querySelector('#modal-container-customizePizza')
+        container.addEventListener('scroll', handleVisibilityArrow)
+
+        return () => {
+            container.removeEventListener('scroll', handleVisibilityArrow)
+        }
+    }, [])
+
+    function handleVisibilityArrow() {
+        const { vertical } = showScrollPosition('#modal-container-customizePizza')
+        setVisibilityArrow(vertical === 0 ? true : false)
+    }
+
     return (
         <Grid
             id='modal-container-customizePizza'
@@ -278,7 +292,11 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                             sx={{
                                 position: 'fixed',
                                 bottom: '76px',
-                                right: '48px',
+                                right: {
+                                    xs: '16px',
+                                    sm: '32px',
+                                    md: '48px'
+                                },
                                 width: 'fit-content'
                             }}
                         >
