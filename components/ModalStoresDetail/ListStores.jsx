@@ -12,11 +12,18 @@ function ListStores({ handleCurrentStoreDetail , place, stores }) {
     return (
         <Grid
             item
-            xs={4}
+            sm={4}
             pr={1}
             sx={{
-                overflowY: 'auto',
-                height: '100%'
+                overflowY: {
+                    xs: 'none',
+                    sm: 'auto'
+                },
+                height: 'fit-content',
+                maxHeight: {
+                    xs: 'none',
+                    sm: '100%'
+                }
             }}
         >
             {
@@ -37,21 +44,8 @@ function ListStores({ handleCurrentStoreDetail , place, stores }) {
                                         <ListItemButton
                                             onClick={() => {handleCurrentStoreDetail(stores[city].stores[index])}}
                                             className={ place.name === store.name ? 'Mui-selected' : null }
-                                            // sx={{
-                                            //     backgroundColor: 'primary',
-                                            //     '&:focus':{
-                                            //         bg: 'primary'
-                                            //     }
-                                            // }}
                                         >
-                                            <Typography
-                                                // sx={{
-                                                //     backgroundColor: 'primary',
-                                                //     // '&:focus':{
-                                                //     //     bg: 'primary'
-                                                //     // }
-                                                // }}  
-                                            >
+                                            <Typography>
                                                 {store.name}
                                             </Typography>
                                         </ListItemButton>
