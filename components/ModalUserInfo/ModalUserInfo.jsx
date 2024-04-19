@@ -31,7 +31,10 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 5
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
