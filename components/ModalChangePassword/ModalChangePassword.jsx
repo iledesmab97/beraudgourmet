@@ -14,7 +14,10 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: {
+        xs: '324px',
+        sm: '400px'
+    },
     // height: 328,
     bgcolor: 'background.paper',
     boxShadow: 24,
