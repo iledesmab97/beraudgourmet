@@ -26,12 +26,21 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 700,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '700px'
+    },
+    height: {
+        xs: '80%',
+        sm: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 5
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItem: 'center'
