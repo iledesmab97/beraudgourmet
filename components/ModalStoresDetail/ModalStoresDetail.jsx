@@ -17,18 +17,26 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 700,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '700px'
+    },
+    height: {
+        xs: '80%',
+        sm: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 5
+    },
     pb: 2,
-    display: 'flex',
-    flexDirection: 'column',
-    // alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 2,
+    overflowY: {
+        xs: 'auto',
+        sm: 'hidden'
+    }
   };
 
 function ModalStoresDetail() {
@@ -50,8 +58,17 @@ function ModalStoresDetail() {
             <Grid
                 sx={style}
                 container
+                direction={{
+                    xs: 'column',
+                    sm: 'row'
+                }}
+                alignItems={{
+                    sm: 'flex-start'
+                }}
             >
-                <Grid item
+                <Grid
+                    item
+                    sm={12}
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
@@ -62,18 +79,29 @@ function ModalStoresDetail() {
                         variant='title'
                         component="h2"
                         align='center'
+                        sx={{
+                            mb: 2
+                        }}
                     >
                         Elegir una tienda
                     </Typography>
                 </Grid>
                 <Grid
+                    item
+                    sm={12}
                     container
-                    direction='row'
-                    justifyContent='space-around'
-                    alignItems='stretch'
+                    direction={{
+                        xs: 'column',
+                        sm:'row'
+                    }}
                     spacing={1}
+                    wrap='nowrap'
                     sx={{
-                        height: '85%'
+                        height: '85%',
+                        overflowY: {
+                            xs: 'auto',
+                            sm: 'hidden'
+                        }
                     }}
                 >
 
@@ -85,8 +113,12 @@ function ModalStoresDetail() {
                     <DetailStore currentStore={currentStore}/>
 
                 </Grid>
-                <Grid item
+                <Grid
+                    item
                     sx={{
+                        position: 'absolute',
+                        bottom: '16px',
+                        right: '40px',
                         display: 'flex',
                         justifyContent: 'flex-end'
                     }}
