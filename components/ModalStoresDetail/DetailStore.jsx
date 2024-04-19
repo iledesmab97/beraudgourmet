@@ -21,11 +21,16 @@ export default function DetailStore({ currentStore }) {
     return (
         <Grid
             item
-            xs={8}
+            sm={8}
             pr={1}
             sx={{
-                height: '100%',
-                overflowY: 'auto'
+                height: {
+                    xs: 'fit-content',
+                    sm: '100%'
+                },
+                overflowY: {
+                    sm: 'auto'
+                }
             }}
         >
             <Box
@@ -74,7 +79,6 @@ export default function DetailStore({ currentStore }) {
                     </ListItem>
                     <ListItem
                         component={'li'}
-                        // disablePadding
                         sx={{
                             display: 'flex',
                             flexDirection: 'row'
@@ -145,9 +149,6 @@ export default function DetailStore({ currentStore }) {
                     </Typography>
                     <TableContainer
                         component={Paper}
-                        // sx={{
-                        //     width: '100%'
-                        // }}
                     >
                         <Table>
                             <TableBody>
@@ -176,9 +177,6 @@ export default function DetailStore({ currentStore }) {
                     </Typography>
                     <TableContainer
                         component={Paper}
-                        // sx={{
-                        //     width: '100%'
-                        // }}
                     >
                         <Table>
                             <TableBody>
