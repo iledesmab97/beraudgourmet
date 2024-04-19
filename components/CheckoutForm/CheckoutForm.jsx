@@ -241,9 +241,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                 <Typography>
                                     {"Tarjeta de crédito".toUpperCase()}
                                 </Typography>
-                                <Typography>
-                                    Recargo de: 6%
-                                </Typography>
                             </Box>
                         ) : null
                 }
@@ -271,9 +268,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                             <Box className={styles.textButtonPaymentMethodToSelect}>
                                 <Typography>
                                     {"Transferencia bancaria".toUpperCase()}
-                                </Typography>
-                                <Typography>
-                                    Recargo de: 0%
                                 </Typography>
                             </Box>
                         ) : null
@@ -312,7 +306,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                                                 checked={checked}
                                                                 onChange={handleChange} />
                                                         }
-                                                        label="Pagar al recoger"
+                                                        label="Pagar a la hora de entrega"
                                                     />
                                                 </FormGroup>
                                             </Box>
