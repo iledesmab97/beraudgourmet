@@ -30,6 +30,7 @@ const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 function Menu () {
 
+  const [totalMatches, setTotalMatches] = useState('null')
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
     libraries: ['places'],
@@ -44,6 +45,10 @@ function Menu () {
   useEffect(() => {
     gerUserLoged()
   }, [])
+
+  useEffect(() => {
+    setTotalMatches(String(matches))
+  }, [matches])
 
   function toggleOpenOrderRewards(value: boolean) {
     setOpenOrderRewards(value)
@@ -61,7 +66,7 @@ function Menu () {
       >
         <ContainerItems />
         {
-          matches ? (
+          totalMatches === 'true' ? (
             <>
               <Drawer
                 open={openOrderRewards}
@@ -81,7 +86,7 @@ function Menu () {
                 <MenuIcon />
               </IconButton>
             </>
-          ) : <OrderRewards />
+          ) : totalMatches === 'false' ? <OrderRewards /> : null
         }
       </Grid>
       <ModalChooseProduct />
