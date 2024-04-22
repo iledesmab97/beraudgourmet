@@ -75,6 +75,33 @@ const themeOptions = {
       lineHeight: 1,
       padding: 9,
       fontSize: "0.8rem",
+    },
+    footer_title: {
+      fontFamily: "Montserrat",
+      fontWeight: 700,
+      lineHeight: 1.5,
+      padding: 9,
+      fontSize: "1rem",
+      color: 'white'
+    },
+    footer_text_link: {
+      fontFamily: "Montserrat",
+      fontWeight: 300,
+      lineHeight: 1,
+      padding: 9,
+      fontSize: "0.9rem",
+      color: '#EAEDF2',
+      '&:hover': {
+        textDecoration: 'underline'
+      }
+    },
+    footer_text: {
+      fontFamily: "Montserrat",
+      fontWeight: 300,
+      lineHeight: 1,
+      padding: 9,
+      fontSize: "0.9rem",
+      color: '#EAEDF2'
     }
   },
   components: {
