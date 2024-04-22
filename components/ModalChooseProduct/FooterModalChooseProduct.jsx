@@ -7,17 +7,37 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
     return (
         <Grid
             container
-            direction='row'
-            justifyContent='space-between'
-            alignItems="center"
-            item
+            direction={{
+                xs: 'column',
+                sm: 'row'
+            }}
+            justifyContent={{
+                xs: 'center',
+                sm: 'space-between'
+            }}
+            alignItems={{
+                xs: 'flex-start',
+                sm: 'center'
+            }}
+            spacing={1}
             xs={12}
-            pr={4}
             sx={{
-                height: '10%'
+                height: {
+                    xs: '15%',
+                    sm: '10%'
+                },
+                pr: {
+                    xs: 2,
+                    sm: 4
+                },
+                pl: {
+                    xs: 2,
+                    sm: 4
+                }
             }}
         >
-            <Box
+            <Grid
+                item
                 sx={{
                     display: 'flex',
                     gap: 1,
@@ -49,22 +69,25 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                 <Typography id="modal-modal-description" sx={{ ml: 5 }}>
                     ${totalPrice}
                 </Typography>
-            </Box>
-            <Button
-                variant='contained'
-                onClick={() => {
-                    if (edit) {
-                        handleUpdateOrder({item: currentProduct, index: edit.index})
-                        handleCloseModalOrder()
-                    } else {
-                        handleAddOrder(currentProduct)
-                        handleAddedItem()
-                        handleCloseModalOrder()
-                    }
-                }}
+            </Grid>
+            <Grid
+                item
             >
-                {edit ? 'Actualizar' : 'Agregar'}
-            </Button>
+                <Button
+                    variant='contained'
+                    onClick={() => {
+                        if (edit) {
+                            handleUpdateOrder({item: currentProduct, index: edit.index})
+                        } else {
+                            handleAddOrder(currentProduct)
+                            handleAddedItem()
+                        }
+                        handleCloseModalOrder()
+                    }}
+                >
+                    {edit ? 'Actualizar' : 'Agregar'}
+                </Button>
+            </Grid>
         </Grid>
     )
 }

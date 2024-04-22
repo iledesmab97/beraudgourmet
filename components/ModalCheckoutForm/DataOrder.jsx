@@ -81,6 +81,7 @@ function DataOrder({ user, place, preMessageDelivery, messageDelivery }) {
                 <Typography
                     variant='p'
                     gutterBottom
+                    textAlign={'right'}
                 >
                     {messageDelivery}
                 </Typography>

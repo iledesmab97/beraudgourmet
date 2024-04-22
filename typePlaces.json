@@ -20,6 +20,7 @@
             }
         ],
         "city": {
+            "city": "Nombre del Pueblo/Ciudad",
             "postal": "Código postal"
         }
     },
@@ -39,6 +40,7 @@
             }
         ],
         "city": {
+            "city": "Nombre del Pueblo/Ciudad",
             "postal": "Código postal"
         },
         "other": {
@@ -73,6 +75,7 @@
             }
         ],
         "city": {
+            "city": "Nombre del Pueblo/Ciudad",
             "postal": "Código postal"
         },
         "other": {
@@ -107,6 +110,7 @@
             }
         ],
         "city": {
+            "city": "Nombre del Pueblo/Ciudad",
             "postal": "Código postal"
         },
         "other": {

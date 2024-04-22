@@ -5,6 +5,8 @@ import { scrollToSection, showScrollPosition } from '@/utils/modal'
 import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -27,7 +29,9 @@ import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 import IconButton from '@mui/material/IconButton'
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
-import Link from '@mui/material/Link';
+import Link from '@mui/material/Link'
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove'
 
 import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
@@ -38,20 +42,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
 
     const [visibilityArrow, setVisibilityArrow] = useState(true)
     const { extraIngredients } = useGetExtraIngredients()
-
-    useEffect(() => {
-        const container = document.querySelector('#modal-container-customizePizza')
-        container.addEventListener('scroll', handleVisibilityArrow)
-
-        return () => {
-            container.removeEventListener('scroll', handleVisibilityArrow)
-        }
-    }, [])
-
-    function handleVisibilityArrow() {
-        const { vertical } = showScrollPosition('#modal-container-customizePizza')
-        setVisibilityArrow(vertical === 0 ? true : false)
-    }
+    const theme = useTheme()
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
     const {
         size,
@@ -64,157 +56,246 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         handleExtra
     } = customizePizza
 
+    useEffect(() => {
+        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
+        const container = document.querySelector(idContainer)
+        container.addEventListener('scroll', handleVisibilityArrow)
+
+        return () => {
+            container.removeEventListener('scroll', handleVisibilityArrow)
+        }
+    }, [])
+
+    function handleVisibilityArrow() {
+        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
+        const { vertical } = showScrollPosition(idContainer)
+        setVisibilityArrow(vertical === 0 ? true : false)
+    }
+
     return (
         <Grid
+            id='modal-container-customizePizza'
             item
+            container
             md
-            // xs
-            // xs={12}
-            pr={4}
+            direction={'column'}
+            wrap='nowrap'
+            alignItems={'flex-start'}
+            spacing={2}
             sx={{
-                height: '85%'
+                height: {
+                    xs: 'auto',
+                    md: '85%'
+                },
+                overflowY: {
+                    xs: 'hidden',
+                    md: 'auto'
+                }
             }}
         >
-            <Box
-                id='modal-container-customizePizza'
-                sx={{
-                    height: '100%',
-                    width: '100%',
-                    overflowY: 'scroll',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2
-                }}
+            <Grid
+                item
+                container
+                direction={'column'}
+                spacing={1}
             >
-
-                <Typography
-                    id="modal-modal-description"
-                    variant='title'
-                    sx={{ mt: 2 }}
-                >
-                    ELIGE EL TAMAÑO
-                </Typography>
-
-                <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
-
-                <Typography
-                    id="modal-subtitle-ELIGE_LA_MASA"
-                    variant='title'
-                    sx={{ mt: 2 }}>
-                    ELIGE LA MASA
-                </Typography>
-
-                <MasaTypesPizza listMass={currentProduct.price[size]} mass={mass} handleMass={handleMass} />
-            
-                <Typography
-                    id="modal-modal-description"
-                    variant='title'
-                    sx={{ mt: 2 }}>
-                    QUITAR INGREDIENTES
-                </Typography>
-
-                <FormGroup onChange={handleIngredientsModal}>
-                    {
-                        ingredientsProduct.map((ingredient, index) => (
-                            <FormControlLabel
-                                key={ingredient + index}
-                                control={
-                                    <Checkbox
-                                        checked={ ingredientsModal.includes(ingredient) ? false : true} 
-                                    />
-                                }
-                                label={ingredient}
-                                sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
-                            />        
-                        ))
-                    }
-                </FormGroup>
-
-                <Typography
-                    id="modal-subtitle-AGREGAR_INGREDIENTES"
-                    variant='title'
-                    sx={{ mt: 2 }}>
-                    AGREGAR INGREDIENTES
-                </Typography>
-
+                <Grid item>
+                    <Typography
+                        id="modal-modal-description"
+                        variant='title'
+                    >
+                        ELIGE EL TAMAÑO
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
+                </Grid>
+            </Grid>
+            <Grid
+                item
+                container
+                direction={'column'}
+                alignItems={'flex-start'}
+                wrap='nowrap'
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-subtitle-ELIGE_LA_MASA"
+                        variant='title'
+                    >
+                        ELIGE LA MASA
+                    </Typography>
+                </Grid>
                 <Grid
-                    container
-                    direction='row'
+                    item
                     sx={{
-                        justifyContent: 'start'
+                        width: '95%'
                     }}
                 >
-                    <Grid
-                        item
-                        xs={11}
+                    <MasaTypesPizza listMass={currentProduct.price[size]} mass={mass} handleMass={handleMass} />
+                </Grid>
+            </Grid>
+
+            <Grid
+                item
+                container
+                direction={'column'}
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-modal-description"
+                        variant='title'
                     >
-                        <TableContainer component={Paper}>
-                            <Table
+                        QUITAR INGREDIENTES
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <FormGroup onChange={handleIngredientsModal}>
+                        {
+                            ingredientsProduct.map((ingredient, index) => (
+                                <FormControlLabel
+                                    key={ingredient + index}
+                                    control={
+                                        <Checkbox
+                                            checked={ ingredientsModal.includes(ingredient) ? false : true} 
+                                        />
+                                    }
+                                    label={ingredient}
+                                    sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
+                                />        
+                            ))
+                        }
+                    </FormGroup>
+                </Grid>
+            </Grid>
+
+            <Grid
+                item
+                container
+                direction={'column'}
+                alignItems={'flex-start'}
+                wrap='nowrap'
+                spacing={{
+                    xs: 0,
+                    sm: 1
+                }}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-subtitle-AGREGAR_INGREDIENTES"
+                        variant='title'
+                    >
+                        AGREGAR INGREDIENTES
+                    </Typography>
+                </Grid>
+
+                <Grid
+                    item
+                    sx={{
+                        width: '100%'
+                    }}
+                >
+                    <TableContainer
+                        component={Paper}
+                        sx={{
+                            width: '95%'
+                        }}
+                    >
+                        <Table
                             size='small'
-                            // dense={true}
-                            // table
-                            >
-                            <TableBody>
-                                {
-                                Object.values(extraIngredients).map((ingredient) => {
-                                    return (
-                                    <TableRow
-                                        key={ingredient.name}
-                                        // sx={{
-                                        //     display: 'flex',
-                                        //     alignItems: 'center' 
-                                        // }}
+                        >
+                        <TableBody>
+                            {
+                            Object.values(extraIngredients).map((ingredient) => {
+                                return (
+                                <TableRow
+                                    key={ingredient.name}
+                                    sx={{
+                                        borderBottom: '1px solid rgba(224, 224, 224, 1)'
+                                    }}
+                                >
+                                    <TableCell
+                                        sx={{
+                                            height: '100%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            px: {
+                                                xs: 1,
+                                            },
+                                            borderBottom: 'none'
+                                        }}
                                     >
-                                        <TableCell
+                                        <IconButton
+                                            size='small'
+                                            variant='contained'
+                                            onClick={() => { handleExtra({ingredient, operation: '-'}) }}
+                                            name='-'
+                                            value={ingredient.name}
+                                            disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
                                             sx={{
-                                                display: 'flex',
-                                                gap: 1,
-                                                alignItems: 'center' 
+                                                scale: {
+                                                    xs: '0.65',
+                                                    md: '0.70'
+                                                },
+                                                bgcolor: '#295386',
+                                                color: '#FFFDFF',
+                                                '&:hover': {
+                                                    color: '#295386'
+                                                }
                                             }}
                                         >
-                                            <Button
-                                                size='small'
-                                                variant='contained'
-                                                onClick={() => { handleExtra({ingredient, operation: '-'}) }}
-                                                name='-'
-                                                value={ingredient.name}
-                                                disabled={ extra[ingredient.name] === 0 || extra[ingredient.name] === undefined ? true : false}
-                                                // sx={{
-                                                //     width: '10px',
-                                                //     height: '20px',
-                                                //     borderRadius: '50%'
-                                                // }}
-                                            >
-                                                -
-                                            </Button>
-                                            <Typography id="modal-modal-description">
-                                                { extra[ingredient.name] ? extra[ingredient.name] : 0 }
-                                            </Typography>
-                                            <Button
-                                                size='small'
-                                                variant='contained'
-                                                onClick={() => { handleExtra({ingredient, operation: '+'}) }}
-                                                name='+'
-                                                value={ingredient.name}
-                                            >
-                                                +
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell>
-                                            {ingredient.name}
-                                        </TableCell>
-                                        <TableCell>
-                                            {'$' + ingredient.price}
-                                        </TableCell>                                
-                                    </TableRow>
-                                    )
-                                })
-                                }
-                            </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
+                                            <RemoveIcon />
+                                        </IconButton>
+                                        <Typography id="modal-modal-description">
+                                            { extra[ingredient.name] ? extra[ingredient.name] : 0 }
+                                        </Typography>
+                                        <IconButton
+                                            size='small'
+                                            onClick={() => { handleExtra({ingredient, operation: '+'}) }}
+                                            name='+'
+                                            value={ingredient.name}
+                                            sx={{
+                                                scale: {
+                                                    xs: '0.65',
+                                                    md: '0.70'
+                                                },
+                                                bgcolor: '#295386',
+                                                color: '#FFFDFF',
+                                                '&:hover': {
+                                                    color: '#295386'
+                                                }
+                                            }}
+                                        >
+                                            <AddIcon />
+                                            {/* + */}
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            px: {
+                                                xs: 1,
+                                                sm: 2
+                                            }
+                                        }}
+                                    >
+                                        {ingredient.name}
+                                    </TableCell>
+                                    <TableCell>
+                                        {'$' + ingredient.totalPrice}
+                                    </TableCell>                                
+                                </TableRow>
+                                )
+                            })
+                            }
+                        </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
+            </Grid>
+
                 {
                     visibilityArrow
                     ? (
@@ -222,8 +303,12 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                             onClick={() => {scrollToSection('#modal-subtitle-ELIGE_LA_MASA')}}
                             sx={{
                                 position: 'fixed',
-                                bottom: '50px',
-                                right: '30px',
+                                bottom: '76px',
+                                right: {
+                                    xs: '16px',
+                                    sm: '32px',
+                                    md: '48px'
+                                },
                                 width: 'fit-content'
                             }}
                         >
@@ -231,7 +316,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                         </IconButton>
                     ): null
                 }
-            </Box>
         </Grid>
     )
 }

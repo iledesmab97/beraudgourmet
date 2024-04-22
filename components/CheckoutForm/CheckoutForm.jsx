@@ -9,6 +9,7 @@ import { contactUs } from '@/utils/contact'
 import { descriptionOrder } from '@/utils/preparingData'
 import { updatePaymentRequest } from '@/services/checkoutApi'
 import { registerOrder } from '@/services/orderApi'
+import useLocalData from '@/hooks/useLocalData'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -31,6 +32,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const elements = useElements()
     const router = useRouter()
     const firstTime = useRef(true)
+    const { removeAllLocalData } = useLocalData()
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -168,6 +170,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 paid: !checked,
             })
 
+            removeAllLocalData()
+
             return router.push('/success')
         }
 
@@ -192,8 +196,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             paymentMethod: 'transfer',
             paid: false,
         })
+        removeAllLocalData()
         contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })
         handleCloseModal('pay')
+        return router.push('/success')
     }
 
     return (
@@ -235,9 +241,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                 <Typography>
                                     {"Tarjeta de crédito".toUpperCase()}
                                 </Typography>
-                                <Typography>
-                                    Recargo de: 6%
-                                </Typography>
                             </Box>
                         ) : null
                 }
@@ -266,9 +269,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                 <Typography>
                                     {"Transferencia bancaria".toUpperCase()}
                                 </Typography>
-                                <Typography>
-                                    Recargo de: 0%
-                                </Typography>
                             </Box>
                         ) : null
                 }
@@ -286,33 +286,37 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                                             <Box
                                                 component='div'
                                                 sx={{
+                                                    position: 'relative',
                                                     width: '100%',
                                                     py: '8px',
                                                     px: '16px'
                                                 }}
                                             >
                                                 <PaymentElement id='payment-element' options={paymentElementOptions} />
+                                                <FormGroup
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        left: '0px',
+                                                        top: '100%'
+                                                    }}
+                                                >
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Checkbox
+                                                                checked={checked}
+                                                                onChange={handleChange} />
+                                                        }
+                                                        label="Pagar a la hora de entrega"
+                                                    />
+                                                </FormGroup>
                                             </Box>
-                                            <FormGroup
-                                                sx={{
-                                                    position: 'absolute',
-                                                    left: '0px',
-                                                    bottom: '0px'
-                                                }}
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            checked={checked}
-                                                            onChange={handleChange} />
-                                                    }
-                                                    label="Pagar al recoger"
-                                                />
-                                            </FormGroup>
                                             <Button
                                                 variant='contained'
                                                 onClick={handleSubmit}
                                                 disabled={isLoading}
+                                                sx={{
+                                                    mt: '32px'
+                                                }}
                                             >
                                                 {
                                                     isLoading ? 'Procesando pago' : 'Pagar ahora'

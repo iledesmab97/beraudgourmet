@@ -47,7 +47,7 @@ function MasaTypesPizza({ listMass, mass, handleMass }) {
     },[])
 
     return (
-        <FormControl>
+        <FormControl fullWidth>
             <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
                 name="radio-buttons-group"
@@ -55,92 +55,75 @@ function MasaTypesPizza({ listMass, mass, handleMass }) {
             >
                 <Grid
                     container
-                    direction='row'
-                    justifyContent="space-between"
-                    columns={{ sm:12, md:24}}
+                    direction={{
+                        xs: 'column',
+                        sm: 'row'
+                    }}
+                    spacing={1}
                 >
                     {
                         Object.keys(listMass).map((typeMass, index) => (
                             <Grid
                                 key={typeMass + index}
                                 item
-                                sm={12}
-                                md={11}
-                                mt={1}
+                                xs={6}
                                 sx={ {
-                                    minWidth: '49%',
+                                    display: 'flex',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
                                     borderRadius: '10px',
                                     '&:hover': {
                                         backgroundColor: 'rgba(0,0,0,0.1)'
                                     }
                                 }}
                             >
-                                <Box
-                                    sx={{
-                                        component: 'div',
-                                        display: 'flex',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <FormControlLabel
-                                        value={typeMass}
-                                        control={
-                                            <Radio
-                                                checked={mass === typeMass ? true : false}
-                                            />}
-                                        label={
-                                            <Typography
-                                                variant='p'
-                                                sx={{
-                                                    width: 'inline',
-                                                    fontWeight: 400
-                                                }}
-                                            >
-                                                {typeMass.slice(5)}
-                                            </Typography>
+                                <FormControlLabel
+                                    value={typeMass}
+                                    control={
+                                        <Radio
+                                            checked={mass === typeMass ? true : false}
+                                        />}
+                                    label={
+                                        <Typography
+                                            variant='p'
+                                            sx={{
+                                                width: 'inline',
+                                                fontWeight: 400
+                                            }}
+                                        >
+                                            {typeMass.slice(5)}
+                                        </Typography>
+                                    }
+                                    sx={ mass === typeMass
+                                        ? {
+                                            width: '100%',
+                                            height: '100%',
+                                            mt: 1,
+                                            borderRadius: '10px',
+                                            margin: 0,
+                                            px: 2,
+                                            pl: 0,
+                                            py: 1,
+                                        } : {
+                                            width: '100%',
+                                            height: '100%',
+                                            mt: 1,
+                                            borderRadius: '10px',
+                                            margin: 0,
+                                            px: 2,
+                                            pl: 0,
+                                            py: 1,   
                                         }
-                                        sx={ mass === typeMass
-                                            ? {
-                                                width: '100%',
-                                                height: '100%',
-                                                mt: 1,
-                                                borderRadius: '10px',
-                                                margin: 0,
-                                                px: 2,
-                                                pl: 0,
-                                                py: 1,
-                                            } : {
-                                                width: '100%',
-                                                height: '100%',
-                                                mt: 1,
-                                                borderRadius: '10px',
-                                                margin: 0,
-                                                px: 2,
-                                                pl: 0,
-                                                py: 1,   
-                                            }
-                                        }
-                                    />
-                                    <Typography
-                                        id="modal-modal-description"
-                                        sx={{
-                                            width: 'inline',
-                                            paddingRight: 1
-                                        }}
-                                    >
-                                        ${listMass[typeMass]}
-                                    </Typography>
-                                </Box>
+                                    }
+                                />
                                 <Typography
-                                    variant='miniature'
-                                    component='p'
+                                    id="modal-modal-description"
                                     sx={{
-                                        paddingTop: 0
+                                        width: 'inline',
+                                        paddingRight: 1
                                     }}
                                 >
-                                    {/* {massesJSON[typeMass].text} */}
-                                    { masses[typeMass] && masses[typeMass].text}
+                                    ${listMass[typeMass]}
                                 </Typography>
                             </Grid>
                         ))    

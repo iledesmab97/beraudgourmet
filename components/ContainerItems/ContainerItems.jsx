@@ -37,18 +37,6 @@ function ContainerItems () {
     if (products && products.pizzas) return
     getPizzasWithCosts()
       .then(data => {
-        const priceUpdated = data.map(pizza => {
-          const {price} = pizza
-          for (let size in price) {
-            for (let mass in price[size]) {
-              price[size][mass] = updatePrice(price[size][mass])
-            }
-          }
-          return {...pizza, price}
-        })
-        return priceUpdated
-      })
-      .then(data => {
       handleAddProductsList({
         type: 'pizzas',
         products: data
@@ -62,14 +50,27 @@ function ContainerItems () {
   }, [])
 
   return (
-    <Grid id='Pizza-Section' item xs={12}>
+    <Grid
+      id='Pizza-Section'
+      item
+      xs={12}
+      md={8}
+    >
       <Typography  variant='encabezado'>
         Pizzas
       </Typography>
-      <Grid container spacing={4}>
+      <Grid
+        container
+        spacing={2}
+      >
         {
           products && products.map((item, index) => (
-            <Grid item key={item.name + index} xs={12} sm={6} md={4}>
+            <Grid
+              item
+              key={item.name + index}
+              xs={12}
+              sm={4}
+            >
               <CardActionArea
                 onClick={() => {
                   handleOpenModalOrder({item})

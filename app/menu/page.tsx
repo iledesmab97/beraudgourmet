@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles';
+
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import ContainerItems from '../../components/ContainerItems/ContainerItems'
@@ -15,23 +18,41 @@ import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
 import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 import ModalPDF from '@/components/ModalPDF/ModalPDF'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu';
 
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
+import useLocalData from '@/hooks/useLocalData'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 function Menu () {
 
+  const [totalMatches, setTotalMatches] = useState('null')
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
     libraries: ['places'],
   });
   const { gerUserLoged } = useLogedUser()
+  useLocalData()
+
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('md'))
+  const [openOrderRewards, setOpenOrderRewards] = useState(false)
 
   useEffect(() => {
     gerUserLoged()
   }, [])
+
+  useEffect(() => {
+    setTotalMatches(String(matches))
+  }, [matches])
+
+  function toggleOpenOrderRewards(value: boolean) {
+    setOpenOrderRewards(value)
+  }
 
   return (
     <Container maxWidth="lg" sx={{ mt: '40px'}}>
@@ -39,11 +60,34 @@ function Menu () {
         container
         spacing={5}
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'auto 350px',
-          pb: 3}}>
+          pb: 3,
+          position: 'relative'
+        }}
+      >
         <ContainerItems />
-        <OrderRewards />
+        {
+          totalMatches === 'true' ? (
+            <>
+              <Drawer
+                open={openOrderRewards}
+                onClose={() => {toggleOpenOrderRewards(false)}}
+                anchor='right'
+              >
+                <OrderRewards />
+              </Drawer>
+              <IconButton
+                onClick={() => {toggleOpenOrderRewards(true)}}
+                sx={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '0',
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </>
+          ) : totalMatches === 'false' ? <OrderRewards /> : null
+        }
       </Grid>
       <ModalChooseProduct />
       <ModalStoreDelivery />

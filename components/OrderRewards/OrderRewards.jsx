@@ -26,27 +26,43 @@ function OrderRewards () {
   return (
     <Grid
       item
-      sx={{ width: '100%' }}
-      >
+      xs={12}
+      md={4}
+    >
       <Container
         sx={{
+          height: {
+            xs: '100%',
+            md: 'auto'
+          },
           bgcolor: '#EAEDF2',
           pb: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-around'}}
+          justifyContent: 'flex-start'
+        }}
       >
-        <Image
-          src={logoBeraud}
-          alt={'logoBeraud'}
-          style={{
-            width: '100%',
+        <Box
+          sx={{
+            position: 'relative',
+            width: '90%',
+            aspectRatio: 16/9,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             height: 'auto',
-            objectFit: 'contain',
-            aspectRatio: 3/2
           }}
-        />
+        >
+          <Image
+            src={logoBeraud}
+            alt={'logoBeraud'}
+            fill={true}
+            style={{
+              objectFit: 'contain',
+            }}
+          />
+        </Box>
         <Box
           component='form'
           noValidate

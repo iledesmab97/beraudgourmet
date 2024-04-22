@@ -9,21 +9,30 @@ import items from '@/menuStore.json'
 
 export default function AboutPizza ({ product }) {
     return (
-        <Grid 
+        <Grid
+            container
             item
             xs={12}
-            md={4.5}
-            pr={4}
+            md={4.7}
+            spacing={1}
             sx={{
-                height: '85%',
-                overflowY: 'auto'
+                height: {
+                    xs: 'fit-content',
+                    md: '400px'
+                },
+                overflowY: 'auto',
+                pb: 4
             }}
         >
-            <Box
+            <Grid
+                item
                 sx={{
                     position: 'relative',
                     width: '100%',
-                    aspectRatio: 3/2
+                    aspectRatio: 3/2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
             }}
             >
                 <Image
@@ -35,16 +44,18 @@ export default function AboutPizza ({ product }) {
                         objectFit: 'contain'
                     }}
                 />
-            </Box>
-            <Typography
-                id="modal-modal-title"
-                component="p"
-                sx={{
-                    fontSize: '1rem'
-                }}
-            >
-                {product.text}
-            </Typography>
+            </Grid>
+            <Grid item xs={12} md={11}>
+                <Typography
+                    id="modal-modal-title"
+                    component="p"
+                    sx={{
+                        fontSize: '1rem',
+                    }}
+                >
+                    {product.text}
+                </Typography>
+            </Grid>
 
         </Grid>
     )

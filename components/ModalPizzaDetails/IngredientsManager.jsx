@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
@@ -69,7 +70,8 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
     }
 
     return (
-        <Box
+        <Grid
+            item
             sx={{
                 width: '50%',
                 display: 'flex',
@@ -128,7 +130,7 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
                     )
                 }
             </Box>
-        </Box>
+        </Grid>
     )
 }
 

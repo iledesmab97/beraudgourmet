@@ -14,9 +14,12 @@ import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
+import useLocalData from '@/hooks/useLocalData'
+
 export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
+    const { saveLocalData } = useLocalData()
 
     return (
         <>
@@ -63,8 +66,10 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
             <Box
                 sx={{
                     width:'100%',
-                    height: 370,
-                    overflowY: 'auto'
+                    height: {
+                        xs: 'auto',
+                        sm: 360
+                    }
                 }}
             >
                 <Typography
@@ -78,9 +83,16 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                 <List
                     sx={{
                         width: '100%',
+                        height: {
+                            xs: 'auto',
+                            sm: '90%'
+                        },
                         p: '0px',
                         position: 'static',
-                        overflow: 'hidden'
+                        overflow: {
+                            xs: 'hidden',
+                            sm: 'auto'
+                        }
                     }}
                 >
                     {
@@ -89,10 +101,10 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                             key={store.name + index}
                             alignItems='flex-start'
                             sx={{
-                            borderTop: 1,
-                            borderColor: 'divider',
-                            p: 0,
-                            py: 2
+                                borderTop: 1,
+                                borderColor: 'divider',
+                                p: 0,
+                                py: 2
                             }}
                         >
 
@@ -100,12 +112,20 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                 sx={{
                                     width: '100%',
                                     display: 'flex',
+                                    flexDirection: {
+                                        xs: 'column',
+                                        sm: 'row'
+                                    },
                                     justifyContent: 'space-between',
                                 }}
                             >
                                 <Box
                                     sx={{
-                                        display: 'flex'
+                                        display: 'flex',
+                                        width: {
+                                            xs: '100%',
+                                            sm: '65%'
+                                        }
                                     }}
                                 >
                                     <ListItemIcon
@@ -155,27 +175,31 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                 <Box
                                     sx={{
                                     display: 'flex',
-                                    flexDirection: 'column',
+                                    flexDirection: {
+                                        xs: 'row',
+                                        sm: 'column'
+                                    },
+                                    justifyContent: 'space-between',
                                     alignItems: 'flex-end',
                                     mr: 1
                                     }}
                                 >
-                                    <Typography
-                                        variant='title'
-                                    >
-                                        {store.open ? 'Abierto': 'Cerrado'}
-                                    </Typography>
-                                    <Typography>
-                                        {store.closeTime}
-                                    </Typography>
+                                    <Box>
+                                        <Typography
+                                            variant='title'
+                                        >
+                                            {store.open ? 'Abierto': 'Cerrado'}
+                                        </Typography>
+                                        <Typography>
+                                            {store.closeTime}
+                                        </Typography>
+                                    </Box>
                                     <Button
                                         variant='contained'
                                         size='small'
-                                        sx={{
-                                            mt: 2
-                                        }}
                                         onClick={() => {
                                             handleAddPlace({closerStore: store})
+                                            saveLocalData('place', {closerStore: store})
                                             handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
                                             handleCloseModal('place')
                                         }}
