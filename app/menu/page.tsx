@@ -20,7 +20,8 @@ import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 import ModalPDF from '@/components/ModalPDF/ModalPDF'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from '@mui/icons-material/Menu'
+import CookieAlert from '@/components/CookiesAlert/CookieAlert'
 
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
@@ -41,9 +42,15 @@ function Menu () {
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('md'))
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
+  const [openAlertCookie, setOpenAlertCookie] = useState(false)
 
   useEffect(() => {
-    gerUserLoged()
+    gerUserLoged().then((response: any) => {
+      const newOpenAlertCookie = !response
+      if (newOpenAlertCookie) {
+        setOpenAlertCookie(newOpenAlertCookie)
+      }
+    })
   }, [])
 
   useEffect(() => {
@@ -52,6 +59,10 @@ function Menu () {
 
   function toggleOpenOrderRewards(value: boolean) {
     setOpenOrderRewards(value)
+  }
+
+  function handleOpenAlertCookie(value: boolean) {
+    setOpenAlertCookie(value)
   }
 
   return (
@@ -99,6 +110,7 @@ function Menu () {
       <ModalCheckoutForm />
       <ModalUserOrders />
       <ModalPDF />
+      <CookieAlert openAlertCookie={openAlertCookie} handleOpenAlertCookie={handleOpenAlertCookie} />
     </Container>
   )
 }
