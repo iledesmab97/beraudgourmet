@@ -37,18 +37,18 @@ function Menu () {
     libraries: ['places'],
   });
   const { gerUserLoged } = useLogedUser()
-  useLocalData()
+  const { saveLocalData, getLocalData } = useLocalData()
 
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('md'))
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
-  const [openAlertCookie, setOpenAlertCookie] = useState(false)
 
   useEffect(() => {
     gerUserLoged().then((response: any) => {
-      const newOpenAlertCookie = !response
-      if (newOpenAlertCookie) {
-        setOpenAlertCookie(newOpenAlertCookie)
+      const userLoged = response
+      const acceptCookies = getLocalData('acceptCookies')
+      if (!acceptCookies && userLoged) {
+        saveLocalData('acceptCookies', true)
       }
     })
   }, [])
@@ -59,10 +59,6 @@ function Menu () {
 
   function toggleOpenOrderRewards(value: boolean) {
     setOpenOrderRewards(value)
-  }
-
-  function handleOpenAlertCookie(value: boolean) {
-    setOpenAlertCookie(value)
   }
 
   return (
@@ -110,7 +106,7 @@ function Menu () {
       <ModalCheckoutForm />
       <ModalUserOrders />
       <ModalPDF />
-      <CookieAlert openAlertCookie={openAlertCookie} handleOpenAlertCookie={handleOpenAlertCookie} />
+      <CookieAlert />
     </Container>
   )
 }

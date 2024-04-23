@@ -5,16 +5,32 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 
-function CookieAlert({ openAlertCookie, handleOpenAlertCookie }) {
+import { useState, useEffect } from 'react'
+import useLocalData from '@/hooks/useLocalData'
 
-    function handleClose() {
-        handleOpenAlertCookie(false)
+function CookieAlert() {
+
+    const [open, setOpen] = useState(false)
+    const { saveLocalData, getLocalData } = useLocalData()
+
+    useEffect(() => {
+        const acceptCookies = getLocalData('acceptCookies')
+        if (!acceptCookies || !JSON.parse(acceptCookies)) handleOpen(true)
+    }, [])
+
+    function handleOpen(value) {
+        setOpen(value)
+    }
+
+    function acceptCookies() {
+        saveLocalData('acceptCookies', true)
+        handleOpen(false)
     }
 
     return (
         <Dialog
-            open={openAlertCookie}
-            onClose={() => {handleClose(false)}}
+            open={open}
+            onClose={() => {handleOpen(false)}}
         >
             <DialogTitle>
                 {'Uso de Cookies'}
@@ -25,7 +41,7 @@ function CookieAlert({ openAlertCookie, handleOpenAlertCookie }) {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>
+                <Button onClick={acceptCookies}>
                     Aceptar
                 </Button>
             </DialogActions>
