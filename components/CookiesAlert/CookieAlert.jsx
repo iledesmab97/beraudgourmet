@@ -21,7 +21,7 @@ function CookieAlert({ openAlertCookie, handleOpenAlertCookie }) {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Esta aplicación utiliza cookies para su correcto funcionamiento y así poder brindarle una mejor experiencia. Para aceptar cookies, continúe navegando como de costumbre o haga clic en "Aceptar".
+                    {'Esta aplicación utiliza cookies para su correcto funcionamiento y así poder brindarle una mejor experiencia. Para aceptar cookies, continúe navegando como de costumbre o haga clic en "Aceptar".'}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
