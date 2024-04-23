@@ -32,7 +32,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const elements = useElements()
     const router = useRouter()
     const firstTime = useRef(true)
-    const { removeAllLocalData } = useLocalData()
+    const { removeLocalData } = useLocalData()
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -170,7 +170,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 paid: !checked,
             })
 
-            removeAllLocalData()
+            removeLocalData('orders')
+            removeLocalData('place')
 
             return router.push('/success')
         }
@@ -196,7 +197,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             paymentMethod: 'transfer',
             paid: false,
         })
-        removeAllLocalData()
+        removeLocalData('orders')
+        removeLocalData('place')
         contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })
         handleCloseModal('pay')
         return router.push('/success')
