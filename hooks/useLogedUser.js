@@ -17,7 +17,7 @@ function useLogedUser() {
         if (tokenUser) {
             await saveToken( tokenUser )
         }
-        lookingForUserLoged()
+        return lookingForUserLoged()
             .then(( user ) => {
                 if (!user) return false
                 if (user.message) throw new Error(user.message)
@@ -25,14 +25,15 @@ function useLogedUser() {
                 return true
             })
             .then((response) => {
-                if (!response) return
+                if (!response) return false
                 const modal = modalSaved()
                 if (modal) {
                     handleOpenModal(modal)
                 }
+                return true
             })
             .catch(error => {
-                if (error.message === 'No token provided') return
+                if (error.message === 'No token provided') return false
                 alert(error.message)
             })
     }, [])
