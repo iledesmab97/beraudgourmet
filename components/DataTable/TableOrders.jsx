@@ -19,6 +19,7 @@ import { useState, useRef } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { howMuchLeft } from '@/utils/hours'
+import { captureFundsRequest } from '@/services/checkoutApi'
 
 import styles from './DataTable.module.css'
 
@@ -88,6 +89,25 @@ function TableOrders({ orders, updateOrders }) {
         if (order.closed) return '#4e5762'
         const when = howMuchLeft(order.deliveryDate)
         return colorsCell[when]
+    }
+
+    async function captureFunds() {
+        const response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => updateOrders(data))
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        await handleClose()
     }
 
     return (
@@ -175,6 +195,15 @@ function TableOrders({ orders, updateOrders }) {
                 >
                     Ver Detalle
                 </MenuItem>
+                {
+                    currentOrder?.paid === false ? (
+                        <MenuItem
+                            onClick={captureFunds}
+                        >
+                            Validar pago
+                        </MenuItem>
+                    ) : null
+                }
             </Menu>
             {
                 currentOrder ? (
