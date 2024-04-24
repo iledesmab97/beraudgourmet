@@ -7,11 +7,12 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import Typography from '@mui/material/Typography';
+import Typography from '@mui/material/Typography'
 
 import InboxIcon from '@mui/icons-material/Inbox'
-import GroupIcon from '@mui/icons-material/Group';
-import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import GroupIcon from '@mui/icons-material/Group'
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza'
+import StoreIcon from '@mui/icons-material/Store'
 
 import styles from './ToolLateralBar.module.css'
 
@@ -23,6 +24,10 @@ const listTools = [
     {
         name: 'Pizzas',
         icon: LocalPizzaIcon
+    },
+    {
+        name: 'Stores',
+        icon: StoreIcon
     }
 ]
 
