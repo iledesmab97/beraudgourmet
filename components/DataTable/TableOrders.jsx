@@ -56,14 +56,27 @@ function TableOrders({ orders, updateOrders }) {
         setAnchorEl(null)
     }
 
-    async function changeStatus() {
+    async function changeStatus(type) {
         const body = {
-            property: 'closed',
-            value: !currentOrder.closed
+            property: type,
+            value: !currentOrder[type]
         }
         const response = await updateOrder(currentOrder.id, body)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => updateOrders(data))
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
         await handleClose()
-        await getAllOrders().then(data => updateOrders(data))
     }
 
     async function addUrl() {
@@ -92,22 +105,28 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     async function captureFunds() {
-        const response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
+        if (currentOrder.paymentMethod === 'transfer') {
+            await changeStatus('paid')
+        } else if (currentOrder.paymentMethod === 'stripe') {
+            const response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
+            let text, status
+            if (response.message) {
+                text = response.message
+                status = 'error'
+            } else {
+                text = response
+                status = 'success'
+                await getAllOrders().then(data => updateOrders(data))
+            }
+            handleUpdateAlertMessage({
+                checked: true,
+                text,
+                status
+            })
+            await handleClose()
         } else {
-            text = response
-            status = 'success'
-            await getAllOrders().then(data => updateOrders(data))
+            alert('Hay un problema con el método de pago')
         }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
-        })
-        await handleClose()
     }
 
     return (
@@ -173,7 +192,7 @@ function TableOrders({ orders, updateOrders }) {
                 onClose={handleClose}
             >
                 <MenuItem
-                    onClick={changeStatus}
+                    onClick={() => {changeStatus('closed')}}
                 >
                     { currentOrder?.closed ? 'Pendiente' : 'Entregado' }
                 </MenuItem>
