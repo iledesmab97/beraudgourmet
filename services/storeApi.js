@@ -21,7 +21,7 @@ export function getAllStores() {
         .catch(error => ({message: error.message})) 
 }
 
-export async function updateStores() {
+export async function getAllStoresWithSchedules() {
     const scheduels = await getAllSchedules()
     const storesList = await getAllStores()
     const closeTime = scheduels[0].scheduleHoursList[0].endTime
