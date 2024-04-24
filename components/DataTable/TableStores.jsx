@@ -85,7 +85,7 @@ function TableStores() {
                     <TableBody>
                         {
                             storeListArray.map(store => (
-                                <TableRow>
+                                <TableRow key={store.name}>
                                     <TableCell>{store.id}</TableCell>
                                     <TableCell>{store.name}</TableCell>
                                     <TableCell>{store.city}</TableCell>
