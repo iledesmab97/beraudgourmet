@@ -196,7 +196,7 @@ function TableOrders({ orders, updateOrders }) {
                     Ver Detalle
                 </MenuItem>
                 {
-                    currentOrder?.paid === false ? (
+                    currentOrder?.paid === false && currentOrder?.StripeId ? (
                         <MenuItem
                             onClick={captureFunds}
                         >
