@@ -30,3 +30,13 @@ export function updatePaymentRequest({amount, stripeId, description, payInPlace}
         .then(res => res.json())
         .then(data => data)
 }
+
+export function captureFundsRequest(stripeId, orderId) {
+    return fetch(`${PATH_BACK}/checkout/capture`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stripeId, orderId })
+    })
+        .then(res => res.json())
+        .then(data => data)
+}

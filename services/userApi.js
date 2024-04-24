@@ -18,8 +18,10 @@ export function fetchwhoAmI() {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.message) throw new Error(data.message)
             return data
         })
+        .catch(error => ({message: error.message}))
 }
 
 export function newAccount(data) {
@@ -58,6 +60,7 @@ export function verifyProperty(data) {
 export async function lookingForUserLoged(){
     try {
         const user = await fetchwhoAmI()
+        if (user.message) throw new Error(user.message)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
     } catch(error) {

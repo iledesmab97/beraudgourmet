@@ -15,6 +15,8 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 import Link from 'next/link'
 
+import { phoneNumber } from '@/utils/contact'
+
 function Footer () {
 
   const date = new Date().getFullYear()
@@ -41,9 +43,9 @@ function Footer () {
             container
             item
             direction={'row'}
-            justifyContent={'flex-start'}
+            justifyContent={'space-between'}
           >
-            <Grid
+            {/* <Grid
               item
               xs={6}
               sm={3}
@@ -84,8 +86,8 @@ function Footer () {
                   </Link>
                 </ListItem>
               </List>
-            </Grid>
-            <Grid
+            </Grid> */}
+            {/* <Grid
               item
               xs={6}
               sm={3}
@@ -126,8 +128,8 @@ function Footer () {
                   </Link>
                 </ListItem>
               </List>
-            </Grid>
-            <Grid
+            </Grid> */}
+            {/* <Grid
               item
               xs={6}
               sm={3}
@@ -148,7 +150,7 @@ function Footer () {
                     </Link>
                 </ListItem>
               </List>
-            </Grid>
+            </Grid> */}
             <Grid
               item
               xs={6}
@@ -156,7 +158,7 @@ function Footer () {
               md={2}
             >
               <Typography variant='footer_title'>
-                Company
+                Empresa
               </Typography>
               <List>
                 <ListItem disableGutters>
@@ -166,10 +168,10 @@ function Footer () {
                       textDecoration: 'none'
                     }}
                   >
-                      <Typography variant='footer_text_link'>About</Typography>
+                      <Typography variant='footer_text_link'>Sobre nosotros</Typography>
                   </Link>
                 </ListItem>
-                <ListItem disableGutters>
+                {/* <ListItem disableGutters>
                   <Link
                     href='/about'
                     style={{
@@ -178,8 +180,8 @@ function Footer () {
                   >
                       <Typography variant='footer_text_link'>Press</Typography>
                   </Link>
-                </ListItem>
-                <ListItem disableGutters>
+                </ListItem> */}
+                {/* <ListItem disableGutters>
                   <Link
                     href='/about'
                     style={{
@@ -188,15 +190,16 @@ function Footer () {
                   >
                       <Typography variant='footer_text_link'>Carrer</Typography>
                   </Link>
-                </ListItem>
+                </ListItem> */}
                 <ListItem disableGutters>
                   <Link
-                    href='/about'
+                    href={`https://wa.me/${phoneNumber}`}
+                    target='_blank'
                     style={{
                       textDecoration: 'none'
                     }}
                   >
-                      <Typography variant='footer_text_link'>Contact</Typography>
+                      <Typography variant='footer_text_link'>Contacto</Typography>
                   </Link>
                 </ListItem>
               </List>
@@ -215,7 +218,7 @@ function Footer () {
             >
               <Grid item>
                 <Typography variant='footer_title'>
-                  Comming soon on
+                  Siguenos también en
                 </Typography>
               </Grid>
               <Grid
@@ -227,9 +230,7 @@ function Footer () {
                   }}
                 >
                   <ListItem>
-                    <IconButton
-                      // sx={{ color: 'white'}}
-                    >
+                    <IconButton>
                       <FacebookIcon />
                     </IconButton>
                   </ListItem>
@@ -238,7 +239,7 @@ function Footer () {
                       <InstagramIcon />
                     </IconButton>
                   </ListItem>
-                  <ListItem>
+                  {/* <ListItem>
                     <IconButton>
                       <TwitterIcon />
                     </IconButton>
@@ -247,7 +248,7 @@ function Footer () {
                     <IconButton>
                       <LinkedInIcon />
                     </IconButton>
-                  </ListItem>
+                  </ListItem> */}
                 </List>
               </Grid>
             </Grid>
@@ -262,7 +263,7 @@ function Footer () {
               xs: 'column',
               md: 'row'
             }}
-            justifyContent={'space-between'}
+            justifyContent={'space-around'}
             spacing={2}
           >
             <Grid item>
@@ -283,16 +284,16 @@ function Footer () {
               }}
             >
               <Grid item>
-                <Typography variant='footer_text_link'>Terms & Conditions</Typography>
+                <Typography variant='footer_text_link'>Terminos & Condiciones</Typography>
               </Grid>
-              <Grid item>
+              {/* <Grid item>
                 <Typography variant='footer_text_link'>Privaci</Typography>
-              </Grid>
-              <Grid item>
+              </Grid> */}
+              {/* <Grid item>
                 <Typography variant='footer_text_link'>Security</Typography>
-              </Grid>
+              </Grid> */}
               <Grid item>
-                <Typography variant='footer_text_link'>Cookie Declaration</Typography>
+                <Typography variant='footer_text_link'>Declaración de Cookies</Typography>
               </Grid>
             </Grid>
           </Grid>

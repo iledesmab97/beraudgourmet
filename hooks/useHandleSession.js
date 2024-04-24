@@ -5,7 +5,7 @@ import useGetOrders from "./useGetOrders"
 
 export default function useHandleSession() {
 
-    const { removeAllLocalData } = useLocalData()
+    const { removeLocalData } = useLocalData()
     const { handleUpdatePlaceToInitialState } = useGetPlace()
     const { handleUpdateOrderToInitialState } = useGetOrders()
 
@@ -14,7 +14,8 @@ export default function useHandleSession() {
         await handleUpdatePlaceToInitialState()
         // Reinciar orders
         await handleUpdateOrderToInitialState()
-        removeAllLocalData()
+        removeLocalData('orders')
+        removeLocalData('place')
     }, [])
 
     return { closeSession }

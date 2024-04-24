@@ -20,7 +20,8 @@ import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 import ModalPDF from '@/components/ModalPDF/ModalPDF'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from '@mui/icons-material/Menu'
+import CookieAlert from '@/components/CookiesAlert/CookieAlert'
 
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
@@ -36,14 +37,20 @@ function Menu () {
     libraries: ['places'],
   });
   const { gerUserLoged } = useLogedUser()
-  useLocalData()
+  const { saveLocalData, getLocalData } = useLocalData()
 
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('md'))
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
 
   useEffect(() => {
-    gerUserLoged()
+    gerUserLoged().then((response: any) => {
+      const userLoged = response
+      const acceptCookies = getLocalData('acceptCookies')
+      if (!acceptCookies && userLoged) {
+        saveLocalData('acceptCookies', true)
+      }
+    })
   }, [])
 
   useEffect(() => {
@@ -99,6 +106,7 @@ function Menu () {
       <ModalCheckoutForm />
       <ModalUserOrders />
       <ModalPDF />
+      <CookieAlert />
     </Container>
   )
 }

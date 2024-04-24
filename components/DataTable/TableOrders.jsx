@@ -19,6 +19,7 @@ import { useState, useRef } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { howMuchLeft } from '@/utils/hours'
+import { captureFundsRequest } from '@/services/checkoutApi'
 
 import styles from './DataTable.module.css'
 
@@ -55,14 +56,27 @@ function TableOrders({ orders, updateOrders }) {
         setAnchorEl(null)
     }
 
-    async function changeStatus() {
+    async function changeStatus(type) {
         const body = {
-            property: 'closed',
-            value: !currentOrder.closed
+            property: type,
+            value: !currentOrder[type]
         }
         const response = await updateOrder(currentOrder.id, body)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => updateOrders(data))
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
         await handleClose()
-        await getAllOrders().then(data => updateOrders(data))
     }
 
     async function addUrl() {
@@ -88,6 +102,31 @@ function TableOrders({ orders, updateOrders }) {
         if (order.closed) return '#4e5762'
         const when = howMuchLeft(order.deliveryDate)
         return colorsCell[when]
+    }
+
+    async function captureFunds() {
+        if (currentOrder.paymentMethod === 'transfer') {
+            await changeStatus('paid')
+        } else if (currentOrder.paymentMethod === 'stripe') {
+            const response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
+            let text, status
+            if (response.message) {
+                text = response.message
+                status = 'error'
+            } else {
+                text = response
+                status = 'success'
+                await getAllOrders().then(data => updateOrders(data))
+            }
+            handleUpdateAlertMessage({
+                checked: true,
+                text,
+                status
+            })
+            await handleClose()
+        } else {
+            alert('Hay un problema con el método de pago')
+        }
     }
 
     return (
@@ -153,7 +192,7 @@ function TableOrders({ orders, updateOrders }) {
                 onClose={handleClose}
             >
                 <MenuItem
-                    onClick={changeStatus}
+                    onClick={() => {changeStatus('closed')}}
                 >
                     { currentOrder?.closed ? 'Pendiente' : 'Entregado' }
                 </MenuItem>
@@ -175,6 +214,15 @@ function TableOrders({ orders, updateOrders }) {
                 >
                     Ver Detalle
                 </MenuItem>
+                {
+                    currentOrder?.paid === false ? (
+                        <MenuItem
+                            onClick={captureFunds}
+                        >
+                            Validar pago
+                        </MenuItem>
+                    ) : null
+                }
             </Menu>
             {
                 currentOrder ? (
