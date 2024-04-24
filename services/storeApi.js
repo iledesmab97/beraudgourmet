@@ -7,16 +7,18 @@ export function getAllStores() {
     return fetch(`${PATH_BACK}/stores`)
         .then(response => response.json())
         .then(data => {
-        const newData = data.map(store => ({
-            id: store.id,
-            name: store.name,
-            place: store.address,
-            city: store.city,
-            phone: store.phoneNumber,
-            coordinates: store.coordinates
-        }))
+          if (data.message) throw new Error(data.message)
+          const newData = data.map(store => ({
+              id: store.id,
+              name: store.name,
+              place: store.address,
+              city: store.city,
+              phone: store.phoneNumber,
+              coordinates: store.coordinates
+          }))
         return newData
         })
+        .catch(error => ({message: error.message})) 
 }
 
 export async function updateStores() {

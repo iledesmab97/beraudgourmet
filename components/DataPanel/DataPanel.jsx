@@ -6,6 +6,7 @@ import { getAllOrders } from '@/services/orderApi'
 import TabBar from '@/components/TabBar/TabBar'
 import TableOrders from '@/components/DataTable/TableOrders'
 import TablePizzas from '@/components/DataTable/TablePizzas'
+import TableStores from '@/components/DataTable/TableStores'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -21,6 +22,10 @@ const listToolOptions = {
     Pizzas: {
         title: 'Lista de Pizzas',
         listTabs: ['Todas las pizzas']
+    },
+    Stores: {
+        title: 'Lista de Tiendas',
+        listTabs: ['Todas las tiendas']
     }
 }
 
@@ -69,6 +74,9 @@ function DataPanel({ toolSelected }) {
             }
             {
                 toolSelected === 'Pizzas' ? <TablePizzas /> : null
+            }
+            {
+                toolSelected === 'Stores' ? <TableStores /> : null
             }
         </Grid>
     )
