@@ -37,10 +37,20 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
     const { storeList, handleAddStoreList, handleUpdateStoreList } = useGetStoreList()
 
     function updateStoreState({ id, property, value }) {
-        setStore(prevState => ({
-            ...prevState,
-            [property]: value
-        }))
+        if (property === 'lat' || property === 'lng') {
+            setStore(prevState => ({
+                ...prevState,
+                coordinates: {
+                    ...prevState.coordinates,
+                    [property]: value
+                }
+            }))
+        } else {
+            setStore(prevState => ({
+                ...prevState,
+                [property]: value
+            }))
+        }
         handleUpdateStoreList({ id, property, value })
     }
 
@@ -142,17 +152,48 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
                         <Grid item xs={2}>
                             <Typography align='right'>Coordenadas:</Typography>
                         </Grid>
-                        <Grid item xs={5} sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-                            <InputUpdate
-                                value={store.name}
-                                updateProperty={updateStore}
-                                updateState={updateStoreState}
-                                properties={{ property: 'name', id: store.id}}
-                                // handleChangeInput={handleChangeInput}
-                                // pizzaNew={storeNew}
-                                placeholder={'Coordenadas'}
-                                // errors={errors?.name}
-                            />
+                        <Grid
+                            item
+                            // xs={8}
+                            container
+                            xs
+                            spacing={1}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <Grid item xs={2}>
+                                <Typography align='right'>Lat:</Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputUpdate
+                                    value={store.coordinates.lat}
+                                    updateProperty={updateStore}
+                                    updateState={updateStoreState}
+                                    properties={{ property: 'lat', id: store.id}}
+                                    // handleChangeInput={handleChangeInput}
+                                    // pizzaNew={storeNew}
+                                    placeholder={'latitud'}
+                                    // errors={errors?.name}
+                                />
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Typography align='right'>Lng:</Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputUpdate
+                                    value={store.coordinates.lng}
+                                    updateProperty={updateStore}
+                                    updateState={updateStoreState}
+                                    properties={{ property: 'lng', id: store.id}}
+                                    // handleChangeInput={handleChangeInput}
+                                    // pizzaNew={storeNew}
+                                    placeholder={'longitud'}
+                                    // errors={errors?.name}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
                     <Grid
