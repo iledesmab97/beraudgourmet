@@ -54,9 +54,20 @@ export default function useGetStoreList () {
         const arrayStoreList = listStores(storeList)
         const newArrayStoreList = arrayStoreList.map(store => {
             if (store.id !== id) return store
-            const newStore = {
-                ...store,
-                [property]: value
+            let newStore
+            if (property === 'lat' || property === 'lng') {
+                newStore = {
+                    ...store,
+                    coordinates: {
+                        ...store.coordinates,
+                        [property]: value
+                    }
+                }    
+            } else {
+                newStore = {
+                    ...store,
+                    [property]: value
+                }
             }
             return newStore
         })
