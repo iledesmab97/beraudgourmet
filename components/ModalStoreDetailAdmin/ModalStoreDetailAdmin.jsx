@@ -6,6 +6,9 @@ import Divider from '@mui/material/Divider'
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
 import { useState } from 'react'
+import useGetStoreList from '@/hooks/useGetStoreList'
+
+import { updateStore } from '@/services/storeApi'
 
 const style = {
     position: 'absolute',
@@ -30,6 +33,12 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
 
     const [store, setStore] = useState(currentStore)
 
+    const { storeList, handleAddStoreList, handleUpdateStoreList } = useGetStoreList()
+
+    function updateStoreState({ id, property, value }) {
+        handleUpdateStoreList({ id, property, value })
+    }
+
     return (
         <Modal
             open={openStoreDetails}
@@ -38,17 +47,16 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
             <Box
                 sx={style}
             >
-                <Typography variant='title'>{currentStore.name}</Typography>
-                {/* <InputUpdate
+                <InputUpdate
                     value={store.name}
-                    updateProperty={updatePizza}
-                    updateState={handleUpdateProduct}
+                    updateProperty={updateStore}
+                    updateState={updateStoreState}
                     properties={{ property: 'name', id: store.id}}
-                    handleChangeInput={handleChangeInput}
-                    pizzaNew={storeNew}
+                    // handleChangeInput={handleChangeInput}
+                    // pizzaNew={storeNew}
                     placeholder={'Nombre'}
-                    errors={errors?.name}
-                /> */}
+                    // errors={errors?.name}
+                />
                 <Divider sx={{ width: '100%'}} />
                 <Typography>{currentStore.city}</Typography>
 
