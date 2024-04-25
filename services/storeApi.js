@@ -21,7 +21,7 @@ export function getAllStores() {
         .catch(error => ({message: error.message})) 
 }
 
-export async function updateStores() {
+export async function getAllStoresWithSchedules() {
     const scheduels = await getAllSchedules()
     const storesList = await getAllStores()
     const closeTime = scheduels[0].scheduleHoursList[0].endTime
@@ -43,4 +43,37 @@ export async function updateStores() {
       open: isOpen({closeTime, openTime})
     }))
     return storesWithSchedulsList
+}
+
+export async function updateStore (id, properties) {
+  const { property, value } = properties
+  let newProperty = ''
+  switch (property) {
+    case 'phone': {
+      newProperty = 'phoneNumber'
+      break
+    }
+    case 'place': {
+      newProperty = 'address'
+      break
+    }
+    default: {
+      newProperty = property
+      break
+    }
+  }
+  return fetch(`${PATH_BACK}/stores/${id}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify({ property: newProperty, value })
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      if (data.message) throw new Error(data.message)
+      return data
+    })
+    .catch(error => ({message: error.message}))
 }

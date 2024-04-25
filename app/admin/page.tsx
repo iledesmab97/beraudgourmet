@@ -16,7 +16,7 @@ import useGetStoreList from '@/hooks/useGetStoreList'
 
 import { lookingForUserLoged } from '@/services/userApi'
 import { getPizzasWithCosts } from '@/services/productApi'
-import { updateStores } from '@/services/storeApi'
+import { getAllStoresWithSchedules } from '@/services/storeApi'
 
 import styles from './page.module.css'
 
@@ -40,7 +40,7 @@ function AdminPlace() {
             products: data
             })
         })
-        updateStores().then(storeList => {
+        getAllStoresWithSchedules().then(storeList => {
             handleAddStoreList(storeList)
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
