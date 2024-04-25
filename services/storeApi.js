@@ -46,11 +46,27 @@ export async function getAllStoresWithSchedules() {
 }
 
 export async function updateStore (id, properties) {
+  const { property, value } = properties
+  let newProperty = ''
+  switch (property) {
+    case 'phone': {
+      newProperty = 'phoneNumber'
+      break
+    }
+    case 'place': {
+      newProperty = 'address'
+      break
+    }
+    default: {
+      newProperty = property
+      break
+    }
+  }
   return fetch(`${PATH_BACK}/stores/${id}`, {
     method: 'PUT',
     credentials: 'include',
     headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify(properties)
+    body: JSON.stringify({ property: newProperty, value })
   })
     .then(response => {
       return response.json()
