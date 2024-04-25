@@ -44,3 +44,20 @@ export async function getAllStoresWithSchedules() {
     }))
     return storesWithSchedulsList
 }
+
+export async function updateStore (id, properties) {
+  return fetch(`${PATH_BACK}/stores/${id}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(properties)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      if (data.message) throw new Error(data.message)
+      return data
+    })
+    .catch(error => ({message: error.message}))
+}
