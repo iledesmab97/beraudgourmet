@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
+import StoreData from './StoreData'
+import Schedules from './Schedules'
 
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
@@ -62,169 +64,28 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
             <Box
                 sx={style}
             >
-                <Typography variant='title'>
-                    {store.name} Nº{store.id}
-                </Typography>
-                <Grid
-                    container
-                    spacing={3}
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '100%',
+                        overflowY: 'auto',
+                        pr: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2
+                    }}
                 >
-                    <Grid
-                        item
-                        xs={12}
-                        container
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        spacing={2}
-                    >
-                        <Grid item xs={2}>
-                            <Typography align='right'>Nombre: </Typography>
-                        </Grid>
-                        <Grid item xs={5} sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-                            <InputUpdate
-                                value={store.name}
-                                updateProperty={updateStore}
-                                updateState={updateStoreState}
-                                properties={{ property: 'name', id: store.id}}
-                                // handleChangeInput={handleChangeInput}
-                                // pizzaNew={storeNew}
-                                placeholder={'Nombre'}
-                                // errors={errors?.name}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        container
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        spacing={2}
-                    >
-                        <Grid item xs={2}>
-                            <Typography align='right'>Ciudad:</Typography>
-                        </Grid>
-                        <Grid item xs={5} sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-                            <InputUpdate
-                                value={store.city}
-                                updateProperty={updateStore}
-                                updateState={updateStoreState}
-                                properties={{ property: 'city', id: store.id}}
-                                // handleChangeInput={handleChangeInput}
-                                // pizzaNew={storeNew}
-                                placeholder={'Ciudad'}
-                                // errors={errors?.name}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        container
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        spacing={2}
-                    >
-                        <Grid item xs={2}>
-                            <Typography align='right'>Teléfono:</Typography>
-                        </Grid>
-                        <Grid item xs={5} sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-                            <InputUpdate
-                                value={store.phone}
-                                updateProperty={updateStore}
-                                updateState={updateStoreState}
-                                properties={{ property: 'phone', id: store.id}}
-                                // handleChangeInput={handleChangeInput}
-                                // pizzaNew={storeNew}
-                                placeholder={'Teléfono'}
-                                // errors={errors?.name}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        container
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        spacing={2}
-                    >
-                        <Grid item xs={2}>
-                            <Typography align='right'>Coordenadas:</Typography>
-                        </Grid>
-                        <Grid
-                            item
-                            // xs={8}
-                            container
-                            xs
-                            spacing={1}
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'flex-end',
-                                alignItems: 'center'
-                            }}
-                        >
-                            <Grid item xs={2}>
-                                <Typography align='right'>Lat:</Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputUpdate
-                                    value={store.coordinates.lat}
-                                    updateProperty={updateStore}
-                                    updateState={updateStoreState}
-                                    properties={{ property: 'lat', id: store.id}}
-                                    // handleChangeInput={handleChangeInput}
-                                    // pizzaNew={storeNew}
-                                    placeholder={'latitud'}
-                                    // errors={errors?.name}
-                                />
-                            </Grid>
-                            <Grid item xs={2}>
-                                <Typography align='right'>Lng:</Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <InputUpdate
-                                    value={store.coordinates.lng}
-                                    updateProperty={updateStore}
-                                    updateState={updateStoreState}
-                                    properties={{ property: 'lng', id: store.id}}
-                                    // handleChangeInput={handleChangeInput}
-                                    // pizzaNew={storeNew}
-                                    placeholder={'longitud'}
-                                    // errors={errors?.name}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        container
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        spacing={2}
-                    >
-                        <Grid item xs={2}>
-                            <Typography align='right'>Dirección:</Typography>
-                        </Grid>
-                        <Grid item xs={9} sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-                            <InputUpdate
-                                value={store.place}
-                                updateProperty={updateStore}
-                                updateState={updateStoreState}
-                                properties={{ property: 'place', id: store.id}}
-                                // handleChangeInput={handleChangeInput}
-                                // pizzaNew={storeNew}
-                                placeholder={'Dirección'}
-                                // errors={errors?.name}
-                                fullWidth
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Divider sx={{ width: '100%'}} />
-                <Typography>{currentStore.city}</Typography>
-
+                    <Typography variant='title'>
+                        {store.name} Nº{store.id}
+                    </Typography>
+                    <StoreData 
+                        store={store}
+                        updateStoreState={updateStoreState}
+                    />
+                    <Divider sx={{ width: '100%'}} />
+                    <Schedules store={store}/>
+                </Box>
             </Box>
         </Modal>
     )

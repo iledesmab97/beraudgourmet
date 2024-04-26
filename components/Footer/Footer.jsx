@@ -268,7 +268,7 @@ function Footer () {
           >
             <Grid item>
               <Typography variant='footer_text'>
-                @{date} CodeInn. All right reserved.
+                @{date} Grupo Beraud. Todos los derechos reservados.
               </Typography>
             </Grid>
             <Grid
