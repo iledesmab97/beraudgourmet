@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 import StoreData from './StoreData'
+import Schedules from './Schedules'
 
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
@@ -63,16 +64,28 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
             <Box
                 sx={style}
             >
-                <Typography variant='title'>
-                    {store.name} Nº{store.id}
-                </Typography>
-                <StoreData 
-                    store={store}
-                    updateStoreState={updateStoreState}
-                />
-                <Divider sx={{ width: '100%'}} />
-                <Typography>{currentStore.city}</Typography>
-
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '100%',
+                        overflowY: 'auto',
+                        pr: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2
+                    }}
+                >
+                    <Typography variant='title'>
+                        {store.name} Nº{store.id}
+                    </Typography>
+                    <StoreData 
+                        store={store}
+                        updateStoreState={updateStoreState}
+                    />
+                    <Divider sx={{ width: '100%'}} />
+                    <Schedules store={store}/>
+                </Box>
             </Box>
         </Modal>
     )
