@@ -1,7 +1,10 @@
+import dayjs from 'dayjs'
 import { getAllSchedules } from '@/services/scheduleApi'
 import { isOpen } from '@/utils/hours'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+const weekDaysEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+const weekDaysES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
 export function getAllStores() {
     return fetch(`${PATH_BACK}/stores`)
@@ -24,13 +27,27 @@ export function getAllStores() {
 export async function getAllStoresWithSchedules() {
     const scheduels = await getAllSchedules()
     const storesList = await getAllStores()
-    const closeTime = scheduels[0].scheduleHoursList[0].endTime
-    const openTime = scheduels[0].scheduleHoursList[0].startTime
-    const pickUpSchedule = scheduels[1].scheduleHoursList.map(schedule => ({
+    const scheduelsHours = {}
+    scheduels.forEach(schedule => {
+      scheduelsHours[schedule.name] = schedule
+    })
+    const indexToday = weekDaysEN.indexOf(dayjs().format('dddd'))
+    const todaySchedule = scheduelsHours.work.scheduleHoursList.find(schedule => {
+      const indexStart = weekDaysES.indexOf(schedule.days.split('-')[0])
+      const indexEnd = weekDaysES.indexOf(schedule.days.split('-')[1])
+      return indexToday >= indexStart && indexToday <= indexEnd
+    })
+    const closeTime = todaySchedule.endTime
+    const openTime = todaySchedule.startTime
+    const workSchedule = scheduelsHours.work.scheduleHoursList.map(schedule => ({
       days: schedule.days,
       hours: `${schedule.startTime} - ${schedule.endTime}`
     }))
-    const deliverySchedule = scheduels[2].scheduleHoursList.map(schedule => ({
+    const pickUpSchedule = scheduelsHours.pickup.scheduleHoursList.map(schedule => ({
+      days: schedule.days,
+      hours: `${schedule.startTime} - ${schedule.endTime}`
+    }))
+    const deliverySchedule = scheduelsHours.delivery.scheduleHoursList.map(schedule => ({
       days: schedule.days,
       hours: `${schedule.startTime} - ${schedule.endTime}`
     }))
@@ -38,6 +55,7 @@ export async function getAllStoresWithSchedules() {
       ...store,
       closeTime,
       openTime,
+      workSchedule,
       pickUpSchedule,
       deliverySchedule,
       open: isOpen({closeTime, openTime})
