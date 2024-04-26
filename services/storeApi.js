@@ -3,8 +3,8 @@ import { getAllSchedules } from '@/services/scheduleApi'
 import { isOpen } from '@/utils/hours'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
-const weekDaysEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-const weekDaysES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+export const weekDaysEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+export const weekDaysES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
 export function getAllStores() {
     return fetch(`${PATH_BACK}/stores`)
@@ -40,14 +40,17 @@ export async function getAllStoresWithSchedules() {
     const closeTime = todaySchedule.endTime
     const openTime = todaySchedule.startTime
     const workSchedule = scheduelsHours.work.scheduleHoursList.map(schedule => ({
+      id: schedule.id,
       days: schedule.days,
       hours: `${schedule.startTime} - ${schedule.endTime}`
     }))
-    const pickUpSchedule = scheduelsHours.pickup.scheduleHoursList.map(schedule => ({
+    const pickupSchedule = scheduelsHours.pickup.scheduleHoursList.map(schedule => ({
+      id: schedule.id,
       days: schedule.days,
       hours: `${schedule.startTime} - ${schedule.endTime}`
     }))
     const deliverySchedule = scheduelsHours.delivery.scheduleHoursList.map(schedule => ({
+      id: schedule.id,
       days: schedule.days,
       hours: `${schedule.startTime} - ${schedule.endTime}`
     }))
@@ -56,7 +59,7 @@ export async function getAllStoresWithSchedules() {
       closeTime,
       openTime,
       workSchedule,
-      pickUpSchedule,
+      pickupSchedule,
       deliverySchedule,
       open: isOpen({closeTime, openTime})
     }))
