@@ -5,7 +5,7 @@ import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
 import { updateStore } from '@/services/storeApi'
 
-function StoreData({ store, updateStoreState }) {
+function StoreData({ store, updateDataStoreState }) {
     return (
         <Grid
             container
@@ -26,7 +26,7 @@ function StoreData({ store, updateStoreState }) {
                     <InputUpdate
                         value={store.name}
                         updateProperty={updateStore}
-                        updateState={updateStoreState}
+                        updateState={updateDataStoreState}
                         properties={{ property: 'name', id: store.id}}
                         // handleChangeInput={handleChangeInput}
                         // pizzaNew={storeNew}
@@ -50,7 +50,7 @@ function StoreData({ store, updateStoreState }) {
                     <InputUpdate
                         value={store.city}
                         updateProperty={updateStore}
-                        updateState={updateStoreState}
+                        updateState={updateDataStoreState}
                         properties={{ property: 'city', id: store.id}}
                         // handleChangeInput={handleChangeInput}
                         // pizzaNew={storeNew}
@@ -74,7 +74,7 @@ function StoreData({ store, updateStoreState }) {
                     <InputUpdate
                         value={store.phone}
                         updateProperty={updateStore}
-                        updateState={updateStoreState}
+                        updateState={updateDataStoreState}
                         properties={{ property: 'phone', id: store.id}}
                         // handleChangeInput={handleChangeInput}
                         // pizzaNew={storeNew}
@@ -113,7 +113,7 @@ function StoreData({ store, updateStoreState }) {
                         <InputUpdate
                             value={store.coordinates.lat}
                             updateProperty={updateStore}
-                            updateState={updateStoreState}
+                            updateState={updateDataStoreState}
                             properties={{ property: 'lat', id: store.id}}
                             // handleChangeInput={handleChangeInput}
                             // pizzaNew={storeNew}
@@ -128,7 +128,7 @@ function StoreData({ store, updateStoreState }) {
                         <InputUpdate
                             value={store.coordinates.lng}
                             updateProperty={updateStore}
-                            updateState={updateStoreState}
+                            updateState={updateDataStoreState}
                             properties={{ property: 'lng', id: store.id}}
                             // handleChangeInput={handleChangeInput}
                             // pizzaNew={storeNew}
@@ -153,7 +153,7 @@ function StoreData({ store, updateStoreState }) {
                     <InputUpdate
                         value={store.place}
                         updateProperty={updateStore}
-                        updateState={updateStoreState}
+                        updateState={updateDataStoreState}
                         properties={{ property: 'place', id: store.id}}
                         // handleChangeInput={handleChangeInput}
                         // pizzaNew={storeNew}
