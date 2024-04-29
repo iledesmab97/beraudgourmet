@@ -58,9 +58,21 @@ export async function getAllStoresWithSchedules() {
       ...store,
       closeTime,
       openTime,
-      workSchedule,
-      pickupSchedule,
-      deliverySchedule,
+      workSchedule: {
+        id: scheduelsHours.work.id,
+        name: 'work',
+        workSchedule
+      },
+      pickupSchedule: {
+        id: scheduelsHours.pickup.id,
+        name: 'pickup',
+        pickupSchedule
+      },
+      deliverySchedule: {
+        id: scheduelsHours.delivery.id,
+        name: 'delivery',
+        deliverySchedule
+      },
       open: isOpen({closeTime, openTime})
     }))
     return storesWithSchedulsList

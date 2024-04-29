@@ -18,25 +18,28 @@ import InputUpdate from '@/components/InputUpdate/InputUpdate'
 import TimePickerViewRenderers from '@/components/TimeChoose/TimeChoose'
 
 import { useState, useEffect } from 'react'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { weekDaysES } from '@/services/storeApi'
+import { updateSchedulesHoursOfSchedules } from '@/services/scheduleApi'
 
-function Schedules({ store }) {
+function Schedules({ store, updateScheduleHoursStoreState }) {
 
     const [selectValue, setSelectValue] = useState('work')
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const openMenu = Boolean(anchorElMenu)
-    const [editing, setEditing] = useState(store[selectValue + 'Schedule'].map(() => false))
+    const [editing, setEditing] = useState(store[selectValue + 'Schedule'][selectValue + 'Schedule'].map(() => false))
     const [selectedScheduleIndex, setSelectedScheduleIndex] = useState(null)
     const [inputEditing, setInputEditing] = useState(null)
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     useEffect(() => {
         const trueIndex = editing.indexOf(true)
         if (trueIndex === -1) return
         setInputEditing(() => {
-            const id = store[selectValue + 'Schedule'][trueIndex].id
-            const [startDay, endDay] = store[selectValue + 'Schedule'][trueIndex].days.split('-')
-            const [startTime, endTime] = store[selectValue + 'Schedule'][trueIndex].hours.split(' - ')
+            const id = store[selectValue + 'Schedule'][selectValue + 'Schedule'][trueIndex].id
+            const [startDay, endDay] = store[selectValue + 'Schedule'][selectValue + 'Schedule'][trueIndex].days.split('-')
+            const [startTime, endTime] = store[selectValue + 'Schedule'][selectValue + 'Schedule'][trueIndex].hours.split(' - ')
             return {
                 id,
                 startDay,
@@ -49,7 +52,7 @@ function Schedules({ store }) {
 
     function handleChangeShedule(value) {
         setSelectValue(value)
-        setEditing(store[value + 'Schedule'].map(() => false))
+        setEditing(store[value + 'Schedule'][value + 'Schedule'].map(() => false))
     }
 
     function handleCloseMenu() {
@@ -84,6 +87,53 @@ function Schedules({ store }) {
             ...prevState,
             [property]: value
         }))
+    }
+
+    async function updateSchedule() {
+        console.log('haciendo actualización...')
+        const newScheduleHours = [...store[selectValue + 'Schedule'][selectValue + 'Schedule']].map(scheduleHour => ({
+            id: scheduleHour.id,
+            day: scheduleHour.days,
+            startTime: scheduleHour.hours.split(' - ')[0],
+            endTime: scheduleHour.hours.split(' - ')[1],
+        }))
+        let indexScheduleHourToUpdate
+        newScheduleHours.find((scheduleHour, index) => {
+            if (scheduleHour.id === inputEditing.id) {
+                indexScheduleHourToUpdate = index
+                return true
+            }
+        })
+        const scheduleHourUpdated = {
+            id: inputEditing.id,
+            day: inputEditing.startDay + '-' + inputEditing.endDay,
+            startTime:  inputEditing.startTime,
+            endTime: inputEditing.endTime
+        }
+        newScheduleHours[indexScheduleHourToUpdate] = scheduleHourUpdated
+        const response = await updateSchedulesHoursOfSchedules(store[selectValue + 'Schedule'].id, newScheduleHours)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            updateScheduleHoursStoreState({
+                schedule: selectValue + 'Schedule',
+                newScheduleHours
+            })
+            handleEdit(false)
+            return console.log('Actualización hecho exitosamente')
+        }
+        return alert(response.message)
     }
 
     return (
@@ -129,7 +179,7 @@ function Schedules({ store }) {
                             </TableHead>
                             <TableBody>
                                 {
-                                    store[selectValue + 'Schedule'].map((schedule, index) => (
+                                    store[selectValue + 'Schedule'][selectValue + 'Schedule'].map((schedule, index) => (
                                         <TableRow key={schedule.id}>
                                             {
                                                 editing[index] && inputEditing ? (
@@ -141,8 +191,14 @@ function Schedules({ store }) {
                                                                     onChange={(event) => {handleChangeDay('startDay', event.target.value)}}
                                                                 >
                                                                     {
-                                                                        weekDaysES.map(day => (
-                                                                            <MenuItem key={`startDay:${day}`} value={day}>{day}</MenuItem>
+                                                                        weekDaysES.map((day, index) => (
+                                                                            <MenuItem
+                                                                                key={`startDay:${day}`}
+                                                                                value={day}
+                                                                                disabled={index > weekDaysES.indexOf(inputEditing.endDay)}
+                                                                            >
+                                                                                {day}
+                                                                            </MenuItem>
                                                                         ))
                                                                     }
                                                                 </Select>
@@ -155,8 +211,14 @@ function Schedules({ store }) {
                                                                     onChange={(event) => {handleChangeDay('endDay', event.target.value)}}
                                                                 >
                                                                     {
-                                                                        weekDaysES.map(day => (
-                                                                            <MenuItem key={`startDay:${day}`} value={day}>{day}</MenuItem>
+                                                                        weekDaysES.map((day, index) => (
+                                                                            <MenuItem
+                                                                                key={`endDay:${day}`}
+                                                                                value={day}
+                                                                                disabled={index < weekDaysES.indexOf(inputEditing.startDay)}
+                                                                            >
+                                                                                {day}
+                                                                            </MenuItem>
                                                                         ))
                                                                     }
                                                                 </Select>
@@ -204,9 +266,9 @@ function Schedules({ store }) {
                 {
                     editing[selectedScheduleIndex] ? (
                         <MenuItem
-                            onClick={() => {handleEdit(false)}}
+                            onClick={updateSchedule}
                         >
-                            Confirmar Cambios
+                            Actualizar
                         </MenuItem>
                     ) : (
                         <MenuItem

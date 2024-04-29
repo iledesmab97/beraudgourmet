@@ -74,6 +74,19 @@ export default function useGetStoreList () {
         const newStoresListSorted = sortStores(newArrayStoreList)
         dispatch(addStoreList(newStoresListSorted))
     }
+
+    function updateScheduleHoursStore(newScheduleHours) {
+        const arrayStoreList = listStores(storeList)
+        let indexStore
+        arrayStoreList.find((store, index) => {
+            if (store.id === newScheduleHours.id) {
+                indexStore = index
+            }
+        })
+        arrayStoreList[indexStore] = newScheduleHours
+        const newStoreList = sortStores(arrayStoreList)
+        dispatch(addStoreList(newStoreList))
+    }
     
-    return { storeList, handleAddStoreList, handleUpdateStoreList }
+    return { storeList, handleAddStoreList, handleUpdateStoreList, updateScheduleHoursStore }
 }
