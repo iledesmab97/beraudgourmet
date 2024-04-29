@@ -68,7 +68,6 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
             })
             if (!response.message) {
                 updateState({
-                    type: 'pizzas',
                     id,
                     property,
                     value: myValue

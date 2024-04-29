@@ -1,11 +1,17 @@
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
+import StoreData from './StoreData'
+import Schedules from './Schedules'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import useGetStoreList from '@/hooks/useGetStoreList'
+
+import { updateStore } from '@/services/storeApi'
 
 const style = {
     position: 'absolute',
@@ -30,6 +36,42 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
 
     const [store, setStore] = useState(currentStore)
 
+    const { storeList, handleAddStoreList, handleUpdateStoreList, updateScheduleHoursStore } = useGetStoreList()
+
+    function updateDataStoreState({ id, property, value }) {
+        if (property === 'lat' || property === 'lng') {
+            setStore(prevState => ({
+                ...prevState,
+                coordinates: {
+                    ...prevState.coordinates,
+                    [property]: value
+                }
+            }))
+        } else {
+            setStore(prevState => ({
+                ...prevState,
+                [property]: value
+            }))
+        }
+        handleUpdateStoreList({ id, property, value })
+    }
+
+    function updateScheduleHoursStoreState({ schedule, newScheduleHours }) {
+        const newState = {
+            ...store
+        }
+        newState[schedule] = {
+            ...newState[schedule],
+            [schedule]: newScheduleHours.map(scheudleHour => ({
+                id: scheudleHour.id,
+                days: scheudleHour.day,
+                hours: scheudleHour.startTime + ' - ' + scheudleHour.endTime
+            }))
+        }
+        setStore(newState)
+        updateScheduleHoursStore(newState)
+    }
+
     return (
         <Modal
             open={openStoreDetails}
@@ -38,20 +80,28 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
             <Box
                 sx={style}
             >
-                <Typography variant='title'>{currentStore.name}</Typography>
-                {/* <InputUpdate
-                    value={store.name}
-                    updateProperty={updatePizza}
-                    updateState={handleUpdateProduct}
-                    properties={{ property: 'name', id: store.id}}
-                    handleChangeInput={handleChangeInput}
-                    pizzaNew={storeNew}
-                    placeholder={'Nombre'}
-                    errors={errors?.name}
-                /> */}
-                <Divider sx={{ width: '100%'}} />
-                <Typography>{currentStore.city}</Typography>
-
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '100%',
+                        overflowY: 'auto',
+                        pr: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2
+                    }}
+                >
+                    <Typography variant='title'>
+                        {store.name} Nº{store.id}
+                    </Typography>
+                    <StoreData 
+                        store={store}
+                        updateDataStoreState={updateDataStoreState}
+                    />
+                    <Divider sx={{ width: '100%'}} />
+                    <Schedules store={store} updateScheduleHoursStoreState={updateScheduleHoursStoreState}/>
+                </Box>
             </Box>
         </Modal>
     )

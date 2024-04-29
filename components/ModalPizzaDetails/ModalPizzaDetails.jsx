@@ -124,6 +124,14 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
         setProcessing(false)
     }
 
+    function updatePizzaState(product) {
+        const newProduct = {
+            ...product,
+            type: 'pizzas',
+        }
+        handleUpdateProduct(newProduct)
+    }
+
     return (
         <Modal
             open={ openPizzaDetail }
@@ -135,7 +143,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                 <InputUpdate
                     value={pizza.name}
                     updateProperty={updatePizza}
-                    updateState={handleUpdateProduct}
+                    updateState={updatePizzaState}
                     properties={{ property: 'name', id: pizza.id}}
                     handleChangeInput={handleChangeInput}
                     pizzaNew={pizzaNew}
@@ -171,7 +179,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     <InputUpdate
                         value={pizza.text}
                         updateProperty={updatePizza}
-                        updateState={handleUpdateProduct}
+                        updateState={updatePizzaState}
                         properties={{ property: 'text', id: pizza.id}}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}

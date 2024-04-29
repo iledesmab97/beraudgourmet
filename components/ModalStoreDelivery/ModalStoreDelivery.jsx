@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import useHandlePlace from '@/hooks/useHandlePlace'
 import useGetStoreList from '@/hooks/useGetStoreList'
-import { updateStores } from '@/services/storeApi'
+import { getAllStoresWithSchedules } from '@/services/storeApi'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -64,7 +64,7 @@ export default function ModalStoreDelivery() {
 
   useEffect(() => {
     if (storeList && Object.keys(storeList).length) return
-    updateStores().then(storeList => {
+    getAllStoresWithSchedules().then(storeList => {
       handleAddStoreList(storeList)
     })
   }, [])
