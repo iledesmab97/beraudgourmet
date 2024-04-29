@@ -36,9 +36,9 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
 
     const [store, setStore] = useState(currentStore)
 
-    const { storeList, handleAddStoreList, handleUpdateStoreList } = useGetStoreList()
+    const { storeList, handleAddStoreList, handleUpdateStoreList, updateScheduleHoursStore } = useGetStoreList()
 
-    function updateStoreState({ id, property, value }) {
+    function updateDataStoreState({ id, property, value }) {
         if (property === 'lat' || property === 'lng') {
             setStore(prevState => ({
                 ...prevState,
@@ -54,6 +54,22 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
             }))
         }
         handleUpdateStoreList({ id, property, value })
+    }
+
+    function updateScheduleHoursStoreState({ schedule, newScheduleHours }) {
+        const newState = {
+            ...store
+        }
+        newState[schedule] = {
+            ...newState[schedule],
+            [schedule]: newScheduleHours.map(scheudleHour => ({
+                id: scheudleHour.id,
+                days: scheudleHour.day,
+                hours: scheudleHour.startTime + ' - ' + scheudleHour.endTime
+            }))
+        }
+        setStore(newState)
+        updateScheduleHoursStore(newState)
     }
 
     return (
@@ -81,10 +97,10 @@ function ModalStoreDetailAdmin({ openStoreDetails, handleOpenStoreDetail, curren
                     </Typography>
                     <StoreData 
                         store={store}
-                        updateStoreState={updateStoreState}
+                        updateDataStoreState={updateDataStoreState}
                     />
                     <Divider sx={{ width: '100%'}} />
-                    <Schedules store={store}/>
+                    <Schedules store={store} updateScheduleHoursStoreState={updateScheduleHoursStoreState}/>
                 </Box>
             </Box>
         </Modal>
