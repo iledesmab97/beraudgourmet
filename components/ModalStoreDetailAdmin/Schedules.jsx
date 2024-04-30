@@ -167,6 +167,46 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
         setEditing(newScheduleList.map(() => false))
     }
 
+    async function removeSchedule() {
+        handleCloseMenu()
+        const newScheduleHours = [...scheduleList].filter((schedule, index) => index !== selectedScheduleIndex.current).map(scheduleHour => ({
+            id: scheduleHour.id,
+            day: scheduleHour.days,
+            startTime: scheduleHour.hours.split(' - ')[0],
+            endTime: scheduleHour.hours.split(' - ')[1],
+        }))
+        const response = await updateSchedulesHoursOfSchedules(store[selectValue + 'Schedule'].id, newScheduleHours)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            updateScheduleHoursStoreState({
+                schedule: selectValue + 'Schedule',
+                newScheduleHours
+            })
+            setScheduleList(() => {
+                return newScheduleHours.map(schedule => ({
+                    id: schedule.id,
+                    days: schedule.day,
+                    hours: schedule.startTime + ' - ' + schedule.endTime
+                }))
+            })
+            handleEdit(false)
+            return console.log('Actualización exitosa')
+        }
+        return alert(response.message)
+    }
+
     return (
         <Grid container spacing={3}>
             <Grid item>
@@ -352,7 +392,11 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
                         </MenuItem>
                     )
                 }
-                <MenuItem>Borrar</MenuItem>
+                <MenuItem
+                    onClick={removeSchedule}
+                >
+                    Borrar
+                </MenuItem>
             </Menu>
         </Grid>
     )
