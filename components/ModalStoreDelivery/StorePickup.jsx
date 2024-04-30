@@ -21,6 +21,9 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     const { saveLocalData } = useLocalData()
 
+    console.log('storeList:', storeList)
+    console.log('inputsStore:', inputsStore)
+
     return (
         <>
             <Box sx={{ width: '100%'}}>    
@@ -184,14 +187,20 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                     mr: 1
                                     }}
                                 >
-                                    <Box>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'flex-end',
+                                        }}
+                                    >
                                         <Typography
                                             variant='title'
                                         >
-                                            {store.open ? 'Abierto': 'Cerrado'}
+                                            {store.open ? `Cerramos a las:` : `Abrimos a las:` }
                                         </Typography>
-                                        <Typography>
-                                            {store.closeTime}
+                                        <Typography variant='title'>
+                                            {store.open ? store.closeTime : store.openTime }
                                         </Typography>
                                     </Box>
                                     <Button
