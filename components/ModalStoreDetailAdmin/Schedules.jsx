@@ -97,6 +97,7 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
     }
 
     async function updateSchedule() {
+        handleCloseMenu()
         const newScheduleHours = [...scheduleList].map(scheduleHour => ({
             id: scheduleHour.id,
             day: scheduleHour.days,
@@ -135,6 +136,13 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
             updateScheduleHoursStoreState({
                 schedule: selectValue + 'Schedule',
                 newScheduleHours
+            })
+            setScheduleList(() => {
+                return newScheduleHours.map(schedule => ({
+                    id: schedule.id,
+                    days: schedule.day,
+                    hours: schedule.startTime + ' - ' + schedule.endTime
+                }))
             })
             handleEdit(false)
             return console.log('Actualización hecho exitosamente')
