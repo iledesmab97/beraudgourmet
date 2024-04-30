@@ -26,6 +26,7 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { weekDaysES } from '@/services/storeApi'
 import { updateSchedulesHoursOfSchedules } from '@/services/scheduleApi'
+import { deepEqual } from '@/utils/preparingData'
 
 function Schedules({ store, updateScheduleHoursStoreState }) {
 
@@ -98,6 +99,15 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
 
     async function updateSchedule() {
         handleCloseMenu()
+        const newScheduleHour = {
+            id: inputEditing.id,
+            days: inputEditing.startDay + '-' + inputEditing.endDay,
+            hours:  inputEditing.startTime + ' - ' + inputEditing.endTime
+        }
+        const lastScheduleHour = [...scheduleList].find((scheduleHour, index) => scheduleHour.id === inputEditing.id)
+        
+        if (deepEqual(newScheduleHour, lastScheduleHour)) return handleEdit(false)
+        
         const newScheduleHours = [...scheduleList].map(scheduleHour => ({
             id: scheduleHour.id,
             day: scheduleHour.days,
