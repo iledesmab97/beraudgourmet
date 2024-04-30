@@ -13,10 +13,21 @@ export function dateStringToDate(date) {
     const [day, month, year] = dateWithSlash.split('/')
     const [hour_min, am_pm] = time.split(" ")
     let [hour, mine] = hour_min.split(':')
-    hour = am_pm === 'am' ? hour !== '12' ? hour : '00' : hour !== '12' ? String((Number(hour) + 12)) : hour
-
+    
     const dateA = dayjs(`${year}-${month}-${day} ${hour}:${mine}`, ['YYYY', 'YYYY-MM-DD', 'YYYY-MM-DD HH:mm'])
     return dateA
+}
+
+export function timeStringToObject(time) {
+    const [hour_min, am_pm] = time.split(" ")
+    let [hour, mine] = hour_min.split(':')
+    if (hour === '12') {
+        hour = am_pm === 'am' ? '00' : hour
+    } else {
+        hour = am_pm === 'am' ? hour : String(Number(hour) + 12)
+    }
+    const date = dayjs().format('YYYY-MM-DD')
+    return dayjs(`${date} ${hour}:${mine}`)
 }
 
 export function howMuchLeft(dateString) {
