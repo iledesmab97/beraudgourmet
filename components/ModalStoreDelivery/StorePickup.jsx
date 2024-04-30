@@ -212,7 +212,7 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                             handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
                                             handleCloseModal('place')
                                         }}
-                                        disabled={!store.open}
+                                        // disabled={!store.open}
                                     >
                                         Haga su pedido ahora
                                     </Button>
