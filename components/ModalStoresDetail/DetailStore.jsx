@@ -153,7 +153,7 @@ export default function DetailStore({ currentStore }) {
                         <Table>
                             <TableBody>
                                 {
-                                    currentStore.pickUpSchedule.map(hour => (
+                                    currentStore.pickupSchedule.pickupSchedule.map(hour => (
                                         <TableRow
                                             key={hour.days + hour.hours}
                                         >
@@ -181,7 +181,7 @@ export default function DetailStore({ currentStore }) {
                         <Table>
                             <TableBody>
                                 {
-                                    currentStore.deliverySchedule.map(hour => (
+                                    currentStore.deliverySchedule.deliverySchedule.map(hour => (
                                         <TableRow
                                             key={hour.days + hour.hours}
                                         >
