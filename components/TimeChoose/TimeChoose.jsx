@@ -1,13 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import useGetPlace from '@/hooks/useGetPlace'
 import dayjs from 'dayjs'
 
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
+import { useState, useEffect } from 'react'
+import useGetPlace from '@/hooks/useGetPlace'
+
+import { todaysScheduleIs, timeStringToObject } from '@/utils/hours'
 
 function differenceTime(now, later) {
     let minutes = later.format('m') - now.format('m')
@@ -19,12 +22,22 @@ function differenceTime(now, later) {
     return [hours, minutes]
 }
 
+const typeDelivery = {
+    store: 'pickupSchedule',
+    home: 'deliverySchedule'
+}
+
 export default function TimePickerViewRenderers() {
 
     const [hour, setHour] = useState(dayjs().add(30, 'minute'))
     const [textHour, setTextHour] = useState('')
     const {place, handleDeadLine} = useGetPlace()
     const [today, setToday] = useState(true)
+    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue())
+
+    useEffect(() => {
+        setLimitHours(getTimeLimitTodaySchedue())
+    }, [place])
 
     useEffect(() => {
         if (!(place.deadLine && place.deadLine.date)) return
@@ -71,6 +84,18 @@ export default function TimePickerViewRenderers() {
         setHour(event)
     }
 
+    function getTimeLimitTodaySchedue() {
+
+        const scheduleList = place.closerStore[typeDelivery[place.typeDelivery.name]][typeDelivery[place.typeDelivery.name]]
+        const todaySchedule = todaysScheduleIs(scheduleList)
+        const minHour = todaySchedule.hours.split(' - ')[0]
+        const maxHour = todaySchedule.hours.split(' - ')[1]
+        return {
+            minHour: timeStringToObject(minHour),
+            maxHour: timeStringToObject(maxHour)
+        }
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
@@ -86,8 +111,8 @@ export default function TimePickerViewRenderers() {
                     value={hour}
                     onChange={handleHour}
                     disablePast={true}
-                    minTime={dayjs().hour(8).minute(0).second(0)}
-                    maxTime={dayjs().hour(21).minute(0).second(0)}
+                    minTime={limitHours.minHour}
+                    maxTime={limitHours.maxHour}
                 />
             </DemoContainer>
         </LocalizationProvider>
