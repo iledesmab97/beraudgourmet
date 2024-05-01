@@ -1,5 +1,8 @@
 import dayjs from 'dayjs'
 
+export const weekDaysEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+export const weekDaysES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
 export function isOpen({openTime, closeTime}) {
     const now = dayjs()
     const openTimeDay = dayjs(`${now.format('D')} ${openTime}`, 'D hh:mm a')
@@ -39,4 +42,13 @@ export function howMuchLeft(dateString) {
     } else {
         return 'late'
     }
+}
+
+export function todaysScheduleIs(scheduleList) {
+    const indexToday = weekDaysEN.indexOf(dayjs().format('dddd'))
+    return scheduleList.find(schedule => {
+        const indexStart = weekDaysES.indexOf(schedule.days.split('-')[0])
+        const indexEnd = weekDaysES.indexOf(schedule.days.split('-')[1])
+        return indexToday >= indexStart && indexToday <= indexEnd
+    })
 }
