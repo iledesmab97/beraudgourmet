@@ -87,9 +87,10 @@ export default function TimePickerViewRenderers() {
     function getTimeLimitTodaySchedue() {
 
         const scheduleList = place.closerStore[typeDelivery[place.typeDelivery.name]][typeDelivery[place.typeDelivery.name]]
-        const todaySchedule = todaysScheduleIs(scheduleList)
-        const minHour = todaySchedule.hours.split(' - ')[0]
-        const maxHour = todaySchedule.hours.split(' - ')[1]
+        const orderDay = place.deadLine.date.realDate
+        const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay)
+        const minHour = scheduleOfDay.hours.split(' - ')[0]
+        const maxHour = scheduleOfDay.hours.split(' - ')[1]
         return {
             minHour: timeStringToObject(minHour),
             maxHour: timeStringToObject(maxHour)
@@ -110,7 +111,7 @@ export default function TimePickerViewRenderers() {
                     }}
                     value={hour}
                     onChange={handleHour}
-                    disablePast={true}
+                    disablePast={dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day')}
                     minTime={limitHours.minHour}
                     maxTime={limitHours.maxHour}
                 />
