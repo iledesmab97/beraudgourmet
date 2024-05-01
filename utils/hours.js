@@ -44,11 +44,12 @@ export function howMuchLeft(dateString) {
     }
 }
 
-export function todaysScheduleIs(scheduleList) {
-    const indexToday = weekDaysEN.indexOf(dayjs().format('dddd'))
+export function todaysScheduleIs(scheduleList, orderDay) {
+    const orderDayObject = orderDay ? dayjs(orderDay, 'DD/MM/YYYY') : dayjs()
+    const indexOrderDay = weekDaysEN.indexOf(orderDayObject.format('dddd'))
     return scheduleList.find(schedule => {
         const indexStart = weekDaysES.indexOf(schedule.days.split('-')[0])
         const indexEnd = weekDaysES.indexOf(schedule.days.split('-')[1])
-        return indexToday >= indexStart && indexToday <= indexEnd
+        return indexOrderDay >= indexStart && indexOrderDay <= indexEnd
     })
 }
