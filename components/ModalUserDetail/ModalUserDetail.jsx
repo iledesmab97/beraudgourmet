@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 // import Divider from '@mui/material/Divider'
 
 // import InputUpdate from '@/components/InputUpdate/InputUpdate'
-// import StoreData from './StoreData'
+import UserData from './UserData'
 // import Schedules from './Schedules'
 
 import { useState, useEffect } from 'react'
@@ -95,11 +95,11 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, storeNew }) 
                     <Typography variant='title'>
                         {user.name} Nº{user.id}
                     </Typography>
-                    {/* <StoreData 
+                    <UserData 
                         user={user}
-                        updateDataStoreState={updateDataStoreState}
+                        // updateDataStoreState={updateDataStoreState}
                     />
-                    <Divider sx={{ width: '100%'}} />
+                    {/* <Divider sx={{ width: '100%'}} />
                     <Schedules user={user} updateScheduleHoursStoreState={updateScheduleHoursStoreState}/> */}
                 </Box>
             </Box>
