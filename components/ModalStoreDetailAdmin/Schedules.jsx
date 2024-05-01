@@ -24,7 +24,7 @@ import InputTime from '@/components/InputTime/InputTime'
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { weekDaysES } from '@/services/storeApi'
+import { weekDaysES } from '@/utils/hours'
 import { updateSchedulesHoursOfSchedules } from '@/services/scheduleApi'
 import { deepEqual } from '@/utils/preparingData'
 
