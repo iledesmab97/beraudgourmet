@@ -21,9 +21,6 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     const { saveLocalData } = useLocalData()
 
-    console.log('storeList:', storeList)
-    console.log('inputsStore:', inputsStore)
-
     return (
         <>
             <Box sx={{ width: '100%'}}>    
