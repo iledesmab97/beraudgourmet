@@ -44,7 +44,11 @@ function DataPanel({ toolSelected }) {
 
     useEffect(() => {
         getAllOrders()
-            .then(data => updateOrders(data))
+            .then(data => {
+                if (!data.message) return updateOrders(data)
+                return alert(data.message)
+            })
+            .catch(error => alert(error.message))
         getAllUsers()
             .then(data => setUsers(data))
     }, [])
