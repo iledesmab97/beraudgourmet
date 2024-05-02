@@ -36,6 +36,7 @@ export default function TimePickerViewRenderers() {
     const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue())
 
     useEffect(() => {
+        if (!place.deadLine) return
         setLimitHours(getTimeLimitTodaySchedue())
     }, [place])
 
@@ -85,7 +86,10 @@ export default function TimePickerViewRenderers() {
     }
 
     function getTimeLimitTodaySchedue() {
-
+        if (!place.deadLine) return {
+            minHour: dayjs(),
+            maxHour: dayjs()
+        }
         const scheduleList = place.closerStore[typeDelivery[place.typeDelivery.name]][typeDelivery[place.typeDelivery.name]]
         const orderDay = place.deadLine.date.realDate
         const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay)
@@ -111,7 +115,7 @@ export default function TimePickerViewRenderers() {
                     }}
                     value={hour}
                     onChange={handleHour}
-                    disablePast={dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day')}
+                    disablePast={ place.deadLine ? dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') : false}
                     minTime={limitHours.minHour}
                     maxTime={limitHours.maxHour}
                 />
