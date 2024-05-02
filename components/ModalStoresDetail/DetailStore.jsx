@@ -51,31 +51,30 @@ export default function DetailStore({ currentStore }) {
                         component={'li'}
                         sx={{
                             display: 'flex',
-                            flexDirection: 'column'
                         }}
                     >
+                        <CircleIcon
+                            color={currentStore.open ? 'primary' : 'secondary'}
+                            sx={{
+                                mr: '8px'
+                            }}
+                        />
                         <Box
                             sx={{
                                 display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center'
+                                flexDirection: 'column',
+                                alignItems: 'flex-start'
                             }}
-                        >
-                            <CircleIcon
-                                color={currentStore.open ? 'primary' : 'secondary'}
-                                sx={{
-                                    mr: '8px'
-                                }}
-                            />
+                        >  
                             <Typography
                                 component={'span'}
                             >
                                 {currentStore.open ? 'Abierto' : 'Cerrado'}
                             </Typography>
+                            <Typography>
+                                { currentStore.open ? `Cerramos a las ${currentStore.closeTime}` : `Abrimos a las ${currentStore.openTime}` }
+                            </Typography>
                         </Box>
-                        <Typography>
-                            {currentStore.closeTime}
-                        </Typography>
                     </ListItem>
                     <ListItem
                         component={'li'}
@@ -153,7 +152,7 @@ export default function DetailStore({ currentStore }) {
                         <Table>
                             <TableBody>
                                 {
-                                    currentStore.pickUpSchedule.map(hour => (
+                                    currentStore.pickupSchedule.pickupSchedule.map(hour => (
                                         <TableRow
                                             key={hour.days + hour.hours}
                                         >
@@ -181,7 +180,7 @@ export default function DetailStore({ currentStore }) {
                         <Table>
                             <TableBody>
                                 {
-                                    currentStore.deliverySchedule.map(hour => (
+                                    currentStore.deliverySchedule.deliverySchedule.map(hour => (
                                         <TableRow
                                             key={hour.days + hour.hours}
                                         >

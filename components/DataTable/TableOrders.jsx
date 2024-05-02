@@ -13,7 +13,10 @@ import IconButton from '@mui/material/IconButton'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+
 import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
+import ModalMakeOrder from '@/components/ModalMakeOrder/ModalMakeOrder'
 
 import { useState, useRef } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -40,7 +43,12 @@ function TableOrders({ orders, updateOrders }) {
     const [openOrderDetail, setOpenOrderDetail] = useState(false)
     const open = Boolean(anchorEl)
     const fileInput = useRef()
+    const [openMakeOrder, setOpenMakeOrder] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+
+    function handleOpenMakeOrder(value) {
+        setOpenMakeOrder(value)
+    }
 
     function handleOpenOrderDetail(value) {
         setOpenOrderDetail(value)
@@ -132,7 +140,8 @@ function TableOrders({ orders, updateOrders }) {
     return (
         <Box
             sx={{
-                height: '75%'
+                height: '75%',
+                position: 'relative'
             }}
         >
             <TableContainer className={styles.DataTable} component={Paper}>
@@ -186,6 +195,20 @@ function TableOrders({ orders, updateOrders }) {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    bottom: '102%',
+                    right: '0px'
+                }}
+            >
+                <Button
+                    variant='contained'
+                    onClick={() => {handleOpenMakeOrder(true)}}
+                >
+                    Nueva Orden
+                </Button>
+            </Box>
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -228,6 +251,9 @@ function TableOrders({ orders, updateOrders }) {
                 currentOrder ? (
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
                 ) : null
+            }
+            {
+                <ModalMakeOrder openMakeOrder={openMakeOrder} handleOpenMakeOrder={handleOpenMakeOrder} />
             }
         </Box>
     )

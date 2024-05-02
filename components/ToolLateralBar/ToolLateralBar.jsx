@@ -28,6 +28,10 @@ const listTools = [
     {
         name: 'Stores',
         icon: StoreIcon
+    },
+    {
+        name: 'Users',
+        icon: GroupIcon
     }
 ]
 

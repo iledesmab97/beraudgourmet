@@ -5,9 +5,10 @@ export function getAllOrders(userId) {
     return fetch(`${PATH_BACK}/orders${lastPath}`, { cache: 'no-store' })
         .then(response => response.json())
         .then(data => {
-            if (data.message) return console.log('Ha ocurrido el siguiente error:', data.message)
+            if (data.message) throw new Error(data.message)
             return data
         })
+        .catch(error => ({message: error.message}))
 }
 
 export function updateOrder(id, body) {

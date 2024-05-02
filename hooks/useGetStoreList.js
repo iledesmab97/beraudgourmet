@@ -24,7 +24,7 @@ function sortStores(storeListToAdd, storelist = {}) {
     return newStoreList
 }
 
-function listStores(storeList) {
+export function listStores(storeList) {
     const arrayStoreList = []
     if (Object.keys(storeList).length) {
         for (let city in storeList) {
