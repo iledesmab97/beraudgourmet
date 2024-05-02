@@ -85,3 +85,15 @@ export async function saveToken( tokenUser ) {
     if (response.message !== 'valid token') return alert(response.message)
     window.location.href = "/menu"
 }
+
+export function getAllUsers() {
+    return fetch(`${PATH_BACK}/users`, {
+        credentials: "include"
+    })
+        .then(response => {
+            return response.json()
+        })
+        .then(data => {
+            return data
+        })
+}

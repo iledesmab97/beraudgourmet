@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { getAllOrders } from '@/services/orderApi'
+import { getAllUsers } from '@/services/userApi'
 
 import TabBar from '@/components/TabBar/TabBar'
 import TableOrders from '@/components/DataTable/TableOrders'
 import TablePizzas from '@/components/DataTable/TablePizzas'
 import TableStores from '@/components/DataTable/TableStores'
+import TableUsers from '@/components/DataTable/TableUsers'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -26,6 +28,10 @@ const listToolOptions = {
     Stores: {
         title: 'Lista de Tiendas',
         listTabs: ['Todas las tiendas']
+    },
+    Users: {
+        title: 'Lista de Usuarios',
+        listTabs: ['Todos los usuarios']
     }
 }
 
@@ -33,11 +39,14 @@ function DataPanel({ toolSelected }) {
 
     const [tabSelected, setTabSelected] = useState(0)
     const [orders, setOrders] = useState([])
+    const [users, setUsers] = useState([])
     const [list, setList] = useState([])
 
     useEffect(() => {
         getAllOrders()
             .then(data => updateOrders(data))
+        getAllUsers()
+            .then(data => setUsers(data))
     }, [])
 
 
@@ -78,6 +87,10 @@ function DataPanel({ toolSelected }) {
             {
                 toolSelected === 'Stores' ? <TableStores /> : null
             }
+            {
+                toolSelected === 'Users' ? <TableUsers users={users} /> : null
+            }
+
         </Grid>
     )
 }
