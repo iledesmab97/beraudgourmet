@@ -18,19 +18,21 @@ import Typography from '@mui/material/Typography';
 import ModalPizzaDetail from '@/components/ModalPizzaDetails/ModalPizzaDetails'
 import EditIcon from '@mui/icons-material/Edit'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@mui/icons-material/Add'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CancelIcon from '@mui/icons-material/Cancel'
 
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
-import { getPizzas, getPizzaCosts, removePizza } from '@/services/productApi'
+import { getPizzas, getPizzaCosts, removePizza, updatePizza } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
 
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    pizzas: [ 'Nombre', 'Ingredientes', 'Imagen', 'Acción' ]
+    pizzas: [ 'Estatus','Nombre', 'Ingredientes', 'Imagen', 'Acción' ]
 }
 
 const colorsCell = {
@@ -120,6 +122,35 @@ function TablePizzas() {
         handleOpenPizzaDetail(true)
     }
 
+    async function handleStatusPizza() {
+        const properties = {
+            property: 'status',
+            value: currentPizza.status === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
+        }
+        const response = await updatePizza(currentPizza.id, properties)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            handleUpdateProduct({
+                ...properties,
+                type: 'pizzas',
+                id: currentPizza.id
+            })
+        }
+        handleCloseMenu()
+    }
+
     // async function changeStatus() {
     //     const body = {
     //         property: 'closed',
@@ -177,6 +208,13 @@ function TablePizzas() {
                         {
                             pizzas.map((pizza) => (
                                 <TableRow key={pizza.id}>
+                                    <TableCell align='center'>{
+                                        pizza.status === 'ACTIVE' ? (
+                                            <CheckCircleIcon sx={{ color: '#4caf50'}} />
+                                        ) : (
+                                            <CancelIcon sx={{ color: '#f6685e'}} />
+                                        )
+                                    }</TableCell>
                                     <TableCell align='center'>{pizza.name}</TableCell>
                                     <TableCell align='center'>{pizza.ingredients.join(', ')}</TableCell>
                                     <TableCell align='center'>
@@ -227,6 +265,14 @@ function TablePizzas() {
                         </MenuItem>
                     ) : null
                 } */}
+                <MenuItem
+                    onClick={handleStatusPizza}
+                >
+                    {/* <IconButton>
+                        <VisibilityIcon />
+                    </IconButton> */}
+                    { currentPizza?.status ? 'Desactivar' : 'Activar'}
+                </MenuItem>
                 <MenuItem
                     onClick={() => { handleOpenPizzaDetail(true) }}
                 >
