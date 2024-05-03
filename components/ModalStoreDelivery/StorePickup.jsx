@@ -3,6 +3,7 @@
 import useGetPlace from '@/hooks/useGetPlace'
 
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField'
@@ -172,48 +173,73 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                         </Box>
                                     </Box>
                                 </Box>
-                                <Box
+                                <Grid
+                                    container
+                                    direction={{
+                                        xs: 'column',
+                                    }}
+                                    justifyContent={'space-between'}
+                                    alignItems={'flex-end'}
+                                    spacing={{
+                                        xs: 1
+                                    }}
                                     sx={{
-                                    display: 'flex',
-                                    flexDirection: {
-                                        xs: 'row',
-                                        sm: 'column'
-                                    },
-                                    justifyContent: 'space-between',
-                                    alignItems: 'flex-end',
-                                    mr: 1
+                                        width: {
+                                            xs: '100%',
+                                            sm: 'fit-content'
+                                        },
+                                        mr: 1
                                     }}
                                 >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'flex-end',
+                                    <Grid
+                                        item
+                                        container
+                                        direction={{
+                                            xs:'row',
+                                            sm: 'column'
+                                        }}
+                                        alignItems={{
+                                            xs: 'center',
+                                            sm: 'flex-end'
+                                        }}
+                                        justifyContent={{
+                                            xs: 'flex-end',
+                                            sm: 'flex-start'
+                                        }}
+                                        spacing={{
+                                            xs: 1,
+                                            sm: 0
                                         }}
                                     >
-                                        <Typography
-                                            variant='title'
+                                        <Grid item>
+                                            <Typography
+                                                variant='title'
+                                            >
+                                                {store.open ? `Cerramos a las:` : `Abrimos a las:` }
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography variant='title'>
+                                                {store.open ? store.closeTime : store.openTime }
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            variant='contained'
+                                            size='small'
+                                            onClick={() => {
+                                                handleAddPlace({closerStore: store})
+                                                saveLocalData('place', {closerStore: store})
+                                                handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
+                                                handleCloseModal('place')
+                                            }}
+                                            // disabled={!store.open}
                                         >
-                                            {store.open ? `Cerramos a las:` : `Abrimos a las:` }
-                                        </Typography>
-                                        <Typography variant='title'>
-                                            {store.open ? store.closeTime : store.openTime }
-                                        </Typography>
-                                    </Box>
-                                    <Button
-                                        variant='contained'
-                                        size='small'
-                                        onClick={() => {
-                                            handleAddPlace({closerStore: store})
-                                            saveLocalData('place', {closerStore: store})
-                                            handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
-                                            handleCloseModal('place')
-                                        }}
-                                        // disabled={!store.open}
-                                    >
-                                        Haga su pedido ahora
-                                    </Button>
-                                </Box>
+                                            Haga su pedido ahora
+                                        </Button>
+                                    </Grid>
+                                </Grid>
                             </Box>
                         </ListItem>
                         ))
