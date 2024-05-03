@@ -3,6 +3,8 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
+import InputUpdate from '@/components/InputUpdate/InputUpdate'
+
 const RolsES = {
     client: 'Cliente',
     root: 'Dueño',
@@ -18,6 +20,17 @@ function UserData({ user }) {
             container
             spacing={2}
         >
+            <Grid item xs={12} container justifyContent={'space-around'}>
+                <Grid item xs={3}>
+                    <Typography>Nombre:</Typography>
+                </Grid>
+                <Grid item xs={5}>
+                    <Typography align='right'>{user.name}</Typography>
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
+                <Divider sx={{width: '100%'}}/>
+            </Grid>
             <Grid item xs={12} container justifyContent={'space-around'}>
                 <Grid item xs={3}>
                     <Typography>Email:</Typography>
