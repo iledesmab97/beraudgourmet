@@ -35,7 +35,7 @@ import useGetStoreList from '@/hooks/useGetStoreList'
 //     return arrayStoreList
 // }
 
-function TableUsers({ users }) {
+function TableUsers({ users, handleChangeUsers }) {
 
     // const { storeList, handleAddStoreList } = useGetStoreList()
     // const [ storeListArray, setStoreListArray ] = useState(listStores(storeList))
@@ -65,6 +65,20 @@ function TableUsers({ users }) {
         if (!value) {
             setCurrentUser(null)
         }
+    }
+
+    function updateUser({ id, property, value}) {
+        const newUsers = [...users]
+        let indexUser
+        const userToUpdate = newUsers.find((user, index) => {
+            if (user.id === id) {
+                indexUser = index
+                return true
+            }
+        })
+        userToUpdate[property] = value
+        newUsers[indexUser] = userToUpdate
+        handleChangeUsers(newUsers)
     }
 
     return (
@@ -114,7 +128,7 @@ function TableUsers({ users }) {
                 </MenuItem>
             </Menu>
             {
-                currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} /> : null
+                currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUser={updateUser} /> : null
             }
         </Box>
     )
