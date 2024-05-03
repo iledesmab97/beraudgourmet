@@ -67,7 +67,7 @@ function TableUsers({ users, handleChangeUsers }) {
         }
     }
 
-    function updateUser({ id, property, value}) {
+    function updateUserTable({ id, property, value}) {
         const newUsers = [...users]
         let indexUser
         const userToUpdate = newUsers.find((user, index) => {
@@ -128,7 +128,7 @@ function TableUsers({ users, handleChangeUsers }) {
                 </MenuItem>
             </Menu>
             {
-                currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUser={updateUser} /> : null
+                currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUserTable={updateUserTable} /> : null
             }
         </Box>
     )
