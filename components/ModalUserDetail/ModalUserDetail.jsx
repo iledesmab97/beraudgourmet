@@ -32,7 +32,7 @@ const style = {
     gap: 2,
 }
 
-function ModalUserDetail({ openModal, handleOpenModal, currentUser, storeNew }) {
+function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUser }) {
 
     const [user, setUser] = useState(currentUser)
 
@@ -95,12 +95,10 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, storeNew }) 
                     <Typography variant='title'>
                         {user.name} Nº{user.id}
                     </Typography>
-                    <UserData 
+                    <UserData
                         user={user}
-                        // updateDataStoreState={updateDataStoreState}
+                        updateUser={updateUser}
                     />
-                    {/* <Divider sx={{ width: '100%'}} />
-                    <Schedules user={user} updateScheduleHoursStoreState={updateScheduleHoursStoreState}/> */}
                 </Box>
             </Box>
         </Modal>
