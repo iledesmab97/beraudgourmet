@@ -6,13 +6,14 @@ export function getPizzas() {
     .then(response => response.json())
     .then(data => {
       const pizzaList = data.map(pizza => {
-          const { id, name, text, image, ingredients } = pizza
+          const { id, name, text, image, ingredients, status  } = pizza
           const newPizzaData = {
             id,
             name,
             text,
             image,
-            ingredients
+            ingredients,
+            status
           }
           return newPizzaData
       })
