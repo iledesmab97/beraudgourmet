@@ -145,6 +145,7 @@ function ModalCheckoutForm() {
         >
             <Grid
                 container
+                wrap='nowrap'
                 sx={style}
             >
                 <Grid>
