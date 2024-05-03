@@ -97,3 +97,14 @@ export function getAllUsers() {
             return data
         })
 }
+
+export function updateAccount(id, data) {
+    return fetch(`${PATH_BACK}/users/update/${id}`, {
+        method: 'PUT',
+        credentials: "include",
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => data)
+}
