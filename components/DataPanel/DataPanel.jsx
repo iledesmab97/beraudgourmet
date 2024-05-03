@@ -66,6 +66,10 @@ function DataPanel({ toolSelected }) {
         setTabSelected(newValue)
     }
 
+    function handleChangeUsers(userList) {
+        setUsers(userList)
+    }
+
     return (
         <Grid
             item
@@ -92,7 +96,7 @@ function DataPanel({ toolSelected }) {
                 toolSelected === 'Stores' ? <TableStores /> : null
             }
             {
-                toolSelected === 'Users' ? <TableUsers users={users} /> : null
+                toolSelected === 'Users' ? <TableUsers users={users} handleChangeUsers={handleChangeUsers} /> : null
             }
 
         </Grid>
