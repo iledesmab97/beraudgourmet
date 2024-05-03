@@ -17,17 +17,18 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import IconButton from '@mui/material/IconButton'
-import CheckIcon from '@mui/icons-material/Check'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+
+import CloseIcon from '@mui/icons-material/Close'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import EditIcon from '@mui/icons-material/Edit'
+import CheckIcon from '@mui/icons-material/Check'
 
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -79,6 +80,8 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const selectSize = useRef()
+
+    // console.log('currentSizesList:', currentSizesList)
 
     useEffect(() => {
         getMassesList()
@@ -270,7 +273,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     }
 
     async function closeLineMass(indexSize, mass) {
-        const currentMassesOfSize = currentSizesList[indexSize][1]
+        const currentMassesOfSize = {
+            ...currentSizesList[indexSize][1]
+        }
         delete currentMassesOfSize[mass]
 
         const newCurrentSizesList = [...currentSizesList]
