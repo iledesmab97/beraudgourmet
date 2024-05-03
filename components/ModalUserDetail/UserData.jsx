@@ -5,13 +5,15 @@ import Divider from '@mui/material/Divider'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
+import { updateAccount } from '@/services/userApi'
+
 const RolsES = {
     client: 'Cliente',
     root: 'Dueño',
     admin: 'Administrador'
 }
 
-function UserData({ user }) {
+function UserData({ user, updateUser }) {
 
     console.log('user:', user)
 
@@ -20,12 +22,23 @@ function UserData({ user }) {
             container
             spacing={2}
         >
-            <Grid item xs={12} container justifyContent={'space-around'}>
+            <Grid
+                item
+                xs={12}
+                container
+                justifyContent={'space-around'}
+                alignItems={'center'}
+            >
                 <Grid item xs={3}>
                     <Typography>Nombre:</Typography>
                 </Grid>
                 <Grid item xs={5}>
-                    <Typography align='right'>{user.name}</Typography>
+                    <InputUpdate
+                        value={user.name}
+                        updateProperty={updateAccount}
+                        properties={{ property: 'name', id: user.id}}
+                        updateState={updateUser}
+                    />
                 </Grid>
             </Grid>
             <Grid item xs={12}>
