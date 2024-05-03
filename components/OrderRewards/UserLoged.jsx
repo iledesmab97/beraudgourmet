@@ -91,7 +91,7 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                                 name='numberPhone'
                                 position='end'
                                 onClick={handleEditing}
-                                disabled={errors.name ? true : false}    
+                                disabled={errors.numberPhone ? true : false}    
                             >
                                 {
                                     editing.numberPhone
