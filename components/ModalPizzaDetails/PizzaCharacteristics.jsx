@@ -506,14 +506,17 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                             item
                                             xs={8}
                                         >
-                                        {
-                                                Object.entries(masses).map(([mass, cost], indexMass) => (
-                                                    <Collapse
-                                                        key={`massesAvailable(${mass})`}
-                                                        in={arrayOpenColapse[indexSize]}
-                                                        timeout={'auto'}
-                                                        orientation='horizontal'
-                                                    >
+                                            <Collapse
+                                                in={arrayOpenColapse[indexSize]}
+                                                timeout={'auto'}
+                                                orientation='horizontal'
+                                                sx={{
+                                                    position: 'relative'
+                                                }}
+                                            >
+                                                {
+                                                    Object.entries(masses).map(([mass, cost], indexMass) => (
+
                                                         <Box
                                                             sx={{
                                                                 width: '400px',
@@ -625,23 +628,6 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                 />
                                                             </Box>
                                                             {
-                                                                edit && (Object.keys(masses).length - 1 === indexMass) ? (
-                                                                    <Box
-                                                                        sx={{
-                                                                            position: 'absolute',
-                                                                            top: '100%',
-                                                                            left: '40%'
-                                                                        }}
-                                                                    >
-                                                                        <IconButton
-                                                                            onClick={() => {addNewLineMass(indexSize)}}
-                                                                        >
-                                                                            <AddCircleOutlineIcon />
-                                                                        </IconButton>
-                                                                    </Box>
-                                                                ) : null
-                                                            }
-                                                            {
                                                                 edit && indexMass ? (
                                                                     <Box
                                                                         sx={{
@@ -659,9 +645,27 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                 ) : null
                                                             }
                                                         </Box>
-                                                    </Collapse>
-                                                ))
-                                            }
+                                                        
+                                                    ))
+                                                }
+                                                {
+                                                    edit ? (
+                                                        <Box
+                                                            sx={{
+                                                                position: 'relative',
+                                                                right: '40px'
+                                                            }}
+                                                        >
+                                                            <IconButton
+                                                                onClick={() => {addNewLineMass(indexSize)}}
+                                                            >
+                                                                <AddCircleOutlineIcon />
+                                                            </IconButton>
+                                                        </Box>
+                                                    ) : null
+                                                }
+
+                                            </Collapse>
                                         </Grid>
                                         {
                                             edit && indexSize ? (
