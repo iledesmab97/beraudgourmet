@@ -518,6 +518,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                     Object.entries(masses).map(([mass, cost], indexMass) => (
 
                                                         <Box
+                                                            key={`${mass}`}
                                                             sx={{
                                                                 width: '400px',
                                                                 position: 'relative',
@@ -568,7 +569,13 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                         >
                                                                             {
                                                                                 massesList.map(m => (
-                                                                                    <MenuItem key={m} value={m}>{m}</MenuItem>
+                                                                                    <MenuItem
+                                                                                        key={m}
+                                                                                        value={m}
+                                                                                        disabled={Object.keys(masses).includes(m)}
+                                                                                    >
+                                                                                        {m}
+                                                                                    </MenuItem>
                                                                                 ))
                                                                             }
                                                                             <MenuItem value='Nueva Masa'>Nueva Masa</MenuItem>
