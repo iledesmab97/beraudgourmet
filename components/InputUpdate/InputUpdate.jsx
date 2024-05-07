@@ -20,7 +20,7 @@ function errorStyles(error) {
     }
 }
 
-function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, ...props}) {
+function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, handleInputsChecked, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(pizzaNew || false)
@@ -45,6 +45,7 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
         
         if (pizzaNew) {
             handleChangeInput({value: myValue, property: properties.property})
+            handleInputsChecked(properties.property, true)
             return setEdit(prevState => !prevState)
         }
 
