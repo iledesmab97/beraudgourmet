@@ -13,11 +13,16 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CancelIcon from '@mui/icons-material/Cancel'
 
 import ModalUserDetail from '@/components/ModalUserDetail/ModalUserDetail'
 
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+
+import { getAllUsers, updateAccount } from '@/services/userApi'
 
 // function listStores(storeList) {
 //     const arrayStoreList = []
@@ -43,6 +48,9 @@ function TableUsers({ users, handleChangeUsers }) {
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openModal, setOpenModal] = useState(false)
     const openMenu = Boolean(anchorElMenu)
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
+
+    console.log('users:', users)
 
     function closeMenu() {
         setAnchorElMenu(null)
@@ -81,12 +89,39 @@ function TableUsers({ users, handleChangeUsers }) {
         handleChangeUsers(newUsers)
     }
 
+    async function handleStatusUser() {
+        closeMenu()
+        const properties = {
+            property: 'state',
+            value: currentUser.state === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
+        }
+        const response = await updateAccount(currentUser.id, properties)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            getAllUsers()
+                .then(data => handleChangeUsers(data))
+        }
+    }
+
     return (
         <Box>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell>Estado</TableCell>
                             <TableCell>ID</TableCell>
                             <TableCell>Nombre</TableCell>
                             <TableCell>email</TableCell>
@@ -98,6 +133,13 @@ function TableUsers({ users, handleChangeUsers }) {
                         {
                             users.map(user => (
                                 <TableRow key={user.name}>
+                                    <TableCell align='center'>{
+                                        user.state === 'ACTIVE' ? (
+                                            <CheckCircleIcon sx={{ color: '#4caf50'}} />
+                                        ) : (
+                                            <CancelIcon sx={{ color: '#f6685e'}} />
+                                        )
+                                    }</TableCell>
                                     <TableCell>{user.id}</TableCell>
                                     <TableCell>{user.name}</TableCell>
                                     <TableCell>{user.email}</TableCell>
@@ -125,6 +167,11 @@ function TableUsers({ users, handleChangeUsers }) {
                     onClick={() => {handleOpenModal(true)}}
                 >
                     Ver Detalles
+                </MenuItem>
+                <MenuItem
+                    onClick={handleStatusUser}
+                >
+                    { currentUser?.state === 'ACTIVE' ? 'Desactivar' : 'Activar'}
                 </MenuItem>
             </Menu>
             {
