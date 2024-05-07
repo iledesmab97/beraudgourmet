@@ -37,14 +37,14 @@ const style = {
     gap: 2,
 }
 
-function validate(pizza) {
+function validate(inputsChecked) {
     const errors = {}
-    const { name, image, text, ingredients, price } = pizza
+    const { name, image, text, ingredients, price } = inputsChecked
     if (!name) errors.name = true
     if (!image) errors.image = true
     if (!text) errors.text = true
-    if (!ingredients[0]) errors.ingredients = true
-    if (!price['30cm']['Masa Tradicional']) errors.price = true
+    if (!ingredients) errors.ingredients = true
+    if (!price) errors.price = true
     return errors
 }
 
@@ -55,6 +55,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [processing, setProcessing] = useState(false)
     const [errors, setErrors] = useState({})
+    const [inputsChecked, setInputsChecked] = useState({})
 
     useEffect(() => {
         if (!openPizzaDetail || pizzaNew) return
@@ -69,13 +70,27 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
         }))
     }
 
+    function handleInputsChecked(property, value) {
+        const newInputsChecked = {
+            ...inputsChecked,
+            [property]: value
+        }
+        setInputsChecked(newInputsChecked)
+        const newErrorsProperty = validate(newInputsChecked)[property]
+        setErrors(prevState => ({
+            ...prevState,
+            [property]: newErrorsProperty
+        }))
+    }
+
     async function addPizza() {
         console.log('Agregando nueva pizza...')
         setProcessing(true)
 
         // Validación de datos
         console.log('Validando datos...')
-        const newErrors = validate(pizza)
+        const newErrors = validate(inputsChecked)
+
         if (Object.keys(newErrors).length) {
             console.log('Error en la validación de datos')
             setProcessing(false)
@@ -149,6 +164,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     pizzaNew={pizzaNew}
                     placeholder={'Nombre'}
                     errors={errors?.name}
+                    handleInputsChecked={handleInputsChecked}
                 />
 
                 <Box
@@ -172,6 +188,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         pizzaNew={pizzaNew}
                         placeholder={'URL de la pizza'}
                         errors={errors?.image}
+                        handleInputsChecked={handleInputsChecked}
                     />
 
                     <Divider sx={{ width: '100%'}} />
@@ -186,6 +203,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         pizzaNew={pizzaNew}
                         placeholder={'Texto de la pizza'}
                         errors={errors?.text}
+                        handleInputsChecked={handleInputsChecked}
                     />
                     
                     <Divider sx={{ width: '100%'}} />
@@ -197,6 +215,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         pizzaNew={pizzaNew}
                         property={'ingredients'}
                         errors={errors?.ingredients}
+                        handleInputsChecked={handleInputsChecked}
                     />
                     
                     <Divider sx={{ width: '100%'}} />
@@ -208,6 +227,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         pizzaNew={pizzaNew}
                         property={'price'}
                         errors={errors?.price}
+                        handleInputsChecked={handleInputsChecked}
                     />
 
                 </Box>

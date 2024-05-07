@@ -9,7 +9,7 @@ import ExtraIngredientsManager from './ExtraIngredientsManager'
 import { useState, useEffect } from 'react'
 import { getAllIngredients, getAllExtraIngredients } from '@/services/productApi'
 
-function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, property, errors, ...props }) {
+function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, property, handleInputsChecked, errors, ...props }) {
 
     const [allIngredients, setAllIngredients] = useState([])
     const [allExtraIngredients, setAllExtraIngredients] = useState([])
@@ -106,6 +106,7 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
                     pizzaNew={pizzaNew}
                     property={property}
                     errorsIngredients={errors}
+                    handleInputsChecked={handleInputsChecked}
                     {...props}
                 />
                 <Grid

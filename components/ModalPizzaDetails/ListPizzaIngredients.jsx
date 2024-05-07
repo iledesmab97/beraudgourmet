@@ -37,7 +37,7 @@ function errorStyles(error) {
     }
 }
 
-function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, errorsIngredients, ...props }) {
+function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, errorsIngredients, handleInputsChecked, ...props }) {
 
     const [ingredientsList, setIngredientsList] = useState(ingredients)
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
@@ -73,6 +73,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
         if (!isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
             if (!pizzaNew) await saveIngredients()    
             handleChangeInput({value: currentIngredientList, property})
+            handleInputsChecked(property, true)
         }
         setLoading(false)
         setEdit(prevState => !prevState)
