@@ -33,6 +33,7 @@ function UserLoged({ userLoged, handleChange, handleChangeNumberPhone, inputs, e
                 type={ userLoged && !type ? 'button' : 'text'}
                 error={ errors.name ? true : false }
                 helperText={ errors.name ? errors.name : ''}
+                placeholder='Nombre'
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position='start'>

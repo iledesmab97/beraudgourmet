@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles';
-
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu'
+
 import ContainerItems from '../../components/ContainerItems/ContainerItems'
 import OrderRewards from '../../components/OrderRewards/OrderRewards'
 import ModalChooseProduct from '../../components/ModalChooseProduct/ModalChooseProduct'
@@ -18,11 +18,12 @@ import ModalChangeEmail from '@/components/ModalChangeEmail/ModalChangeEmail'
 import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 import ModalPDF from '@/components/ModalPDF/ModalPDF'
-import Drawer from '@mui/material/Drawer'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
 import CookieAlert from '@/components/CookiesAlert/CookieAlert'
+import AlertDialog from '@/components/AlertDialog/AlertDialog'
 
+import { useState, useEffect } from 'react'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
 import useLocalData from '@/hooks/useLocalData'
@@ -107,6 +108,7 @@ function Menu () {
       <ModalUserOrders />
       <ModalPDF />
       <CookieAlert />
+      <AlertDialog />
     </Container>
   )
 }
