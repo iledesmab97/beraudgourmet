@@ -49,8 +49,9 @@ function totalValidation(sizesList) {
     for (let size in sizesList) {
         if (size === 'Nuevo Tamaño') errors[size] = 'Selecciona una opción válida'
         for (let mass in sizesList[size]) {
-            if (mass === 'Nueva Masa') errors[`${size}x${mass}`] = 'Selecciona una opción válida'
-            if (!sizesList[size][mass]) errors[`${size}x${mass}xcost`] = 'Agrega un valor'
+            if (!sizesList[size][mass]) {
+                errors[`${size}x${mass}xcost`] = 'Agrega un valor'
+            }
         }
     }
     return errors
@@ -64,7 +65,7 @@ function errorStyles(error) {
     }
 }
 
-function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId }) {
+function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId, handleInputsChecked }) {
 
     const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
     const [arrayOpenColapse, setArrayOpencopase] = useState(currentSizesList.map(() => pizzaNew || false ))
@@ -80,8 +81,6 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const selectSize = useRef()
-
-    // console.log('currentSizesList:', currentSizesList)
 
     useEffect(() => {
         getMassesList()
@@ -113,8 +112,10 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                 setErrorsCurrentSizesList(currentErrors)
                 return setLoading(false)
             }
+            setErrorsCurrentSizesList(currentErrors)
             if (pizzaNew) {
                 handleChangeInput({value: Object.fromEntries(currentSizesList), property})
+                handleInputsChecked(property, true)
             } else {
                 if (!deepEqual(sizes, Object.fromEntries(currentSizesList))) {
                     const listNewCharacteristicsOfPizza = []
@@ -370,6 +371,10 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             [mass]: cost
         }
         setCurrentSizesList(newCurrentSizesList)
+        const currentErrors = totalValidation(Object.fromEntries(newCurrentSizesList))
+        if (Object.keys(currentErrors).length) {
+            setErrorsCurrentSizesList(currentErrors)
+        }
     }
 
     return (
@@ -600,6 +605,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                                 onChange={handleChangeInputMass}
                                                                                 error={Boolean(errorInputMass.input)}
                                                                                 helperText={errorInputMass.input}
+                                                                                placeholder='Nombre'
                                                                                 InputProps={{
                                                                                     endAdornment: (
                                                                                         <IconButton
