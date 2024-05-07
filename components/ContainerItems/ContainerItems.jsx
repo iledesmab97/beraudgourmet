@@ -37,11 +37,12 @@ function ContainerItems () {
     if (products && products.pizzas) return
     getPizzasWithCosts()
       .then(data => {
-      handleAddProductsList({
-        type: 'pizzas',
-        products: data
+        const productList = data.filter(item => item.status === 'ACTIVE')
+        handleAddProductsList({
+          type: 'pizzas',
+          products: productList
+        })
       })
-    })
     if (extraIngredients && Object.keys(extraIngredients).length) return
     getExtraIngredients()
       .then(data => {

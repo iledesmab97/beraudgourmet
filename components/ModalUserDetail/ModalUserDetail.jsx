@@ -11,7 +11,11 @@ import UserData from './UserData'
 import { useState, useEffect } from 'react'
 // import useGetStoreList from '@/hooks/useGetStoreList'
 
+import { isPossiblePhoneNumber } from 'libphonenumber-js'
 // import { updateStore } from '@/services/storeApi'
+
+const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
+const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
 
 const style = {
     position: 'absolute',
@@ -32,9 +36,34 @@ const style = {
     gap: 2,
 }
 
-function ModalUserDetail({ openModal, handleOpenModal, currentUser, storeNew }) {
+function validation(user) {
+    const errors = {}
+    if ( !user.email ) errors.email = false
+    if ( user.email && !validEmail.test(user.email)) errors.email = 'Ingrese un correo válido'
+    if ( user.name && !validNombre.test(user.name) ) errors.name = 'No colocar números ni caracteres especiales'
+    if ( !(user.phoneNumber === undefined || user.phoneNumber === null) ) {
+        const [code, place, number] = user.phoneNumber.split(" ")
+        if (!code) errors.phoneNumber = 'Coloca el código del país'
+        if ( place && !isPossiblePhoneNumber(user.phoneNumber)) errors.phoneNumber = 'Número de teléfono inválido'
+        if (!isPossiblePhoneNumber(user.phoneNumber)) errors.phoneNumber = 'Número de teléfono inválido'
+    }
+    return errors
+}
+
+function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUserTable }) {
 
     const [user, setUser] = useState(currentUser)
+    const [errors, setErrors] = useState({})
+    
+    function handleChangeUser({property, value}) {
+        const newUser = {
+            ...user,
+            [property]: value
+        }
+        setUser(newUser)
+        console.log('voy a modificar el errors ahora')
+        setErrors(validation(newUser))
+    }
 
     // const { storeList, handleAddStoreList, handleUpdateStoreList, updateScheduleHoursStore } = useGetStoreList()
 
@@ -95,12 +124,12 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, storeNew }) 
                     <Typography variant='title'>
                         {user.name} Nº{user.id}
                     </Typography>
-                    <UserData 
+                    <UserData
                         user={user}
-                        // updateDataStoreState={updateDataStoreState}
+                        errors={errors}
+                        updateUserTable={updateUserTable}
+                        handleChangeUser={handleChangeUser}
                     />
-                    {/* <Divider sx={{ width: '100%'}} />
-                    <Schedules user={user} updateScheduleHoursStoreState={updateScheduleHoursStoreState}/> */}
                 </Box>
             </Box>
         </Modal>

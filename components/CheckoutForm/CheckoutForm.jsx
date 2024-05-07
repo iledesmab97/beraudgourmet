@@ -1,16 +1,5 @@
 'use client'
 
-import { useEffect, useState, useMemo, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
-import useGetProducts from '@/hooks/useGetProducts'
-import dayjs from 'dayjs'
-import { contactUs } from '@/utils/contact'
-import { descriptionOrder } from '@/utils/preparingData'
-import { updatePaymentRequest } from '@/services/checkoutApi'
-import { registerOrder } from '@/services/orderApi'
-import useLocalData from '@/hooks/useLocalData'
-
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -21,6 +10,20 @@ import Tooltip from '@mui/material/Tooltip'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+
+import { useEffect, useState, useMemo, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
+
+import useGetProducts from '@/hooks/useGetProducts'
+import useLocalData from '@/hooks/useLocalData'
+import useGetAlertDialogMessage from '@/hooks/useGetAlertDialogMessage'
+
+import dayjs from 'dayjs'
+import { contactUs } from '@/utils/contact'
+import { descriptionOrder } from '@/utils/preparingData'
+import { updatePaymentRequest } from '@/services/checkoutApi'
+import { registerOrder } from '@/services/orderApi'
 
 import styles from './CheckoutForm.module.css'
 
@@ -33,6 +36,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const router = useRouter()
     const firstTime = useRef(true)
     const { removeLocalData } = useLocalData()
+    const { openAlertDialogMessage } = useGetAlertDialogMessage()
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -140,8 +144,15 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
         event.preventDefault()
 
         // Confirmar los datos del usuario
-        if(!user.numberPhone)
-        return alert('Debes agregar un número telefónico antes de poder realizar un pago')
+        if(!user.numberPhone) {
+            return openAlertDialogMessage({
+                title: 'Alerta',
+                text: 'Debes agregar un número telefónico antes de poder realizar un pago',
+                buttonAction: {
+                    openModal: 'changePhoneNumber'
+                }
+            })
+        }
 
         if (!stripe || !elements) return 
         setIsLoading(true)
