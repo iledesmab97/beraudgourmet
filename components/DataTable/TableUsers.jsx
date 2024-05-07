@@ -50,8 +50,6 @@ function TableUsers({ users, handleChangeUsers }) {
     const openMenu = Boolean(anchorElMenu)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
 
-    console.log('users:', users)
-
     function closeMenu() {
         setAnchorElMenu(null)
     }
