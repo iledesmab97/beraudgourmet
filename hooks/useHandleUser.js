@@ -211,7 +211,7 @@ function useHandleUser() {
         // if Verify is true
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
         const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message !== 'se han actuliazado exitosamente' ) {
+        if ( response.message ) {
             return console.log(response.message)
         }
         setInputsEdit(initialInputsEdit)
@@ -240,7 +240,7 @@ function useHandleUser() {
         // if Verify is true
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'email', value: inputsEdit.email })
         const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message !== 'se han actuliazado exitosamente' ) {
+        if ( response.message ) {
             return console.log(response.message)
         }
         handleUpdateUser({
@@ -277,7 +277,7 @@ function useHandleUser() {
         }))
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
         const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message !== 'se han actuliazado exitosamente') return console.log(response.message)
+        if ( response.message ) return console.log(response.message)
         handleUpdateUser(inputs)
         console.log(response.message)
     }

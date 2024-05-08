@@ -50,7 +50,9 @@ function DataPanel({ toolSelected }) {
             })
             .catch(error => alert(error.message))
         getAllUsers()
-            .then(data => setUsers(data))
+            .then(data => {
+                setUsers(data)
+            })
     }, [])
 
 

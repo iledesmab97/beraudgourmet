@@ -36,7 +36,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const router = useRouter()
     const firstTime = useRef(true)
     const { removeLocalData } = useLocalData()
-    const { openAlertDialogMessage } = useGetAlertDialogMessage()
+    const { openAlertDialogMessage } = useGetAlertDialogMessage({ type: 'phoneMissing'})
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -145,13 +145,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
 
         // Confirmar los datos del usuario
         if(!user.numberPhone) {
-            return openAlertDialogMessage({
-                title: 'Alerta',
-                text: 'Debes agregar un número telefónico antes de poder realizar un pago',
-                buttonAction: {
-                    openModal: 'changePhoneNumber'
-                }
-            })
+            return openAlertDialogMessage()
         }
 
         if (!stripe || !elements) return 
