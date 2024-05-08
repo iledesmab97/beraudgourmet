@@ -3,6 +3,10 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
@@ -10,10 +14,11 @@ import EditIcon from '@mui/icons-material/Edit'
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 import InputPhoneNumber from '@/components/InputPhoneNumber/InputPhoneNumber'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { updateAccount } from '@/services/userApi'
+import { getAllRoles } from '@/services/rolesApi'
 
 const RolsES = {
     client: 'Cliente',
@@ -27,7 +32,21 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
 
     const [editingNumberPhone, setEditingNumberPhone] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [roleList, setRoleList] = useState([])
+    const [editRole, setEditRole] = useState(false)
+    const [currentRole, setCurrentRole] = useState( roleList.length ? user.Role : '')
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+
+    useEffect(() => {
+        getAllRoles()
+            .then(data => {
+                setRoleList(data.filter(role => role.id !== 1))
+            })
+    }, [])
+
+    useEffect(() => {
+        setCurrentRole(user.Role)
+    }, [roleList])
 
     function handleChangeNumberPhone(newNumberPhone) {
         handleChangeUser({property: 'phoneNumber', value: newNumberPhone})
@@ -66,6 +85,44 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
             setEditingNumberPhone(prevState => !prevState)
         }
         setLoading(false)
+    }
+
+    async function handleChangeEditRole() {
+        setLoading(true)
+        if (!editRole) {
+            setLoading(false)
+            return setEditRole(prevState => !prevState)
+        }
+        const newRole = roleList.find(role => role.name === currentRole)
+        console.log('Eviando datos...')
+        const response = await updateAccount( user.id, {property: 'RoleId', value: newRole.id})
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            updateUserTable({
+                id: user.id,
+                property: 'Role',
+                value: newRole.name
+            })
+            console.log('Información guardada con exito')
+        }
+        setLoading(false)
+        setEditRole(prevState => !prevState)
+    }
+
+    function handleChangeSelectRole(event) {
+        setCurrentRole(event.target.value)
     }
 
     return (
@@ -161,8 +218,50 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                 <Grid item xs={3}>
                     <Typography>Rol:</Typography>
                 </Grid>
-                <Grid item xs={5} >
-                    <Typography align='right'>{RolsES[user.Role]}</Typography>
+                <Grid
+                    item
+                    xs={5}
+                    sx={{
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        gap: '16px'
+                    }}
+                >
+                    {
+                        roleList.length ? (
+                            <>
+                                <FormControl>
+                                    <InputLabel>Rol</InputLabel>
+                                    <Select
+                                        value={ currentRole }
+                                        label={'Rol'}
+                                        onChange={handleChangeSelectRole}
+                                        disabled={!editRole}
+                                    >
+                                        {
+                                            roleList.map(role => (
+                                                <MenuItem key={role.name + role.id} value={role.name}>{RolsES[role.name]}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
+                                <IconButton
+                                    onClick={handleChangeEditRole}
+                                    disabled={loading}
+                                >
+                                    {
+                                        editRole ? (
+                                            <CheckIcon />
+                                        ) : (
+                                            <EditIcon />
+                                        )
+                                    }
+                                </IconButton>
+                            </>
+                        ) : null
+                    }
                 </Grid>
             </Grid>
         </Grid>
