@@ -19,7 +19,7 @@ import ModalCheckoutForm from '@/components/ModalCheckoutForm/ModalCheckoutForm'
 import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 import ModalPDF from '@/components/ModalPDF/ModalPDF'
 import CookieAlert from '@/components/CookiesAlert/CookieAlert'
-import AlertDialog from '@/components/AlertDialog/AlertDialog'
+import AlertPhoneMissing from '@/components/AlertPhoneMissing/AlertPhoneMissing'
 
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
@@ -108,7 +108,7 @@ function Menu () {
       <ModalUserOrders />
       <ModalPDF />
       <CookieAlert />
-      <AlertDialog />
+      <AlertPhoneMissing />
     </Container>
   )
 }

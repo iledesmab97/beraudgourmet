@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
@@ -31,22 +31,28 @@ function validation(input, lastInput) {
 function errorStyles(error) {
     if (!error) return {}
     return {
-        bgcolor: '#d32f2f',
-        color:'#FFFDFF'
+        '&.Mui-disabled': {
+            bgcolor: '#d32f2f',
+            color:'#FFFDFF',
+        }
     }
 }
 
-function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, ...props }) {
+function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, handleInputsChecked, ...props }) {
 
     const [edit, setEdit] = useState( pizzaNew || false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
-    const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image)
+    const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image ? pizza.image : pizza.image + " ")
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const fileInput = useRef()
+
+    useEffect(() => {
+        setUrlCurrentPiza(pizza.image)
+    }, [pizza.image])
 
     function handleClick() {
         setEdit(prevState => !prevState)
@@ -72,6 +78,7 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, ...p
         }
         console.log('Datos validados')
         if (pizzaNew) {
+            handleInputsChecked(property, true)
             return handleChangeInput({value: url, property})
         }
         console.log('Guardando los datos...')
@@ -154,18 +161,24 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, ...p
                         right: '0px'
                     }}
                 >
-                    <IconButton
-                        onClick={handleClick}
-                        disabled={loading}
-                    >
-                        {
-                            edit ? (
-                                <CheckIcon />
-                            ) : (
-                                <EditIcon />
-                            )
-                        }
-                    </IconButton>
+                    {
+                        !pizzaNew ? (
+                            <IconButton
+                                onClick={handleClick}
+                                disabled={loading}
+                            >
+                                {
+                                    edit ? (
+                                        <CheckIcon />
+                                    ) : (
+                                        <EditIcon />
+                                    )
+                                }
+                            </IconButton>
+                        ) : (
+                            null
+                        )
+                    }
                 </Box>
             </Box>
             {
@@ -192,10 +205,16 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, ...p
                                         endAdornment: (
                                             <IconButton
                                                 onClick={saveImage}
-                                                disabled={Boolean(error) || loading}
+                                                disabled={Boolean(error) || loading || urlCurrentPizza === url }
                                                 sx={errorStyles(errors)}
                                             >
-                                                <CheckIcon />
+                                                {
+                                                    edit ? (
+                                                        <CheckIcon />
+                                                    ) : (
+                                                        <EditIcon />
+                                                    )
+                                                }
                                             </IconButton>
                                         )
                                     }}

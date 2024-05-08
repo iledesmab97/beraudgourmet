@@ -1,19 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    open: false,
+    phoneMissing: {
+        name: 'phoneMissing',
+        open: false
+    },
 }
 
 export const alertDialogMessageSlice = createSlice({
     name: 'alertDialogMessage',
     initialState,
     reducers: {
-        toggleOpen: (state, action) => {
-            return action.payload
+        openDialogMessage: (state, action) => {
+            const dialogMessage = action.payload
+            return {
+                ...state,
+                [dialogMessage.name]: {
+                    ...dialogMessage,
+                    open: true
+                }
+            }
         },
+        closeDialogMessage: (state, action) => {
+            const dialogMessage = action.payload
+            return {
+                ...state,
+                [dialogMessage.name]: {
+                    ...dialogMessage,
+                    open: false
+                }
+            }
+        }
     }
 })
 
 export default alertDialogMessageSlice.reducer
 
-export const { toggleOpen } = alertDialogMessageSlice.actions
+export const { openDialogMessage, closeDialogMessage } = alertDialogMessageSlice.actions
