@@ -1,29 +1,18 @@
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { toggleOpen } from '@/stores/alertDialogMessage/slice'
+import { openDialogMessage, closeDialogMessage } from '@/stores/alertDialogMessage/slice'
 
-export default function useGetAlertDialogMessage() {
+export default function useGetAlertDialogMessage({ type }) {
 
-    const alertDialogMessage = useAppSelector(state => state.alertDialogMessage)
+    const alertDialogMessage = useAppSelector(state => state.alertDialogMessage[type])
     const dispatch = useAppDispatch()
 
-    function handleToggleAlertDialogMessage(value) {
-        dispatch(toggleOpen(value))
-    }
-
-    function openAlertDialogMessage(dialog) {
-        const {title, text, buttonAction} = dialog
-        const dialogMessage = {
-            open: true,
-            title,
-            text,
-            buttonAction
-        }
-        dispatch(toggleOpen(dialogMessage))
+    function openAlertDialogMessage() {
+        dispatch(openDialogMessage(alertDialogMessage))
     }
 
     function closeAlertDialogMessage() {
-        dispatch(toggleOpen({open: false}))
+        dispatch(closeDialogMessage(alertDialogMessage))
     }
-
-    return { alertDialogMessage, handleToggleAlertDialogMessage, openAlertDialogMessage, closeAlertDialogMessage }
+    
+    return { alertDialogMessage, openAlertDialogMessage, closeAlertDialogMessage }
 } 
