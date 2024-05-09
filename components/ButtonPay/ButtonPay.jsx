@@ -8,7 +8,7 @@ import useGetUser from '@/hooks/useGetUser'
 
 import Button from '@mui/material/Button'
 
-import { isOpen, getTimeLimitTodaySchedue, dateInRange } from '@/utils/hours'
+import { getTimeLimitTodaySchedue, dateInRange } from '@/utils/hours'
 
 function ButtonPay() {
 
@@ -20,7 +20,7 @@ function ButtonPay() {
 
     useEffect(() => {
         const { minHour, maxHour } = getTimeLimitTodaySchedue(place)
-        const currentDay = place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime
+        const currentDay = place.deadLine ? place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime : null
         if ( !orders.length || !user.email || !place.closerStore || !dateInRange({minHour, maxHour, currentDay})) {
             if (canPay) return setCanPay(false)
             return
