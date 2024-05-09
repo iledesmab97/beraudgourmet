@@ -83,8 +83,19 @@ export function getTimeLimitTodaySchedue(place) {
 export function dateInRange({minHour, maxHour, currentDay}) {
     const currentDateObject = currentDay === null ? dayjs() : typeof currentDay === 'string' ? dateStringToDate(currentDay) : currentDay
     const minTimeObject = typeof minHour === 'string' ? timeStringToObject(minDate) : minHour
-    const minDateObject = minTimeObject.date(currentDateObject.format('D')).month(Number(currentDateObject.format('M')) - 1).year(currentDateObject.format('YYYY'))
     const maxTimeObject = typeof maxHour === 'string' ? timeStringToObject(maxDate) : maxHour
+    
     const maxDateObject = maxTimeObject.date(currentDateObject.format('D')).month(Number(currentDateObject.format('M')) - 1).year(currentDateObject.format('YYYY'))
+
+    let minDateObject
+
+    if (dayjs().isSame(currentDateObject, 'day')) {
+        minDateObject = dayjs().add(30, 'minute')
+    } else if(dayjs().isBefore(currentDateObject, 'day')) {
+        minDateObject = minTimeObject.date(currentDateObject.format('D')).month(Number(currentDateObject.format('M')) - 1).year(currentDateObject.format('YYYY'))
+    } else {
+        return false
+    }
+    
     return currentDateObject.isAfter(minDateObject) && currentDateObject.isBefore(maxDateObject)
 }
