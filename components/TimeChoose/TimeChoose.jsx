@@ -116,7 +116,7 @@ export default function TimePickerViewRenderers() {
                     value={hour}
                     onChange={handleHour}
                     disablePast={ place.deadLine ? dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') : false}
-                    minTime={limitHours.minHour}
+                    minTime={ place.deadLine && dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(30, 'minute') : limitHours.minHour.add(30, 'minute')}
                     maxTime={limitHours.maxHour}
                 />
             </DemoContainer>

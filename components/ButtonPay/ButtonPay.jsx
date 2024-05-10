@@ -8,6 +8,8 @@ import useGetUser from '@/hooks/useGetUser'
 
 import Button from '@mui/material/Button'
 
+import { getTimeLimitTodaySchedue, dateInRange } from '@/utils/hours'
+
 function ButtonPay() {
 
     const { handleOpenModal } = useGetModal({modalType: 'pay'})
@@ -17,7 +19,9 @@ function ButtonPay() {
     const { user } = useGetUser()
 
     useEffect(() => {
-        if ( !orders.length || !user.email || !place.closerStore ) {
+        const { minHour, maxHour } = getTimeLimitTodaySchedue(place)
+        const currentDay = place.deadLine ? place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime : null
+        if ( !orders.length || !user.email || !place.closerStore || !dateInRange({minHour, maxHour, currentDay})) {
             if (canPay) return setCanPay(false)
             return
         }
