@@ -27,11 +27,11 @@ const typeDelivery = {
     home: 'deliverySchedule'
 }
 
-export default function TimePickerViewRenderers() {
+export default function TimeChoose() {
 
-    const [hour, setHour] = useState(dayjs().add(30, 'minute'))
-    const [textHour, setTextHour] = useState('')
     const {place, handleDeadLine} = useGetPlace()
+    const [hour, setHour] = useState( place && place.deadLine ? timeStringToObject(place.deadLine.time.realTime) : dayjs().add(30, 'minute'))
+    const [textHour, setTextHour] = useState('')
     const [today, setToday] = useState(true)
     const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue())
 
@@ -116,7 +116,7 @@ export default function TimePickerViewRenderers() {
                     value={hour}
                     onChange={handleHour}
                     disablePast={ place.deadLine ? dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') : false}
-                    minTime={ place.deadLine && dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(30, 'minute') : limitHours.minHour.add(30, 'minute')}
+                    minTime={ place.deadLine && dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(29, 'minute') : limitHours.minHour.add(30, 'minute')}
                     maxTime={limitHours.maxHour}
                 />
             </DemoContainer>
