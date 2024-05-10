@@ -20,7 +20,7 @@ function useLocalData() {
     useEffect(() => {
         if(!storeListArray.length) return
         const placeLocal = getLocalData('place')
-        if (firstTime.current) {
+        if (firstTime.current && placeLocal) {
             firstTime.current = false
             const closerStore = storeListArray.find(store => store.id === placeLocal.closerStore)
             if (!Object.keys(place).length && placeLocal && closerStore) {
