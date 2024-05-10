@@ -20,6 +20,7 @@ import ModalUserOrders from '@/components/ModalUserOrders/ModalUserOrders'
 import ModalPDF from '@/components/ModalPDF/ModalPDF'
 import CookieAlert from '@/components/CookiesAlert/CookieAlert'
 import AlertPhoneMissing from '@/components/AlertPhoneMissing/AlertPhoneMissing'
+import ShoppingCartButton from '@/components/ShoppingCartButton/ShoppingCartButton'
 
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
@@ -109,6 +110,11 @@ function Menu () {
       <ModalPDF />
       <CookieAlert />
       <AlertPhoneMissing />
+      {
+        totalMatches === 'true' ? (
+          <ShoppingCartButton toggleOpenOrderRewards={toggleOpenOrderRewards} />
+        ) : null
+      }
     </Container>
   )
 }
