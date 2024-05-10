@@ -135,3 +135,19 @@ export function deepEqual(value1, value2) {
         return true
     }
 }
+
+export function listStores(storeList) {
+    const arrayStoreList = []
+    if (Object.keys(storeList).length) {
+        for (let city in storeList) {
+            storeList[city].stores.forEach(store => {
+                const newStore = {
+                    ...store,
+                    city
+                }
+                arrayStoreList.push(newStore)
+            })
+        }
+    }
+    return arrayStoreList
+}
