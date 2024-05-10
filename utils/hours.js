@@ -90,7 +90,7 @@ export function dateInRange({minHour, maxHour, currentDay}) {
     let minDateObject
 
     if (dayjs().isSame(currentDateObject, 'day')) {
-        minDateObject = dayjs().add(30, 'minute')
+        minDateObject = dayjs().add(29, 'minute')
     } else if(dayjs().isBefore(currentDateObject, 'day')) {
         minDateObject = minTimeObject.date(currentDateObject.format('D')).month(Number(currentDateObject.format('M')) - 1).year(currentDateObject.format('YYYY'))
     } else {
