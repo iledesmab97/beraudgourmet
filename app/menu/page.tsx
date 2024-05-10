@@ -110,7 +110,11 @@ function Menu () {
       <ModalPDF />
       <CookieAlert />
       <AlertPhoneMissing />
-      <ShoppingCartButton toggleOpenOrderRewards={toggleOpenOrderRewards} />
+      {
+        totalMatches === 'true' ? (
+          <ShoppingCartButton toggleOpenOrderRewards={toggleOpenOrderRewards} />
+        ) : null
+      }
     </Container>
   )
 }
