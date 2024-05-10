@@ -1,24 +1,28 @@
 'use client'
 
-import { phoneNumber, text1 } from '@/utils/contact'
-import { usePathname } from 'next/navigation'
-
 import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import Link from '@mui/material/Link'
+
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
+
 import whatsappImage from '@/public/images/homeimg/logos/whatsapp.svg'
+
+import { usePathname } from 'next/navigation'
+import useGetOrders from '@/hooks/useGetOrders'
+
+import { phoneNumber, text1 } from '@/utils/contact'
 
 function WhatsappButton() {
 
     const pathname = usePathname()
+    const { orders } = useGetOrders()
 
-    if (pathname === '/admin') return null
+    if (pathname === '/admin' || (orders.length)) return null
 
     return (
         <Fab
-            // color='primary'
             sx={{
                 position: 'fixed',
                 bottom: '20px',
