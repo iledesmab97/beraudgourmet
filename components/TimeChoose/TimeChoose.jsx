@@ -10,7 +10,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useState, useEffect } from 'react'
 import useGetPlace from '@/hooks/useGetPlace'
 
-import { todaysScheduleIs, timeStringToObject } from '@/utils/hours'
+import { timeStringToObject, dateInRange, getTimeLimitTodaySchedue } from '@/utils/hours'
 
 function differenceTime(now, later) {
     let minutes = later.format('m') - now.format('m')
@@ -22,22 +22,18 @@ function differenceTime(now, later) {
     return [hours, minutes]
 }
 
-const typeDelivery = {
-    store: 'pickupSchedule',
-    home: 'deliverySchedule'
-}
-
 export default function TimeChoose() {
 
     const {place, handleDeadLine} = useGetPlace()
     const [hour, setHour] = useState( place && place.deadLine ? timeStringToObject(place.deadLine.time.realTime) : dayjs().add(30, 'minute'))
     const [textHour, setTextHour] = useState('')
     const [today, setToday] = useState(true)
-    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue())
+    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue(place))
+    const [timeWithinRange, setTimeWithinRange] = useState(dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, currentDay: hour}))
 
     useEffect(() => {
         if (!place.deadLine) return
-        setLimitHours(getTimeLimitTodaySchedue())
+        setLimitHours(getTimeLimitTodaySchedue(place))
     }, [place])
 
     useEffect(() => {
@@ -81,24 +77,12 @@ export default function TimeChoose() {
         })
     }, [hour])
 
+    useEffect(() => {
+        setTimeWithinRange(dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, currentDay: hour}))
+    }, [hour, limitHours])
+
     function handleHour(event) {
         setHour(event)
-    }
-
-    function getTimeLimitTodaySchedue() {
-        if (!place.deadLine) return {
-            minHour: dayjs(),
-            maxHour: dayjs()
-        }
-        const scheduleList = place.closerStore[typeDelivery[place.typeDelivery.name]][typeDelivery[place.typeDelivery.name]]
-        const orderDay = place.deadLine.date.realDate
-        const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay)
-        const minHour = scheduleOfDay.hours.split(' - ')[0]
-        const maxHour = scheduleOfDay.hours.split(' - ')[1]
-        return {
-            minHour: timeStringToObject(minHour),
-            maxHour: timeStringToObject(maxHour)
-        }
     }
 
     return (
@@ -109,7 +93,7 @@ export default function TimeChoose() {
                     label="Hora"
                     slotProps={{
                         textField: {
-                          helperText: today ? textHour : '',
+                          helperText: timeWithinRange ? today ? textHour : '' : `Fuera del horario de ${place.typeDelivery.totalName.toLowerCase()}`,
                           size:'small'
                         }
                     }}
