@@ -33,16 +33,19 @@ function AdminPlace() {
                 if (!userLoged) return
                 handleAddUser(userLoged)
             })
-        if (products && products.pizzas) return
-        getPizzasWithCosts().then(data => {
-            handleAddProductsList({
-            type: 'pizzas',
-            products: data
+        if (!(products && products.pizzas)) {
+            getPizzasWithCosts().then(data => {
+                handleAddProductsList({
+                type: 'pizzas',
+                products: data
+                })
             })
-        })
-        getAllStoresWithSchedules().then(storeList => {
-            handleAddStoreList(storeList)
-        })
+        }
+        if (!(storeList && Object.keys(storeList).length)) {
+            getAllStoresWithSchedules().then(storeList => {
+                handleAddStoreList(storeList)
+            })
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
