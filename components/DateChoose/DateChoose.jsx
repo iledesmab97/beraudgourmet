@@ -96,7 +96,7 @@ export default function DateChoose() {
           // slots={{ textField: 'input'}}
           slotProps={{
             textField: {
-              helperText: textDate,
+              helperText: date.isBefore(dayjs(), 'day') ? 'La fecha de entrega debe ser mayor a la actual' : textDate,
               size:'small'
             }
           }}
