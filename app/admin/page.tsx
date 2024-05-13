@@ -40,9 +40,14 @@ function AdminPlace() {
             products: data
             })
         })
-        getAllStoresWithSchedules().then(storeList => {
-            handleAddStoreList(storeList)
-        })
+        console.log('storeList:', storeList)
+        console.log('Object.keys(storeList).length:', Object.keys(storeList).length)
+        if (!(storeList && Object.keys(storeList).length)) {
+            getAllStoresWithSchedules().then(storeList => {
+                console.log('solicitando la lista de tiendas')
+                handleAddStoreList(storeList)
+            })
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
