@@ -6,6 +6,7 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
+import Paper from '@mui/material/Paper'
 
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -114,8 +115,17 @@ function TableUsers({ users, handleChangeUsers }) {
     }
 
     return (
-        <Box>
-            <TableContainer>
+        <Box
+            sx={{
+                height: '70%'
+            }}
+        >
+            <TableContainer
+                component={Paper}
+                sx={{
+                    height: '100%'
+                }}
+            >
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -125,6 +135,7 @@ function TableUsers({ users, handleChangeUsers }) {
                             <TableCell>email</TableCell>
                             <TableCell>Teléfono</TableCell>
                             <TableCell>Rol</TableCell>
+                            <TableCell>Acción</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

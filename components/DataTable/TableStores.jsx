@@ -6,6 +6,7 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
+import Paper from '@mui/material/Paper'
 
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -69,8 +70,14 @@ function TableStores() {
     }
 
     return (
-        <Box>
-            <TableContainer>
+        <Box
+            sx={{
+                height: '70%'
+            }}
+        >
+            <TableContainer
+                component={Paper}
+            >
                 <Table>
                     <TableHead>
                         <TableRow>
