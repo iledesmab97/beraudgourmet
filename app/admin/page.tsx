@@ -33,18 +33,16 @@ function AdminPlace() {
                 if (!userLoged) return
                 handleAddUser(userLoged)
             })
-        if (products && products.pizzas) return
-        getPizzasWithCosts().then(data => {
-            handleAddProductsList({
-            type: 'pizzas',
-            products: data
+        if (!(products && products.pizzas)) {
+            getPizzasWithCosts().then(data => {
+                handleAddProductsList({
+                type: 'pizzas',
+                products: data
+                })
             })
-        })
-        console.log('storeList:', storeList)
-        console.log('Object.keys(storeList).length:', Object.keys(storeList).length)
+        }
         if (!(storeList && Object.keys(storeList).length)) {
             getAllStoresWithSchedules().then(storeList => {
-                console.log('solicitando la lista de tiendas')
                 handleAddStoreList(storeList)
             })
         }
