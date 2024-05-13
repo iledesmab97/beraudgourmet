@@ -4,10 +4,14 @@ import IconButton from '@mui/material/IconButton'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 
 import useGetOrders from '@/hooks/useGetOrders'
+import useCanPay from '@/hooks/useCanPay'
+import useGetModal from '@/hooks/useGetModal'
 
 function ShoppingCartButton({ toggleOpenOrderRewards }) {
 
     const { orders } = useGetOrders()
+    const { canPay } = useCanPay()
+    const { handleOpenModal } = useGetModal({modalType: 'pay'})
 
     function openOrderRegards() {
         toggleOpenOrderRewards(true)
@@ -26,7 +30,7 @@ function ShoppingCartButton({ toggleOpenOrderRewards }) {
                         }}
                     >
                         <IconButton
-                            onClick={openOrderRegards}
+                            onClick={() => { canPay ? handleOpenModal('pay') : openOrderRegards()}}
                             sx={{
                                 color: 'rgba(255, 255, 255, 1)',
                                 '&:hover': {
