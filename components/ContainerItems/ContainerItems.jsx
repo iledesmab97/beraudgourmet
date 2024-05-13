@@ -34,20 +34,22 @@ function ContainerItems () {
   const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
 
   useEffect(() => {
-    if (products && products.pizzas) return
-    getPizzasWithCosts()
-      .then(data => {
-        const productList = data.filter(item => item.status === 'ACTIVE')
-        handleAddProductsList({
-          type: 'pizzas',
-          products: productList
+    if (!(products && products.pizzas)) {
+      getPizzasWithCosts()
+        .then(data => {
+          const productList = data.filter(item => item.status === 'ACTIVE')
+          handleAddProductsList({
+            type: 'pizzas',
+            products: productList
+          })
         })
-      })
-    if (extraIngredients && Object.keys(extraIngredients).length) return
-    getExtraIngredients()
-      .then(data => {
-        handleAddExtraIngredinetsList({ extraIngredientsList: data })
-      })
+    }
+    if (!(extraIngredients && Object.keys(extraIngredients).length)) {
+      getExtraIngredients()
+        .then(data => {
+          handleAddExtraIngredinetsList({ extraIngredientsList: data })
+        })
+    }
   }, [])
 
   return (
