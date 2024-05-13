@@ -7,6 +7,9 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch';
 
 import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
@@ -87,7 +90,7 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
         setLoading(false)
     }
 
-    async function handleChangeEditRole() {
+    async function handleChangeEditRole({property}) {
         setLoading(true)
         if (!editRole) {
             setLoading(false)
@@ -95,7 +98,7 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
         }
         const newRole = roleList.find(role => role.name === currentRole)
         console.log('Eviando datos...')
-        const response = await updateAccount( user.id, {property: 'RoleId', value: newRole.id})
+        const response = await updateAccount( user.id, {property, value: newRole.id})
         let text, status
         if (response.message) {
             text = response.message
@@ -125,6 +128,34 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
         setCurrentRole(event.target.value)
     }
 
+    async function updateUser({propertyBack, propertyFront, value}) {
+        setLoading(true)
+        console.log('Eviando datos...')
+        const response = await updateAccount( user.id, {property: propertyBack, value})
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            updateUserTable({
+                id: user.id,
+                property: propertyFront,
+                value
+            })
+            console.log('Información guardada con exito')
+        }
+        setLoading(false)
+    }
+
     return (
         <Grid
             container
@@ -140,7 +171,14 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                 <Grid item xs={3}>
                     <Typography>Nombre:</Typography>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid
+                    item
+                    xs={5}
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end'
+                    }}
+                >
                     <InputUpdate
                         value={user.name}
                         updateProperty={updateAccount}
@@ -156,7 +194,14 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                 <Grid item xs={3}>
                     <Typography>Email:</Typography>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid
+                    item
+                    xs={5}
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end'
+                    }}
+                >
                     <InputUpdate
                         value={user.email}
                         updateProperty={updateAccount}
@@ -194,7 +239,6 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                                     }
                                 </IconButton>
                             ),
-                            // readOnly: !editingNumberPhone ? true : false,
                             disabled: !editingNumberPhone
                         }}
                     />
@@ -207,8 +251,30 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                 <Grid item xs={3}>
                     <Typography>Verificado:</Typography>
                 </Grid>
-                <Grid item xs={5}>
-                    <Typography align='right'>{user.verified ? 'Sí' : 'No'}</Typography>
+                <Grid
+                    item
+                    xs={5}
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end'
+                    }}
+                >
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={user.verified}
+                                    onChange={() => {updateUser({propertyBack: 'verified', propertyFront: 'verified', value: !user.verified})}}
+                                />
+                            }
+                            label={user.verified ? 'Sí' : 'No'}
+                            disabled={loading}
+                            sx={{
+                                m: '0px',
+                                width: 'fit-content'
+                            }}
+                        />
+                    </FormGroup>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -248,7 +314,7 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                                     </Select>
                                 </FormControl>
                                 <IconButton
-                                    onClick={handleChangeEditRole}
+                                    onClick={() => {handleChangeEditRole({property: 'RoleId'})}}
                                     disabled={loading}
                                 >
                                     {
