@@ -8,15 +8,25 @@ import ListItemText from '@mui/material/ListItemText'
 
 import StarBorder from '@mui/icons-material/StarBorder'
 import ListIcon from '@mui/icons-material/List';
-// import InboxIcon from '@mui/icons-material/MoveToInbox'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
-import { useState } from 'react'
+import OrdersTablet from '@/components/ModalUserOrders/OrdersTablet'
+import MakeOrder from './MakeOrder'
 
-function OrdersUser() {
+import { useEffect, useState } from 'react'
 
-    const [openCollaps, setOpenCollaps] = useState([false])
+import { getAllOrders } from '@/services/orderApi'
+
+function OrdersUser({ user }) {
+
+    const [openCollaps, setOpenCollaps] = useState([false, false])
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        getAllOrders(user.id).then( data => setOrders(data) )
+    }, [])
 
     function handleOpenCollaps(index) {
         const newOpenCollaps = [...openCollaps]
@@ -50,7 +60,23 @@ function OrdersUser() {
                         { openCollaps[0] ? <ExpandLess /> : <ExpandMore /> }
                     </ListItemButton>
                     <Collapse in={openCollaps[0]} timeout='auto' >
-                        <h1>aca viene una tabla con todas las ordenes del usuario</h1>
+                        <OrdersTablet orders={orders} />
+                    </Collapse>
+                    <ListItemButton onClick={() => {handleOpenCollaps(1)}}>
+                        <ListItemIcon>
+                            <AddShoppingCartIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={
+                                <Typography variant='title'>
+                                    Agregar nueva Orden
+                                </Typography>
+                            }
+                        />
+                        { openCollaps[1] ? <ExpandLess /> : <ExpandMore /> }
+                    </ListItemButton>
+                    <Collapse in={openCollaps[1]} timeout='auto' >
+                        <MakeOrder />
                     </Collapse>
                 </List>
             </Grid>
