@@ -65,7 +65,7 @@ function MakeOrder() {
                 const newExtraIngredient = extraIngredientsList.find(totalExtraIngredient => totalExtraIngredient.name === extraIngredient )
                 newExtraIngredientsSelected.push({
                     ...newExtraIngredient,
-                    count: 0
+                    count: 1
                 })
             }
         })
@@ -73,11 +73,12 @@ function MakeOrder() {
     }
 
     function handleChangeQuantityExtraIngredientsSelected(event, index) {
-        const { value } = event.target
+        const number = Number(event.target.value)
+        if (Number.isNaN(number) || number < 1) return
         const newExtraIngredientsSelected = [...extraIngredientsSelected]
         newExtraIngredientsSelected[index] = {
             ...newExtraIngredientsSelected[index],
-            count: value
+            count: number
         }
         setExtraIngredientsSelected(newExtraIngredientsSelected)
     }
