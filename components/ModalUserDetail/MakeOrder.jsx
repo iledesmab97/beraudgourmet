@@ -13,15 +13,21 @@ function MakeOrder() {
     const { products } = useGetProducts({ type: 'pizzas'})
     const [ pizzas, setPizzas ] = useState( products ? products : [])
     const [pizzaSelected, setPizzaSelected] = useState(null)
+    const [ingredinetsOut, setIngredientsOut] = useState([])
 
     useEffect(() => {
         if (!products) return
         setPizzas(products)
     }, [products])
 
-    function handleChangeSelect(event) {
+    function handleChangeSelectPizza(event) {
         const pizza = pizzas.find(pizza => pizza.name === event.target.value)
         setPizzaSelected(pizza)
+    }
+
+    function handleChangePizzaIngredients(event) {
+        const { value } = event.target
+        setIngredientsOut(value)
     }
 
     return (
@@ -35,7 +41,7 @@ function MakeOrder() {
                     <Select
                         value={ pizzaSelected ? pizzaSelected.name : ''}
                         label='Pizza'
-                        onChange={handleChangeSelect}
+                        onChange={handleChangeSelectPizza}
                     >
                         {
                             pizzas.filter(pizza => pizza.status === 'ACTIVE').map(pizza => (
@@ -45,9 +51,28 @@ function MakeOrder() {
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item>
-                <Typography>Ingredientes fuera</Typography>
-            </Grid>
+            {
+                pizzaSelected ? (
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel>Ingredientes fuera</InputLabel>
+                            <Select
+                                multiple
+                                value={ ingredinetsOut }
+                                label='Ingredientes fuera'
+                                onChange={handleChangePizzaIngredients}
+                            >
+                                {
+                                    pizzaSelected.ingredients.map(ingredient => (
+                                        <MenuItem key={ingredient} value={ingredient} >{ingredient}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                ) : null
+            }
+            
             <Grid item>
                 <Typography>Ingredientes extra</Typography>
             </Grid>
