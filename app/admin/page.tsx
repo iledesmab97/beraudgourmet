@@ -13,9 +13,10 @@ import Box from '@mui/material/Box'
 import useGetUser from '@/hooks/useGetUser';
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetStoreList from '@/hooks/useGetStoreList'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
 import { lookingForUserLoged } from '@/services/userApi'
-import { getPizzasWithCosts } from '@/services/productApi'
+import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 import { getAllStoresWithSchedules } from '@/services/storeApi'
 
 import styles from './page.module.css'
@@ -26,6 +27,7 @@ function AdminPlace() {
     const { handleAddUser } = useGetUser()
     const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
     const { storeList, handleAddStoreList } = useGetStoreList()
+    const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
 
     useEffect(() => {
         lookingForUserLoged()
@@ -44,6 +46,11 @@ function AdminPlace() {
         if (!(storeList && Object.keys(storeList).length)) {
             getAllStoresWithSchedules().then(storeList => {
                 handleAddStoreList(storeList)
+            })
+        }
+        if (!Object.keys(extraIngredients).length) {
+            getExtraIngredients().then(data => {
+                handleAddExtraIngredinetsList({ extraIngredientsList: data })
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
