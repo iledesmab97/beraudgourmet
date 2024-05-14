@@ -72,6 +72,16 @@ function MakeOrder() {
         setExtraIngredientsSelected(newExtraIngredientsSelected)
     }
 
+    function handleChangeQuantityExtraIngredientsSelected(event, index) {
+        const { value } = event.target
+        const newExtraIngredientsSelected = [...extraIngredientsSelected]
+        newExtraIngredientsSelected[index] = {
+            ...newExtraIngredientsSelected[index],
+            count: value
+        }
+        setExtraIngredientsSelected(newExtraIngredientsSelected)
+    }
+
     return (
         <Grid
             container
@@ -135,19 +145,54 @@ function MakeOrder() {
                 </Grid>
                 {
                     extraIngredientsSelected.length ? (
-                        <Grid item xs={3}>
+                        <Grid item xs={6}>
                             <List>
                                 {
-                                    extraIngredientsSelected.map(extraIngredient => (
+                                    extraIngredientsSelected.map((extraIngredient, index) => (
                                         <ListItem key={`extraIngredientSelected(${extraIngredient.name})`}>
                                             <ListItemText
                                                 primary={
-                                                    <Box>
-                                                        <TextField
-                                                            label={extraIngredient.name}
-                                                            type='number'
-                                                        />
-                                                    </Box>
+                                                    <Grid
+                                                        container
+                                                        spacing={1}
+                                                        alignItems={'center'}
+                                                    >
+                                                        <Grid item xs={5}>
+                                                            <TextField
+                                                                label={extraIngredient.name}
+                                                                type='number'
+                                                                value={extraIngredient.count}
+                                                                onChange={(event) => handleChangeQuantityExtraIngredientsSelected(event, index)}
+                                                                inputProps={{
+                                                                    sx:{
+                                                                        textAlign: 'center'
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </Grid>
+                                                        <Grid
+                                                            item
+                                                            sx={{
+                                                                width: 'fit-content'
+                                                            }}
+                                                        >
+                                                            <Typography>:</Typography>
+                                                        </Grid>
+                                                        <Grid item xs={3}>
+                                                            <TextField
+                                                                label={'Costo'}
+                                                                value={extraIngredient.count * extraIngredient.price}
+                                                                InputProps={{
+                                                                    readOnly: true,
+                                                                }}
+                                                                inputProps={{
+                                                                    sx:{
+                                                                        textAlign: 'center'
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
                                                 }
                                             />
                                         </ListItem>
