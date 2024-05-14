@@ -132,7 +132,7 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUserTa
                         handleChangeUser={handleChangeUser}
                     />
                     <Divider sx={{width: '100%'}}/>
-                    <OrdersUser />
+                    <OrdersUser user={user} />
                 </Box>
             </Box>
         </Modal>
