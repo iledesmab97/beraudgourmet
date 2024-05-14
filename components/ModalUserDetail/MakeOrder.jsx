@@ -35,6 +35,7 @@ function MakeOrder() {
     const [quantity, setQuantity] = useState(1)
     const [massList, setMassList] = useState([])
     const [sizeList, setSizeList] = useState([])
+    const [massSelected, setMassSelected] = useState(null)
 
     useEffect(() => {
         if (!products) return
@@ -102,6 +103,12 @@ function MakeOrder() {
         setExtraIngredientsSelected(newExtraIngredientsSelected)
     }
 
+    function handleChangeMassSelected(event) {
+        const { value } = event.target
+        const newMassSelected = massList.find(mass => mass.name === value)
+        setMassSelected(newMassSelected)
+    }
+
     return (
         <Grid
             container
@@ -127,9 +134,9 @@ function MakeOrder() {
                 <FormControl fullWidth>
                     <InputLabel>Masa</InputLabel>
                     <Select
-                        // value={ pizzaSelected ? pizzaSelected.name : ''}
+                        value={ massSelected ? massSelected.name : ''}
                         label='Masa'
-                        // onChange={handleChangeSelectPizza}
+                        onChange={handleChangeMassSelected}
                     >
                         {
                             massList.map(mass => (
