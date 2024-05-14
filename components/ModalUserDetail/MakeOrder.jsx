@@ -36,6 +36,7 @@ function MakeOrder() {
     const [massList, setMassList] = useState([])
     const [sizeList, setSizeList] = useState([])
     const [massSelected, setMassSelected] = useState(null)
+    const [sizeSelected, setSizeSelected] = useState(null)
 
     useEffect(() => {
         if (!products) return
@@ -109,6 +110,12 @@ function MakeOrder() {
         setMassSelected(newMassSelected)
     }
 
+    function handleChangeSizeSelected(event) {
+        const { value } = event.target
+        const newSizeSelected = sizeList.find(size => size.size === value)
+        setSizeSelected(newSizeSelected)
+    }
+
     return (
         <Grid
             container
@@ -132,6 +139,22 @@ function MakeOrder() {
             </Grid>
             <Grid item xs={4}>
                 <FormControl fullWidth>
+                    <InputLabel>Tamaño</InputLabel>
+                    <Select
+                        value={ sizeSelected ? sizeSelected.size : ''}
+                        label='Tamaño'
+                        onChange={handleChangeSizeSelected}
+                    >
+                        {
+                            sizeList.map(size => (
+                                <MenuItem key={size.size} value={size.size} >{size.size}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+                <FormControl fullWidth>
                     <InputLabel>Masa</InputLabel>
                     <Select
                         value={ massSelected ? massSelected.name : ''}
@@ -141,22 +164,6 @@ function MakeOrder() {
                         {
                             massList.map(mass => (
                                 <MenuItem key={mass.name} value={mass.name} >{mass.name}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-                <FormControl fullWidth>
-                    <InputLabel>Tamaño</InputLabel>
-                    <Select
-                        // value={ pizzaSelected ? pizzaSelected.name : ''}
-                        label='Tamaño'
-                        // onChange={handleChangeSelectPizza}
-                    >
-                        {
-                            sizeList.map(size => (
-                                <MenuItem key={size.size} value={size.size} >{size.size}</MenuItem>
                             ))
                         }
                     </Select>
