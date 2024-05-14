@@ -230,7 +230,7 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                             size='small'
                                             onClick={() => {
                                                 handleAddPlace({closerStore: store})
-                                                saveLocalData('place', {closerStore: store})
+                                                saveLocalData('place', {closerStore: store.id})
                                                 handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
                                                 handleCloseModal('place')
                                             }}

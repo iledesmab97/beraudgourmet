@@ -1,50 +1,87 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import useGetPlace from '@/hooks/useGetPlace'
 import useGetOrders from '@/hooks/useGetOrders'
+import useGetStoreList from '@/hooks/useGetStoreList'
+import useGetProducts from '@/hooks/useGetProducts'
 
-import { deepEqual } from '@/utils/preparingData'
+import { deepEqual, listStores } from '@/utils/preparingData'
 
 function useLocalData() {
     
     const { place, handleAddPlace } = useGetPlace()
     const { orders, handleUpdateTotalOrders } = useGetOrders()
+    const { products } = useGetProducts({type: 'pizzas'})
+    const { storeList } = useGetStoreList()
+    const [storeListArray, setStoreListArray] = useState([])
+
     const firstTime = useRef(true)
     const firstTimeOrders = useRef(true)
 
     useEffect(() => {
-        const placeLocalString = getLocalData('place')
-        const placeLocal = placeLocalString ? JSON.parse(placeLocalString) : placeLocalString
-        if (firstTime.current) {
+        if(!storeListArray.length) return
+        const placeLocal = getLocalData('place')
+        if (firstTime.current && placeLocal) {
             firstTime.current = false
-            if (!Object.keys(place).length && placeLocal) {
-                handleAddPlace(placeLocal)
+            const closerStore = storeListArray.find(store => store.id === placeLocal.closerStore)
+            if (!Object.keys(place).length && placeLocal && closerStore) {
+                handleAddPlace({
+                    ...placeLocal,
+                    closerStore
+                })
             }
         } else {
-            if (!deepEqual(placeLocal, place)) {
-                saveLocalData('place', place)
+            if (!Object.keys(place).length) return
+            const placeToCompare = {
+                ...place,
+                closerStore: place.closerStore.id
             }
+            if (!deepEqual(placeLocal, placeToCompare)) {
+                saveLocalData('place', placeToCompare)
+            }            
         }
         
-    }, [place])
+    }, [place, storeListArray])
 
     useEffect(() => {
-        const ordersLocalString = getLocalData('orders')
-        const ordersLocal = ordersLocalString ? JSON.parse(ordersLocalString) : ordersLocalString
+        setStoreListArray(listStores(storeList))
+    }, [storeList])
+
+    useEffect(() => {
+        if( !products || !products.length) return
+        const ordersLocal = getLocalData('orders')
         if (firstTimeOrders.current) {
             firstTimeOrders.current = false
             if (!orders.length && ordersLocal?.length) {
-                handleUpdateTotalOrders(ordersLocal)
+                handleUpdateTotalOrders(ordersLocal.map(item => {
+                    const product = products.find(element => element.id === item.id)
+                    return {
+                        ...product,
+                        ...item
+                    }
+                }))
             }
         } else {
-            if (!deepEqual(ordersLocal, orders)) {
-                saveLocalData('orders', orders)
+            const orderToCompare = orders.map(item => {
+                const { id, size, quantity, mass, ingredientsModal, extra, totalPrice } = item
+                return {
+                    id,
+                    size,
+                    quantity,
+                    mass,
+                    ingredientsModal,
+                    extra,
+                    totalPrice
+                }
+            })
+            if (!deepEqual(ordersLocal, orderToCompare)) {
+                saveLocalData('orders', orderToCompare)
             }
         }
-    }, [orders])
+    }, [orders, products])
 
     const getLocalData = useCallback((key) => {
         const dataFromLocal = localStorage.getItem(key)
-        return dataFromLocal
+        return JSON.parse(dataFromLocal)
     }, [])
 
     const saveLocalData = useCallback((key, value) => {

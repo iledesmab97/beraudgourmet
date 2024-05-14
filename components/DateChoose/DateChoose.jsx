@@ -55,9 +55,10 @@ function NoteCalendar() {
 
 export default function DateChoose() {
 
-  const [date, setDate] = useState(dayjs())
+
+  const { place, handleDeadLine} = useGetPlace()
+  const [date, setDate] = useState( place && place.deadLine ? dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY') : dayjs())
   const [textDate, setTextDate] = useState('')
-  const {handleDeadLine} = useGetPlace()
 
   useEffect(() => {
     if (!date) return
@@ -95,7 +96,7 @@ export default function DateChoose() {
           // slots={{ textField: 'input'}}
           slotProps={{
             textField: {
-              helperText: textDate,
+              helperText: date.isBefore(dayjs(), 'day') ? 'La fecha de entrega debe ser mayor a la actual' : textDate,
               size:'small'
             }
           }}
