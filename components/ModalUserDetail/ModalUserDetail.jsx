@@ -2,10 +2,11 @@ import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 // import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-// import Divider from '@mui/material/Divider'
+import Divider from '@mui/material/Divider'
 
 // import InputUpdate from '@/components/InputUpdate/InputUpdate'
 import UserData from './UserData'
+import OrdersUser from './OrdersUser'
 // import Schedules from './Schedules'
 
 import { useState, useEffect } from 'react'
@@ -130,6 +131,8 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUserTa
                         updateUserTable={updateUserTable}
                         handleChangeUser={handleChangeUser}
                     />
+                    <Divider sx={{width: '100%'}}/>
+                    <OrdersUser user={user} />
                 </Box>
             </Box>
         </Modal>

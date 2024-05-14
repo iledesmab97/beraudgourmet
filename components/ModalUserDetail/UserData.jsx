@@ -161,6 +161,9 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
             container
             spacing={2}
         >
+            <Grid item>
+                <Typography variant='title' >Datos</Typography>
+            </Grid>
             <Grid
                 item
                 xs={12}
@@ -247,7 +250,7 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
             <Grid item xs={12}>
                 <Divider sx={{width: '100%'}}/>
             </Grid>
-            <Grid item container xs={12} justifyContent={'space-around'}>
+            <Grid item container xs={12} justifyContent={'space-around'} alignItems={'center'}>
                 <Grid item xs={3}>
                     <Typography>Verificado:</Typography>
                 </Grid>
