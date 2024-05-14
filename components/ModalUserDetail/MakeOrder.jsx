@@ -14,6 +14,8 @@ import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import { useState, useEffect } from 'react'
 
+import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
+
 function MakeOrder() {
 
     const { products } = useGetProducts({ type: 'pizzas'})
@@ -30,6 +32,9 @@ function MakeOrder() {
         return newList
     })
     const [extraIngredientsSelected, setExtraIngredientsSelected] = useState([])
+    const [quantity, setQuantity] = useState(1)
+    const [massList, setMassList] = useState([])
+    const [sizeList, setSizeList] = useState([])
 
     useEffect(() => {
         if (!products) return
@@ -37,6 +42,7 @@ function MakeOrder() {
     }, [products])
 
     useEffect(() => {
+        if (extraIngredientsList.length) return
         setExtraIngredients(() => {
             if (!Object.keys(extraIngredients).length) return []
             const newList = []
@@ -46,6 +52,19 @@ function MakeOrder() {
             return newList
         })
     }, [extraIngredients])
+
+    useEffect(() => {
+        if (!massList.length) {
+            getAllMasses().then(data => {
+                setMassList(data)
+            })
+        }
+        if (!sizeList.length) {
+            getAllSizes().then(data => {
+                setSizeList(data)
+            })
+        }
+    }, [])
 
     function handleChangeSelectPizza(event) {
         const pizza = pizzas.find(pizza => pizza.name === event.target.value)
@@ -104,6 +123,38 @@ function MakeOrder() {
                     </Select>
                 </FormControl>
             </Grid>
+            <Grid item xs={4}>
+                <FormControl fullWidth>
+                    <InputLabel>Masa</InputLabel>
+                    <Select
+                        // value={ pizzaSelected ? pizzaSelected.name : ''}
+                        label='Masa'
+                        // onChange={handleChangeSelectPizza}
+                    >
+                        {
+                            massList.map(mass => (
+                                <MenuItem key={mass.name} value={mass.name} >{mass.name}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+                <FormControl fullWidth>
+                    <InputLabel>Tamaño</InputLabel>
+                    <Select
+                        // value={ pizzaSelected ? pizzaSelected.name : ''}
+                        label='Tamaño'
+                        // onChange={handleChangeSelectPizza}
+                    >
+                        {
+                            sizeList.map(size => (
+                                <MenuItem key={size.size} value={size.size} >{size.size}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+            </Grid>
             {
                 pizzaSelected ? (
                     <Grid item xs={4}>
@@ -125,6 +176,50 @@ function MakeOrder() {
                     </Grid>
                 ) : null
             }
+
+            <Grid
+                container
+                item
+                xs={4}
+                spacing={1}
+                alignItems={'center'}
+            >
+                <Grid item xs={7}>
+                    <TextField
+                        label={'Cantidad'}
+                        type='number'
+                        // value={extraIngredient.count}
+                        // onChange={(event) => handleChangeQuantityExtraIngredientsSelected(event, index)}
+                        inputProps={{
+                            sx:{
+                                textAlign: 'center'
+                            }
+                        }}
+                    />
+                </Grid>
+                <Grid
+                    item
+                    sx={{
+                        width: 'fit-content'
+                    }}
+                >
+                    <Typography>:</Typography>
+                </Grid>
+                <Grid item xs={4}>
+                    <TextField
+                        label={'Total'}
+                        // value={extraIngredient.count * extraIngredient.price}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        inputProps={{
+                            sx:{
+                                textAlign: 'center'
+                            }
+                        }}
+                    />
+                </Grid>
+            </Grid>
             
             <Grid container item xs={12} spacing={2}>
                 <Grid item xs={12}>
@@ -203,9 +298,6 @@ function MakeOrder() {
                         </Grid>
                     ) : null
                 }
-            </Grid>
-            <Grid item>
-                <Typography>Cantidad</Typography>
             </Grid>
         </Grid>
     )
