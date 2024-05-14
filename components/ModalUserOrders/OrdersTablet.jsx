@@ -22,14 +22,15 @@ function OrdersTablet({orders}) {
                     <TableHead>
                         <TableRow>
                             <TableCell >Pedido</TableCell>
-                            <TableCell >Emición</TableCell>
-                            <TableCell >Entrega</TableCell>
+                            <TableCell align='center'>Emición</TableCell>
+                            <TableCell align='center'>Entrega</TableCell>
                             <TableCell
-                                align='right'
+                                align='center'
                             >
                                 Precio($)
                             </TableCell>
                             <TableCell
+                                align='center'
                             >
                                 Estatus
                             </TableCell>
@@ -50,10 +51,11 @@ function OrdersTablet({orders}) {
                                                 )
                                             }).join('; ')
                                         }}/>
-                                    <TableCell align='right'>{order.applicationDate}</TableCell>
-                                    <TableCell align='right'>{order.deliveryDate}</TableCell>
-                                    <TableCell align='right'>{order.totalCost}</TableCell>
+                                    <TableCell align='center'>{order.applicationDate}</TableCell>
+                                    <TableCell align='center'>{order.deliveryDate}</TableCell>
+                                    <TableCell align='center'>{order.totalCost}</TableCell>
                                     <TableCell
+                                        align='center'
                                         sx={ order.closed ? {color: 'green'} : {color: 'red'} }
                                     >
                                         {order.closed ? 'Entregado' : 'Pendiente'}
