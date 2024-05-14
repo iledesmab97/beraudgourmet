@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
@@ -7,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
+import TextField from '@mui/material/TextField'
 
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
@@ -56,8 +58,18 @@ function MakeOrder() {
     }
 
     function handleChangeExtraIngredientsSelected(event) {
-        const { value } = event.target
-        setExtraIngredientsSelected(value)
+        const newList = event.target.value
+        const newExtraIngredientsSelected = [...extraIngredientsSelected].filter(extraIngredient => newList.includes(extraIngredient.name))
+        newList.forEach(extraIngredient => {
+            if (!newExtraIngredientsSelected.some(extraIngredientNew => extraIngredientNew.name === extraIngredient)) {
+                const newExtraIngredient = extraIngredientsList.find(totalExtraIngredient => totalExtraIngredient.name === extraIngredient )
+                newExtraIngredientsSelected.push({
+                    ...newExtraIngredient,
+                    count: 0
+                })
+            }
+        })
+        setExtraIngredientsSelected(newExtraIngredientsSelected)
     }
 
     return (
@@ -109,7 +121,7 @@ function MakeOrder() {
                         <InputLabel>Ingredientes extra</InputLabel>
                         <Select
                             multiple
-                            value={ extraIngredientsSelected }
+                            value={ extraIngredientsSelected.map(extraIngredient => extraIngredient.name) }
                             label='Ingredientes extra'
                             onChange={handleChangeExtraIngredientsSelected}
                         >
@@ -123,13 +135,20 @@ function MakeOrder() {
                 </Grid>
                 {
                     extraIngredientsSelected.length ? (
-                        <Grid item xs={5}>
+                        <Grid item xs={3}>
                             <List>
                                 {
                                     extraIngredientsSelected.map(extraIngredient => (
-                                        <ListItem key={`extraIngredientSelected(${extraIngredient})`}>
+                                        <ListItem key={`extraIngredientSelected(${extraIngredient.name})`}>
                                             <ListItemText
-                                                primary={extraIngredient}
+                                                primary={
+                                                    <Box>
+                                                        <TextField
+                                                            label={extraIngredient.name}
+                                                            type='number'
+                                                        />
+                                                    </Box>
+                                                }
                                             />
                                         </ListItem>
                                     ))
