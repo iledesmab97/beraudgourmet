@@ -137,38 +137,46 @@ function MakeOrder() {
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item xs={4}>
-                <FormControl fullWidth>
-                    <InputLabel>Tamaño</InputLabel>
-                    <Select
-                        value={ sizeSelected ? sizeSelected.size : ''}
-                        label='Tamaño'
-                        onChange={handleChangeSizeSelected}
-                    >
-                        {
-                            sizeList.map(size => (
-                                <MenuItem key={size.size} value={size.size} >{size.size}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-                <FormControl fullWidth>
-                    <InputLabel>Masa</InputLabel>
-                    <Select
-                        value={ massSelected ? massSelected.name : ''}
-                        label='Masa'
-                        onChange={handleChangeMassSelected}
-                    >
-                        {
-                            massList.map(mass => (
-                                <MenuItem key={mass.name} value={mass.name} >{mass.name}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-            </Grid>
+            {
+                pizzaSelected ? (
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel>Tamaño</InputLabel>
+                            <Select
+                                value={ sizeSelected ? sizeSelected.size : ''}
+                                label='Tamaño'
+                                onChange={handleChangeSizeSelected}
+                            >
+                                {
+                                    sizeList.map(size => (
+                                        <MenuItem key={size.size} value={size.size} >{size.size}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                ) : null
+            }
+            {
+                sizeSelected ? (
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel>Masa</InputLabel>
+                            <Select
+                                value={ massSelected ? massSelected.name : ''}
+                                label='Masa'
+                                onChange={handleChangeMassSelected}
+                            >
+                                {
+                                    massList.map(mass => (
+                                        <MenuItem key={mass.name} value={mass.name} >{mass.name}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                ) : null
+            }
             {
                 pizzaSelected ? (
                     <Grid item xs={4}>
