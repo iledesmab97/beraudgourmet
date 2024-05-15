@@ -15,6 +15,7 @@ import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import { useState, useEffect } from 'react'
 
 import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
+import { calculateTotalToPay } from '@/utils/priceCar'
 
 function MakeOrder() {
 
@@ -86,7 +87,8 @@ function MakeOrder() {
                 const newExtraIngredient = extraIngredientsList.find(totalExtraIngredient => totalExtraIngredient.name === extraIngredient )
                 newExtraIngredientsSelected.push({
                     ...newExtraIngredient,
-                    count: 1
+                    count: 1,
+                    total: newExtraIngredient.totalPrice
                 })
             }
         })
@@ -99,7 +101,8 @@ function MakeOrder() {
         const newExtraIngredientsSelected = [...extraIngredientsSelected]
         newExtraIngredientsSelected[index] = {
             ...newExtraIngredientsSelected[index],
-            count: number
+            count: number,
+            total: number * newExtraIngredientsSelected[index].totalPrice
         }
         setExtraIngredientsSelected(newExtraIngredientsSelected)
     }
@@ -114,6 +117,10 @@ function MakeOrder() {
         const { value } = event.target
         const newSizeSelected = sizeList.find(size => size.size === value)
         setSizeSelected(newSizeSelected)
+    }
+
+    function handleChangeQuantityPizzas(event) {
+        setQuantity(event.target.value)
     }
 
     return (
@@ -148,8 +155,8 @@ function MakeOrder() {
                                 onChange={handleChangeSizeSelected}
                             >
                                 {
-                                    sizeList.map(size => (
-                                        <MenuItem key={size.size} value={size.size} >{size.size}</MenuItem>
+                                    Object.keys(pizzaSelected.price).map(size => (
+                                        <MenuItem key={size} value={size} >{size}</MenuItem>
                                     ))
                                 }
                             </Select>
@@ -168,8 +175,8 @@ function MakeOrder() {
                                 onChange={handleChangeMassSelected}
                             >
                                 {
-                                    massList.map(mass => (
-                                        <MenuItem key={mass.name} value={mass.name} >{mass.name}</MenuItem>
+                                    Object.keys(pizzaSelected.price[sizeSelected.size]).map(mass => (
+                                        <MenuItem key={mass} value={mass} >{mass}</MenuItem>
                                     ))
                                 }
                             </Select>
@@ -198,50 +205,6 @@ function MakeOrder() {
                     </Grid>
                 ) : null
             }
-
-            <Grid
-                container
-                item
-                xs={4}
-                spacing={1}
-                alignItems={'center'}
-            >
-                <Grid item xs={7}>
-                    <TextField
-                        label={'Cantidad'}
-                        type='number'
-                        // value={extraIngredient.count}
-                        // onChange={(event) => handleChangeQuantityExtraIngredientsSelected(event, index)}
-                        inputProps={{
-                            sx:{
-                                textAlign: 'center'
-                            }
-                        }}
-                    />
-                </Grid>
-                <Grid
-                    item
-                    sx={{
-                        width: 'fit-content'
-                    }}
-                >
-                    <Typography>:</Typography>
-                </Grid>
-                <Grid item xs={4}>
-                    <TextField
-                        label={'Total'}
-                        // value={extraIngredient.count * extraIngredient.price}
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                        inputProps={{
-                            sx:{
-                                textAlign: 'center'
-                            }
-                        }}
-                    />
-                </Grid>
-            </Grid>
             
             <Grid container item xs={12} spacing={2}>
                 <Grid item xs={12}>
@@ -299,7 +262,7 @@ function MakeOrder() {
                                                         <Grid item xs={3}>
                                                             <TextField
                                                                 label={'Costo'}
-                                                                value={extraIngredient.count * extraIngredient.price}
+                                                                value={ extraIngredient.total }
                                                                 InputProps={{
                                                                     readOnly: true,
                                                                 }}
@@ -320,6 +283,54 @@ function MakeOrder() {
                         </Grid>
                     ) : null
                 }
+                {
+                    pizzaSelected && sizeSelected && massSelected ? (
+                        <Grid
+                            container
+                            item
+                            xs={4}
+                            spacing={1}
+                            alignItems={'center'}
+                        >
+                            <Grid item xs={6}>
+                                <TextField
+                                    label={'Cantidad'}
+                                    type='number'
+                                    value={quantity}
+                                    onChange={handleChangeQuantityPizzas}
+                                    inputProps={{
+                                        sx:{
+                                            textAlign: 'center'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                            <Grid
+                                item
+                                sx={{
+                                    width: 'fit-content'
+                                }}
+                            >
+                                <Typography>:</Typography>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <TextField
+                                    label={'Total'}
+                                    value={ quantity * ( calculateTotalToPay(pizzaSelected.price[sizeSelected.size][massSelected.name], extraIngredientsSelected)  ) }
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    inputProps={{
+                                        sx:{
+                                            textAlign: 'center'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    ) : null
+                }
+                
             </Grid>
         </Grid>
     )
