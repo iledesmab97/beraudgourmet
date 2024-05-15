@@ -54,7 +54,13 @@ function MakeOrder() {
             </Grid>
             {
                 products.map((product, index) => (
-                    <SelectPizza product={product} index={index} updateProduct={updateProduct} handleRemoveProduct={handleRemoveProduct} />
+                    <SelectPizza
+                        key={`product${index}`}
+                        product={product}
+                        index={index}
+                        updateProduct={updateProduct}
+                        handleRemoveProduct={handleRemoveProduct}
+                    />
                 ))
             }
             <Grid item>
