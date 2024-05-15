@@ -20,7 +20,7 @@ import { useState, useEffect } from 'react'
 import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
 import { calculateTotalToPay } from '@/utils/priceCar'
 
-function SelectPizza({ product, index }) {
+function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
 
     const { products } = useGetProducts({ type: 'pizzas'})
     const { extraIngredients } = useGetExtraIngredients()
@@ -74,7 +74,8 @@ function SelectPizza({ product, index }) {
 
     function handleChangeSelectPizza(event) {
         const pizza = pizzas.find(pizza => pizza.name === event.target.value)
-        setPizzaSelected(pizza)
+        // setPizzaSelected(pizza)
+        updateProduct({ property: 'pizza', value: pizza, index})
     }
 
     function handleChangeSizeSelected(event) {
@@ -140,7 +141,8 @@ function SelectPizza({ product, index }) {
                 <FormControl fullWidth>
                     <InputLabel>Pizza</InputLabel>
                     <Select
-                        value={ pizzaSelected ? pizzaSelected.name : ''}
+                        // value={ pizzaSelected ? pizzaSelected.name : ''}
+                        value={ product.pizza ? product.pizza.name : ''}
                         label='Pizza'
                         onChange={handleChangeSelectPizza}
                     >
@@ -353,7 +355,7 @@ function SelectPizza({ product, index }) {
                         }}
                     >
                         <IconButton
-                            onClick={() => {console.log('cancelando este producto')}}
+                            onClick={() => {handleRemoveProduct(index)}}
                             sx={{
                                 color: '#f6685e'
                             }}
