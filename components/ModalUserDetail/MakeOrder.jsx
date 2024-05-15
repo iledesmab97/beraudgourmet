@@ -24,9 +24,23 @@ function MakeOrder() {
 
     const [products, setProducts] = useState([{}])
 
-    function handleNumberOfProducts() {
+    function handleAddNumberOfProducts() {
         const newProducts = [...products]
         newProducts.push({})
+        setProducts(newProducts)
+    }
+
+    function updateProduct({ property, value, index }) {
+        const newProducts = [...products]
+        newProducts[index] = {
+            ...newProducts[index],
+            [property]: value
+        }
+        setProducts(newProducts)
+    }
+
+    function handleRemoveProduct(index) {
+        const newProducts = [...products].filter((product, i) => i !== index )
         setProducts(newProducts)
     }
 
@@ -40,13 +54,13 @@ function MakeOrder() {
             </Grid>
             {
                 products.map((product, index) => (
-                    <SelectPizza product={product} index={index} />
+                    <SelectPizza product={product} index={index} updateProduct={updateProduct} handleRemoveProduct={handleRemoveProduct} />
                 ))
             }
             <Grid item>
                 <Button
                     variant='contained'
-                    onClick={handleNumberOfProducts}
+                    onClick={handleAddNumberOfProducts}
                 >
                     Añadir
                 </Button>
