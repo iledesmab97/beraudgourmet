@@ -12,6 +12,7 @@ import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 
 import SelectPizza from './SelectPizza'
+import SelectStore from './SelectStore'
 
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
@@ -23,6 +24,7 @@ import { calculateTotalToPay } from '@/utils/priceCar'
 function MakeOrder() {
 
     const [products, setProducts] = useState([{}])
+    const [store, setStore] = useState(null)
 
     function handleAddNumberOfProducts() {
         const newProducts = [...products]
@@ -44,6 +46,10 @@ function MakeOrder() {
         setProducts(newProducts)
     }
 
+    function updateStore(value) {
+        setStore(value)
+    }
+
     return (
         <Grid
             container
@@ -63,7 +69,7 @@ function MakeOrder() {
                     />
                 ))
             }
-            <Grid item>
+            <Grid item xs={12}>
                 <Button
                     variant='contained'
                     onClick={handleAddNumberOfProducts}
@@ -71,6 +77,7 @@ function MakeOrder() {
                     Añadir
                 </Button>
             </Grid>
+            <SelectStore store={store} updateStore={updateStore} />
         </Grid>
     )
 }
