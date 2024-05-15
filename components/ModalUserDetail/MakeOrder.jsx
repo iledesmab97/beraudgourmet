@@ -10,8 +10,10 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
+import Divider from '@mui/material/Divider'
 
 import SelectPizza from './SelectPizza'
+import SelectStore from './SelectStore'
 
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
@@ -23,6 +25,7 @@ import { calculateTotalToPay } from '@/utils/priceCar'
 function MakeOrder() {
 
     const [products, setProducts] = useState([{}])
+    const [store, setStore] = useState(null)
 
     function handleAddNumberOfProducts() {
         const newProducts = [...products]
@@ -44,6 +47,10 @@ function MakeOrder() {
         setProducts(newProducts)
     }
 
+    function updateStore(value) {
+        setStore(value)
+    }
+
     return (
         <Grid
             container
@@ -54,16 +61,29 @@ function MakeOrder() {
             </Grid>
             {
                 products.map((product, index) => (
-                    <SelectPizza
+                    <Grid
                         key={`product${index}`}
-                        product={product}
-                        index={index}
-                        updateProduct={updateProduct}
-                        handleRemoveProduct={handleRemoveProduct}
-                    />
+                        item
+                        container
+                        spacing={2}
+                    >
+                        <SelectPizza
+                            product={product}
+                            index={index}
+                            updateProduct={updateProduct}
+                            handleRemoveProduct={handleRemoveProduct}
+                        />
+                        {
+                            products.length > 1 && index < products.length -1 ? (
+                                <Grid item xs={12}>
+                                    <Divider sx={{ width: '100%' }} />
+                                </Grid>
+                            ) : null
+                        }
+                    </Grid>
                 ))
             }
-            <Grid item>
+            <Grid item xs={12}>
                 <Button
                     variant='contained'
                     onClick={handleAddNumberOfProducts}
@@ -71,6 +91,10 @@ function MakeOrder() {
                     Añadir
                 </Button>
             </Grid>
+            <Grid item xs={12}>
+                <Divider sx={{ width: '100%' }} />
+            </Grid>
+            <SelectStore store={store} updateStore={updateStore} />
         </Grid>
     )
 }

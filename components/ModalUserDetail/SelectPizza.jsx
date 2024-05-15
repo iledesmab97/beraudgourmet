@@ -8,7 +8,6 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -335,9 +334,6 @@ function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
                     ) : null
                 }
                 
-            </Grid>
-            <Grid item xs={12}>
-                <Divider sx={{ width: '100%' }} />
             </Grid>
             {
                 index ? (
