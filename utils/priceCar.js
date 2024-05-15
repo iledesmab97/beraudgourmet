@@ -35,3 +35,8 @@ export function totalPrice(orders, stripe) {
     }, 0)
     return calculateTotalPay(totalPriceCar, stripe)
 }
+
+export function calculateTotalToPay(pricePizza, extraIngredients) {
+    const totalExtraIngredients = extraIngredients.reduce((acc, cur) => acc + Number(cur.total) , 0)
+    return Number(pricePizza) + totalExtraIngredients
+}
