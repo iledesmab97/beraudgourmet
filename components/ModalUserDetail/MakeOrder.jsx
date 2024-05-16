@@ -57,6 +57,10 @@ function MakeOrder() {
         setExtraData(value)
     }
 
+    function makeOrder() {
+        console.log('creando orden...')
+    }
+
     return (
         <Grid
             container
@@ -105,6 +109,21 @@ function MakeOrder() {
                 <Divider sx={{ width: '100%' }} />
             </Grid>
             <SelectExtraData extraData={extraData} updateExtraData={updateExtraData} />
+            <Grid
+                item
+                sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: '0px'
+                }}
+            >
+                <Button
+                    variant='contained'
+                    onClick={makeOrder}
+                >
+                    Crear Orden
+                </Button>
+            </Grid>
         </Grid>
     )
 }
