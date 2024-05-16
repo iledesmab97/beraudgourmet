@@ -14,6 +14,7 @@ import Divider from '@mui/material/Divider'
 
 import SelectPizza from './SelectPizza'
 import SelectStore from './SelectStore'
+import SelectExtraData from './SelectExtraData'
 
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
@@ -26,6 +27,7 @@ function MakeOrder() {
 
     const [products, setProducts] = useState([{}])
     const [store, setStore] = useState(null)
+    const [extraData, setExtraData] = useState({})
 
     function handleAddNumberOfProducts() {
         const newProducts = [...products]
@@ -49,6 +51,14 @@ function MakeOrder() {
 
     function updateStore(value) {
         setStore(value)
+    }
+
+    function updateExtraData(value) {
+        setExtraData(value)
+    }
+
+    function makeOrder() {
+        console.log('creando orden...')
     }
 
     return (
@@ -95,6 +105,25 @@ function MakeOrder() {
                 <Divider sx={{ width: '100%' }} />
             </Grid>
             <SelectStore store={store} updateStore={updateStore} />
+            <Grid item xs={12}>
+                <Divider sx={{ width: '100%' }} />
+            </Grid>
+            <SelectExtraData extraData={extraData} updateExtraData={updateExtraData} />
+            <Grid
+                item
+                sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: '0px'
+                }}
+            >
+                <Button
+                    variant='contained'
+                    onClick={makeOrder}
+                >
+                    Crear Orden
+                </Button>
+            </Grid>
         </Grid>
     )
 }

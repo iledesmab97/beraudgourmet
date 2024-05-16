@@ -14,12 +14,15 @@ import useGetUser from '@/hooks/useGetUser';
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetStoreList from '@/hooks/useGetStoreList'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useLoadScript } from "@react-google-maps/api"
 
 import { lookingForUserLoged } from '@/services/userApi'
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 import { getAllStoresWithSchedules } from '@/services/storeApi'
 
 import styles from './page.module.css'
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 function AdminPlace() {
 
@@ -28,6 +31,10 @@ function AdminPlace() {
     const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
     const { storeList, handleAddStoreList } = useGetStoreList()
     const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
+    const { isLoaded, loadError } = useLoadScript({
+        googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
+        libraries: ['places'],
+    });
 
     useEffect(() => {
         lookingForUserLoged()

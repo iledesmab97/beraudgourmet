@@ -15,7 +15,7 @@ import Button from '@mui/material/Button'
 import TextArea from '../TextArea/TextArea'
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
-export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, typeLocation, handleTypeLocation, closerStore, currentModal }) {
+export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, typeLocation, handleTypeLocation, closerStore, currentModal, outModal }) {
 
     const { handleCloseModal } = useGetModal({modalType: 'place'})
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
@@ -278,21 +278,25 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                 />
             </Grid>
 
-            <Button
-                variant='contained'
-                onClick={() => {
-                    handleAddPlace({inputsHome, closerStore})
-                    handleTypeDelivery({name: 'home', totalName: 'Entrega a domicilio'})
-                    handleCloseModal(currentModal)
-                }}
-                sx={{
-                    position: 'fixed',
-                    bottom: 16,
-                    right: 40,
-                    alignSelf: 'flex-end',
-                    mt: 2
-                }}
-            >Agregar</Button>
+            {
+                !outModal ? (
+                    <Button
+                        variant='contained'
+                        onClick={() => {
+                            handleAddPlace({inputsHome, closerStore})
+                            handleTypeDelivery({name: 'home', totalName: 'Entrega a domicilio'})
+                            handleCloseModal(currentModal)
+                        }}
+                        sx={{
+                            position: 'fixed',
+                            bottom: 16,
+                            right: 40,
+                            alignSelf: 'flex-end',
+                            mt: 2
+                        }}
+                    >Agregar</Button>
+                ) : null
+            }
         </Grid>
     )
 } 
