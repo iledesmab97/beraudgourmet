@@ -14,7 +14,7 @@ import Divider from '@mui/material/Divider'
 
 import SelectPizza from './SelectPizza'
 import SelectStore from './SelectStore'
-import SelectDateTime from './SelectDateTime'
+import SelectExtraData from './SelectExtraData'
 
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
@@ -27,10 +27,7 @@ function MakeOrder() {
 
     const [products, setProducts] = useState([{}])
     const [store, setStore] = useState(null)
-    const [dates, setDates] = useState({
-        applicationDate: null,
-        deliveryDate: null
-    })
+    const [extraData, setExtraData] = useState({})
 
     function handleAddNumberOfProducts() {
         const newProducts = [...products]
@@ -56,12 +53,8 @@ function MakeOrder() {
         setStore(value)
     }
 
-    function handleChangeDates(date, value) {
-        const newDates = {
-            ...dates,
-            [date]: value
-        }
-        setDates(newDates)
+    function updateExtraData(value) {
+        setExtraData(value)
     }
 
     return (
@@ -108,22 +101,10 @@ function MakeOrder() {
                 <Divider sx={{ width: '100%' }} />
             </Grid>
             <SelectStore store={store} updateStore={updateStore} />
-            <Grid item container xs={12} spacing={2}>
-                <Grid item xs>
-                    <SelectDateTime
-                        label={'Fecha de emición'}
-                        value={dates.applicationDate}
-                        onChange={(newDate) => {handleChangeDates('applicationDate', newDate)}}
-                    />
-                </Grid>
-                <Grid item xs>
-                    <SelectDateTime
-                        label={'Fecha de entrega'}
-                        value={dates.deliveryDate}
-                        onChange={(newDate) => {handleChangeDates( 'deliveryDate', newDate)}}
-                    />
-                </Grid>
+            <Grid item xs={12}>
+                <Divider sx={{ width: '100%' }} />
             </Grid>
+            <SelectExtraData extraData={extraData} updateExtraData={updateExtraData} />
         </Grid>
     )
 }
