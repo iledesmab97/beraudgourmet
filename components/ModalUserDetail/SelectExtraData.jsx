@@ -3,6 +3,10 @@ import Typography from '@mui/material/Typography'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 import SelectDateTime from './SelectDateTime'
 import PlaceFinder from '@/components/PlaceFinder/PlaceFinder'
@@ -49,8 +53,16 @@ function SelectExtraData({ extraData, updateExtraData }) {
         updateExtraData(newExtraData)
     }
 
+    function handleChangePaymentMethod(event) {
+        const newExtraData = {
+            ...extraData,
+            paymentMethod: event.target.value
+        }
+        updateExtraData(newExtraData)
+    }
+
     return (
-        <Grid item container spacing={2}>
+        <Grid item container spacing={2} alignItems={'center'}>
             <Grid item>
                 <Typography variant='title'>Datos Extra</Typography>
             </Grid>
@@ -82,6 +94,19 @@ function SelectExtraData({ extraData, updateExtraData }) {
                         label={ extraData.delivery ? 'Delivery' : 'Recoger en tienda'}
                     />
                 </FormGroup>
+            </Grid>
+            <Grid item xs={4}>
+                <FormControl fullWidth>
+                    <InputLabel>Método de Pago</InputLabel>
+                    <Select
+                        value={ extraData.paymentMethod ? extraData.paymentMethod : ''}
+                        label='Método de Pago'
+                        onChange={handleChangePaymentMethod}
+                    >
+                        <MenuItem value={'transfer'} >{'Transferencia'}</MenuItem>
+                        <MenuItem value={'cash'} >{'Efectivo'}</MenuItem>
+                    </Select>
+                </FormControl>
             </Grid>
             {
                 extraData.delivery ? (
