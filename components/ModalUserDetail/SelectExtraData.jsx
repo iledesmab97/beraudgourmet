@@ -5,8 +5,33 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch'
 
 import SelectDateTime from './SelectDateTime'
+import PlaceFinder from '@/components/PlaceFinder/PlaceFinder'
+import FormModalDeliveryPlace from '@/components/ModalDeliveryPlace/FormModalDeliveryPlace'
+
+import useHandlePlace from '@/hooks/useHandlePlace'
+import { useState, useEffect } from 'react';
 
 function SelectExtraData({ extraData, updateExtraData }) {
+
+    const {
+        closerStore,
+        inputsHome,
+        typeLocation,
+        changeWithinLimitSaved,
+        handleInputsAddress,
+        handleDistanceSaved,
+        handleCloserStore,
+        handleInputsHome,
+        handleTypeLocation
+    } = useHandlePlace()
+
+    useEffect(() => {
+        const newExtraData = {
+            ...extraData,
+            inputsHome
+        }
+        updateExtraData(newExtraData)
+    }, [inputsHome])
 
     function handleChangeDates(date, value) {
         const newExtraDates = {
@@ -58,6 +83,43 @@ function SelectExtraData({ extraData, updateExtraData }) {
                     />
                 </FormGroup>
             </Grid>
+            {
+                extraData.delivery ? (
+                    <Grid item container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography variant='title'>Dirección de entrega</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <PlaceFinder
+                                withinLimitSaved={inputsHome.withinLimitSaved}
+                                inputAddress={inputsHome.inputAddress}
+                                distanceSaved={inputsHome.distanceSaved}
+                                closerStore={closerStore}
+                                changeWithinLimitSaved={changeWithinLimitSaved}
+                                handleInputsAddress={handleInputsAddress}
+                                handleDistanceSaved={handleDistanceSaved}
+                                handleCloserStore={handleCloserStore}
+                            />
+                        </Grid>
+                        {
+                            inputsHome.withinLimitSaved ? 
+                            (
+                                <Grid item>
+                                    <FormModalDeliveryPlace
+                                        inputsHome={inputsHome}
+                                        typeLocation={typeLocation}
+                                        closerStore={closerStore}
+                                        handleInputsHome={handleInputsHome}
+                                        handleTypeLocation={handleTypeLocation}
+                                        currentModal='deliveryPlace'
+                                        outModal={true}
+                                    />
+                                </Grid>
+                            ) : null
+                        }
+                    </Grid>
+                ) : null
+            }
         </Grid>
     )
 }
