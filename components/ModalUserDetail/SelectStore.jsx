@@ -10,7 +10,6 @@ import SelectDateTime from './SelectDateTime'
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
 
-import dayjs from 'dayjs'
 import { listStores } from '@/utils/preparingData'
 
 function SelectStore({ store, updateStore }) {
@@ -52,14 +51,6 @@ function SelectStore({ store, updateStore }) {
                         }
                     </Select>
                 </FormControl>
-            </Grid>
-            <Grid item container xs={12} spacing={2}>
-                <Grid item xs>
-                    <SelectDateTime />
-                </Grid>
-                <Grid item xs>
-                    <SelectDateTime />
-                </Grid>
             </Grid>
         </Grid>        
     )
