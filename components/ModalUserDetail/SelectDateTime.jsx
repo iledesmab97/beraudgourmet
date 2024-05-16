@@ -5,11 +5,11 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 
 import dayjs from 'dayjs'
 
-function SelectDateTime() {
+function SelectDateTime({ ...props}) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateTimePicker']}>
-                <DateTimePicker />
+                <DateTimePicker {...props} />
             </DemoContainer>
         </LocalizationProvider>
     )
