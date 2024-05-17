@@ -14,12 +14,12 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
 import { calculateTotalToPay } from '@/utils/priceCar'
 
-function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
+function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduct, handleRemoveProduct }) {
 
     const { products } = useGetProducts({ type: 'pizzas'})
     const { extraIngredients } = useGetExtraIngredients()
@@ -34,7 +34,7 @@ function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
         }
         return newList
     })
-    const [quantity, setQuantity] = useState(1)
+    const firstTime = useRef(true)
     
     useEffect(() => {
         if (!products) return
@@ -65,6 +65,19 @@ function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
             return newList
         })
     }, [extraIngredients])
+
+    useEffect(() => {
+        if (!(product.pizza && product.size && product.mass && firstTime.current)) return
+        firstTime.current = false
+        updateManyPropertiesProduct({
+            properties: {
+                quantity: 1,
+                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] ),
+                totalCostByItem: calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] )
+            },
+            index
+        })
+    }, [product])
 
     function handleChangeSelectPizza(event) {
         const pizza = pizzas.find(pizza => pizza.name === event.target.value)
@@ -114,11 +127,25 @@ function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
             count: number,
             total: number * newExtraIngredientsSelected[indexExtraIngredients].totalPrice
         }
-        updateProduct({ property: 'extraIngredients', value: newExtraIngredientsSelected, index})
+        updateManyPropertiesProduct({
+            properties: {
+                extraIngredients: newExtraIngredientsSelected,
+                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], newExtraIngredientsSelected ),
+                totalCostByItem: product.quantity * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], newExtraIngredientsSelected )
+            },
+            index
+        })
     }
 
     function handleChangeQuantityPizzas(event) {
-        setQuantity(event.target.value)
+        updateManyPropertiesProduct({
+            properties: {
+                quantity: event.target.value,
+                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] ),
+                totalCostByItem: event.target.value * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] )
+            },
+            index
+        })
     }
 
     return (
@@ -299,7 +326,7 @@ function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
                                 <TextField
                                     label={'Cantidad'}
                                     type='number'
-                                    value={quantity}
+                                    value={product.quantity ? product.quantity : 1 }
                                     onChange={handleChangeQuantityPizzas}
                                     inputProps={{
                                         sx:{
@@ -319,7 +346,7 @@ function SelectPizza({ product, index, updateProduct, handleRemoveProduct }) {
                             <Grid item xs={5}>
                                 <TextField
                                     label={'Total'}
-                                    value={ quantity * ( calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] )  ) }
+                                    value={ (product.quantity ? product.quantity : 1) * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] ) }
                                     InputProps={{
                                         readOnly: true,
                                     }}

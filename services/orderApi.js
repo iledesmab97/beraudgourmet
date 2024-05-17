@@ -29,7 +29,7 @@ export async function sendImage(id, formData) {
 }
 
 export async function registerOrder(data) {
-    fetch(`${PATH_BACK}/orders`, {
+    return fetch(`${PATH_BACK}/orders`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)

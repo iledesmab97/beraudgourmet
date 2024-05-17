@@ -30,6 +30,12 @@ const tableHeaders = {
     orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
 }
 
+const paymentMethodIndex = {
+    cash: 'Efectivo',
+    transfer: 'Transferencia',
+    stripe: 'Stripe'
+}
+
 const colorsCell = {
     late: 'red',
     today: '#D99914',
@@ -161,7 +167,7 @@ function TableOrders({ orders, updateOrders }) {
                                 <TableRow key={order.id}>
                                     <TableCell align='center'>{ order.user.name }</TableCell>
                                     <TableCell align='center'>{ order.user.phoneNumber }</TableCell>
-                                    <TableCell align='center'>{ order.paymentMethod === 'transfer' ? 'Transferencia' : 'Stripe' }</TableCell>
+                                    <TableCell align='center'>{ paymentMethodIndex[order.paymentMethod] }</TableCell>
                                     <TableCell
                                         align='center'
                                     >
@@ -195,7 +201,7 @@ function TableOrders({ orders, updateOrders }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Box
+            {/* <Box
                 sx={{
                     position: 'absolute',
                     bottom: '102%',
@@ -208,7 +214,7 @@ function TableOrders({ orders, updateOrders }) {
                 >
                     Nueva Orden
                 </Button>
-            </Box>
+            </Box> */}
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -252,9 +258,9 @@ function TableOrders({ orders, updateOrders }) {
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
                 ) : null
             }
-            {
+            {/* {
                 <ModalMakeOrder openMakeOrder={openMakeOrder} handleOpenMakeOrder={handleOpenMakeOrder} />
-            }
+            } */}
         </Box>
     )
 }

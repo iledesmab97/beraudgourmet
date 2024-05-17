@@ -76,7 +76,7 @@ function OrdersUser({ user }) {
                         { openCollaps[1] ? <ExpandLess /> : <ExpandMore /> }
                     </ListItemButton>
                     <Collapse in={openCollaps[1]} timeout='auto' >
-                        <MakeOrder />
+                        <MakeOrder user={user} />
                     </Collapse>
                 </List>
             </Grid>
