@@ -155,9 +155,16 @@ function MakeOrder({ user, updateOrders }) {
             updateOrders()
             console.log('Información guardada con exito')
             setLoading(false)
+            restartStates()
         }
         console.log('Ha ocurrido algún error')
         setLoading(false)
+    }
+
+    function restartStates() {
+        setProducts([{}])
+        setStore(null)
+        setExtraData({})
     }
 
     return (
