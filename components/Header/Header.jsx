@@ -69,7 +69,7 @@ function Header() {
                 }
               </Toolbar>
               <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
-                {
+                {/* {
                   subNav.map(link => (
                     <Link
                       key={link.title}
@@ -80,7 +80,7 @@ function Header() {
                       <Typography variant='title'>{link.title}</Typography>
                     </Link>
                   ))
-                }
+                } */}
               </Toolbar>
             </>
           ) : null
