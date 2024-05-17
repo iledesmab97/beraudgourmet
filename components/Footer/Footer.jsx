@@ -15,10 +15,15 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 import Link from 'next/link'
 
+import useGetModal from '@/hooks/useGetModal'
+import useGetAlertDialogMessage from '@/hooks/useGetAlertDialogMessage'
+
 import { phoneNumber } from '@/utils/contact'
 
 function Footer () {
 
+  const {handleOpenModal} = useGetModal({modalType: 'legal'})
+  const { openAlertDialogMessage } = useGetAlertDialogMessage({type: 'acceptCookies'})
   const date = new Date().getFullYear()
 
   return (
@@ -284,7 +289,17 @@ function Footer () {
               }}
             >
               <Grid item>
-                <Typography variant='footer_text_link'>Terminos & Condiciones</Typography>
+                <Typography
+                  variant='footer_text_link'
+                  onClick={() => {handleOpenModal('legal')}}
+                  sx={{
+                    '&:hover': {
+                      cursor: 'pointer'
+                    }
+                  }}
+                >
+                  Terminos & Condiciones
+                </Typography>
               </Grid>
               {/* <Grid item>
                 <Typography variant='footer_text_link'>Privaci</Typography>
@@ -293,7 +308,17 @@ function Footer () {
                 <Typography variant='footer_text_link'>Security</Typography>
               </Grid> */}
               <Grid item>
-                <Typography variant='footer_text_link'>Declaración de Cookies</Typography>
+                <Typography
+                  variant='footer_text_link'
+                  onClick={openAlertDialogMessage}
+                  sx={{
+                    '&:hover': {
+                      cursor: 'pointer'
+                    }
+                  }}
+                >
+                  Declaración de Cookies
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
