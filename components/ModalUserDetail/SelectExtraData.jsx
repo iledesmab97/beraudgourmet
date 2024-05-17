@@ -69,14 +69,14 @@ function SelectExtraData({ extraData, updateExtraData }) {
             <Grid item container xs={12} spacing={2}>
                 <Grid item xs>
                     <SelectDateTime
-                        label={'Fecha de emición'}
+                        label={'Fecha de emición *'}
                         value={extraData.applicationDate ? extraData.applicationDate : null}
                         onChange={(newDate) => {handleChangeDates('applicationDate', newDate)}}
                     />
                 </Grid>
                 <Grid item xs>
                     <SelectDateTime
-                        label={'Fecha de entrega'}
+                        label={'Fecha de entrega *'}
                         value={extraData.deliveryDate ? extraData.deliveryDate : null}
                         onChange={(newDate) => {handleChangeDates( 'deliveryDate', newDate)}}
                     />
@@ -97,10 +97,10 @@ function SelectExtraData({ extraData, updateExtraData }) {
             </Grid>
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <InputLabel>Método de Pago</InputLabel>
+                    <InputLabel>Método de Pago *</InputLabel>
                     <Select
                         value={ extraData.paymentMethod ? extraData.paymentMethod : ''}
-                        label='Método de Pago'
+                        label='Método de Pago *'
                         onChange={handleChangePaymentMethod}
                     >
                         <MenuItem value={'transfer'} >{'Transferencia'}</MenuItem>
