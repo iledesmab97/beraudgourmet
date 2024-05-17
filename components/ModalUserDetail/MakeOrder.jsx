@@ -27,12 +27,26 @@ import { calculateTotalToPay } from '@/utils/priceCar'
 import { descriptionOrder } from '@/utils/preparingData'
 import { registerOrder } from '@/services/orderApi'
 
-function MakeOrder({ user }) {
+const necessaryProductProperties = [ 'pizza', 'size', 'mass', 'quantity', 'totalCostByItem']
+
+function MakeOrder({ user, updateOrders }) {
 
     const [products, setProducts] = useState([{}])
     const [store, setStore] = useState(null)
     const [extraData, setExtraData] = useState({})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [loading, setLoading] = useState(false)
+    const [canMakeOrder, setCanMakeOrder] = useState(false)
+
+    // Actualizar canMakeOrder para saber si ya se puede hacer una orden
+    useEffect(() => {
+        const isTherProduct = products.every(product => product.totalCostByItem ? true : false)
+        const isThereStore = store ? true : false
+        const isThereExtraData = Boolean(extraData.applicationDate && extraData.deliveryDate && extraData.paymentMethod )
+        if ( isTherProduct && isThereStore && isThereExtraData ) return setCanMakeOrder(true)
+        else if (canMakeOrder) return setCanMakeOrder(false)
+        else return
+    }, [products, store, extraData])
 
     function handleAddNumberOfProducts() {
         const newProducts = [...products]
@@ -73,9 +87,7 @@ function MakeOrder({ user }) {
 
     async function makeOrder() {
         console.log('creando orden...')
-        console.log('products:', products)
-        console.log('store:', store)
-        console.log('extraData:', extraData)
+        setLoading(true)
         const { applicationDate, deliveryDate, delivery, inputsHome, paymentMethod } = extraData
         const orderItems = products.map(item => {
             const { quantity, ingredientsOut, extraIngredients, costItemPerUnit, totalCostByItem} = item
@@ -125,9 +137,7 @@ function MakeOrder({ user }) {
             itemsList: orderItems,
             deliveryInformation: inputsHome
         }
-        console.log('dataOrders:', dataOrders)
         const response = await registerOrder(dataOrders)
-        console.log('response:', response)
         let text, status
         if (response.message) {
             text = response.message
@@ -142,13 +152,12 @@ function MakeOrder({ user }) {
             status
         })
         if (!response.message) {
-            // updateUserTable({
-            //     id: user.id,
-            //     property: 'Role',
-            //     value: newRole.name
-            // })
+            updateOrders()
             console.log('Información guardada con exito')
+            setLoading(false)
         }
+        console.log('Ha ocurrido algún error')
+        setLoading(false)
     }
 
     return (
@@ -233,6 +242,7 @@ function MakeOrder({ user }) {
                 <Button
                     variant='contained'
                     onClick={() => {makeOrder()}}
+                    disabled={loading || !canMakeOrder}
                 >
                     Crear Orden
                 </Button>

@@ -36,11 +36,13 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
     })
     const firstTime = useRef(true)
     
+    // Actualizar pizzas cuando products cambie
     useEffect(() => {
         if (!products) return
         setPizzas(products)
     }, [products])
 
+    // Solicitar la lista de Masas y Tamaños de pizzas disponibles
     useEffect(() => {
         if (!massList.length) {
             getAllMasses().then(data => {
@@ -54,6 +56,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
         }
     }, [])
 
+    // Actualizar extraIngredientsList cuando se modifique extraIngredients
     useEffect(() => {
         if (extraIngredientsList.length) return
         setExtraIngredients(() => {
@@ -66,6 +69,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
         })
     }, [extraIngredients])
 
+    // Añadir las propiedades quanity, constItemPerUnit y totalCostByItem cuando se haya seleccionado una pizza con su tamaño y masa
     useEffect(() => {
         if (!(product.pizza && product.size && product.mass && firstTime.current)) return
         firstTime.current = false
@@ -78,6 +82,19 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
             index
         })
     }, [product])
+
+    // Actualizar los costos cada vez que se actualiza product.extraIngredients o product.quantity
+    useEffect(() => {
+        if (!(product.pizza && product.size && product.mass && !firstTime.current)) return
+        const extraIngredients = product.extraIngredients ? product.extraIngredients : []
+        updateManyPropertiesProduct({
+            properties: {
+                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], extraIngredients ),
+                totalCostByItem: product.quantity * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], extraIngredients )
+            },
+            index
+        })
+    }, [product.extraIngredients, product.quantity])
 
     function handleChangeSelectPizza(event) {
         const pizza = pizzas.find(pizza => pizza.name === event.target.value)
@@ -127,25 +144,13 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
             count: number,
             total: number * newExtraIngredientsSelected[indexExtraIngredients].totalPrice
         }
-        updateManyPropertiesProduct({
-            properties: {
-                extraIngredients: newExtraIngredientsSelected,
-                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], newExtraIngredientsSelected ),
-                totalCostByItem: product.quantity * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], newExtraIngredientsSelected )
-            },
-            index
-        })
+        updateProduct({ property: 'extraIngredients', value: newExtraIngredientsSelected, index })
     }
 
     function handleChangeQuantityPizzas(event) {
-        updateManyPropertiesProduct({
-            properties: {
-                quantity: event.target.value,
-                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] ),
-                totalCostByItem: event.target.value * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] )
-            },
-            index
-        })
+        const { value } = event.target
+        if ( value < 1 ) return
+        updateProduct({ property: 'quantity', value , index })
     }
 
     return (
@@ -160,10 +165,10 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
         >
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <InputLabel>Pizza</InputLabel>
+                    <InputLabel>Pizza *</InputLabel>
                     <Select
                         value={ product.pizza ? product.pizza.name : ''}
-                        label='Pizza'
+                        label='Pizza *'
                         onChange={handleChangeSelectPizza}
                     >
                         {
@@ -178,10 +183,10 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                 product.pizza ? (
                     <Grid item xs={4}>
                         <FormControl fullWidth>
-                            <InputLabel>Tamaño</InputLabel>
+                            <InputLabel>Tamaño *</InputLabel>
                             <Select
                                 value={ product.size ? product.size.size : ''}
-                                label='Tamaño'
+                                label='Tamaño *'
                                 onChange={handleChangeSizeSelected}
                             >
                                 {
@@ -198,10 +203,10 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                 product.size ? (
                     <Grid item xs={4}>
                         <FormControl fullWidth>
-                            <InputLabel>Masa</InputLabel>
+                            <InputLabel>Masa *</InputLabel>
                             <Select
                                 value={ product.mass ? product.mass.name : ''}
-                                label='Masa'
+                                label='Masa *'
                                 onChange={handleChangeMassSelected}
                             >
                                 {
@@ -215,7 +220,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                 ) : null
             }
             {
-                product.pizza ? (
+                product.pizza && product.size && product.mass ? (
                     <Grid item xs={4}>
                         <FormControl fullWidth>
                             <InputLabel>Ingredientes fuera</InputLabel>
@@ -237,23 +242,27 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
             }
             
             <Grid container item xs={12} spacing={2}>
-                <Grid item xs={12}>
-                    <FormControl fullWidth>
-                        <InputLabel>Ingredientes extra</InputLabel>
-                        <Select
-                            multiple
-                            value={ product.extraIngredients ? product.extraIngredients.map(extraIngredient => extraIngredient.name ) : []}
-                            label='Ingredientes extra'
-                            onChange={handleChangeExtraIngredientsSelected}
-                        >
-                            {
-                                extraIngredientsList.map(extraIngredient => (
-                                    <MenuItem key={extraIngredient.name} value={extraIngredient.name} >{extraIngredient.name}</MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-                </Grid>
+                {
+                    product.pizza && product.size && product.mass ? (
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel>Ingredientes extra</InputLabel>
+                                <Select
+                                    multiple
+                                    value={ product.extraIngredients ? product.extraIngredients.map(extraIngredient => extraIngredient.name ) : []}
+                                    label='Ingredientes extra'
+                                    onChange={handleChangeExtraIngredientsSelected}
+                                >
+                                    {
+                                        extraIngredientsList.map(extraIngredient => (
+                                            <MenuItem key={extraIngredient.name} value={extraIngredient.name} >{extraIngredient.name}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    ) : null
+                }
                 {
                     product.extraIngredients && product.extraIngredients.length ? (
                         <Grid item xs={6}>
@@ -346,7 +355,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                             <Grid item xs={5}>
                                 <TextField
                                     label={'Total'}
-                                    value={ (product.quantity ? product.quantity : 1) * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] ) }
+                                    value={product.totalCostByItem ? product.totalCostByItem : 0 }
                                     InputProps={{
                                         readOnly: true,
                                     }}

@@ -28,6 +28,10 @@ function OrdersUser({ user }) {
         getAllOrders(user.id).then( data => setOrders(data) )
     }, [])
 
+    function updateOrders() {
+        getAllOrders(user.id).then( data => setOrders(data) )
+    }
+
     function handleOpenCollaps(index) {
         const newOpenCollaps = [...openCollaps]
         newOpenCollaps[index] = !newOpenCollaps[index]
@@ -76,7 +80,7 @@ function OrdersUser({ user }) {
                         { openCollaps[1] ? <ExpandLess /> : <ExpandMore /> }
                     </ListItemButton>
                     <Collapse in={openCollaps[1]} timeout='auto' >
-                        <MakeOrder user={user} />
+                        <MakeOrder user={user} updateOrders={updateOrders} />
                     </Collapse>
                 </List>
             </Grid>
