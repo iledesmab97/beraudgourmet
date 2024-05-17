@@ -38,9 +38,9 @@ function SelectStore({ store, updateStore }) {
             </Grid>
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <InputLabel>Tiendas</InputLabel>
+                    <InputLabel>Tiendas *</InputLabel>
                     <Select
-                        label='Tiendas'
+                        label='Tiendas *'
                         value={store ? store.name : ''}
                         onChange={handleChangeStore}
                     >
