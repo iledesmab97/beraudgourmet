@@ -19,15 +19,20 @@ import SelectExtraData from './SelectExtraData'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import { useState, useEffect } from 'react'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
+import dayjs from 'dayjs'
 import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
 import { calculateTotalToPay } from '@/utils/priceCar'
+import { descriptionOrder } from '@/utils/preparingData'
+import { registerOrder } from '@/services/orderApi'
 
-function MakeOrder() {
+function MakeOrder({ user }) {
 
     const [products, setProducts] = useState([{}])
     const [store, setStore] = useState(null)
     const [extraData, setExtraData] = useState({})
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     function handleAddNumberOfProducts() {
         const newProducts = [...products]
@@ -40,6 +45,15 @@ function MakeOrder() {
         newProducts[index] = {
             ...newProducts[index],
             [property]: value
+        }
+        setProducts(newProducts)
+    }
+
+    function updateManyPropertiesProduct({ properties, index }) {
+        const newProducts = [...products]
+        newProducts[index] = {
+            ...newProducts[index],
+            ...properties
         }
         setProducts(newProducts)
     }
@@ -57,8 +71,84 @@ function MakeOrder() {
         setExtraData(value)
     }
 
-    function makeOrder() {
+    async function makeOrder() {
         console.log('creando orden...')
+        console.log('products:', products)
+        console.log('store:', store)
+        console.log('extraData:', extraData)
+        const { applicationDate, deliveryDate, delivery, inputsHome, paymentMethod } = extraData
+        const orderItems = products.map(item => {
+            const { quantity, ingredientsOut, extraIngredients, costItemPerUnit, totalCostByItem} = item
+            const { name } = item.pizza
+            const { size } = item.size
+            const mass = item.mass.name
+            const extra = {}
+            item.extraIngredients && item.extraIngredients.forEach(extraIngredient => {
+                extra[extraIngredient.name] = extraIngredient.count
+            })
+            const description = descriptionOrder({
+                name,
+                itemType: 'pizza',
+                quantity,
+                size,
+                mass,
+                ingredientsModal: ingredientsOut ? ingredientsOut : [],
+                extra
+            })
+            return {
+                name,
+                itemType: 'pizza',
+                size,
+                mass,
+                quantity,
+                ingredientsOut: ingredientsOut ? ingredientsOut : [],
+                extraIngredients: (extraIngredients ? extraIngredients : [] ).map(extraIngredient => ({
+                    name: extraIngredient.name,
+                    quantity: extraIngredient.count
+                })),
+                costItemPerUnit,
+                totalCostByItem,
+                description
+            }
+        })
+        const totalCostByItems = products.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0)
+        const dataOrders = {
+            userId: user.id,
+            storeId: store.id,
+            totalCostByItems,
+            commissions: 0,
+            totalCost: totalCostByItems,
+            applicationDate: applicationDate.format('DD/MM/YYYY - HH:mm a'),
+            deliveryDate: deliveryDate.format('DD/MM/YYYY - HH:mm a'),
+            delivery,
+            paymentMethod,
+            itemsList: orderItems,
+            deliveryInformation: inputsHome
+        }
+        console.log('dataOrders:', dataOrders)
+        const response = await registerOrder(dataOrders)
+        console.log('response:', response)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = 'Se ha creado la orden exitosamente'
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            // updateUserTable({
+            //     id: user.id,
+            //     property: 'Role',
+            //     value: newRole.name
+            // })
+            console.log('Información guardada con exito')
+        }
     }
 
     return (
@@ -81,6 +171,7 @@ function MakeOrder() {
                             product={product}
                             index={index}
                             updateProduct={updateProduct}
+                            updateManyPropertiesProduct={updateManyPropertiesProduct}
                             handleRemoveProduct={handleRemoveProduct}
                         />
                         {
@@ -93,13 +184,35 @@ function MakeOrder() {
                     </Grid>
                 ))
             }
-            <Grid item xs={12}>
-                <Button
-                    variant='contained'
-                    onClick={handleAddNumberOfProducts}
-                >
-                    Añadir
-                </Button>
+            <Grid
+                item
+                container
+                xs={12}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+            >
+                <Grid item>
+                    <Button
+                        variant='contained'
+                        onClick={handleAddNumberOfProducts}
+                    >
+                        Añadir
+                    </Button>
+                </Grid>
+                <Grid item xs={2}>
+                    <TextField
+                        label={'Total ($)'}
+                        value={ products.reduce((acc, cur) => acc + Number(cur.totalCostByItem ? cur.totalCostByItem : 0 ), 0) }
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        inputProps={{
+                            sx:{
+                                textAlign: 'right'
+                            }
+                        }}
+                    />
+                </Grid>
             </Grid>
             <Grid item xs={12}>
                 <Divider sx={{ width: '100%' }} />
@@ -119,7 +232,7 @@ function MakeOrder() {
             >
                 <Button
                     variant='contained'
-                    onClick={makeOrder}
+                    onClick={() => {makeOrder()}}
                 >
                     Crear Orden
                 </Button>
