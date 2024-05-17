@@ -19,7 +19,7 @@ export async function middleware(request) {
             return NextResponse.next()
         } catch(error) {
             console.log(error.message)
-            return NextResponse.redirect(new URL('/menu', request.url))
+            return NextResponse.redirect(new URL('/pizzas', request.url))
         }
     }
 
