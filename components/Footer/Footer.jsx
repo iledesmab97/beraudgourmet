@@ -26,6 +26,8 @@ function Footer () {
   const { openAlertDialogMessage } = useGetAlertDialogMessage({type: 'acceptCookies'})
   const date = new Date().getFullYear()
 
+
+
   return (
     <Box
       sx={{
@@ -235,14 +237,36 @@ function Footer () {
                   }}
                 >
                   <ListItem>
-                    <IconButton>
-                      <FacebookIcon />
-                    </IconButton>
+                    <Link
+                      href={'https://www.facebook.com/BeraudBanquetes?mibextid=LQQJ4d'}
+                      target='_blank'
+                    >
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        <FacebookIcon />
+                      </IconButton>
+                    </Link>
                   </ListItem>
                   <ListItem>
-                    <IconButton>
-                      <InstagramIcon />
-                    </IconButton>
+                    <Link
+                      href={'https://www.instagram.com/beraud_banquetes/?igsh=ODl1MGMyNmZrZDR2&utm_source=qr'}
+                      target='_blank'
+                    >
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        <InstagramIcon />
+                      </IconButton>
+                    </Link>
                   </ListItem>
                   {/* <ListItem>
                     <IconButton>
