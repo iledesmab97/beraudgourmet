@@ -165,10 +165,10 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
         >
             <Grid item xs={4}>
                 <FormControl fullWidth>
-                    <InputLabel>Pizza</InputLabel>
+                    <InputLabel>Pizza *</InputLabel>
                     <Select
                         value={ product.pizza ? product.pizza.name : ''}
-                        label='Pizza'
+                        label='Pizza *'
                         onChange={handleChangeSelectPizza}
                     >
                         {
@@ -183,10 +183,10 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                 product.pizza ? (
                     <Grid item xs={4}>
                         <FormControl fullWidth>
-                            <InputLabel>Tamaño</InputLabel>
+                            <InputLabel>Tamaño *</InputLabel>
                             <Select
                                 value={ product.size ? product.size.size : ''}
-                                label='Tamaño'
+                                label='Tamaño *'
                                 onChange={handleChangeSizeSelected}
                             >
                                 {
@@ -203,10 +203,10 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                 product.size ? (
                     <Grid item xs={4}>
                         <FormControl fullWidth>
-                            <InputLabel>Masa</InputLabel>
+                            <InputLabel>Masa *</InputLabel>
                             <Select
                                 value={ product.mass ? product.mass.name : ''}
-                                label='Masa'
+                                label='Masa *'
                                 onChange={handleChangeMassSelected}
                             >
                                 {
