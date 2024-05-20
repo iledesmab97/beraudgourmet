@@ -76,7 +76,8 @@ function DataPanel({ toolSelected }) {
         <Grid
             item
             container
-            xs={9}
+            xs={12}
+            md={9}
             direction='column'
             gap={1}
             className={styles.DataPanel}
@@ -84,6 +85,7 @@ function DataPanel({ toolSelected }) {
         >
             <Typography
                 variant='encabezado'
+                component={'h1'}
             >
                 {listToolOptions[toolSelected].title}
             </Typography>
