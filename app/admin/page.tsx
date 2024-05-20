@@ -43,7 +43,7 @@ function AdminPlace() {
     })
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('md'))
-    const [totalMatches, setTotalMatches] = useState('')
+    const [totalMatches, setTotalMatches] = useState('null')
     const [openToolLateralBar, setOpenToolLateralBar] = useState(false)
 
     useEffect(() => {
@@ -83,7 +83,7 @@ function AdminPlace() {
 
     function handleOpenToolLateralBar(value: boolean) {
         setOpenToolLateralBar(value)
-      }
+    }
 
     return (
         <Container maxWidth='lg'>
@@ -119,7 +119,7 @@ function AdminPlace() {
                             </IconButton>
                         </>
 
-                    ) : <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                    ) : totalMatches === 'false' ? <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} /> : null
                 }
                 <DataPanel toolSelected={toolSelected} />
             </Grid>
