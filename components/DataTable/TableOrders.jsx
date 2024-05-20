@@ -144,12 +144,7 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     return (
-        <Box
-            sx={{
-                height: '75%',
-                position: 'relative'
-            }}
-        >
+        <>
             <TableContainer className={styles.DataTable} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
@@ -201,20 +196,6 @@ function TableOrders({ orders, updateOrders }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/* <Box
-                sx={{
-                    position: 'absolute',
-                    bottom: '102%',
-                    right: '0px'
-                }}
-            >
-                <Button
-                    variant='contained'
-                    onClick={() => {handleOpenMakeOrder(true)}}
-                >
-                    Nueva Orden
-                </Button>
-            </Box> */}
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -258,10 +239,7 @@ function TableOrders({ orders, updateOrders }) {
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
                 ) : null
             }
-            {/* {
-                <ModalMakeOrder openMakeOrder={openMakeOrder} handleOpenMakeOrder={handleOpenMakeOrder} />
-            } */}
-        </Box>
+        </>
     )
 }
 
