@@ -25,6 +25,9 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { getPizzas, getPizzaCosts, removePizza, updatePizza } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
@@ -51,6 +54,9 @@ function TablePizzas() {
     const [pizzas, setPizzas] = useState( products ? products : [])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const pizzaNew = useRef(false)
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'))
+    const [totalMatches, setTotalMatches] = useState(false)
 
     useEffect(() => {
         if (products) setPizzas(products)
@@ -60,6 +66,10 @@ function TablePizzas() {
         if (!pizzaNew.current) return
         setOpenPizzaDetail(true)
     }, [currentPizza])
+
+    useEffect(() => {
+        setTotalMatches(matches)
+    }, [matches])
 
     function handleOpenPizzaDetail(value) {
         setOpenPizzaDetail(value)
@@ -238,14 +248,32 @@ function TablePizzas() {
                     right: '16px'
                 }}
             >
-                <Button
-                    variant='contained'
-                    startIcon={<AddIcon />}
-                    onClick={addNewPizza}
-                    disabled={!products}
-                >
-                    Nueva Pizza
-                </Button>
+                {
+                    !totalMatches ? (
+                        <Button
+                            variant='contained'
+                            startIcon={<AddIcon />}
+                            onClick={addNewPizza}
+                            disabled={!products}
+                        >
+                            Nueva Pizza
+                        </Button>
+                    ) : (
+                        <IconButton
+                            onClick={addNewPizza}
+                            disabled={!products}
+                            sx={{
+                                bgcolor: '#295386',
+                                color: 'white',
+                                '&:hover': {
+                                    color: '#295386'
+                                }
+                            }}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    )
+                }
             </Box>
         </>
     )
