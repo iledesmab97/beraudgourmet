@@ -115,11 +115,7 @@ function TableUsers({ users, handleChangeUsers }) {
     }
 
     return (
-        <Box
-            sx={{
-                height: '70%'
-            }}
-        >
+        <>
             <TableContainer
                 component={Paper}
                 sx={{
@@ -186,7 +182,7 @@ function TableUsers({ users, handleChangeUsers }) {
             {
                 currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUserTable={updateUserTable} /> : null
             }
-        </Box>
+        </>
     )
 }
 
