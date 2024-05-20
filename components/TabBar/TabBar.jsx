@@ -16,6 +16,9 @@ function TabBar({ tabSelected, handleChange, listTabs }) {
             <Tabs
                 value={tabSelected}
                 onChange={handleChange}
+                variant="scrollable"
+                scrollButtons
+                allowScrollButtonsMobile
             >
                 {
                     listTabs.map(tab => (
