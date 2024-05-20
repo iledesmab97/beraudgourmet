@@ -47,8 +47,6 @@ function TablePizzas() {
     const [currentPizza, setCurrentPizza] = useState(null)
     const [openPizzaDetail, setOpenPizzaDetail] = useState(false)
     const open = Boolean(anchorEl)
-    // const fileInput = useRef()
-    // const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'pizzas'})
     const [pizzas, setPizzas] = useState( products ? products : [])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
@@ -151,48 +149,8 @@ function TablePizzas() {
         handleCloseMenu()
     }
 
-    // async function changeStatus() {
-    //     const body = {
-    //         property: 'closed',
-    //         value: !currentPizza.closed
-    //     }
-    //     const response = await updateOrder(currentPizza.id, body)
-    //     await handleCloseMenu()
-    //     await getAllOrders().then(data => updatePizzas(data))
-    // }
-
-    // async function addUrl() {
-    //     fileInput.current.click()
-    // }
-
-    // async function handleFileSelected(event) {
-    //     const file = event.target.files[0]
-    //     const formData = new FormData()
-    //     formData.append('file', file)
-    //     const response = await sendImage(currentPizza.id, formData)
-    //     const data = await response.json()
-    //     await getAllOrders().then(data => updatePizzas(data))
-    //     handleUpdateAlertMessage({
-    //         checked: true,
-    //         text: data.message,
-    //         status: data.status
-    //     })
-    //     handleCloseMenu()
-    // }
-
-    // function bColorCell(order) {
-    //     if (order.closed) return '#4e5762'
-    //     const when = howMuchLeft(order.deliveryDate)
-    //     return colorsCell[when]
-    // }
-
     return (
-        <Box
-            sx={{
-                position: 'relative',
-                height: '70%'
-            }}
-        >
+        <>
             <TableContainer className={styles.DataTable} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
@@ -252,43 +210,20 @@ function TablePizzas() {
                 open={open}
                 onClose={handleCloseMenu}
             >
-                {/* {
-                    currentPizza && !currentPizza.url ?
-                    (
-                        <MenuItem
-                            onClick={addUrl}
-                        >
-                            <>
-                                subir imagen
-                                <input type='file' onChange={handleFileSelected} ref={fileInput} className={styles.fileInput} />
-                            </>
-                        </MenuItem>
-                    ) : null
-                } */}
                 <MenuItem
                     onClick={handleStatusPizza}
                 >
-                    {/* <IconButton>
-                        <VisibilityIcon />
-                    </IconButton> */}
                     { currentPizza?.status ? 'Desactivar' : 'Activar'}
                 </MenuItem>
                 <MenuItem
                     onClick={() => { handleOpenPizzaDetail(true) }}
                 >
-                    {/* <IconButton>
-                        <VisibilityIcon />
-                    </IconButton> */}
                     Ver Detalles
                 </MenuItem>
                 <MenuItem
                     onClick={handleRemovePizza}
                 >
-                    {/* <IconButton>
-                        <EditIcon />
-                    </IconButton> */}
                     Eliminar
-                    {/* { currentPizza?.closed ? 'Pendiente' : 'Entregado' } */}
                 </MenuItem>
             </Menu>
             {
@@ -312,7 +247,7 @@ function TablePizzas() {
                     Nueva Pizza
                 </Button>
             </Box>
-        </Box>
+        </>
     )
 }
 
