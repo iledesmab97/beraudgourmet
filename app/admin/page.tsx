@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import ToolLateralBar from '@/components/ToolLateralBar/ToolLateralBar'
 import DataPanel from '@/components/DataPanel/DataPanel'
 import AlertMessage from '@/components/AlertMessage/AlertMessage'
@@ -9,12 +8,19 @@ import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
 
+import MenuIcon from '@mui/icons-material/Menu'
+
+import { useState, useEffect } from 'react'
 import useGetUser from '@/hooks/useGetUser';
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetStoreList from '@/hooks/useGetStoreList'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import { useLoadScript } from "@react-google-maps/api"
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 import { lookingForUserLoged } from '@/services/userApi'
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
@@ -34,7 +40,11 @@ function AdminPlace() {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries: ['places'],
-    });
+    })
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('md'))
+    const [totalMatches, setTotalMatches] = useState('')
+    const [openToolLateralBar, setOpenToolLateralBar] = useState(false)
 
     useEffect(() => {
         lookingForUserLoged()
@@ -63,9 +73,17 @@ function AdminPlace() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        setTotalMatches(String(matches))
+    }, [matches])
+
     function handleToolSelected(event: any) {
         setToolSelected(event.target.textContent)
     }
+
+    function handleOpenToolLateralBar(value: boolean) {
+        setOpenToolLateralBar(value)
+      }
 
     return (
         <Container maxWidth='lg'>
@@ -75,8 +93,34 @@ function AdminPlace() {
                 alignItems='stretch'
                 justifyContent='space-between'
                 className={styles.AdminContainer}
+                sx={{
+                    position: 'relative'
+                }}
             >
-                <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                {
+                    totalMatches === 'true' ? (
+                        <>
+                            <Drawer
+                                open={openToolLateralBar}
+                                onClose={() => {handleOpenToolLateralBar(false)}}
+                                anchor='left'
+                            >
+                                <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                            </Drawer>
+                            <IconButton
+                                onClick={() => {handleOpenToolLateralBar(true)}}
+                                sx={{
+                                position: 'absolute',
+                                top: '16px',
+                                right: '0',
+                                }}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        </>
+
+                    ) : <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                }
                 <DataPanel toolSelected={toolSelected} />
             </Grid>
             <AlertMessage/>
