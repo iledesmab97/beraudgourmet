@@ -8,6 +8,10 @@ const initialState = {
     acceptCookies: {
         name: 'acceptCookies',
         open: false
+    },
+    recoverPassword: {
+        name: 'recoverPassword',
+        open: false
     }
 }
 

@@ -108,3 +108,21 @@ export function updateAccount(id, data) {
         .then(res => res.json())
         .then(data => data)
 }
+
+export function searchUser(email) {
+    if (!email) return null
+    return fetch(`${PATH_BACK}/users/registered?email=${email}`)
+        .then(res => res.json())
+        .then(data => {
+            return data
+        })
+}
+
+export function requestPasswordRecovery(email) {
+    if (!email) return null
+    return fetch(`${PATH_BACK}/users/request-password-recovery/${email}`)
+        .then(res => res.json())
+        .then(data => {
+            return data
+        })
+}
