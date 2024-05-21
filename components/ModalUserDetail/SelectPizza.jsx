@@ -159,7 +159,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
             item
             spacing={2}
             sx={{
-                width: '97%',
+                width: '100%',
                 position: 'relative'
             }}
         >
@@ -221,7 +221,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
             }
             {
                 product.pizza && product.size && product.mass ? (
-                    <Grid item xs={4}>
+                    <Grid item xs={12}>
                         <FormControl fullWidth>
                             <InputLabel>Ingredientes fuera</InputLabel>
                             <Select
@@ -265,7 +265,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                 }
                 {
                     product.extraIngredients && product.extraIngredients.length ? (
-                        <Grid item xs={6}>
+                        <Grid item xs={10} sm={7} md={6}>
                             <List>
                                 {
                                     product.extraIngredients.map((extraIngredient, index) => (
@@ -277,7 +277,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                                                         spacing={1}
                                                         alignItems={'center'}
                                                     >
-                                                        <Grid item xs={5}>
+                                                        <Grid item xs={6} md={5} >
                                                             <TextField
                                                                 label={extraIngredient.name}
                                                                 type='number'
@@ -298,7 +298,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                                                         >
                                                             <Typography>:</Typography>
                                                         </Grid>
-                                                        <Grid item xs={3}>
+                                                        <Grid item xs={5} sm={4} md={3} >
                                                             <TextField
                                                                 label={'Costo'}
                                                                 value={ extraIngredient.total }
@@ -327,11 +327,13 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                         <Grid
                             container
                             item
-                            xs={4}
+                            xs={12}
+                            sm={5}
+                            md={4}
                             spacing={1}
                             alignItems={'center'}
                         >
-                            <Grid item xs={6}>
+                            <Grid item xs={4} sm={6}>
                                 <TextField
                                     label={'Cantidad'}
                                     type='number'
@@ -352,7 +354,7 @@ function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduc
                             >
                                 <Typography>:</Typography>
                             </Grid>
-                            <Grid item xs={5}>
+                            <Grid item xs={4} sm={5} >
                                 <TextField
                                     label={'Total'}
                                     value={product.totalCostByItem ? product.totalCostByItem : 0 }
