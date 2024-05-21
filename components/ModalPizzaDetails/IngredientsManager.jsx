@@ -72,64 +72,71 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
     return (
         <Grid
             item
-            sx={{
-                width: '50%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '16px'
-            }}
+            xs={12}
+            container
+            direction={'column'}
+            alignItems={'center'}
+            spacing={2}
         >
-            <Typography variant='title'>Buscar</Typography>
-            <FormControl fullWidth>
-                <InputLabel>Ingredientes</InputLabel>
-                <Select
-                    label='Ingredientes'
-                    value={ingredientSelected}
-                    onChange={(event) => { handleChange(event.target.value) }}
-                >
-                    {
-                        allIngredients.map(ingredient => (
-                            <MenuItem value={ingredient} key={ingredient}>{ingredient}</MenuItem>
-                        ))
-                    }
-                    <MenuItem value='Nuevo Ingrediente'>Nuevo Ingrediente</MenuItem>
-                </Select>
-            </FormControl>
+            <Grid item>
+                <Typography variant='title'>Buscar Ingrediente</Typography>
+            </Grid>
+            <Grid item sx={{ minWidth: '150px'}}>
+                <FormControl fullWidth>
+                    <InputLabel>Ingredientes</InputLabel>
+                    <Select
+                        label='Ingredientes'
+                        value={ingredientSelected}
+                        onChange={(event) => { handleChange(event.target.value) }}
+                    >
+                        {
+                            allIngredients.map(ingredient => (
+                                <MenuItem value={ingredient} key={ingredient}>{ingredient}</MenuItem>
+                            ))
+                        }
+                        <MenuItem value='Nuevo Ingrediente'>Nuevo Ingrediente</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
             {
                 ingredientSelected === 'Nuevo Ingrediente' ? (
-                    <TextField
-                        value={ingredientName}
-                        onChange={changeIngredientName}
-                    />
+                    <Grid item>
+                        <TextField
+                            value={ingredientName}
+                            onChange={changeIngredientName}
+                        />
+                    </Grid>
+
                 ) : null
             }
-            <Box
-                sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-around',
-                    alignItems: 'center'
-                }}
-            >
-                {
-                    ingredientSelected === 'Nuevo Ingrediente' ? (
-                        <Button
-                            variant='contained'
-                            onClick={addNewIngredient}
-                        >
-                            Agregar
-                        </Button>
-                    ) : (
-                        <Button
-                            variant='contained'
-                            onClick={deleteIngredient}
-                        >
-                            Eliminar
-                        </Button>
-                    )
-                }
-            </Box>
+            <Grid item>
+                <Box
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        alignItems: 'center'
+                    }}
+                >
+                    {
+                        ingredientSelected === 'Nuevo Ingrediente' ? (
+                            <Button
+                                variant='contained'
+                                onClick={addNewIngredient}
+                            >
+                                Agregar
+                            </Button>
+                        ) : (
+                            <Button
+                                variant='contained'
+                                onClick={deleteIngredient}
+                            >
+                                Eliminar
+                            </Button>
+                        )
+                    }
+                </Box>
+            </Grid>
         </Grid>
     )
 }
