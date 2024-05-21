@@ -18,7 +18,6 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
         getAllIngredients()
             .then(totalListIngredients => setAllIngredients(totalListIngredients.map(ingredient => ingredient.name)))
         getAllExtraIngredients()
-            // .then(totalListExtraIngredients => setAllExtraIngredients(totalListExtraIngredients.map(extra => extra.name)))
             .then(totalListExtraIngredients => setAllExtraIngredients(totalListExtraIngredients))
     }, [])
 
@@ -77,26 +76,26 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
     }
 
     return (
-        <Box
+        <Grid
+            container
+            direction={'column'}
+            alignItems={'center'}
+            spacing={2}
             sx={{
                 width: '100%',
-                display: 'flex',
-                flexDirection: 'column'
             }}
         >
-            <Typography variant='title' sx={{ alignSelf: 'center' }}>
-                Ingredientes
-            </Typography>
+            <Grid item>
+                <Typography variant='title' sx={{ alignSelf: 'center' }}>
+                    Ingredientes
+                </Typography>
+            </Grid>
             <Grid
+                item
                 container
                 alignItems={'flex-start'}
                 justifyContent={'space-between'}
-                sx={{
-                    // pr: '10%',
-                    // display: 'flex',
-                    // alignItems: 'flex-start',
-                    // justifyContent: 'space-between'
-                }}
+                spacing={2}
             >
                 <ListPizzaIngredients
                     ingredients={ingredients}
@@ -112,15 +111,11 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
                 <Grid
                     container
                     item
-                    xs={8}
-                    direction={'column'}
-                    alignItems={'center'}
-                    justifyContent={'flex-start'}
-                    sx={{
-                        display:'flex',
-                        height: '100%',
-                        gap: '32px'
-                    }}
+                    xs={12}
+                    sm={6}
+                    md={8}
+                    justifyContent={'center'}
+                    spacing={3}
                 >
                     <IngredientsManager
                         allIngredients={allIngredients}
@@ -132,7 +127,7 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
                     />
                 </Grid>
             </Grid>
-        </Box>
+        </Grid>
     )
 }
 
