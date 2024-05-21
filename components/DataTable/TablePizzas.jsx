@@ -25,6 +25,9 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { getPizzas, getPizzaCosts, removePizza, updatePizza } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
@@ -47,12 +50,13 @@ function TablePizzas() {
     const [currentPizza, setCurrentPizza] = useState(null)
     const [openPizzaDetail, setOpenPizzaDetail] = useState(false)
     const open = Boolean(anchorEl)
-    // const fileInput = useRef()
-    // const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'pizzas'})
     const [pizzas, setPizzas] = useState( products ? products : [])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const pizzaNew = useRef(false)
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'))
+    const [totalMatches, setTotalMatches] = useState(false)
 
     useEffect(() => {
         if (products) setPizzas(products)
@@ -62,6 +66,10 @@ function TablePizzas() {
         if (!pizzaNew.current) return
         setOpenPizzaDetail(true)
     }, [currentPizza])
+
+    useEffect(() => {
+        setTotalMatches(matches)
+    }, [matches])
 
     function handleOpenPizzaDetail(value) {
         setOpenPizzaDetail(value)
@@ -151,48 +159,8 @@ function TablePizzas() {
         handleCloseMenu()
     }
 
-    // async function changeStatus() {
-    //     const body = {
-    //         property: 'closed',
-    //         value: !currentPizza.closed
-    //     }
-    //     const response = await updateOrder(currentPizza.id, body)
-    //     await handleCloseMenu()
-    //     await getAllOrders().then(data => updatePizzas(data))
-    // }
-
-    // async function addUrl() {
-    //     fileInput.current.click()
-    // }
-
-    // async function handleFileSelected(event) {
-    //     const file = event.target.files[0]
-    //     const formData = new FormData()
-    //     formData.append('file', file)
-    //     const response = await sendImage(currentPizza.id, formData)
-    //     const data = await response.json()
-    //     await getAllOrders().then(data => updatePizzas(data))
-    //     handleUpdateAlertMessage({
-    //         checked: true,
-    //         text: data.message,
-    //         status: data.status
-    //     })
-    //     handleCloseMenu()
-    // }
-
-    // function bColorCell(order) {
-    //     if (order.closed) return '#4e5762'
-    //     const when = howMuchLeft(order.deliveryDate)
-    //     return colorsCell[when]
-    // }
-
     return (
-        <Box
-            sx={{
-                position: 'relative',
-                height: '70%'
-            }}
-        >
+        <>
             <TableContainer className={styles.DataTable} component={Paper}>
                 <Table stickyHeader>
                     <TableHead>
@@ -252,43 +220,20 @@ function TablePizzas() {
                 open={open}
                 onClose={handleCloseMenu}
             >
-                {/* {
-                    currentPizza && !currentPizza.url ?
-                    (
-                        <MenuItem
-                            onClick={addUrl}
-                        >
-                            <>
-                                subir imagen
-                                <input type='file' onChange={handleFileSelected} ref={fileInput} className={styles.fileInput} />
-                            </>
-                        </MenuItem>
-                    ) : null
-                } */}
                 <MenuItem
                     onClick={handleStatusPizza}
                 >
-                    {/* <IconButton>
-                        <VisibilityIcon />
-                    </IconButton> */}
                     { currentPizza?.status ? 'Desactivar' : 'Activar'}
                 </MenuItem>
                 <MenuItem
                     onClick={() => { handleOpenPizzaDetail(true) }}
                 >
-                    {/* <IconButton>
-                        <VisibilityIcon />
-                    </IconButton> */}
                     Ver Detalles
                 </MenuItem>
                 <MenuItem
                     onClick={handleRemovePizza}
                 >
-                    {/* <IconButton>
-                        <EditIcon />
-                    </IconButton> */}
                     Eliminar
-                    {/* { currentPizza?.closed ? 'Pendiente' : 'Entregado' } */}
                 </MenuItem>
             </Menu>
             {
@@ -303,16 +248,34 @@ function TablePizzas() {
                     right: '16px'
                 }}
             >
-                <Button
-                    variant='contained'
-                    startIcon={<AddIcon />}
-                    onClick={addNewPizza}
-                    disabled={!products}
-                >
-                    Nueva Pizza
-                </Button>
+                {
+                    !totalMatches ? (
+                        <Button
+                            variant='contained'
+                            startIcon={<AddIcon />}
+                            onClick={addNewPizza}
+                            disabled={!products}
+                        >
+                            Nueva Pizza
+                        </Button>
+                    ) : (
+                        <IconButton
+                            onClick={addNewPizza}
+                            disabled={!products}
+                            sx={{
+                                bgcolor: '#295386',
+                                color: 'white',
+                                '&:hover': {
+                                    color: '#295386'
+                                }
+                            }}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    )
+                }
             </Box>
-        </Box>
+        </>
     )
 }
 

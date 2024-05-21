@@ -17,12 +17,23 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 750,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '500px',
+        md: '750px'
+    },
+    height: {
+        xs: '80%',
+        md: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 4,
+        md: 5
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

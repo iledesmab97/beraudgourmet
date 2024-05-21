@@ -76,7 +76,8 @@ function DataPanel({ toolSelected }) {
         <Grid
             item
             container
-            xs={9}
+            xs={12}
+            md={9}
             direction='column'
             gap={1}
             className={styles.DataPanel}
@@ -84,23 +85,34 @@ function DataPanel({ toolSelected }) {
         >
             <Typography
                 variant='encabezado'
+                component={'h1'}
             >
                 {listToolOptions[toolSelected].title}
             </Typography>
             <TabBar tabSelected={tabSelected} handleChange={handleChange} listTabs={listToolOptions[toolSelected].listTabs} />
-            {
-                toolSelected === 'Orders' ? <TableOrders orders={orders} updateOrders={updateOrders} /> : null
-            }
-            {
-                toolSelected === 'Pizzas' ? <TablePizzas /> : null
-            }
-            {
-                toolSelected === 'Stores' ? <TableStores /> : null
-            }
-            {
-                toolSelected === 'Users' ? <TableUsers users={users} handleChangeUsers={handleChangeUsers} /> : null
-            }
-
+            <Box
+                sx={{
+                    height: {
+                        xs: '60%',
+                        sm: '80%',
+                        md: '70%',
+                    },
+                    position: 'relative'
+                }}
+            >
+                {
+                    toolSelected === 'Orders' ? <TableOrders orders={orders} updateOrders={updateOrders} /> : null
+                }
+                {
+                    toolSelected === 'Pizzas' ? <TablePizzas /> : null
+                }
+                {
+                    toolSelected === 'Stores' ? <TableStores /> : null
+                }
+                {
+                    toolSelected === 'Users' ? <TableUsers users={users} handleChangeUsers={handleChangeUsers} /> : null
+                }
+            </Box>
         </Grid>
     )
 }
