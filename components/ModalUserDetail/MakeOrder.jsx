@@ -215,7 +215,7 @@ function MakeOrder({ user, updateOrders }) {
                         Añadir
                     </Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3} sm={2} >
                     <TextField
                         label={'Total ($)'}
                         value={ products.reduce((acc, cur) => acc + Number(cur.totalCostByItem ? cur.totalCostByItem : 0 ), 0) }
