@@ -162,23 +162,27 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
 
     return (
         <Grid
-            // direction={'columns'}
-            // alignItems={'center'}
-            sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '24px'
-            }}
+            item
+            xs={12}
+            container
+            direction={'column'}
+            alignItems={'center'}
+            spacing={2}
         >
-            <Typography variant='title'>Ingredientes Extra</Typography>
+            <Grid item>
+                <Typography variant='title'>Ingredientes Extra</Typography>
+            </Grid>
             <Grid
+                item
                 container
                 justifyContent={'space-around'}
-                spacing={2}
+                spacing={1}
             >
-                <Grid item xs={7}>
+                <Grid
+                    item
+                    xs={8}
+                    md={7}
+                >
                     <FormControl fullWidth>
                         <InputLabel>Ingredientes Extra</InputLabel>
                         <Select
@@ -197,7 +201,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                 </Grid>
                 {
                     currentExtraIngredient.cost ? (
-                        <Grid item xs={4}>
+                        <Grid item xs={4} sm={3} md={3}>
                             <TextField
                                 value={inputCost}
                                 onChange={(event) => {handleChangeInputCost(event.target.value)}}
@@ -216,9 +220,13 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                                 onChange={(event) => {handleChangeInputName(event.target.value)}}
                                 error={Boolean(errors.name)}
                                 helperText={errors.name}
-                                placeholder='Nombre Ingrediente Extra'
+                                placeholder='Nombre ...'
                                 sx={{
-                                    width: '70%'
+                                    width: {
+                                        xs: '60%',
+                                        sm: '60%',
+                                        md: '70%',
+                                    }
                                 }}
                             />
                             <TextField
@@ -228,7 +236,11 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                                 helperText={errors.cost}
                                 placeholder='Costo'
                                 sx={{
-                                    width: '20%'
+                                    width: {
+                                        xs: '30%',
+                                        sm: '35%',
+                                        md: '20%'
+                                    }
                                 }}
                             />
                         </Grid>
@@ -238,6 +250,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
             {
                 currentExtraIngredient.cost ? (
                     <Grid
+                        item
                         sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -259,13 +272,15 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                         </Button>
                     </Grid>
                 ) : currentExtraIngredient.cost === '' ? (
-                    <Button
-                        variant='contained'
-                        onClick={addExtraIngredient}
-                        disabled={loading}
-                    >
-                        Agregar
-                    </Button>
+                    <Grid item>
+                        <Button
+                            variant='contained'
+                            onClick={addExtraIngredient}
+                            disabled={loading}
+                        >
+                            Agregar
+                        </Button>
+                    </Grid>
                 ) : null
             }
         </Grid>
