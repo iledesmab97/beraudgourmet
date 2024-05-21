@@ -12,6 +12,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import GoogleIcon from '@mui/icons-material/Google';
 
 import useGetModal from '@/hooks/useGetModal'
+import useGetAlertDialogMessage from '@/hooks/useGetAlertDialogMessage'
 
 import { fetchAuthGoogle } from '@/services/authApi'
 import { Typography } from '@mui/material'
@@ -35,6 +36,13 @@ async function signInGoogle() {
 function UserNew({ inputs, handleChange, errors, editing, currentUser, handleChangeNumberPhone, logInUser, signUp }) {
 
     const {handleOpenModal} = useGetModal({modalType: 'legal'})
+
+    const { openAlertDialogMessage } = useGetAlertDialogMessage({ type: 'recoverPassword'})
+
+    function recoverPassword() {
+        const { email } = inputs
+        openAlertDialogMessage()
+    }
 
     return (
         <>
@@ -126,16 +134,9 @@ function UserNew({ inputs, handleChange, errors, editing, currentUser, handleCha
                             sx={styleButtons}
                             variant='outlined'
                             color='secondary'
+                            onClick={recoverPassword}
                         >
                             ¿Olvidó la contraseña?  
-                        </Button>
-                        <Button
-                            fullWidth
-                            variant='outlined'
-                            sx={styleButtons}
-                            color='secondary'
-                        >
-                            Crear cuenta nueva
                         </Button>
                     </Box>
                 )
