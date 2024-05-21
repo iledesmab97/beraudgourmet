@@ -24,13 +24,12 @@ function OtherData({ user, store, dateEmited, dateToRecive, deliveryInformation 
             <Divider sx={{ width: '100%'}} />
 
             <DatesData dates={{dateEmited, dateToRecive}} />
-            <Divider sx={{ width: '100%'}} />
 
             {
                 deliveryInformation ?
                     <>
-                        <DeliveryData deliveryInformation={deliveryInformation} />
                         <Divider sx={{ width: '100%'}} />
+                        <DeliveryData deliveryInformation={deliveryInformation} />
                     </> : null
             }
         </Box>

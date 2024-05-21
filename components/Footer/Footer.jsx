@@ -15,11 +15,18 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 import Link from 'next/link'
 
+import useGetModal from '@/hooks/useGetModal'
+import useGetAlertDialogMessage from '@/hooks/useGetAlertDialogMessage'
+
 import { phoneNumber } from '@/utils/contact'
 
 function Footer () {
 
+  const {handleOpenModal} = useGetModal({modalType: 'legal'})
+  const { openAlertDialogMessage } = useGetAlertDialogMessage({type: 'acceptCookies'})
   const date = new Date().getFullYear()
+
+
 
   return (
     <Box
@@ -230,14 +237,36 @@ function Footer () {
                   }}
                 >
                   <ListItem>
-                    <IconButton>
-                      <FacebookIcon />
-                    </IconButton>
+                    <Link
+                      href={'https://www.facebook.com/BeraudBanquetes?mibextid=LQQJ4d'}
+                      target='_blank'
+                    >
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        <FacebookIcon />
+                      </IconButton>
+                    </Link>
                   </ListItem>
                   <ListItem>
-                    <IconButton>
-                      <InstagramIcon />
-                    </IconButton>
+                    <Link
+                      href={'https://www.instagram.com/beraud_banquetes/?igsh=ODl1MGMyNmZrZDR2&utm_source=qr'}
+                      target='_blank'
+                    >
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        <InstagramIcon />
+                      </IconButton>
+                    </Link>
                   </ListItem>
                   {/* <ListItem>
                     <IconButton>
@@ -284,7 +313,17 @@ function Footer () {
               }}
             >
               <Grid item>
-                <Typography variant='footer_text_link'>Terminos & Condiciones</Typography>
+                <Typography
+                  variant='footer_text_link'
+                  onClick={() => {handleOpenModal('legal')}}
+                  sx={{
+                    '&:hover': {
+                      cursor: 'pointer'
+                    }
+                  }}
+                >
+                  Terminos & Condiciones
+                </Typography>
               </Grid>
               {/* <Grid item>
                 <Typography variant='footer_text_link'>Privaci</Typography>
@@ -293,7 +332,17 @@ function Footer () {
                 <Typography variant='footer_text_link'>Security</Typography>
               </Grid> */}
               <Grid item>
-                <Typography variant='footer_text_link'>Declaración de Cookies</Typography>
+                <Typography
+                  variant='footer_text_link'
+                  onClick={openAlertDialogMessage}
+                  sx={{
+                    '&:hover': {
+                      cursor: 'pointer'
+                    }
+                  }}
+                >
+                  Declaración de Cookies
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

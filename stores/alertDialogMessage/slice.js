@@ -5,6 +5,14 @@ const initialState = {
         name: 'phoneMissing',
         open: false
     },
+    acceptCookies: {
+        name: 'acceptCookies',
+        open: false
+    },
+    recoverPassword: {
+        name: 'recoverPassword',
+        open: false
+    }
 }
 
 export const alertDialogMessageSlice = createSlice({

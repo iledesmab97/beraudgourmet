@@ -13,6 +13,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+import Typography from '@mui/material/Typography'
 
 import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -119,12 +120,14 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     return (
         <Grid
             item
-            xs={4}
+            xs={12}
+            sm={6}
+            md={4}
             sx={{
-                // width: 'fit-content',
                 position: 'relative'
             }}
         >
+            <Typography variant='title' >Ingredientes de la Pizza</Typography>
             {
                 allIngredients.length ? (
                     <List
@@ -223,7 +226,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
                 } : {
                     position: 'absolute',
                     bottom: '0px',
-                    left: '100%'
+                    right: '0px'
                 }}
                 onClick={handleEdit}
                 disabled={loading}

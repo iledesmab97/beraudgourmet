@@ -1,18 +1,15 @@
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
-// import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-// import Divider from '@mui/material/Divider'
+import Divider from '@mui/material/Divider'
 
-// import InputUpdate from '@/components/InputUpdate/InputUpdate'
 import UserData from './UserData'
-// import Schedules from './Schedules'
+import OrdersUser from './OrdersUser'
 
 import { useState, useEffect } from 'react'
-// import useGetStoreList from '@/hooks/useGetStoreList'
 
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
-// import { updateStore } from '@/services/storeApi'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
@@ -22,13 +19,28 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 750,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '500px',
+        md: '750px'
+    },
+    height: {
+        xs: '80%',
+        md: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
-    pb: 10,
+    p: {
+        xs: 2,
+        sm: 4,
+        md: 5
+    },
+    pb: {
+        xs: 10,
+        sm: 10,
+        md: 10
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -65,42 +77,6 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUserTa
         setErrors(validation(newUser))
     }
 
-    // const { storeList, handleAddStoreList, handleUpdateStoreList, updateScheduleHoursStore } = useGetStoreList()
-
-    // function updateDataStoreState({ id, property, value }) {
-    //     if (property === 'lat' || property === 'lng') {
-    //         setUser(prevState => ({
-    //             ...prevState,
-    //             coordinates: {
-    //                 ...prevState.coordinates,
-    //                 [property]: value
-    //             }
-    //         }))
-    //     } else {
-    //         setUser(prevState => ({
-    //             ...prevState,
-    //             [property]: value
-    //         }))
-    //     }
-    //     handleUpdateStoreList({ id, property, value })
-    // }
-
-    // function updateScheduleHoursStoreState({ schedule, newScheduleHours }) {
-    //     const newState = {
-    //         ...user
-    //     }
-    //     newState[schedule] = {
-    //         ...newState[schedule],
-    //         [schedule]: newScheduleHours.map(scheudleHour => ({
-    //             id: scheudleHour.id,
-    //             days: scheudleHour.day,
-    //             hours: scheudleHour.startTime + ' - ' + scheudleHour.endTime
-    //         }))
-    //     }
-    //     setUser(newState)
-    //     updateScheduleHoursStore(newState)
-    // }
-
     return (
         <Modal
             open={openModal}
@@ -130,6 +106,8 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUserTa
                         updateUserTable={updateUserTable}
                         handleChangeUser={handleChangeUser}
                     />
+                    <Divider sx={{width: '100%'}}/>
+                    <OrdersUser user={user} />
                 </Box>
             </Box>
         </Modal>

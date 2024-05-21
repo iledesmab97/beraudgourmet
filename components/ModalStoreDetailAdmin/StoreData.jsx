@@ -28,10 +28,7 @@ function StoreData({ store, updateDataStoreState }) {
                         updateProperty={updateStore}
                         updateState={updateDataStoreState}
                         properties={{ property: 'name', id: store.id}}
-                        // handleChangeInput={handleChangeInput}
-                        // pizzaNew={storeNew}
                         placeholder={'Nombre'}
-                        // errors={errors?.name}
                     />
                 </Grid>
             </Grid>
@@ -52,10 +49,7 @@ function StoreData({ store, updateDataStoreState }) {
                         updateProperty={updateStore}
                         updateState={updateDataStoreState}
                         properties={{ property: 'city', id: store.id}}
-                        // handleChangeInput={handleChangeInput}
-                        // pizzaNew={storeNew}
                         placeholder={'Ciudad'}
-                        // errors={errors?.name}
                     />
                 </Grid>
             </Grid>
@@ -76,10 +70,7 @@ function StoreData({ store, updateDataStoreState }) {
                         updateProperty={updateStore}
                         updateState={updateDataStoreState}
                         properties={{ property: 'phone', id: store.id}}
-                        // handleChangeInput={handleChangeInput}
-                        // pizzaNew={storeNew}
                         placeholder={'Teléfono'}
-                        // errors={errors?.name}
                     />
                 </Grid>
             </Grid>
@@ -88,23 +79,32 @@ function StoreData({ store, updateDataStoreState }) {
                 xs={12}
                 container
                 justifyContent={'space-between'}
-                alignItems={'center'}
+                alignItems={'baseline'}
                 spacing={2}
             >
-                <Grid item xs={2}>
-                    <Typography align='right'>Coordenadas:</Typography>
+                <Grid item xs={12} sm={2}>
+                    <Typography
+                        sx={{
+                            textAlign: {
+                                xs: 'left',
+                                sm: 'right'
+                            }
+                        }}
+                    >
+                        Coordenadas:
+                    </Typography>
                 </Grid>
                 <Grid
                     item
-                    // xs={8}
                     container
                     xs
                     spacing={1}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        alignItems: 'center'
+                    direction={{
+                        xs:'column',
+                        sm:'row'
                     }}
+                    justifyContent={'flex-end'}
+                    alignItems={'center'}
                 >
                     <Grid item xs={2}>
                         <Typography align='right'>Lat:</Typography>
@@ -115,10 +115,7 @@ function StoreData({ store, updateDataStoreState }) {
                             updateProperty={updateStore}
                             updateState={updateDataStoreState}
                             properties={{ property: 'lat', id: store.id}}
-                            // handleChangeInput={handleChangeInput}
-                            // pizzaNew={storeNew}
                             placeholder={'latitud'}
-                            // errors={errors?.name}
                         />
                     </Grid>
                     <Grid item xs={2}>
@@ -130,10 +127,7 @@ function StoreData({ store, updateDataStoreState }) {
                             updateProperty={updateStore}
                             updateState={updateDataStoreState}
                             properties={{ property: 'lng', id: store.id}}
-                            // handleChangeInput={handleChangeInput}
-                            // pizzaNew={storeNew}
                             placeholder={'longitud'}
-                            // errors={errors?.name}
                         />
                     </Grid>
                 </Grid>
@@ -155,10 +149,7 @@ function StoreData({ store, updateDataStoreState }) {
                         updateProperty={updateStore}
                         updateState={updateDataStoreState}
                         properties={{ property: 'place', id: store.id}}
-                        // handleChangeInput={handleChangeInput}
-                        // pizzaNew={storeNew}
                         placeholder={'Dirección'}
-                        // errors={errors?.name}
                         fullWidth
                     />
                 </Grid>

@@ -32,7 +32,7 @@ function CurrentSession() {
     async function logOut() {
         handleCloseUserMenu()
         await signOff()
-        router.push('/menu')
+        router.push('/pizzas')
     }
 
     return (

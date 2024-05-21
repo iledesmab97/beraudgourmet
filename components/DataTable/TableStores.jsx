@@ -65,16 +65,11 @@ function TableStores() {
         toggleMenu()
         if (!value) {
             setCurrentStore(null)
-            // pizzaNew.current = false
         }
     }
 
     return (
-        <Box
-            sx={{
-                height: '70%'
-            }}
-        >
+        <>
             <TableContainer
                 component={Paper}
             >
@@ -125,7 +120,7 @@ function TableStores() {
             {
                 currentStore ? <ModalStoreDetailAdmin openStoreDetails={openStoreDetails} handleOpenStoreDetail={handleOpenStoreDetail} currentStore={currentStore} /> : null
             }
-        </Box>
+        </>
     )
 }
 

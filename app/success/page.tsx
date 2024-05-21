@@ -51,7 +51,7 @@ function SuccessPay() {
                     variant='contained'
                     onClick={() => {
                         saveModal('userOrders')
-                        router.push('/menu')
+                        router.push('/pizzas')
                     }}
                 >
                     Ver historial de compras

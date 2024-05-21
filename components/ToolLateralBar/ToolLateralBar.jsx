@@ -40,7 +40,9 @@ function ToolLateralBar({ toolSelected, handleToolSelected }) {
 
     return(
         <Grid
-            item xs={3}
+            item
+            xs={12}
+            md={3}
             className={styles.ToolLateralBar}
         >
             <List>
