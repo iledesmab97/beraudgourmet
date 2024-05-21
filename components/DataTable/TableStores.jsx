@@ -65,7 +65,6 @@ function TableStores() {
         toggleMenu()
         if (!value) {
             setCurrentStore(null)
-            // pizzaNew.current = false
         }
     }
 
