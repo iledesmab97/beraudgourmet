@@ -95,7 +95,7 @@ function SelectExtraData({ extraData, updateExtraData }) {
                     />
                 </FormGroup>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={8} sm={5} md={4} >
                 <FormControl fullWidth>
                     <InputLabel>Método de Pago *</InputLabel>
                     <Select

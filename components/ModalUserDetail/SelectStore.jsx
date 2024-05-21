@@ -36,7 +36,7 @@ function SelectStore({ store, updateStore }) {
                     Tienda
                 </Typography>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={9} sm={6} md={4} >
                 <FormControl fullWidth>
                     <InputLabel>Tiendas *</InputLabel>
                     <Select
