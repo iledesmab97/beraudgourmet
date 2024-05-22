@@ -12,7 +12,11 @@ const initialState = {
     recoverPassword: {
         name: 'recoverPassword',
         open: false
-    }
+    },
+    changePassword: {
+        name: 'changePassword',
+        open: false
+    },
 }
 
 export const alertDialogMessageSlice = createSlice({
