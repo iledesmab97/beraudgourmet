@@ -2,7 +2,10 @@ const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getAllOrders(userId) {
     const lastPath = userId ? `/${userId}` : ''
-    return fetch(`${PATH_BACK}/orders${lastPath}`, { cache: 'no-store' })
+    return fetch(`${PATH_BACK}/orders${lastPath}`, {
+        cache: 'no-store',
+        credentials: "include",
+    })
         .then(response => response.json())
         .then(data => {
             if (data.message) throw new Error(data.message)
@@ -31,6 +34,7 @@ export async function sendImage(id, formData) {
 export async function registerOrder(data) {
     return fetch(`${PATH_BACK}/orders`, {
         method: 'POST',
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })

@@ -55,7 +55,10 @@ function ModalUserOrders() {
 
     useEffect(() => {
         if (!user.id) return
-        getAllOrders(user.id).then( data => setOrders(data) )
+        getAllOrders(user.id).then( data => {
+            if (data.message) return alert(data.message)
+            return setOrders(data)
+        } )
     }, [open])
 
     return (
