@@ -26,12 +26,14 @@ function Footer () {
   const { openAlertDialogMessage } = useGetAlertDialogMessage({type: 'acceptCookies'})
   const date = new Date().getFullYear()
 
-
-
   return (
     <Box
       sx={{
+        width: '100%',
         py: '40px',
+        position: 'absolute',
+        top: '100%',
+        left: '0px',
         bgcolor: '#4e5762'
       }}
     >
