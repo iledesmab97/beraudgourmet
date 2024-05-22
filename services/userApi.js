@@ -126,3 +126,14 @@ export function requestPasswordRecovery(email) {
             return data
         })
 }
+
+export function forgetPassword({token}) {
+    return fetch(`${PATH_BACK}/users/reset-password`, {
+        method: 'PUT',
+        credentials: "include",
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(token)
+    })
+        .then(response => response.json())
+        .then(data => data)
+}
