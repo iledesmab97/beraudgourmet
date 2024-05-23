@@ -20,7 +20,7 @@ import ModalMakeOrder from '@/components/ModalMakeOrder/ModalMakeOrder'
 
 import { useState, useRef } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
+import { updateOrder, getAllOrders, sendImage, requestRemovalOrder } from '@/services/orderApi'
 import { howMuchLeft } from '@/utils/hours'
 import { captureFundsRequest } from '@/services/checkoutApi'
 
@@ -164,6 +164,28 @@ function TableOrders({ orders, updateOrders }) {
         handleClose()
     }
 
+    async function removeOrder() {
+        setLoading(true)
+        console.log('Eliminado la orden...')
+        const response = await requestRemovalOrder(currentOrder.id)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => updateOrders(data))
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        setLoading(false)
+        handleClose()
+    }
+
     return (
         <>
             <TableContainer className={styles.DataTable} component={Paper}>
@@ -259,6 +281,12 @@ function TableOrders({ orders, updateOrders }) {
                         </MenuItem>
                     ) : null
                 }
+                <MenuItem
+                    onClick={() => { removeOrder() }}
+                    disabled={loading}
+                >
+                    Eliminar
+                </MenuItem>
             </Menu>
             {
                 currentOrder ? (
