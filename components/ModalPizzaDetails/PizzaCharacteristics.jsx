@@ -382,10 +382,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             sx={{
                 position: 'relative',
                 width: '100%',
-                // pb: '40px',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'flex-start'
+                alignItems: 'flex-start',
             }}
         >
             <Typography variant='title' sx={{ alignSelf: 'center' }}>
@@ -395,7 +394,8 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                 sizesList.length && massesList.length ? (
                     <List
                         sx={{
-                            width: '100%'
+                            width: '100%',
+
                         }}
                     >
                         {
@@ -410,21 +410,25 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                         container
                                         spacing={1}
                                         alignItems='flex-start'
+                                        wrap='nowrap'
                                         sx={{
                                             position: 'relative',
                                             boxSizing: 'content-box',
                                             height: '48px',
-                                            overflow: 'hidden',
+                                            overflowX: 'auto',
+                                            overflowY: 'hidden',
                                             transition: 'height 0.3s'
                                         }}
                                         style={ arrayOpenColapse[indexSize] ? { height: 'auto'} : null}
                                     >
                                         <Grid
-                                            item xs={4}
+                                            item
                                             container
                                             direction='column'
-                                            // justifyContent='flex-end'
                                             alignItems='center'
+                                            sx={{
+                                                width: 'fit-content'
+                                            }}
                                         >
                                             <Box
                                                 sx={{
@@ -509,7 +513,9 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                         </Grid>
                                         <Grid
                                             item
-                                            xs={8}
+                                            sx={{
+                                                width: 'fit-content'
+                                            }}
                                         >
                                             <Collapse
                                                 in={arrayOpenColapse[indexSize]}
