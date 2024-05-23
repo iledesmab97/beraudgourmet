@@ -51,6 +51,7 @@ function TableOrders({ orders, updateOrders }) {
     const fileInput = useRef()
     const [openMakeOrder, setOpenMakeOrder] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [ loading, setLoading] = useState(false)
 
     function handleOpenMakeOrder(value) {
         setOpenMakeOrder(value)
@@ -71,6 +72,7 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     async function changeStatus(type) {
+        setLoading(true)
         const body = {
             property: type,
             value: !currentOrder[type]
@@ -83,14 +85,18 @@ function TableOrders({ orders, updateOrders }) {
         } else {
             text = response
             status = 'success'
-            await getAllOrders().then(data => updateOrders(data))
+            await getAllOrders().then(data => {
+                updateOrders(data)
+            })
         }
         handleUpdateAlertMessage({
             checked: true,
             text,
             status
         })
-        await handleClose()
+        setLoading(false)
+        handleClose()
+        return response
     }
 
     async function addUrl() {
@@ -124,19 +130,20 @@ function TableOrders({ orders, updateOrders }) {
         switch (paymentMethod) {
             case 'transfer': {
                 response = await changeStatus('paid')
-                break
+                return
             }
             case 'cash': {
                 response = await changeStatus('paid')
-                break
+                return
             }
             case 'stripe': {
+                setLoading(true)
                 response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
                 break
             }
             default: {
-                alert('Hay un problema con el método de pago')
-                break
+                handleClose()
+                return alert('Hay un problema con el método de pago')
             }
         }
         let text, status
@@ -153,6 +160,7 @@ function TableOrders({ orders, updateOrders }) {
             text,
             status
         })
+        setLoading(false)
         handleClose()
     }
 
@@ -217,6 +225,7 @@ function TableOrders({ orders, updateOrders }) {
             >
                 <MenuItem
                     onClick={() => {changeStatus('closed')}}
+                    disabled={loading}
                 >
                     { currentOrder?.closed ? 'Pendiente' : 'Entregado' }
                 </MenuItem>
@@ -225,6 +234,7 @@ function TableOrders({ orders, updateOrders }) {
                     (
                         <MenuItem
                             onClick={addUrl}
+                            disabled={loading}
                         >
                             <>
                                 subir imagen
@@ -235,6 +245,7 @@ function TableOrders({ orders, updateOrders }) {
                 }
                 <MenuItem
                     onClick={() => { handleOpenOrderDetail(true) }}
+                    disabled={loading}
                 >
                     Ver Detalle
                 </MenuItem>
@@ -242,6 +253,7 @@ function TableOrders({ orders, updateOrders }) {
                     currentOrder?.paid === false ? (
                         <MenuItem
                             onClick={captureFunds}
+                            disabled={loading}
                         >
                             Validar pago
                         </MenuItem>
