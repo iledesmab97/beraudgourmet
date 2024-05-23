@@ -12,9 +12,9 @@ function UserData({user}) {
         <>
             <Typography variant='title'>USUAIRO</Typography>
             {
-                userInformation.map((item) => (
+                userInformation.map((item, index) => (
                     <Box
-                        key={user[item.name]}
+                        key={user[item.name] + String(index)}
                         sx={{
                             width: '100%',
                             display: 'flex',

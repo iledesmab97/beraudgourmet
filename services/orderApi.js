@@ -46,3 +46,18 @@ export async function registerOrder(data) {
         })
         .catch(error => alert(error.message))
 }
+
+export function requestRemovalOrder(id) {
+    if (!id) throw new Error('id can not be undefined')
+    return fetch(`${PATH_BACK}/orders/${id}`, {
+        method: 'DELETE',
+        credentials: "include",
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            console.log('La orden fue removida exitosamente')
+            return data
+        })
+        .catch(error => ({message: error.message}))
+}
