@@ -27,7 +27,7 @@ import { captureFundsRequest } from '@/services/checkoutApi'
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    orders: [ 'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
+    orders: [ 'ID' ,'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
 }
 
 const paymentMethodIndex = {
@@ -119,28 +119,41 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     async function captureFunds() {
-        if (currentOrder.paymentMethod === 'transfer') {
-            await changeStatus('paid')
-        } else if (currentOrder.paymentMethod === 'stripe') {
-            const response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
-            let text, status
-            if (response.message) {
-                text = response.message
-                status = 'error'
-            } else {
-                text = response
-                status = 'success'
-                await getAllOrders().then(data => updateOrders(data))
+        const { paymentMethod } = currentOrder
+        let response
+        switch (paymentMethod) {
+            case 'transfer': {
+                response = await changeStatus('paid')
+                break
             }
-            handleUpdateAlertMessage({
-                checked: true,
-                text,
-                status
-            })
-            await handleClose()
-        } else {
-            alert('Hay un problema con el método de pago')
+            case 'cash': {
+                response = await changeStatus('paid')
+                break
+            }
+            case 'stripe': {
+                response = await captureFundsRequest(currentOrder.StripeId, currentOrder.id)
+                break
+            }
+            default: {
+                alert('Hay un problema con el método de pago')
+                break
+            }
         }
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => updateOrders(data))
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        handleClose()
     }
 
     return (
@@ -160,6 +173,7 @@ function TableOrders({ orders, updateOrders }) {
                         {
                             orders.map((order) => (
                                 <TableRow key={order.id}>
+                                    <TableCell align='center'>{ order.id }</TableCell>
                                     <TableCell align='center'>{ order.user.name }</TableCell>
                                     <TableCell align='center'>{ order.user.phoneNumber }</TableCell>
                                     <TableCell align='center'>{ paymentMethodIndex[order.paymentMethod] }</TableCell>
