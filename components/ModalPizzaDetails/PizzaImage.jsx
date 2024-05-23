@@ -136,7 +136,11 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, hand
         <>
             <Box
                 sx={{
-                    width: '50%',
+                    width: {
+                        xs: '90%',
+                        sm: '70%',
+                        md: '50%'
+                    },
                     height: '200px',
                     minHeight: '200px',
                     position: 'relative',
