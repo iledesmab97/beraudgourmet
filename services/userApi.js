@@ -86,8 +86,9 @@ export async function saveToken( tokenUser ) {
     window.location.href = "/pizzas"
 }
 
-export function getAllUsers() {
-    return fetch(`${PATH_BACK}/users`, {
+export function getAllUsers(status) {
+    const querys = status === 'all' ? '?all=true' : ''
+    return fetch(`${PATH_BACK}/users${querys}`, {
         credentials: "include"
     })
         .then(response => {
