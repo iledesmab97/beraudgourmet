@@ -25,26 +25,8 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { getAllUsers, updateAccount } from '@/services/userApi'
 
-// function listStores(storeList) {
-//     const arrayStoreList = []
-//     if (Object.keys(storeList).length) {
-//         for (let city in storeList) {
-//             storeList[city].stores.forEach(store => {
-//                 const newStore = {
-//                     ...store,
-//                     city
-//                 }
-//                 arrayStoreList.push(newStore)
-//             })
-//         }
-//     }
-//     return arrayStoreList
-// }
-
 function TableUsers({ users, handleChangeUsers }) {
 
-    // const { storeList, handleAddStoreList } = useGetStoreList()
-    // const [ storeListArray, setStoreListArray ] = useState(listStores(storeList))
     const [currentUser, setCurrentUser] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openModal, setOpenModal] = useState(false)
@@ -55,15 +37,9 @@ function TableUsers({ users, handleChangeUsers }) {
         setAnchorElMenu(null)
     }
 
-    // useEffect(() => {
-    //     if (Object.keys(storeList).length) {
-    //         setStoreListArray(listStores(storeList))
-    //     }
-    // }, [storeList])
-
-    function handleClickButtonAction(event, store) {
+    function handleClickButtonAction(event, user) {
         setAnchorElMenu(event.currentTarget)
-        setCurrentUser(store)
+        setCurrentUser(user)
     }
 
     function handleOpenModal(value) {
