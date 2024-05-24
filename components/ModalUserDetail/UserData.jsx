@@ -9,10 +9,12 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch';
+import Switch from '@mui/material/Switch'
+import TextField from '@mui/material/TextField'
 
 import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 import InputPhoneNumber from '@/components/InputPhoneNumber/InputPhoneNumber'
@@ -156,6 +158,34 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
         setLoading(false)
     }
 
+    async function removePassword() {
+        console.log('Eliminando contraseña')
+        setLoading(true)
+        const response = await updateAccount(user.id, {property: 'password', value:''})
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            updateUserTable({
+                id: user.id,
+                property: 'password',
+                value: ''
+            })
+            console.log('Información guardada con exito')
+        }
+        setLoading(false)
+    }
+
     return (
         <Grid
             container
@@ -214,6 +244,40 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                         updateProperty={updateAccount}
                         properties={{ property: 'email', id: user.id}}
                         updateState={updateUserTable}
+                    />
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
+                <Divider sx={{width: '100%'}}/>
+            </Grid>
+            <Grid item xs={12} container justifyContent={'space-around'} alignItems={'center'}>
+                <Grid item xs={3}>
+                    <Typography>Contraseña:</Typography>
+                </Grid>
+                <Grid
+                    item
+                    xs={9}
+                    sm={7}
+                    md={5}
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end'
+                    }}
+                >
+                    <TextField
+                        type='password'
+                        disabled={true}
+                        value={user.password ? user.password : ''}
+                        InputProps={{
+                            endAdornment: (
+                                <IconButton
+                                    onClick={removePassword}
+                                    disabled={loading}
+                                >
+                                    <DeleteForeverIcon />
+                                </IconButton>
+                            )
+                        }}
                     />
                 </Grid>
             </Grid>
