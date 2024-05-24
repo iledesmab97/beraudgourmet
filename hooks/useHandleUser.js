@@ -137,10 +137,10 @@ function useHandleUser() {
         }
     }, [user])
 
-    useEffect(() => {
-        if (user.role === 'client' || !user.role) return
-        router.push('/admin')
-    }, [user])
+    // useEffect(() => {
+    //     if (user.role === 'client' || !user.role) return
+    //     router.push('/admin')
+    // }, [user])
 
     function handleChange(event) {
         const { name, value } = event.target
