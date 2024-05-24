@@ -147,7 +147,7 @@ export function forgetPassword({token}) {
 }
 
 export function whatHappen(data) {
-    return fetch(`${PATH_BACK}/users/seeCookie`, {
+    return fetch(`${PATH_BACK}/users/seeData`, {
         method: 'POST',
         credentials: "include",
         headers: { 'Content-type': 'application/json' },
