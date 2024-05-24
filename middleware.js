@@ -13,8 +13,8 @@ export async function middleware(request) {
             if ( user.RoleId > 2 ) return NextResponse.error()
             return NextResponse.next()
         } catch(error) {
-            console.log(error.message)
-            return NextResponse.redirect(new URL('/pizzas', request.url))
+            // return NextResponse.redirect(new URL('/pizzas', request.url))
+            return console.log('Ha ocurrido un error:', error.message)
         }
     }
 
