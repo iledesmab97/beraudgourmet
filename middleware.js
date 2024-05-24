@@ -14,7 +14,8 @@ export async function middleware(request) {
             return NextResponse.next()
         } catch(error) {
             // return NextResponse.redirect(new URL('/pizzas', request.url))
-            return console.log('Ha ocurrido un error:', error.message)
+            console.log('Ha ocurrido un error:', error.message)
+            return NextResponse.error()
         }
     }
 
