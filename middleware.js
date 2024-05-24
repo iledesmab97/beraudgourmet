@@ -17,7 +17,8 @@ export async function middleware(request) {
         }
         if ( !user || user.message || user.RoleId > 2 ) {
             // return notFound()
-            return NextResponse.redirect(new URL('/not-found', request.url))
+            // return NextResponse.redirect(new URL('/not-found', request.url))
+            await whatHappen({user, message: user.message, role: user.RoleId})
         }
     }
 
