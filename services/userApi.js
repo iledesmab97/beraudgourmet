@@ -11,11 +11,18 @@ export function verifyEmailUser(token) {
         })
 }
 
-export function fetchwhoAmI() {
-    return fetch(`${PATH_BACK}/users/loged`, {
-        method: 'GET',
-        credentials: "include",
-    })
+export function fetchwhoAmI(cookie) {
+    const settings = { method: 'GET' }
+    if (cookie) {
+        const cookieValue = cookie.name + '=' + cookie.value
+        settings.headers = {
+            'Content-Type': 'application/json',
+            'Cookie': cookieValue
+        }
+    } else {
+        settings.credentials = 'include'
+    }
+    return fetch(`${PATH_BACK}/users/loged`, settings)
         .then(response => response.json())
         .then(data => {
             if (data.message) throw new Error(data.message)
