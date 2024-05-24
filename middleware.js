@@ -15,7 +15,10 @@ export async function middleware(request) {
         } catch(error) {
             return NextResponse.redirect(new URL('/pizzas', request.url))
         }
-        if ( !user || user.message || user.RoleId > 2 ) return notFound()
+        if ( !user || user.message || user.RoleId > 2 ) {
+            // return notFound()
+            return NextResponse.redirect(new URL('/not-found', request.url))
+        }
     }
 
     return NextResponse.next()
