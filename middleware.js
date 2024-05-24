@@ -53,7 +53,7 @@ export async function middleware(request) {
     if ( pathname.includes('/admin') ) {
         const user = await fetchwhoAmI(tokenUser)
         // if (!tokenUser) return NextResponse.error()
-        if (!user) return NextResponse.error()
+        if (user.message) return NextResponse.error()
         try {
             // const { payload } = await jwtVerify(tokenUser.value, new TextEncoder().encode('secret'))
             // if ( payload.RoleId > 2 ) return NextResponse.error()
