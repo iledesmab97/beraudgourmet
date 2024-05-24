@@ -49,9 +49,11 @@ import { notFound } from 'next/navigation'
 
 export async function middleware(request) {
     const tokenUser = request.cookies.get('tokenUser')
+    await whatHappen({tokenUser})
     const { pathname } = request.nextUrl
     if ( pathname.includes('/admin') ) {
         const user = await fetchwhoAmI(tokenUser)
+        await whatHappen({user})
         // if (!tokenUser) return NextResponse.error()
         if (user.message) return NextResponse.error()
         try {
