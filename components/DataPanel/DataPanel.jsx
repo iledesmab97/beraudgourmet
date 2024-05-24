@@ -49,7 +49,7 @@ function DataPanel({ toolSelected }) {
                 return alert(data.message)
             })
             .catch(error => alert(error.message))
-        getAllUsers()
+        getAllUsers('all')
             .then(data => {
                 setUsers(data)
             })
