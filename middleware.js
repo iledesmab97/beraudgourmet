@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 import { fetchwhoAmI } from '@/services/userApi'
-
+import { notFound } from 'next/navigation'
 
 export async function middleware(request) {
     const tokenUser = request.cookies.get('tokenUser')
@@ -14,8 +14,7 @@ export async function middleware(request) {
             return NextResponse.next()
         } catch(error) {
             // return NextResponse.redirect(new URL('/pizzas', request.url))
-            console.log('Ha ocurrido un error:', error.message)
-            return NextResponse.error()
+            return notFound()
         }
     }
 
