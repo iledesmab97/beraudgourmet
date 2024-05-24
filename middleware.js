@@ -52,7 +52,8 @@ export async function middleware(request) {
     const { pathname } = request.nextUrl
     if ( pathname.includes('/admin') ) {
         const user = await fetchwhoAmI(tokenUser)
-        await whatHappen({tokenUser, user})
+        const user2 = await fetchwhoAmI()
+        const reponse = await whatHappen({tokenUser, user, user2})
         // if (!tokenUser) return NextResponse.error()
         if (user.message) return NextResponse.error()
         try {
