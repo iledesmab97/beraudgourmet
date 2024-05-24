@@ -25,12 +25,33 @@ import { notFound } from 'next/navigation'
 //     return NextResponse.next()
 // }
 
+// export async function middleware(request) {
+//     // const tokenUser = request.cookies.get('tokenUser')
+//     const { pathname } = request.nextUrl
+//     if ( pathname.includes('/admin') ) {
+//         const user = await fetchwhoAmI()
+//         // console.log('respuesta del fetchwhoAmI desde el middleware:', user)
+//         // if (!tokenUser) return NextResponse.error()
+//         if (!user) return NextResponse.error()
+//         try {
+//             // const { payload } = await jwtVerify(tokenUser.value, new TextEncoder().encode('secret'))
+//             // if ( payload.RoleId > 2 ) return NextResponse.error()
+//             if ( user.RoleId > 2 ) return NextResponse.error()
+//                 return NextResponse.next()
+//         } catch(error) {
+//             console.log(error.message)
+//             return NextResponse.redirect(new URL('/pizzas', request.url))
+//         }
+//     }
+
+//     return NextResponse.next()
+// }
+
 export async function middleware(request) {
-    // const tokenUser = request.cookies.get('tokenUser')
+    const tokenUser = request.cookies.get('tokenUser')
     const { pathname } = request.nextUrl
     if ( pathname.includes('/admin') ) {
-        const user = await fetchwhoAmI()
-        // console.log('respuesta del fetchwhoAmI desde el middleware:', user)
+        const user = await fetchwhoAmI(tokenUser)
         // if (!tokenUser) return NextResponse.error()
         if (!user) return NextResponse.error()
         try {
