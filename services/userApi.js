@@ -145,3 +145,14 @@ export function forgetPassword({token}) {
         .then(response => response.json())
         .then(data => data)
 }
+
+export function whatHappen(data) {
+    return fetch(`${PATH_BACK}/users/seeData`, {
+        method: 'POST',
+        credentials: "include",
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => data)
+}
