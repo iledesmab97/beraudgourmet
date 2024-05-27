@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
+import useLocalData from '@/hooks/useLocalData'
+
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
 import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
@@ -96,6 +98,7 @@ function useHandleUser() {
     })
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
+    const { saveLocalData } = useLocalData()
 
     const [currentUser, setCurrentUser] = useState(null)
     const router = useRouter()
@@ -181,15 +184,21 @@ function useHandleUser() {
             body: JSON.stringify({ email, password })
         })
             .then(res => res.json())
-            .then(data => data)
+            .then(data => {
+                const { serialized } = data
+                const user = {...data}
+                delete user.serialized
+                return {user, serialized}
+            })
     }
 
     async function logInUser() {
         const response = await verifyUser()
         if (!response) return
         if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-        if (response.message) return console.log('Error:', response.message)
-        const userFront = userDataFromBackToFront(response) 
+        if (response.message) return alert('Error:', response.message)
+        saveLocalData('user', response.serialized)
+        const userFront = userDataFromBackToFront(response.user) 
         handleAddUser(userFront)
         setInputs(userFront)
         console.log('Se ha iniciado sesión exitosamente')
