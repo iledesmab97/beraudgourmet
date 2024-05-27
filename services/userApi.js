@@ -89,7 +89,8 @@ export function requestCookie(tokenUser) {
 
 export async function saveToken( tokenUser ) {
     const response = await requestCookie( tokenUser )
-    if (response.message !== 'valid token') return alert(response.message)
+    if (response.message) return alert(response.message)
+    localStorage.setItem('user', tokenUser)
     window.location.href = "/pizzas"
 }
 
