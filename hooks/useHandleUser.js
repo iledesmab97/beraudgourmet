@@ -185,10 +185,9 @@ function useHandleUser() {
         })
             .then(res => res.json())
             .then(data => {
-                const { serialized } = data
+                const { token } = data
                 const user = {...data}
-                delete user.serialized
-                return {user, serialized}
+                return {user, token}
             })
     }
 
@@ -197,7 +196,7 @@ function useHandleUser() {
         if (!response) return
         if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
         if (response.message) return alert('Error:', response.message)
-        saveLocalData('user', response.serialized)
+        saveLocalData('user', response.token)
         const userFront = userDataFromBackToFront(response.user) 
         handleAddUser(userFront)
         setInputs(userFront)
