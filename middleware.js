@@ -53,13 +53,15 @@ export async function middleware(request) {
     if ( pathname.includes('/admin') ) {
         const user = await fetchwhoAmI(tokenUser)
         const user2 = await fetchwhoAmI()
-        const reponse = await whatHappen({tokenUser, user, user2})
+        const reponse = await whatHappen({tokenUser: tokenUser, user, user2})
         // if (!tokenUser) return NextResponse.error()
-        if (user.message) return NextResponse.error()
+        // if (user.message) return NextResponse.error()
+        if (user.message) return NextResponse.redirect(new URL('/not-found', request.url))
         try {
             // const { payload } = await jwtVerify(tokenUser.value, new TextEncoder().encode('secret'))
             // if ( payload.RoleId > 2 ) return NextResponse.error()
-            if ( user.RoleId > 2 ) return NextResponse.error()
+            // if ( user.RoleId > 2 ) return NextResponse.error()
+            if ( user.RoleId > 2 ) return NextResponse.redirect(new URL('/not-found', request.url))
                 return NextResponse.next()
         } catch(error) {
             console.log(error.message)
