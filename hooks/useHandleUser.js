@@ -5,7 +5,7 @@ import useLocalData from '@/hooks/useLocalData'
 
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
-import { newAccount, updateMyAccount, verifyProperty, requestLogout } from '@/services/userApi'
+import { newAccount, updateMyAccount, verifyProperty, requestLogout, verifyUserData } from '@/services/userApi'
 import { useRouter } from 'next/navigation'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
@@ -167,25 +167,13 @@ function useHandleUser() {
         if ( !email ) errors.email = 'El email no puede estar vacio'
         if ( !password ) errors.password = 'La contraseña no puede estar vacia'
         if ( errors.email || errors.password) return setErrors(errors)
-        return fetch(`${PATH_BACK}/users/login`, {
-            method: 'POST',
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        })
-            .then(res => res.json())
-            .then(data => {
-                const { token } = data
-                const user = {...data}
-                return {user, token}
-            })
+        return verifyUserData(email, password)
     }
 
     async function logInUser() {
         const response = await verifyUser()
-        if (!response) return
-        if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-        if (response.message) return alert('Error:', response.message)
+        if (response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
+        if (response.message) return alert(response.message)
         saveLocalData('user', response.token)
         const userFront = userDataFromBackToFront(response.user) 
         handleAddUser(userFront)
