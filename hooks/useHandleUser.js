@@ -196,7 +196,11 @@ function useHandleUser() {
     async function changePassword() {
         // Evaluate Errors
         const newErors = lastValidation(inputsEdit)
-        if (newErors.password || newErors.passwordConfirmation) return setErrorsEdit(newErors)
+        if (newErors.password || newErors.passwordConfirmation) {
+            setErrorsEdit(newErors)
+            console.log('Error en la validación de datos')
+            return false
+        }
 
         // Verify correct password
         const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
@@ -222,10 +226,11 @@ function useHandleUser() {
 
     async function changeEmail() {
         // Evaluate Errors
-        if (errors.email) return
         const newErrors = lastValidation(inputsEdit)
         if (newErrors.password || newErrors.email) {
-            return setErrors(newErrors)
+            setErrorsEdit(newErrors)
+            console.log('Error en la validación de datos')
+            return false
         }
         
         // Verify correct password
@@ -233,8 +238,8 @@ function useHandleUser() {
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrors({ password: 'Contraseña incorrecta' })
-            console.log('password no changed')
+            setErrorsEdit({ password: 'Contraseña incorrecta' })
+            console.log('Contraseña incorrecta')
             return false
         }
 
@@ -242,7 +247,8 @@ function useHandleUser() {
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'email', value: inputsEdit.email })
         const response = await updateMyAccount(propertyToUpdate)
         if ( response.message ) {
-            return console.log(response.message)
+            alert(response.message)
+            return false
         }
         handleUpdateUser({
             ...user,
@@ -250,7 +256,7 @@ function useHandleUser() {
             password: inputsEdit.password
         })
         setInputsEdit(initialInputsEdit)
-        console.log(response.message)
+        console.log(response)
         return true
     }
 
