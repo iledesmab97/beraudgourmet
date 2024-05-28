@@ -11,18 +11,8 @@ export function verifyEmailUser(token) {
         })
 }
 
-export function fetchwhoAmI(cookie) {
-    const settings = { method: 'GET' }
-    if (cookie) {
-        const cookieValue = cookie
-        settings.headers = {
-            'Content-Type': 'application/json',
-            'verification-token': cookieValue
-        }
-    } else {
-        settings.credentials = 'include'
-    }
-    return fetch(`${PATH_BACK}/users/loged`, settings)
+export function fetchwhoAmI(token) {
+    return fetch(`${PATH_BACK}/users/loged`, { ...requestSettings('GET', token) })
         .then(response => response.json())
         .then(data => {
             if (data.message) throw new Error(data.message)
@@ -160,4 +150,60 @@ export function whatHappen(data) {
     })
         .then(response => response.json())
         .then(data => data)
+}
+
+export function requestSettings(type, token) {
+    let userToken
+    if (token) {
+        userToken = token
+    } else {
+        userToken = localStorage.getItem('user')
+        if (userToken) {
+            userToken = JSON.parse(userToken)
+        }
+    }    
+    let setting
+    switch (type) {
+        case 'GET': {
+            setting = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        case 'POST': {
+            setting = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        case 'PUT': {
+            setting = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        default: {
+            setting = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+    }
+    return setting ? setting : {}
 }
