@@ -16,6 +16,7 @@ export default function useHandleSession() {
         await handleUpdateOrderToInitialState()
         removeLocalData('orders')
         removeLocalData('place')
+        removeLocalData('user')
     }, [])
 
     return { closeSession }

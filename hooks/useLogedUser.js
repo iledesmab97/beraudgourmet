@@ -1,41 +1,43 @@
 import { useCallback, useState, useEffect } from "react"
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { lookingForUserLoged, saveToken } from '@/services/userApi'
 import useGetUser from '@/hooks/useGetUser'
 import { modalSaved } from '@/utils/modal'
 import useGetModal from '@/hooks/useGetModal'
+import useLocalData from '@/hooks/useLocalData'
 
 function useLogedUser() {
 
     const searchParams = useSearchParams()
     const { handleAddUser } = useGetUser()
     const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
+    const router = useRouter()
+    const { getLocalData } = useLocalData()
 
     const tokenUser = searchParams.get('tokenUser')
 
     const gerUserLoged = useCallback(async () => {
+        let user
         if (tokenUser) {
-            await saveToken( tokenUser )
+            user = await saveToken( tokenUser )
+        } else {
+            const token = getLocalData('user')
+            if (!token) {
+                return false
+            }
+            user = await lookingForUserLoged( token )
         }
-        return lookingForUserLoged()
-            .then(( user ) => {
-                if (!user) return false
-                if (user.message) throw new Error(user.message)
-                handleAddUser(user)
-                return true
-            })
-            .then((response) => {
-                if (!response) return false
-                const modal = modalSaved()
-                if (modal) {
-                    handleOpenModal(modal)
-                }
-                return true
-            })
-            .catch(error => {
-                if (error.message === 'No token provided') return false
-                alert(error.message)
-            })
+        if (user.message) {
+            alert(user.message)
+            return false
+        }
+        handleAddUser(user)
+        const modal = modalSaved()
+        if (modal) handleOpenModal(modal)
+        if (tokenUser) {
+            router.push('/pizzas')
+        }
+        return true
     }, [])
 
     return { gerUserLoged }

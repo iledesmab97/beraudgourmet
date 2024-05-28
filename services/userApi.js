@@ -11,18 +11,8 @@ export function verifyEmailUser(token) {
         })
 }
 
-export function fetchwhoAmI(cookie) {
-    const settings = { method: 'GET' }
-    if (cookie) {
-        const cookieValue = cookie.name + '=' + cookie.value
-        settings.headers = {
-            'Content-Type': 'application/json',
-            'Cookie': cookieValue
-        }
-    } else {
-        settings.credentials = 'include'
-    }
-    return fetch(`${PATH_BACK}/users/loged`, settings)
+export function fetchwhoAmI(token) {
+    return fetch(`${PATH_BACK}/users/loged`, { ...requestSettings('GET', token) })
         .then(response => response.json())
         .then(data => {
             if (data.message) throw new Error(data.message)
@@ -43,13 +33,13 @@ export function newAccount(data) {
 
 export function updateMyAccount(data) {
     return fetch(`${PATH_BACK}/users/update`, {
-        method: 'PUT',
-        credentials: "include",
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('PUT'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
-        .then(data => data)
+        .then(data => {
+            return data
+        })
 }
 
 export function verifyProperty(data) {
@@ -64,9 +54,9 @@ export function verifyProperty(data) {
         .then(data => data)
 }
 
-export async function lookingForUserLoged(){
+export async function lookingForUserLoged( token ) {
     try {
-        const user = await fetchwhoAmI()
+        const user = await fetchwhoAmI( token )
         if (user.message) throw new Error(user.message)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
@@ -88,9 +78,14 @@ export function requestCookie(tokenUser) {
 }
 
 export async function saveToken( tokenUser ) {
-    const response = await requestCookie( tokenUser )
-    if (response.message !== 'valid token') return alert(response.message)
-    window.location.href = "/pizzas"
+    const response = await fetchwhoAmI(tokenUser)
+    if (response.message) {
+        alert(response.message)
+        return {message: response.message}
+    }
+    localStorage.setItem('user', JSON.stringify(tokenUser))
+    const userDataFront = userDataFromBackToFront(response)
+    return userDataFront
 }
 
 export function getAllUsers(status) {
@@ -155,4 +150,60 @@ export function whatHappen(data) {
     })
         .then(response => response.json())
         .then(data => data)
+}
+
+export function requestSettings(type, token) {
+    let userToken
+    if (token) {
+        userToken = token
+    } else {
+        userToken = localStorage.getItem('user')
+        if (userToken) {
+            userToken = JSON.parse(userToken)
+        }
+    }    
+    let setting
+    switch (type) {
+        case 'GET': {
+            setting = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        case 'POST': {
+            setting = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        case 'PUT': {
+            setting = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        default: {
+            setting = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+    }
+    return setting ? setting : {}
 }
