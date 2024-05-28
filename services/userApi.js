@@ -14,10 +14,10 @@ export function verifyEmailUser(token) {
 export function fetchwhoAmI(cookie) {
     const settings = { method: 'GET' }
     if (cookie) {
-        const cookieValue = cookie.name + '=' + cookie.value
+        const cookieValue = cookie
         settings.headers = {
             'Content-Type': 'application/json',
-            'Cookie': cookieValue
+            'verification-token': cookieValue
         }
     } else {
         settings.credentials = 'include'
@@ -64,9 +64,9 @@ export function verifyProperty(data) {
         .then(data => data)
 }
 
-export async function lookingForUserLoged(){
+export async function lookingForUserLoged( token ) {
     try {
-        const user = await fetchwhoAmI()
+        const user = await fetchwhoAmI( token )
         if (user.message) throw new Error(user.message)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
@@ -88,10 +88,14 @@ export function requestCookie(tokenUser) {
 }
 
 export async function saveToken( tokenUser ) {
-    const response = await requestCookie( tokenUser )
-    if (response.message) return alert(response.message)
-    localStorage.setItem('user', tokenUser)
-    window.location.href = "/pizzas"
+    const response = await fetchwhoAmI(tokenUser)
+    if (response.message) {
+        alert(response.message)
+        return {message: response.message}
+    }
+    localStorage.setItem('user', JSON.stringify(tokenUser))
+    const userDataFront = userDataFromBackToFront(response)
+    return userDataFront
 }
 
 export function getAllUsers(status) {
