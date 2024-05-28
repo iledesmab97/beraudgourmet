@@ -285,9 +285,9 @@ function useHandleUser() {
         }))
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
         const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message ) return console.log(response.message)
+        if ( response.message ) return alert(response.message)
         handleUpdateUser(inputs)
-        console.log(response.message)
+        console.log(response)
     }
 
     async function signUp() {
