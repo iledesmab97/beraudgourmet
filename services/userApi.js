@@ -33,13 +33,13 @@ export function newAccount(data) {
 
 export function updateMyAccount(data) {
     return fetch(`${PATH_BACK}/users/update`, {
-        method: 'PUT',
-        credentials: "include",
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('PUT'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
-        .then(data => data)
+        .then(data => {
+            return data
+        })
 }
 
 export function verifyProperty(data) {
