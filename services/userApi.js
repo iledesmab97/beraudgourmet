@@ -207,3 +207,11 @@ export function requestSettings(type, token) {
     }
     return setting ? setting : {}
 }
+
+export function requestLogout() {
+    return fetch(`${PATH_BACK}/users/logout`, {
+        ...requestSettings('POST')
+    })
+        .then(response => response.json())
+        .then(data => data)
+}
