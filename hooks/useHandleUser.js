@@ -46,7 +46,7 @@ function lastValidation(inputs) {
     if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
     if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
     if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
-    // if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
+    if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
     if ( !inputs.numberPhone ) errors.numberPhone = 'Este campo no puede estar vacio'
     if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
         const [code, place, number] = inputs.numberPhone.split(" ")
@@ -196,24 +196,27 @@ function useHandleUser() {
     async function changePassword() {
         // Evaluate Errors
         const newErors = lastValidation(inputsEdit)
-        if (newErors.password || newErors.passwordConfirmation) return setErrors(newErors)
-        
+        if (newErors.password || newErors.passwordConfirmation) return setErrorsEdit(newErors)
+
         // Verify correct password
         const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
-            return console.log('password no changed')
+            setErrorsEdit({ passwordConfirmation: 'Contraseña incorrecta' })
+            console.log('No se cambió la contraseña')
+            return false
         }
         // if Verify is true
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
         const response = await updateMyAccount(propertyToUpdate)
+
         if ( response.message ) {
-            return console.log(response.message)
+            alert(response.message)
+            return false
         }
         setInputsEdit(initialInputsEdit)
-        console.log(response.message)
+        console.log(response)
         return true
     }
 
