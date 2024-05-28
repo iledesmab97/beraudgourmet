@@ -5,7 +5,7 @@ import useLocalData from '@/hooks/useLocalData'
 
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
-import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
+import { newAccount, updateMyAccount, verifyProperty, requestLogout } from '@/services/userApi'
 import { useRouter } from 'next/navigation'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
@@ -63,16 +63,6 @@ function searchUser(email) {
         .then(data => {
             return data
         })
-}
-
-function requestLogout() {
-    return fetch(`${PATH_BACK}/users/logout`, {
-        method: 'POST',
-        credentials: "include",
-        headers: { "Content-Type": "application/json" }
-    })
-        .then(response => response.json())
-        .then(data => data)
 }
 
 function useHandleUser() {
