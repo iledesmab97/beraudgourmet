@@ -63,6 +63,7 @@ function UserNew({ inputs, handleChange, errors, editing, currentUser, handleCha
                 error={false}
                 value={inputs.email}
                 onChange={handleChange}
+                placeholder='Email'
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
