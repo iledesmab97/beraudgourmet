@@ -1,4 +1,4 @@
-import { userDataFromBackToFront } from '@/utils/preparingData'
+import { userDataFromBackToFront, requestSettings } from '@/utils/preparingData'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -152,62 +152,6 @@ export function whatHappen(data) {
     })
         .then(response => response.json())
         .then(data => data)
-}
-
-export function requestSettings(type, token) {
-    let userToken
-    if (token) {
-        userToken = token
-    } else {
-        userToken = localStorage.getItem('user')
-        if (userToken) {
-            userToken = JSON.parse(userToken)
-        }
-    }    
-    let setting
-    switch (type) {
-        case 'GET': {
-            setting = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'verification-token': userToken
-                }
-            }
-            break
-        }
-        case 'POST': {
-            setting = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'verification-token': userToken
-                }
-            }
-            break
-        }
-        case 'PUT': {
-            setting = {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'verification-token': userToken
-                }
-            }
-            break
-        }
-        default: {
-            setting = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'verification-token': userToken
-                }
-            }
-            break
-        }
-    }
-    return setting ? setting : {}
 }
 
 export function requestLogout() {
