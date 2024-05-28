@@ -1,13 +1,14 @@
 'use client'
 
-import useGetModal from '@/hooks/useGetModal'
-import useHandleUser from '@/hooks/useHandleUser'
-
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+
+import useGetModal from '@/hooks/useGetModal'
+import useHandleUser from '@/hooks/useHandleUser'
+import { useState } from 'react'
 
 const style = {
     position: 'absolute',
@@ -34,6 +35,14 @@ function ModalChangeEmail() {
 
     const { open, handleChangeModal } = useGetModal({ modalType: 'changeEmail' })
     const { inputsEdit, errorsEdit, handleChangeEdit, changeEmail } = useHandleUser()
+    const [loading, setLoading] = useState(false)
+
+    async function handleChangeEmail() {
+        setLoading(true)
+        const successfull = await changeEmail()
+        if(successfull) handleChangeModal('changeEmail', 'user')
+        setLoading(false)
+    }
 
     return (
         <Modal
@@ -69,13 +78,11 @@ function ModalChangeEmail() {
                 />
                 <Button
                     variant='contained'
+                    disabled={loading}
                     sx={{
                         alignSelf: 'flex-end'
                     }}
-                    onClick={async () => {
-                        const successfull = await changeEmail()
-                        if(successfull === true) handleChangeModal('changeEmail', 'user')
-                    }}
+                    onClick={handleChangeEmail}
                 >
                     Cabiar contraeña
                 </Button>
