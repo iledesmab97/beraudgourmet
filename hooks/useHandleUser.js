@@ -5,7 +5,7 @@ import useLocalData from '@/hooks/useLocalData'
 
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
-import { newAccount, updateMyAccount, verifyProperty, requestLogout } from '@/services/userApi'
+import { newAccount, updateMyAccount, verifyProperty, requestLogout, verifyUserData } from '@/services/userApi'
 import { useRouter } from 'next/navigation'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
@@ -167,25 +167,13 @@ function useHandleUser() {
         if ( !email ) errors.email = 'El email no puede estar vacio'
         if ( !password ) errors.password = 'La contraseña no puede estar vacia'
         if ( errors.email || errors.password) return setErrors(errors)
-        return fetch(`${PATH_BACK}/users/login`, {
-            method: 'POST',
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        })
-            .then(res => res.json())
-            .then(data => {
-                const { token } = data
-                const user = {...data}
-                return {user, token}
-            })
+        return verifyUserData(email, password)
     }
 
     async function logInUser() {
         const response = await verifyUser()
-        if (!response) return
-        if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-        if (response.message) return alert('Error:', response.message)
+        if (response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
+        if (response.message) return alert(response.message)
         saveLocalData('user', response.token)
         const userFront = userDataFromBackToFront(response.user) 
         handleAddUser(userFront)
@@ -196,7 +184,11 @@ function useHandleUser() {
     async function changePassword() {
         // Evaluate Errors
         const newErors = lastValidation(inputsEdit)
-        if (newErors.password || newErors.passwordConfirmation) return setErrorsEdit(newErors)
+        if (newErors.password || newErors.passwordConfirmation) {
+            setErrorsEdit(newErors)
+            console.log('Error en la validación de datos')
+            return false
+        }
 
         // Verify correct password
         const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
@@ -222,10 +214,11 @@ function useHandleUser() {
 
     async function changeEmail() {
         // Evaluate Errors
-        if (errors.email) return
         const newErrors = lastValidation(inputsEdit)
         if (newErrors.password || newErrors.email) {
-            return setErrors(newErrors)
+            setErrorsEdit(newErrors)
+            console.log('Error en la validación de datos')
+            return false
         }
         
         // Verify correct password
@@ -233,8 +226,8 @@ function useHandleUser() {
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrors({ password: 'Contraseña incorrecta' })
-            console.log('password no changed')
+            setErrorsEdit({ password: 'Contraseña incorrecta' })
+            console.log('Contraseña incorrecta')
             return false
         }
 
@@ -242,7 +235,8 @@ function useHandleUser() {
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'email', value: inputsEdit.email })
         const response = await updateMyAccount(propertyToUpdate)
         if ( response.message ) {
-            return console.log(response.message)
+            alert(response.message)
+            return false
         }
         handleUpdateUser({
             ...user,
@@ -250,7 +244,7 @@ function useHandleUser() {
             password: inputsEdit.password
         })
         setInputsEdit(initialInputsEdit)
-        console.log(response.message)
+        console.log(response)
         return true
     }
 
