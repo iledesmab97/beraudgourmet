@@ -38,16 +38,18 @@ export function updateMyAccount(data) {
     })
         .then(res => res.json())
         .then(data => {
-            return data
+            if (data.message) throw new Error(data.message)
+            const { token } = data
+            localStorage.setItem('user', JSON.stringify(token))
+            return 'Se ha actualizado exitosamente'
         })
+        .catch(error => ({message: error.message}))
 }
 
 export function verifyProperty(data) {
     const { property } = data
     return fetch(`${PATH_BACK}/users/verify/${property}`, {
-        method: 'POST',
-        credentials: "include",
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('POST'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
@@ -206,4 +208,12 @@ export function requestSettings(type, token) {
         }
     }
     return setting ? setting : {}
+}
+
+export function requestLogout() {
+    return fetch(`${PATH_BACK}/users/logout`, {
+        ...requestSettings('POST')
+    })
+        .then(response => response.json())
+        .then(data => data)
 }
