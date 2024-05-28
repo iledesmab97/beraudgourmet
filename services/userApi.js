@@ -217,3 +217,18 @@ export function requestLogout() {
         .then(response => response.json())
         .then(data => data)
 }
+
+export function verifyUserData(email, password) {
+    return fetch(`${PATH_BACK}/users/login`, {
+        ...requestSettings('POST'),
+        body: JSON.stringify({ email, password })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            const { token } = data
+            const user = {...data}
+            return {user, token}
+        })
+        .catch(error => ({message: error.message}))
+}
