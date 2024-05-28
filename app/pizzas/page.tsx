@@ -46,6 +46,7 @@ function Menu () {
   const matches = useMediaQuery(theme.breakpoints.down('md'))
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
 
+  // Buscar usuario logueado en caso de existir
   useEffect(() => {
     gerUserLoged().then((response: any) => {
       const userLoged = response
@@ -56,6 +57,7 @@ function Menu () {
     })
   }, [])
 
+  // Actualizar el valor de matches para las diferentes dimenciones de pantalla
   useEffect(() => {
     setTotalMatches(String(matches))
   }, [matches])
