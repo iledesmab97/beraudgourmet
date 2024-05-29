@@ -93,14 +93,16 @@ export async function saveToken( tokenUser ) {
 export function getAllUsers(status) {
     const querys = status === 'all' ? '?all=true' : ''
     return fetch(`${PATH_BACK}/users${querys}`, {
-        credentials: "include"
+        ...requestSettings()
     })
         .then(response => {
             return response.json()
         })
         .then(data => {
+            if (data.message) throw new Error(data.message)
             return data
         })
+        .catch(error => ({message: error.message}))
 }
 
 export function updateAccount(id, data) {
