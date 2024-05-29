@@ -164,9 +164,9 @@ export async function addNewPizza(pizza) {
 
 export async function sendImage(formData) {
   return fetch(`${PATH_BACK}/pizzas/image`, {
-      method: 'POST',
-      body: formData,
-  })
+    ...requestSettings('POST', null, 'image'),
+    body: formData,
+})
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
