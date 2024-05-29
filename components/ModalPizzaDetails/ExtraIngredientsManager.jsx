@@ -49,10 +49,14 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
 
     function handleChangeInputName(value) {
         setInputName(value)
+        const newError = validation({ name: value, cost: 'inputCost' })
+        setErrors(newError)
     }
 
     function handleChangeInputCost(value) {
         setInputCost(value)
+        const newError = validation({ name: 'inputName', cost: value })
+        setErrors(newError)
     }
 
     async function updatedeExtraIngredient() {
