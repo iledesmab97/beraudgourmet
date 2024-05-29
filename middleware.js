@@ -48,26 +48,26 @@ import { notFound } from 'next/navigation'
 // }
 
 export async function middleware(request) {
-    const tokenUser = request.cookies.get('tokenUser')
-    const { pathname } = request.nextUrl
-    if ( pathname.includes('/admin') ) {
-        const user = await fetchwhoAmI(tokenUser)
-        const user2 = await fetchwhoAmI()
-        const reponse = await whatHappen({tokenUser: tokenUser, user, user2})
-        // if (!tokenUser) return NextResponse.error()
-        // if (user.message) return NextResponse.error()
-        if (user.message) return NextResponse.redirect(new URL('/not-found', request.url))
-        try {
-            // const { payload } = await jwtVerify(tokenUser.value, new TextEncoder().encode('secret'))
-            // if ( payload.RoleId > 2 ) return NextResponse.error()
-            // if ( user.RoleId > 2 ) return NextResponse.error()
-            if ( user.RoleId > 2 ) return NextResponse.redirect(new URL('/not-found', request.url))
-                return NextResponse.next()
-        } catch(error) {
-            console.log(error.message)
-            return NextResponse.redirect(new URL('/pizzas', request.url))
-        }
-    }
+    // const tokenUser = request.cookies.get('tokenUser')
+    // const { pathname } = request.nextUrl
+    // if ( pathname.includes('/admin') ) {
+    //     const user = await fetchwhoAmI(tokenUser)
+    //     const user2 = await fetchwhoAmI()
+    //     const reponse = await whatHappen({tokenUser: tokenUser, user, user2})
+    //     // if (!tokenUser) return NextResponse.error()
+    //     // if (user.message) return NextResponse.error()
+    //     if (user.message) return NextResponse.redirect(new URL('/not-found', request.url))
+    //     try {
+    //         // const { payload } = await jwtVerify(tokenUser.value, new TextEncoder().encode('secret'))
+    //         // if ( payload.RoleId > 2 ) return NextResponse.error()
+    //         // if ( user.RoleId > 2 ) return NextResponse.error()
+    //         if ( user.RoleId > 2 ) return NextResponse.redirect(new URL('/not-found', request.url))
+    //             return NextResponse.next()
+    //     } catch(error) {
+    //         console.log(error.message)
+    //         return NextResponse.redirect(new URL('/pizzas', request.url))
+    //     }
+    // }
 
     return NextResponse.next()
 }
