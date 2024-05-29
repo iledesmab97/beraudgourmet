@@ -180,9 +180,7 @@ export async function sendImage(formData) {
 
 export async function updateCharacteristicsPizza(id, body) {
   return fetch(`${PATH_BACK}/pizzaCosts/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(body)
   })
     .then(response => {
