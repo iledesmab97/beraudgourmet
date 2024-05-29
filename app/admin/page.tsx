@@ -52,6 +52,7 @@ function AdminPlace() {
                 if (!userLoged) return
                 handleAddUser(userLoged)
             })
+            .catch(error => alert(error.message))
         if (!(products && products.pizzas)) {
             getPizzasWithCosts().then(data => {
                 handleAddProductsList({
