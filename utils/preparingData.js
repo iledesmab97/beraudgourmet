@@ -194,6 +194,16 @@ export function requestSettings(type, token) {
             }
             break
         }
+        case 'DELETE': {
+            setting = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
         default: {
             setting = {
                 method: 'GET',
