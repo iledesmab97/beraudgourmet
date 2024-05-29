@@ -1,4 +1,6 @@
 import { twoDecimals } from '@/utils/priceCar'
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getPizzas() {
@@ -106,9 +108,7 @@ export async function getPizzasWithCosts() {
 
 export async function updatePizza(id, body) {
   return fetch(`${PATH_BACK}/pizzas/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(body)
   })
     .then(response => {
@@ -123,9 +123,7 @@ export async function updatePizza(id, body) {
 
 export async function removePizza(id) {
   return fetch(`${PATH_BACK}/pizzas/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' }
+    ...requestSettings('DELETE')
   })
     .then(response => {
       return response.json()
@@ -151,9 +149,7 @@ export async function getAllExtraIngredients() {
 
 export async function addNewPizza(pizza) {
   return fetch(`${PATH_BACK}/pizzas`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('POST'),
     body: JSON.stringify(pizza)
   })
     .then(response => {

@@ -1,9 +1,10 @@
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function createPaymentRequest({userId, email, amount, description, payInPlace}) {
     return fetch(`${PATH_BACK}/checkout`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        ...requestSettings('POST'),
         body: JSON.stringify({
             userId: `${userId}`,
             email,
@@ -33,8 +34,7 @@ export function updatePaymentRequest({amount, stripeId, description, payInPlace}
 
 export function captureFundsRequest(stripeId, orderId) {
     return fetch(`${PATH_BACK}/checkout/capture`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        ...requestSettings('POST'),
         body: JSON.stringify({ stripeId, orderId })
     })
         .then(res => res.json())

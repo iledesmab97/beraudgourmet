@@ -10,7 +10,7 @@ export default function useHandleOrder({ product }) {
     const [inputs, setInputs] = useState({
         size: product.size ? product.size : '30cm',
         quantity: product?.quantity ? product.quantity : 1,
-        mass: product?.mass ? product.mass : 'Masa Tradicional',
+        mass: product?.mass ? product.mass : Object.keys(product.price['30cm'])[0],
         ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
         extra: product?.extra ? product.extra : {}
     })

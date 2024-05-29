@@ -104,17 +104,28 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     async function handleFileSelected(event) {
+        setLoading(true)
         const file = event.target.files[0]
         const formData = new FormData()
         formData.append('file', file)
         const response = await sendImage(currentOrder.id, formData)
-        const data = await response.json()
-        await getAllOrders().then(data => updateOrders(data))
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => {
+                updateOrders(data)
+            })
+        }
         handleUpdateAlertMessage({
             checked: true,
-            text: data.message,
-            status: data.status
+            text,
+            status
         })
+        setLoading(false)
         handleClose()
     }
 
