@@ -35,9 +35,7 @@ export async function sendImage(id, formData) {
 
 export async function registerOrder(data) {
     return fetch(`${PATH_BACK}/orders`, {
-        method: 'POST',
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        ...requestSettings('POST'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
@@ -46,7 +44,7 @@ export async function registerOrder(data) {
             console.log('La orden fue creada exitosamente')
             return data
         })
-        .catch(error => alert(error.message))
+        .catch(error => ({message: error.message}))
 }
 
 export function requestRemovalOrder(id) {
