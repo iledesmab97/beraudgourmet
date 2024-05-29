@@ -18,12 +18,14 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
     const [ingredientSelected, setIngredientSelected] = useState('')
     const [ingredientName, setIngredientName] = useState('')
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [loading, setLoading] = useState(false)
 
     function handleChange(value) {
         setIngredientSelected(value)
     }
 
     async function addNewIngredient() {
+        setLoading(true)
         console.log('agregando nuevo ingrediente')
         const newIngredient = await addIngredient(ingredientName)
         let text, status
@@ -45,9 +47,11 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
             handleIngredients(newListIngredients)
             handleChange(ingredientName)
         }
+        setLoading(false)
     }
 
     async function deleteIngredient() {
+        setLoading(true)
         console.log('eliminando ingrediente')
         const response = await removeIngredient({name: ingredientSelected})
         let text, status
@@ -63,6 +67,11 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
             text,
             status
         })
+        if (!response.message) {
+            setIngredientSelected('')
+            handleIngredients([...allIngredients].filter(ingredient => ingredient !== ingredientSelected))
+        }
+        setLoading(false)
     }
 
     function changeIngredientName(event) {
@@ -123,6 +132,7 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
                             <Button
                                 variant='contained'
                                 onClick={addNewIngredient}
+                                disabled={loading}
                             >
                                 Agregar
                             </Button>
@@ -130,6 +140,7 @@ function IngredientsManager({ allIngredients, handleIngredients }) {
                             <Button
                                 variant='contained'
                                 onClick={deleteIngredient}
+                                disabled={loading}
                             >
                                 Eliminar
                             </Button>

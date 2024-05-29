@@ -128,8 +128,9 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, hand
         })
         if (status === 'success' ) {
             handleChange(url)
+            return console.log('imagen cargada exitosamente')
         }
-        console.log('imagen cargada exitosamente')
+        console.log('La imagen no se ha podido cargar correctamente')
     }
 
     return (

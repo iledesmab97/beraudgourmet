@@ -1,10 +1,10 @@
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function addIngredient(name) {
     return fetch(`${PATH_BACK}/pizzaIngredients`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('POST'),
         body: JSON.stringify({name})
     })
         .then(response => {
@@ -22,9 +22,7 @@ export function addIngredient(name) {
 export function removeIngredient({id, name}) {
     if (id) {
         return fetch(`${PATH_BACK}/pizzaIngredients/${id}`, {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: { 'Content-type': 'application/json' },
+            ...requestSettings('DELETE')
         })
             .then(response => {
                 return response.json()
@@ -39,9 +37,7 @@ export function removeIngredient({id, name}) {
     }
     else if (name) {
         return fetch(`${PATH_BACK}/pizzaIngredients`, {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: { 'Content-type': 'application/json' },
+            ...requestSettings('DELETE'),
             body: JSON.stringify({name})
         })
             .then(response => {
