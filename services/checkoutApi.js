@@ -1,9 +1,10 @@
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function createPaymentRequest({userId, email, amount, description, payInPlace}) {
     return fetch(`${PATH_BACK}/checkout`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        ...requestSettings('POST'),
         body: JSON.stringify({
             userId: `${userId}`,
             email,
