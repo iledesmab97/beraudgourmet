@@ -152,7 +152,7 @@ export function listStores(storeList) {
     return arrayStoreList
 }
 
-export function requestSettings(type, token) {
+export function requestSettings(requestType, token, typeFile) {
     let userToken
     if (token) {
         userToken = token
@@ -163,7 +163,7 @@ export function requestSettings(type, token) {
         }
     }    
     let setting
-    switch (type) {
+    switch (requestType) {
         case 'GET': {
             setting = {
                 method: 'GET',
@@ -175,11 +175,20 @@ export function requestSettings(type, token) {
             break
         }
         case 'POST': {
-            setting = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'verification-token': userToken
+            if (typeFile === 'image') {
+                setting = {
+                    method: 'POST',
+                    headers: {
+                        'verification-token': userToken
+                    }
+                }
+            } else {
+                setting = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'verification-token': userToken
+                    }
                 }
             }
             break
