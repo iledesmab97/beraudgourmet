@@ -18,8 +18,7 @@ export function getAllOrders(userId) {
 
 export function updateOrder(id, body) {
     return fetch(`${PATH_BACK}/orders/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-type': 'application/json'},
+        ...requestSettings('PUT'),
         body: JSON.stringify(body),
     })
         .then(res => res.json())
@@ -28,9 +27,15 @@ export function updateOrder(id, body) {
 
 export async function sendImage(id, formData) {
     return fetch(`${PATH_BACK}/orders/image/${id}`, {
-        method: 'POST',
+        ...requestSettings('POST', null, 'image'),
         body: formData,
     })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({message: error.message}))
 }
 
 export async function registerOrder(data) {
@@ -48,10 +53,9 @@ export async function registerOrder(data) {
 }
 
 export function requestRemovalOrder(id) {
-    if (!id) throw new Error('id can not be undefined')
+    if (!id) return {message: 'id can not be undefined'}
     return fetch(`${PATH_BACK}/orders/${id}`, {
-        method: 'DELETE',
-        credentials: "include",
+        ...requestSettings('DELETE')
     })
         .then(res => res.json())
         .then(data => {
