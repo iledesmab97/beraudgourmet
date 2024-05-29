@@ -1,10 +1,12 @@
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getAllOrders(userId) {
     const lastPath = userId ? `/${userId}` : ''
     return fetch(`${PATH_BACK}/orders${lastPath}`, {
-        cache: 'no-store',
-        credentials: "include",
+        ...requestSettings(),
+        cache: 'no-store'
     })
         .then(response => response.json())
         .then(data => {
