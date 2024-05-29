@@ -197,9 +197,7 @@ export async function updateCharacteristicsPizza(id, body) {
 
 export function updateExtraIngredient(id, properties) {
   return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(properties)
   })
     .then(response => {
@@ -214,9 +212,7 @@ export function updateExtraIngredient(id, properties) {
 
 export function makeExtraIngredient(properties) {
   return fetch(`${PATH_BACK}/pizzaExtraIngredients`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('POST'),
     body: JSON.stringify(properties)
   })
     .then(response => {
@@ -231,9 +227,7 @@ export function makeExtraIngredient(properties) {
 
 export function removeExtraIngredient(id) {
   return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('DELETE'),
   })
     .then(response => {
       return response.json()
