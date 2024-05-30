@@ -43,12 +43,6 @@ function DataPanel({ toolSelected }) {
     const [list, setList] = useState([])
 
     useEffect(() => {
-        getAllOrders()
-            .then(data => {
-                if (data.message) throw new Error(data.message)
-                return updateOrders(data)
-            })
-            .catch(error => alert(error.message))
         getAllUsers('all')
             .then(data => {
                 if (data.message) throw new Error(data.message)
@@ -103,7 +97,7 @@ function DataPanel({ toolSelected }) {
                 }}
             >
                 {
-                    toolSelected === 'Orders' ? <TableOrders orders={orders} updateOrders={updateOrders} /> : null
+                    toolSelected === 'Orders' ? <TableOrders /> : null
                 }
                 {
                     toolSelected === 'Pizzas' ? <TablePizzas /> : null
