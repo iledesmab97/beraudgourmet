@@ -179,6 +179,7 @@ function useHandleUser() {
         handleAddUser(userFront)
         setInputs(userFront)
         console.log('Se ha iniciado sesión exitosamente')
+        if (response.user.RoleId < 3) router.push('/admin')
     }
 
     async function changePassword() {
@@ -249,11 +250,12 @@ function useHandleUser() {
     }
 
     async function signOff() {
-        const {message} = await requestLogout()
-        if (message === 'No hay usuario con la sesión activa') return
+        const response = await requestLogout()
+        if (response.message) return alert(response.message)
+        localStorage.removeItem('user')
         setInputs(initialInputs)
         handleRemoveUser()
-        console.log(message)
+        console.log(response)
     }
 
     async function handleEditing(event) {

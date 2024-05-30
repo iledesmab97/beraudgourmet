@@ -159,7 +159,11 @@ export function requestLogout() {
         ...requestSettings('POST')
     })
         .then(response => response.json())
-        .then(data => data)
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({ message: error.message }))
 }
 
 export function verifyUserData(email, password) {
