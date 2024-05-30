@@ -179,6 +179,7 @@ function useHandleUser() {
         handleAddUser(userFront)
         setInputs(userFront)
         console.log('Se ha iniciado sesión exitosamente')
+        if (response.user.RoleId < 3) router.push('/admin')
     }
 
     async function changePassword() {
