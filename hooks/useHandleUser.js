@@ -249,11 +249,12 @@ function useHandleUser() {
     }
 
     async function signOff() {
-        const {message} = await requestLogout()
-        if (message === 'No hay usuario con la sesión activa') return
+        const response = await requestLogout()
+        if (response.message) return alert(response.message)
+        localStorage.removeItem('user')
         setInputs(initialInputs)
         handleRemoveUser()
-        console.log(message)
+        console.log(response)
     }
 
     async function handleEditing(event) {
