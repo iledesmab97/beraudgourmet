@@ -1,15 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+
 import AppBar from '@mui/material/AppBar'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+
+import Link from 'next/link'
 import CurrentSession from '@/components/CurrentSession/CurrentSession'
+
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
 import links from '../NavBar/navbarpaths.json'
@@ -61,10 +64,14 @@ function Header() {
                   links.map(link => (
                     <Link
                       href={link.path}
-                      color='#000'
                       key={link.title}
-                      sx={{textDecoration: 'none'}}
-                    ><Typography variant='title'>{link.title}</Typography></Link>
+                      style={{
+                        textDecoration: 'none',
+                        color: '#4e5762'
+                      }}
+                    >
+                      <Typography variant='title'>{link.title}</Typography>
+                    </Link>
                   ))
                 }
               </Toolbar>
