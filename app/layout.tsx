@@ -3,6 +3,7 @@ import Header from "@/components/Header/Header"
 import WhatsappButton from '@/components/WhatsappButton/WhatsappButton'
 import Footer from '@/components/Footer/Footer'
 import { Providers } from '../stores/Providers'
+import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
 import './global.css'
 
 export const metadata = {
@@ -20,10 +21,12 @@ export default function RootLayout({
       <ThemeRegistry>
         <body>
           <Providers>
-            <Header />
-            {children}
-            <Footer />
-            <WhatsappButton />
+            <ProtectedRoute>
+              <Header />
+              {children}
+              <Footer />
+              <WhatsappButton />
+            </ProtectedRoute>
           </Providers>
         </body>
       </ThemeRegistry>
