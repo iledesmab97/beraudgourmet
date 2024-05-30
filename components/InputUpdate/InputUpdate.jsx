@@ -73,11 +73,13 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
                     property,
                     value: myValue
                 })
+                setEdit(prevState => !prevState)
+                console.log('Información guardada con exito')
+            } else {
+                console.log('No se ha guardado la información exitosamente')
             }
-            console.log('Información guardada con exito')
-            setLoading(false)
         }
-        setEdit(prevState => !prevState)
+        setLoading(false)
     }
 
     return (
