@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { getAllSchedules } from '@/services/scheduleApi'
 import { isOpen, todaysScheduleIs } from '@/utils/hours'
+import { requestSettings } from '@/utils/preparingData'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -89,9 +90,7 @@ export async function updateStore (id, properties) {
     }
   }
   return fetch(`${PATH_BACK}/stores/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify({ property: newProperty, value })
   })
     .then(response => {
