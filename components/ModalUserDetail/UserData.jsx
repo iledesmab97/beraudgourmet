@@ -41,10 +41,12 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
     const [editRole, setEditRole] = useState(false)
     const [currentRole, setCurrentRole] = useState( roleList.length ? user.Role : '')
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [latNumberPhone, setLastNumberPhone] = useState(user.phoneNumber)
 
     useEffect(() => {
         getAllRoles()
             .then(data => {
+                if (data.message) return alert(data.message)
                 setRoleList(data.filter(role => role.id !== 1))
             })
     }, [])
@@ -64,6 +66,10 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
         if (editingNumberPhone) {
             if (Object.keys(errors).length) return
             setEditingNumberPhone(prevState => !prevState)
+
+            if (latNumberPhone === user.phoneNumber) {
+                return setLoading(false)
+            }
             const response = await updateAccount( user.id, {property: 'phoneNumber', value: user.phoneNumber})
             let text, status
             if (response.message) {
@@ -84,7 +90,8 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                     property: 'phoneNumber',
                     value: user.phoneNumber
                 })
-                console.log('Información guardada con exito')
+                console.log('Nuevo número guardado exitosamente')
+                setLastNumberPhone(user.phoneNumber)
             }
         } else {
             setEditingNumberPhone(prevState => !prevState)
@@ -98,8 +105,12 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
             setLoading(false)
             return setEditRole(prevState => !prevState)
         }
-        const newRole = roleList.find(role => role.name === currentRole)
+        if (currentRole === user.Role) {
+            setLoading(false)
+            return setEditRole(prevState => !prevState)
+        }
         console.log('Eviando datos...')
+        const newRole = roleList.find(role => role.name === currentRole)
         const response = await updateAccount( user.id, {property, value: newRole.id})
         let text, status
         if (response.message) {
@@ -132,7 +143,7 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
 
     async function updateUser({propertyBack, propertyFront, value}) {
         setLoading(true)
-        console.log('Eviando datos...')
+        console.log('Actualizando datos...')
         const response = await updateAccount( user.id, {property: propertyBack, value})
         let text, status
         if (response.message) {
@@ -153,13 +164,14 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                 property: propertyFront,
                 value
             })
-            console.log('Información guardada con exito')
+            console.log('Datos actualizados')
         }
+        console.log('Los datos no han podido actualizarse exitosamente')
         setLoading(false)
     }
 
     async function removePassword() {
-        console.log('Eliminando contraseña')
+        console.log('Eliminando contraseña...')
         setLoading(true)
         const response = await updateAccount(user.id, {property: 'password', value:''})
         let text, status
@@ -181,9 +193,10 @@ function UserData({ user, errors, updateUserTable, handleChangeUser }) {
                 property: 'password',
                 value: ''
             })
-            console.log('Información guardada con exito')
+            console.log('Contraseña eliminada exitosamente')
         }
         setLoading(false)
+        console.log('No se ha podido eliminar la contraseña')
     }
 
     return (

@@ -66,6 +66,7 @@ function TableUsers({ users, handleChangeUsers }) {
 
     async function handleStatusUser() {
         closeMenu()
+        const lastState = currentUser.state
         const properties = {
             property: 'state',
             value: currentUser.state === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
@@ -85,9 +86,10 @@ function TableUsers({ users, handleChangeUsers }) {
             status
         })
         if (!response.message) {
-            getAllUsers()
-                .then(data => handleChangeUsers(data))
+            getAllUsers().then(data => handleChangeUsers(data))
+            return console.log(`Usuario ${lastState === 'ACTIVE' ? 'desactivado' : 'activado'}`)
         }
+        console.log(`No se ha podido ${lastState === 'ACTIVE' ? 'desactivar' : 'activar'} el usuario`)
     }
 
     return (

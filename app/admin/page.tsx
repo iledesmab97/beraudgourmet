@@ -18,6 +18,7 @@ import useGetUser from '@/hooks/useGetUser';
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetStoreList from '@/hooks/useGetStoreList'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import useGetOrderList from '@/hooks/useGetOrderList'
 import { useLoadScript } from "@react-google-maps/api"
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
@@ -25,6 +26,7 @@ import { useTheme } from '@mui/material/styles'
 import { lookingForUserLoged } from '@/services/userApi'
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 import { getAllStoresWithSchedules } from '@/services/storeApi'
+import { getAllOrders } from '@/services/orderApi'
 
 import styles from './page.module.css'
 
@@ -37,6 +39,7 @@ function AdminPlace() {
     const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
     const { storeList, handleAddStoreList } = useGetStoreList()
     const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
+    const { orderList, handleAddOrderList } = useGetOrderList()
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries: ['places'],
@@ -65,6 +68,14 @@ function AdminPlace() {
             getAllStoresWithSchedules().then(storeList => {
                 handleAddStoreList(storeList)
             })
+        }
+        if (!orderList.length) {
+            getAllOrders()
+                .then(data => {
+                    if (data.message) throw new Error(data.message)
+                    handleAddOrderList(data)
+                })
+                .catch(error => alert(error.message))
         }
         if (!Object.keys(extraIngredients).length) {
             getExtraIngredients().then(data => {

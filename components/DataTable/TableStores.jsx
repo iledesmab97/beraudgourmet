@@ -116,6 +116,11 @@ function TableStores() {
                 >
                     Ver Detalles
                 </MenuItem>
+                <MenuItem
+                    // onClick={() => {handleOpenStoreDetail(true)}}
+                >
+                    Eliminar
+                </MenuItem>
             </Menu>
             {
                 currentStore ? <ModalStoreDetailAdmin openStoreDetails={openStoreDetails} handleOpenStoreDetail={handleOpenStoreDetail} currentStore={currentStore} /> : null
