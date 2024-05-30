@@ -73,7 +73,6 @@ function ModalUserDetail({ openModal, handleOpenModal, currentUser, updateUserTa
             [property]: value
         }
         setUser(newUser)
-        console.log('voy a modificar el errors ahora')
         setErrors(validation(newUser))
     }
 
