@@ -22,7 +22,11 @@ export function updateOrder(id, body) {
         body: JSON.stringify(body),
     })
         .then(res => res.json())
-        .then(data => data)
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({message: error.message}))
 }
 
 export async function sendImage(id, formData) {
