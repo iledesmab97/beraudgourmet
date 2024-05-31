@@ -209,6 +209,22 @@ function TableOrders() {
         handleClose()
     }
 
+    function handleUpdateOrderProperty({id, property, value}) {
+        const newOrders = [...orders]
+        let index
+        const order = newOrders.find((order, i) => {
+            if (order.id === id) {
+                index = i
+                return true
+            }
+        })
+        const orderUpdated = {...order}
+        orderUpdated[property] = value
+        newOrders[index] = orderUpdated
+        setOrders(newOrders)
+        setCurrentOrder(orderUpdated)
+    }
+
     return (
         <>
             <TableContainer className={styles.DataTable} component={Paper}>
@@ -313,7 +329,7 @@ function TableOrders() {
             </Menu>
             {
                 currentOrder ? (
-                    <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
+                    <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                 ) : null
             }
         </>

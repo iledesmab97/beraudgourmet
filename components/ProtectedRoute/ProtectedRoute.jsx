@@ -32,12 +32,9 @@ function ProtectedRoute({ children }) {
     const pathname = usePathname()
 
     useEffect(() => {
-        console.log('entrando en el useEffect con:', pathname)
         validateUser(pathname)
             .then(data => {
-                console.log('data:', data)
                 if (!data.allow) {
-                    console.log('estoy entrando en el if')
                     setAllowedPath(false)
                     router.push(data.path)
                 } else {

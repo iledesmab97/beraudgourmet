@@ -41,7 +41,7 @@ const style = {
     gap: 2,
 }
 
-function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrder }) {
+function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrder, handleUpdateOrderProperty }) {
 
     return (
         <Modal
@@ -72,7 +72,7 @@ function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrde
                         boxSizing: 'border-box'
                     }}
                 >
-                    <OrderData currentOrder={currentOrder} />
+                    <OrderData currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                     <Divider sx={{ width: '100%'}} />
 
                     <PriceData

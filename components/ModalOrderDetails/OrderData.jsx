@@ -1,5 +1,19 @@
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import IconButton from '@mui/material/IconButton'
+
+import EditIcon from '@mui/icons-material/Edit'
+import CheckIcon from '@mui/icons-material/Check'
+
+import { useState } from 'react'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+
+import { updateOrder } from '@/services/orderApi'
 
 import styles from './ModalOrderDetails.module.css'
 
@@ -9,7 +23,77 @@ import styles from './ModalOrderDetails.module.css'
 //     {title: 'Teléfono', name: 'phoneNumber'}
 // ]
 
-function OrderData({currentOrder}) {
+const properties = {
+    paymentMethod: 'Método de Pago'
+}
+
+const paymentMethods = {
+    cash: 'efectivo',
+    transfer: 'transferencia',
+    stripe: 'stripe'
+}
+
+function OrderData({currentOrder, handleUpdateOrderProperty}) {
+
+    const [currentValues, setCurrentValues] = useState({
+        paymentMethod: currentOrder.paymentMethod
+    })
+    const [editing, setEditing] = useState({
+        paymentMethod: true
+    })
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
+
+    function handleCurrentValues({property, value}) {
+        const newCurrentValues = {
+            ...currentValues,
+            [property]: value
+        }
+        setCurrentValues(newCurrentValues)
+    }
+
+    async function handleEditing(property) {
+        const newEditing = {
+            ...editing,
+            [property]: !editing[property]
+        }
+        if (newEditing[property]) {
+            const updated = await updateProperty(property)
+            if (!updated) return
+        }
+        setEditing(newEditing)
+    }
+
+    async function updateProperty(property) {
+        console.log('Editando', properties[property], '...')
+        const value = currentValues[property]
+        const response = await updateOrder(currentOrder.id, {property, value})
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            handleUpdateOrderProperty({
+                id: currentOrder.id,
+                property,
+                value
+            })
+            console.log('Información guardada con exito')
+            return true
+        } else {
+            console.log('No se ha guardado la información exitosamente')
+            return false
+        }
+    }
+
     return (
         <>
             <Typography variant='title'>DATOS DE LA ORDEN</Typography>
@@ -41,7 +125,8 @@ function OrderData({currentOrder}) {
                 sx={{
                     width: '100%',
                     display: 'flex',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
                 }}
             >
                 <Typography
@@ -50,12 +135,38 @@ function OrderData({currentOrder}) {
                 >
                     Método de Pago
                 </Typography>
-                <Typography
-                    variant='p'
-                    gutterBottom
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                    }}
                 >
-                    {currentOrder.paymentMethod.toUpperCase()}
-                </Typography>
+                    <FormControl>
+                        <Select
+                            value={currentValues.paymentMethod}
+                            onChange={(event) => { handleCurrentValues({ property:'paymentMethod' , value: event.target.value }) }}
+                            disabled={editing.paymentMethod}
+                        >
+                            {
+                                Object.keys(paymentMethods).map(method => (
+                                    <MenuItem key={method} value={method}>{paymentMethods[method].toUpperCase()}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                    <IconButton
+                        onClick={() => {handleEditing('paymentMethod')}}
+                    >
+                        {
+                            editing ? (
+                                <CheckIcon />
+                            ) : (
+                                <EditIcon />
+                            )
+                        }
+                    </IconButton>
+                </Box>
             </Box>
             <Box
                 // key={user[item.name]}
