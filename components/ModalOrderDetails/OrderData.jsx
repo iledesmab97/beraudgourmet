@@ -150,7 +150,7 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                         >
                             {
                                 Object.keys(paymentMethods).map(method => (
-                                    <MenuItem value={method}>{paymentMethods[method].toUpperCase()}</MenuItem>
+                                    <MenuItem key={method} value={method}>{paymentMethods[method].toUpperCase()}</MenuItem>
                                 ))
                             }
                         </Select>
