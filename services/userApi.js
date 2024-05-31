@@ -1,4 +1,4 @@
-import { userDataFromBackToFront } from '@/utils/preparingData'
+import { userDataFromBackToFront, requestSettings } from '@/utils/preparingData'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
@@ -11,18 +11,8 @@ export function verifyEmailUser(token) {
         })
 }
 
-export function fetchwhoAmI(cookie) {
-    const settings = { method: 'GET' }
-    if (cookie) {
-        const cookieValue = cookie.name + '=' + cookie.value
-        settings.headers = {
-            'Content-Type': 'application/json',
-            'Cookie': cookieValue
-        }
-    } else {
-        settings.credentials = 'include'
-    }
-    return fetch(`${PATH_BACK}/users/loged`, settings)
+export function fetchwhoAmI(token) {
+    return fetch(`${PATH_BACK}/users/loged`, { ...requestSettings('GET', token) })
         .then(response => response.json())
         .then(data => {
             if (data.message) throw new Error(data.message)
@@ -43,30 +33,32 @@ export function newAccount(data) {
 
 export function updateMyAccount(data) {
     return fetch(`${PATH_BACK}/users/update`, {
-        method: 'PUT',
-        credentials: "include",
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('PUT'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
-        .then(data => data)
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            const { token } = data
+            localStorage.setItem('user', JSON.stringify(token))
+            return 'Se ha actualizado exitosamente'
+        })
+        .catch(error => ({message: error.message}))
 }
 
 export function verifyProperty(data) {
     const { property } = data
     return fetch(`${PATH_BACK}/users/verify/${property}`, {
-        method: 'POST',
-        credentials: "include",
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('POST'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
         .then(data => data)
 }
 
-export async function lookingForUserLoged(){
+export async function lookingForUserLoged( token ) {
     try {
-        const user = await fetchwhoAmI()
+        const user = await fetchwhoAmI( token )
         if (user.message) throw new Error(user.message)
         const userDataFront = userDataFromBackToFront(user)
         return userDataFront
@@ -88,29 +80,34 @@ export function requestCookie(tokenUser) {
 }
 
 export async function saveToken( tokenUser ) {
-    const response = await requestCookie( tokenUser )
-    if (response.message !== 'valid token') return alert(response.message)
-    window.location.href = "/pizzas"
+    const response = await fetchwhoAmI(tokenUser)
+    if (response.message) {
+        alert(response.message)
+        return {message: response.message}
+    }
+    localStorage.setItem('user', JSON.stringify(tokenUser))
+    const userDataFront = userDataFromBackToFront(response)
+    return userDataFront
 }
 
 export function getAllUsers(status) {
     const querys = status === 'all' ? '?all=true' : ''
     return fetch(`${PATH_BACK}/users${querys}`, {
-        credentials: "include"
+        ...requestSettings()
     })
         .then(response => {
             return response.json()
         })
         .then(data => {
+            if (data.message) throw new Error(data.message)
             return data
         })
+        .catch(error => ({message: error.message}))
 }
 
 export function updateAccount(id, data) {
     return fetch(`${PATH_BACK}/users/update/${id}`, {
-        method: 'PUT',
-        credentials: "include",
-        headers: { 'Content-type': 'application/json' },
+        ...requestSettings('PUT'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
@@ -155,4 +152,31 @@ export function whatHappen(data) {
     })
         .then(response => response.json())
         .then(data => data)
+}
+
+export function requestLogout() {
+    return fetch(`${PATH_BACK}/users/logout`, {
+        ...requestSettings('POST')
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({ message: error.message }))
+}
+
+export function verifyUserData(email, password) {
+    return fetch(`${PATH_BACK}/users/login`, {
+        ...requestSettings('POST'),
+        body: JSON.stringify({ email, password })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            const { token } = data
+            const user = {...data}
+            return {user, token}
+        })
+        .catch(error => ({message: error.message}))
 }

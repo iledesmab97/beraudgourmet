@@ -1,13 +1,14 @@
 'use client'
 
-import useGetModal from '@/hooks/useGetModal'
-import useHandleUser from '@/hooks/useHandleUser'
-
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+
+import useGetModal from '@/hooks/useGetModal'
+import useHandleUser from '@/hooks/useHandleUser'
+import { useState } from 'react'
 
 const style = {
     position: 'absolute',
@@ -34,6 +35,13 @@ function ModalChangePassword() {
 
     const { open, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
     const { inputsEdit, errorsEdit, handleChangeEdit, changePassword } = useHandleUser()
+    const [loading, setLoading] = useState(false)
+
+    async function handleChangePassword() {
+        setLoading(true)
+        if (await changePassword() === true) handleChangeModal('changePassword', 'user')
+        setLoading(false)
+    }
 
     return (
         <Modal
@@ -69,12 +77,11 @@ function ModalChangePassword() {
                 />
                 <Button
                     variant='contained'
+                    disabled={loading}
                     sx={{
                         alignSelf: 'flex-end'
                     }}
-                    onClick={async () => {
-                        if (await changePassword() === true) handleChangeModal('changePassword', 'user')
-                    }}
+                    onClick={handleChangePassword}
                 >
                     Cabiar contraeña
                 </Button>

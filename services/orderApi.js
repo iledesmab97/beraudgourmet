@@ -1,10 +1,12 @@
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getAllOrders(userId) {
     const lastPath = userId ? `/${userId}` : ''
     return fetch(`${PATH_BACK}/orders${lastPath}`, {
-        cache: 'no-store',
-        credentials: "include",
+        ...requestSettings(),
+        cache: 'no-store'
     })
         .then(response => response.json())
         .then(data => {
@@ -16,26 +18,33 @@ export function getAllOrders(userId) {
 
 export function updateOrder(id, body) {
     return fetch(`${PATH_BACK}/orders/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-type': 'application/json'},
+        ...requestSettings('PUT'),
         body: JSON.stringify(body),
     })
         .then(res => res.json())
-        .then(data => data)
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({message: error.message}))
 }
 
 export async function sendImage(id, formData) {
     return fetch(`${PATH_BACK}/orders/image/${id}`, {
-        method: 'POST',
+        ...requestSettings('POST', null, 'image'),
         body: formData,
     })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({message: error.message}))
 }
 
 export async function registerOrder(data) {
     return fetch(`${PATH_BACK}/orders`, {
-        method: 'POST',
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        ...requestSettings('POST'),
         body: JSON.stringify(data)
     })
         .then(res => res.json())
@@ -44,14 +53,13 @@ export async function registerOrder(data) {
             console.log('La orden fue creada exitosamente')
             return data
         })
-        .catch(error => alert(error.message))
+        .catch(error => ({message: error.message}))
 }
 
 export function requestRemovalOrder(id) {
-    if (!id) throw new Error('id can not be undefined')
+    if (!id) return {message: 'id can not be undefined'}
     return fetch(`${PATH_BACK}/orders/${id}`, {
-        method: 'DELETE',
-        credentials: "include",
+        ...requestSettings('DELETE')
     })
         .then(res => res.json())
         .then(data => {

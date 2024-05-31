@@ -1,3 +1,5 @@
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getAllSchedules() {
@@ -10,9 +12,7 @@ export function getAllSchedules() {
 
 export function updateSchedulesHoursOfSchedules(id, newScheduleHours) {
   return fetch(`${PATH_BACK}/schedules/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(newScheduleHours)
   })
     .then(response => response.json())

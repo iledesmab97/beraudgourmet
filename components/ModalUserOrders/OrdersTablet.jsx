@@ -21,6 +21,7 @@ function OrdersTablet({orders}) {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell align='center'>ID</TableCell>
                             <TableCell >Pedido</TableCell>
                             <TableCell align='center'>Emición</TableCell>
                             <TableCell align='center'>Entrega</TableCell>
@@ -40,6 +41,7 @@ function OrdersTablet({orders}) {
                         {
                             orders.map( order => (
                                 <TableRow key={order.id}>
+                                    <TableCell align='center'>{order.id}</TableCell>
                                     <TableCell
                                         dangerouslySetInnerHTML={{
                                             __html: order.itemsxOrder.map(item => {

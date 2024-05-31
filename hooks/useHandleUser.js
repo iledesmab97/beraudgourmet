@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from "react"
 import useGetUser from '@/hooks/useGetUser'
 import useDebounce from "./useDebounce"
+import useLocalData from '@/hooks/useLocalData'
+
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
 import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
-import { newAccount, updateMyAccount, verifyProperty } from '@/services/userApi'
+import { newAccount, updateMyAccount, verifyProperty, requestLogout, verifyUserData } from '@/services/userApi'
 import { useRouter } from 'next/navigation'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
@@ -44,7 +46,7 @@ function lastValidation(inputs) {
     if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
     if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
     if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
-    // if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
+    if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
     if ( !inputs.numberPhone ) errors.numberPhone = 'Este campo no puede estar vacio'
     if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
         const [code, place, number] = inputs.numberPhone.split(" ")
@@ -61,16 +63,6 @@ function searchUser(email) {
         .then(data => {
             return data
         })
-}
-
-function requestLogout() {
-    return fetch(`${PATH_BACK}/users/logout`, {
-        method: 'POST',
-        credentials: "include",
-        headers: { "Content-Type": "application/json" }
-    })
-        .then(response => response.json())
-        .then(data => data)
 }
 
 function useHandleUser() {
@@ -96,6 +88,7 @@ function useHandleUser() {
     })
     const { debounceSetValue } = useDebounce()
     const lastDataSet = useRef('')
+    const { saveLocalData } = useLocalData()
 
     const [currentUser, setCurrentUser] = useState(null)
     const router = useRouter()
@@ -174,57 +167,59 @@ function useHandleUser() {
         if ( !email ) errors.email = 'El email no puede estar vacio'
         if ( !password ) errors.password = 'La contraseña no puede estar vacia'
         if ( errors.email || errors.password) return setErrors(errors)
-        return fetch(`${PATH_BACK}/users/login`, {
-            method: 'POST',
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        })
-            .then(res => res.json())
-            .then(data => data)
+        return verifyUserData(email, password)
     }
 
     async function logInUser() {
         const response = await verifyUser()
-        if (!response) return
-        if (response.message && response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-        if (response.message) return console.log('Error:', response.message)
-        const userFront = userDataFromBackToFront(response) 
+        if (response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
+        if (response.message) return alert(response.message)
+        saveLocalData('user', response.token)
+        const userFront = userDataFromBackToFront(response.user) 
         handleAddUser(userFront)
         setInputs(userFront)
         console.log('Se ha iniciado sesión exitosamente')
+        if (response.user.RoleId < 3) router.push('/admin')
     }
 
     async function changePassword() {
         // Evaluate Errors
         const newErors = lastValidation(inputsEdit)
-        if (newErors.password || newErors.passwordConfirmation) return setErrors(newErors)
-        
+        if (newErors.password || newErors.passwordConfirmation) {
+            setErrorsEdit(newErors)
+            console.log('Error en la validación de datos')
+            return false
+        }
+
         // Verify correct password
         const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrors({ passwordConfirmation: 'Contraseña incorrecta' })
-            return console.log('password no changed')
+            setErrorsEdit({ passwordConfirmation: 'Contraseña incorrecta' })
+            console.log('No se cambió la contraseña')
+            return false
         }
         // if Verify is true
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
         const response = await updateMyAccount(propertyToUpdate)
+
         if ( response.message ) {
-            return console.log(response.message)
+            alert(response.message)
+            return false
         }
         setInputsEdit(initialInputsEdit)
-        console.log(response.message)
+        console.log(response)
         return true
     }
 
     async function changeEmail() {
         // Evaluate Errors
-        if (errors.email) return
         const newErrors = lastValidation(inputsEdit)
         if (newErrors.password || newErrors.email) {
-            return setErrors(newErrors)
+            setErrorsEdit(newErrors)
+            console.log('Error en la validación de datos')
+            return false
         }
         
         // Verify correct password
@@ -232,8 +227,8 @@ function useHandleUser() {
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrors({ password: 'Contraseña incorrecta' })
-            console.log('password no changed')
+            setErrorsEdit({ password: 'Contraseña incorrecta' })
+            console.log('Contraseña incorrecta')
             return false
         }
 
@@ -241,7 +236,8 @@ function useHandleUser() {
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'email', value: inputsEdit.email })
         const response = await updateMyAccount(propertyToUpdate)
         if ( response.message ) {
-            return console.log(response.message)
+            alert(response.message)
+            return false
         }
         handleUpdateUser({
             ...user,
@@ -249,16 +245,17 @@ function useHandleUser() {
             password: inputsEdit.password
         })
         setInputsEdit(initialInputsEdit)
-        console.log(response.message)
+        console.log(response)
         return true
     }
 
     async function signOff() {
-        const {message} = await requestLogout()
-        if (message === 'No hay usuario con la sesión activa') return
+        const response = await requestLogout()
+        if (response.message) return alert(response.message)
+        localStorage.removeItem('user')
         setInputs(initialInputs)
         handleRemoveUser()
-        console.log(message)
+        console.log(response)
     }
 
     async function handleEditing(event) {
@@ -277,9 +274,9 @@ function useHandleUser() {
         }))
         const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
         const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message ) return console.log(response.message)
+        if ( response.message ) return alert(response.message)
         handleUpdateUser(inputs)
-        console.log(response.message)
+        console.log(response)
     }
 
     async function signUp() {

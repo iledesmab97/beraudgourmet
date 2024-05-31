@@ -9,6 +9,7 @@ import productsReducer from './products/slice'
 import extraIngredientsReducer from './extraIngredients/slice'
 import alertMessageReducer from './alertMessage/slice'
 import alertDialogMessageReducer from './alertDialogMessage/slice'
+import orderListReducer from './orderList/slice'
 
 export const store = configureStore({
     reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
         extraIngredients: extraIngredientsReducer,
         alertMessage: alertMessageReducer,
         alertDialogMessage: alertDialogMessageReducer,
+        orderList: orderListReducer
     }
 })

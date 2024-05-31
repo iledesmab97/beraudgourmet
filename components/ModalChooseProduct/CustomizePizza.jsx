@@ -93,7 +93,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 }
             }}
         >
-            <Grid
+            {/* <Grid
                 item
                 container
                 direction={'column'}
@@ -110,7 +110,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 <Grid item>
                     <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
                 </Grid>
-            </Grid>
+            </Grid> */}
             <Grid
                 item
                 container

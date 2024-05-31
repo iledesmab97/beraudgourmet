@@ -151,3 +151,78 @@ export function listStores(storeList) {
     }
     return arrayStoreList
 }
+
+export function requestSettings(requestType, token, typeFile) {
+    let userToken
+    if (token) {
+        userToken = token
+    } else {
+        userToken = localStorage.getItem('user')
+        if (userToken) {
+            userToken = JSON.parse(userToken)
+        }
+    }    
+    let setting
+    switch (requestType) {
+        case 'GET': {
+            setting = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        case 'POST': {
+            if (typeFile === 'image') {
+                setting = {
+                    method: 'POST',
+                    headers: {
+                        'verification-token': userToken
+                    }
+                }
+            } else {
+                setting = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'verification-token': userToken
+                    }
+                }
+            }
+            break
+        }
+        case 'PUT': {
+            setting = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        case 'DELETE': {
+            setting = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+        default: {
+            setting = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'verification-token': userToken
+                }
+            }
+            break
+        }
+    }
+    return setting ? setting : {}
+}

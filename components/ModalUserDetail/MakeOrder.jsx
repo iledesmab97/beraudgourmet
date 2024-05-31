@@ -20,12 +20,14 @@ import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import { useState, useEffect } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import useGetOrderList from '@/hooks/useGetOrderList'
 
 import dayjs from 'dayjs'
 import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
 import { calculateTotalToPay } from '@/utils/priceCar'
 import { descriptionOrder } from '@/utils/preparingData'
 import { registerOrder } from '@/services/orderApi'
+import { getAllOrders } from '@/services/orderApi'
 
 const necessaryProductProperties = [ 'pizza', 'size', 'mass', 'quantity', 'totalCostByItem']
 
@@ -37,6 +39,7 @@ function MakeOrder({ user, updateOrders }) {
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [loading, setLoading] = useState(false)
     const [canMakeOrder, setCanMakeOrder] = useState(false)
+    const { handleAddOrderList } = useGetOrderList()
 
     // Actualizar canMakeOrder para saber si ya se puede hacer una orden
     useEffect(() => {
@@ -155,7 +158,13 @@ function MakeOrder({ user, updateOrders }) {
             updateOrders()
             console.log('Información guardada con exito')
             setLoading(false)
-            restartStates()
+            getAllOrders()
+                .then(data => {
+                    if (data.message) throw new Error(data.message)
+                    handleAddOrderList(data)
+                })
+                .catch(error => alert(error.message))
+            return restartStates()
         }
         console.log('Ha ocurrido algún error')
         setLoading(false)

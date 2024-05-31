@@ -154,9 +154,9 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
                 }))
             })
             handleEdit(false)
-            return console.log('Actualización hecho exitosamente')
+            return console.log('Actualización exitosa')
         }
-        return alert(response.message)
+        console.log('No se ha actualizado la información')
     }
 
     function addNewScheduleHours() {
@@ -213,7 +213,7 @@ function Schedules({ store, updateScheduleHoursStoreState }) {
             handleEdit(false)
             return console.log('Actualización exitosa')
         }
-        return alert(response.message)
+        console.log('No se ha actualizado la información')
     }
 
     return (

@@ -168,13 +168,16 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             }
         } else {
                 
-            await registerOrder({
+            const response = await registerOrder({
                 ...dataOrders,
                 stripeId: paymentIntent.id,
                 paymentMethod: 'stripe',
                 paid: !checked,
             })
-
+            if (response.message) {
+                alert(response.message)
+            }
+            setIsLoading(true)
             removeLocalData('orders')
             removeLocalData('place')
 

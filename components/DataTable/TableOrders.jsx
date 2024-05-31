@@ -18,8 +18,10 @@ import Button from '@mui/material/Button';
 import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
 import ModalMakeOrder from '@/components/ModalMakeOrder/ModalMakeOrder'
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import useGetOrderList from '@/hooks/useGetOrderList';
+
 import { updateOrder, getAllOrders, sendImage, requestRemovalOrder } from '@/services/orderApi'
 import { howMuchLeft } from '@/utils/hours'
 import { captureFundsRequest } from '@/services/checkoutApi'
@@ -42,8 +44,9 @@ const colorsCell = {
     early: 'green'
 }
 
-function TableOrders({ orders, updateOrders }) {
+function TableOrders() {
 
+    const [orders, setOrders] = useState([])
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
     const [openOrderDetail, setOpenOrderDetail] = useState(false)
@@ -52,6 +55,15 @@ function TableOrders({ orders, updateOrders }) {
     const [openMakeOrder, setOpenMakeOrder] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [ loading, setLoading] = useState(false)
+    const { orderList } = useGetOrderList()
+
+    useEffect(() => {
+        setOrders(orderList)
+    }, [orderList])
+
+    function handleUpdateOrders(newOrders) {
+        setOrders(newOrders)
+    }
 
     function handleOpenMakeOrder(value) {
         setOpenMakeOrder(value)
@@ -86,7 +98,7 @@ function TableOrders({ orders, updateOrders }) {
             text = response
             status = 'success'
             await getAllOrders().then(data => {
-                updateOrders(data)
+                handleUpdateOrders(data)
             })
         }
         handleUpdateAlertMessage({
@@ -104,17 +116,28 @@ function TableOrders({ orders, updateOrders }) {
     }
 
     async function handleFileSelected(event) {
+        setLoading(true)
         const file = event.target.files[0]
         const formData = new FormData()
         formData.append('file', file)
         const response = await sendImage(currentOrder.id, formData)
-        const data = await response.json()
-        await getAllOrders().then(data => updateOrders(data))
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+            await getAllOrders().then(data => {
+                handleUpdateOrders(data)
+            })
+        }
         handleUpdateAlertMessage({
             checked: true,
-            text: data.message,
-            status: data.status
+            text,
+            status
         })
+        setLoading(false)
         handleClose()
     }
 
@@ -153,7 +176,7 @@ function TableOrders({ orders, updateOrders }) {
         } else {
             text = response
             status = 'success'
-            await getAllOrders().then(data => updateOrders(data))
+            await getAllOrders().then(data => handleUpdateOrders(data))
         }
         handleUpdateAlertMessage({
             checked: true,
@@ -175,7 +198,7 @@ function TableOrders({ orders, updateOrders }) {
         } else {
             text = response
             status = 'success'
-            await getAllOrders().then(data => updateOrders(data))
+            await getAllOrders().then(data => handleUpdateOrders(data))
         }
         handleUpdateAlertMessage({
             checked: true,
@@ -184,6 +207,22 @@ function TableOrders({ orders, updateOrders }) {
         })
         setLoading(false)
         handleClose()
+    }
+
+    function handleUpdateOrderProperty({id, property, value}) {
+        const newOrders = [...orders]
+        let index
+        const order = newOrders.find((order, i) => {
+            if (order.id === id) {
+                index = i
+                return true
+            }
+        })
+        const orderUpdated = {...order}
+        orderUpdated[property] = value
+        newOrders[index] = orderUpdated
+        setOrders(newOrders)
+        setCurrentOrder(orderUpdated)
     }
 
     return (
@@ -290,7 +329,7 @@ function TableOrders({ orders, updateOrders }) {
             </Menu>
             {
                 currentOrder ? (
-                    <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} />
+                    <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                 ) : null
             }
         </>

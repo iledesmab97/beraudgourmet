@@ -1,4 +1,6 @@
 import { twoDecimals } from '@/utils/priceCar'
+import { requestSettings } from '@/utils/preparingData'
+
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function getPizzas() {
@@ -106,9 +108,7 @@ export async function getPizzasWithCosts() {
 
 export async function updatePizza(id, body) {
   return fetch(`${PATH_BACK}/pizzas/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(body)
   })
     .then(response => {
@@ -123,9 +123,7 @@ export async function updatePizza(id, body) {
 
 export async function removePizza(id) {
   return fetch(`${PATH_BACK}/pizzas/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' }
+    ...requestSettings('DELETE')
   })
     .then(response => {
       return response.json()
@@ -151,9 +149,7 @@ export async function getAllExtraIngredients() {
 
 export async function addNewPizza(pizza) {
   return fetch(`${PATH_BACK}/pizzas`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('POST'),
     body: JSON.stringify(pizza)
   })
     .then(response => {
@@ -168,9 +164,9 @@ export async function addNewPizza(pizza) {
 
 export async function sendImage(formData) {
   return fetch(`${PATH_BACK}/pizzas/image`, {
-      method: 'POST',
-      body: formData,
-  })
+    ...requestSettings('POST', null, 'image'),
+    body: formData,
+})
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
@@ -184,9 +180,7 @@ export async function sendImage(formData) {
 
 export async function updateCharacteristicsPizza(id, body) {
   return fetch(`${PATH_BACK}/pizzaCosts/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(body)
   })
     .then(response => {
@@ -201,9 +195,7 @@ export async function updateCharacteristicsPizza(id, body) {
 
 export function updateExtraIngredient(id, properties) {
   return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('PUT'),
     body: JSON.stringify(properties)
   })
     .then(response => {
@@ -218,9 +210,7 @@ export function updateExtraIngredient(id, properties) {
 
 export function makeExtraIngredient(properties) {
   return fetch(`${PATH_BACK}/pizzaExtraIngredients`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('POST'),
     body: JSON.stringify(properties)
   })
     .then(response => {
@@ -235,9 +225,7 @@ export function makeExtraIngredient(properties) {
 
 export function removeExtraIngredient(id) {
   return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
+    ...requestSettings('DELETE'),
   })
     .then(response => {
       return response.json()
