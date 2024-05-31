@@ -18,15 +18,10 @@ import { updateOrder } from '@/services/orderApi'
 
 import styles from './ModalOrderDetails.module.css'
 
-// const orderInformation = [
-//     {title: 'Método de Pago', name: 'paymentMethod'},
-//     {title: 'Cliente', name: 'name'},
-//     {title: 'Teléfono', name: 'phoneNumber'}
-// ]
-
 const properties = {
     paymentMethod: 'Método de Pago',
-    StripeId: 'StripeId'
+    StripeId: 'StripeId',
+    delivery: 'Entrega a domicilio'
 }
 
 const paymentMethods = {
@@ -39,11 +34,13 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
 
     const [currentValues, setCurrentValues] = useState({
         paymentMethod: currentOrder.paymentMethod,
-        StripeId: currentOrder.StripeId
+        StripeId: currentOrder.StripeId,
+        delivery: currentOrder.delivery
     })
     const [editing, setEditing] = useState({
         paymentMethod: false,
-        StripeId: false
+        StripeId: false,
+        delivery: false
     })
     const { handleUpdateAlertMessage } = useGetAlertMessage()
 
@@ -124,7 +121,6 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 {currentOrder.paid ? 'COBRADO' : 'POR COBRAR'}
             </Typography>
             <Box
-                // key={user[item.name]}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -172,7 +168,6 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 </Box>
             </Box>
             <Box
-                // key={user[item.name]}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -216,7 +211,6 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 </Grid>
             </Box>
             <Box
-                // key={user[item.name]}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -227,14 +221,37 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                     variant='p'
                     gutterBottom
                 >
-                    Recoger en tienda
+                    Entrega a domicilio
                 </Typography>
-                <Typography
-                    variant='p'
-                    gutterBottom
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                    }}
                 >
-                    {currentOrder.delivery ? 'NO' : 'Sí'}
-                </Typography>
+                    <FormControl>
+                        <Select
+                            value={currentValues.delivery}
+                            onChange={(event) => { handleCurrentValues({ property:'delivery' , value: event.target.value }) }}
+                            disabled={!editing.delivery}
+                        >
+                            <MenuItem value={true}>{'Sí'}</MenuItem>
+                            <MenuItem value={false}>{'No'}</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <IconButton
+                        onClick={() => {handleEditing('delivery')}}
+                    >
+                        {
+                            editing.delivery ? (
+                                <CheckIcon />
+                            ) : (
+                                <EditIcon />
+                            )
+                        }
+                    </IconButton>
+                </Box>
             </Box>
         </>
     )
