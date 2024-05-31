@@ -37,10 +37,9 @@ function ContainerItems () {
     if (!(products && products.pizzas)) {
       getPizzasWithCosts()
         .then(data => {
-          const productList = data.filter(item => item.status === 'ACTIVE')
           handleAddProductsList({
             type: 'pizzas',
-            products: productList
+            products: data
           })
         })
     }
@@ -67,7 +66,7 @@ function ContainerItems () {
         spacing={2}
       >
         {
-          products && products.map((item, index) => (
+          products && products.filter(item => item.status === 'ACTIVE').map((item, index) => (
             <Grid
               item
               key={item.name + index}
