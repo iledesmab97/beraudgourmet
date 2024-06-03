@@ -96,7 +96,7 @@ function PriceData({ orders }) {
                                                                     color: 'rgba(0, 0, 0, 0.6)'
                                                                 }}
                                                             >
-                                                                ${order.genericCost}
+                                                                ${order.costPerUnity}
                                                             </Typography>
                                                         </Box>
                                                         {
