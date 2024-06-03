@@ -189,7 +189,7 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 >
                     <Grid item xs>
                         <TextField
-                            value={currentValues.StripeId}
+                            value={currentValues.StripeId ? currentValues.StripeId : ''}
                             onChange={(e) => {handleCurrentValues({property: 'StripeId', value: e.target.value})}}
                             disabled={!editing.StripeId}
                             fullWidth
