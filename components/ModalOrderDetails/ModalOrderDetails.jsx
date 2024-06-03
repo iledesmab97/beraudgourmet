@@ -81,11 +81,13 @@ function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrde
                     <Divider sx={{ width: '100%'}} />
                     
                     <OtherData
+                        currentOrder={currentOrder}
                         user={currentOrder.user}
                         store={currentOrder.store}
                         dateEmited={currentOrder.applicationDate}
                         dateToRecive={currentOrder.deliveryDate}
                         deliveryInformation={currentOrder.deliveryInformation}
+                        handleUpdateOrderProperty={handleUpdateOrderProperty}
                     />   
                 </Box>                
             </Grid>
