@@ -138,7 +138,7 @@ function MakeOrder({ user, updateOrders }) {
             delivery,
             paymentMethod,
             itemsList: orderItems,
-            deliveryInformation: inputsHome
+            deliveryInformation: delivery ? inputsHome : null
         }
         const response = await registerOrder(dataOrders)
         let text, status
