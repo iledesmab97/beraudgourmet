@@ -8,11 +8,12 @@ import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
 
 import { useState, useEffect } from 'react'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { getAllUsers } from '@/services/userApi'
-import { phoneNumber } from '@/utils/contact'
+import { updateOrder } from '@/services/orderApi'
 
-function UserData({user}) {
+function UserData({user, currentOrder, handleUpdateOrderProperty}) {
 
     const [userSelected, setUserSelected] = useState(user)
     const [inputValue, setInputValue] = useState({
@@ -20,12 +21,9 @@ function UserData({user}) {
         name: user.name ? user.name : '',
         phoneNumber: user.phoneNumber ? user.phoneNumber : ''
     })
-    const [editing, setEditing] = useState({
-        id: false,
-        name: false,
-        phoneNumber: false
-    })
+    const [editing, setEditing] = useState(false)
     const [userList, setUserList] = useState([])
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     useEffect(() => {
         getAllUsers('all')
@@ -36,16 +34,12 @@ function UserData({user}) {
             .catch(error => alert(error.message))
     }, [])
 
-    function handleEditing(property) {
-        let newEditing = {...editing}
-        for (let prop in newEditing) {
-            if (prop === property) {
-                newEditing[prop] = !newEditing[prop]
-                continue
-            }
-            newEditing[prop] = false
+    async function handleEditing() {
+        if (editing && userSelected.id !== user.id) {
+            const response = await updateDataUser()
+            if (response.message) return
         }
-        setEditing(newEditing)
+        setEditing(prevState => !prevState)
     }
 
     function handleChangeUserSelected({ property, value }) {
@@ -71,6 +65,39 @@ function UserData({user}) {
             [property]: value
         }
         setInputValue(newInputValue)
+    }
+
+    async function updateDataUser() {
+        console.log('Actualizando información...')
+        const response = await updateOrder( currentOrder.id, { property: 'UserId', value: userSelected.id })
+        let text, status
+            if (response.message) {
+                text = response.message
+                status = 'error'
+            } else {
+                text = response
+                status = 'success'
+            }
+            handleUpdateAlertMessage({
+                checked: true,
+                text,
+                status
+            })
+            if (!response.message) {
+                handleUpdateOrderProperty({
+                    id: currentOrder.id,
+                    property: 'user',
+                    value: {
+                        id: userSelected.id,
+                        name: userSelected.name,
+                        phoneNumber: userSelected.phoneNumber
+                    }
+                })
+                console.log('Información guardada con exito')
+            } else {
+                console.log('No se ha guardado la información exitosamente')
+            }
+            return response
     }
 
     return (
@@ -106,19 +133,8 @@ function UserData({user}) {
                         renderInput={(params) => {
                             return <TextField {...params} />
                         }}
-                        disabled={!editing.id}
+                        disabled={!editing}
                     />
-                    <IconButton
-                        onClick={() => {handleEditing('id')}}
-                    >
-                        {
-                            editing.id ? (
-                                <CheckIcon />
-                            ) : (
-                                <EditIcon />
-                            )
-                        }
-                    </IconButton>
                 </Box>
             </Box>
             <Box
@@ -151,19 +167,8 @@ function UserData({user}) {
                         renderInput={(params) => {
                             return <TextField {...params} />
                         }}
-                        disabled={!editing.name}
+                        disabled={!editing}
                     />
-                    <IconButton
-                        onClick={() => {handleEditing('name')}}
-                    >
-                        {
-                            editing.name ? (
-                                <CheckIcon />
-                            ) : (
-                                <EditIcon />
-                            )
-                        }
-                    </IconButton>
                 </Box>
             </Box>
             <Box
@@ -196,20 +201,28 @@ function UserData({user}) {
                         renderInput={(params) => {
                             return <TextField {...params} />
                         }}
-                        disabled={!editing.phoneNumber}
+                        disabled={!editing}
                     />
-                    <IconButton
-                        onClick={() => {handleEditing('phoneNumber')}}
-                    >
-                        {
-                            editing.phoneNumber ? (
-                                <CheckIcon />
-                            ) : (
-                                <EditIcon />
-                            )
-                        }
-                    </IconButton>
                 </Box>
+            </Box>
+            <Box
+                sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'flex-end'
+                }}
+            >
+                <IconButton
+                    onClick={handleEditing}
+                >
+                    {
+                        editing ? (
+                            <CheckIcon />
+                        ) : (
+                            <EditIcon />
+                        )
+                    }
+                </IconButton>
             </Box>
         </>
     )
