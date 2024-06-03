@@ -6,7 +6,7 @@ import StoreData from './StoreData'
 import DatesData from './DatesData'
 import DeliveryData from './DeliveryData'
 
-function OtherData({ user, store, dateEmited, dateToRecive, deliveryInformation }) {
+function OtherData({ currentOrder, user, store, dateEmited, dateToRecive, deliveryInformation, handleUpdateOrderProperty }) {
     return (
         <Box
             sx={{
@@ -17,7 +17,7 @@ function OtherData({ user, store, dateEmited, dateToRecive, deliveryInformation 
                 gap: '8px'
             }}
         >
-            <UserData user={user} />
+            <UserData user={user} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
             <Divider sx={{ width: '100%'}} />
 
             <StoreData store={store} />
