@@ -6,24 +6,71 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import CrossText from '@/components/CrossText/CrossText'
 import Collapse from '@mui/material/Collapse'
+import IconButton from '@mui/material/IconButton'
 
-import { useState } from 'react'
+import EditIcon from '@mui/icons-material/Edit'
+import CheckIcon from '@mui/icons-material/Check'
+import CancelIcon from '@mui/icons-material/Cancel'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+
+import { useState, useEffect } from 'react'
 
 import { extractElements, descriptionWithoutIngredientsOut } from '@/utils/preparingData'
 
 function PriceData({ orders }) {
 
+    const [currentOrders, setCurrentorders] = useState(() => {
+        const newItemsxOrder = orders.itemsxOrder.map(item => {
+            const { ingredientsOut } = extractElements(item.description)
+            return {
+                ...item,
+                ingredientsOut
+            }
+        })
+        return {
+            ...orders,
+            itemsxOrder: newItemsxOrder
+        }
+    })
     const [subElements, setSubElements] = useState(() => {
-        const listOrders = orders.itemsxOrder.map(order => extractElements(order.description))
+        const listOrders = currentOrders.itemsxOrder.map(order => extractElements(order.description))
         return listOrders
     })
-    const [openCollapse, setOpenCollapse] = useState(() => orders.itemsxOrder.map(order => false))
+    const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
+    const [editing, setEditing] = useState(false)
+
+    useEffect(() => {
+        console.log('currentOrders:', currentOrders)
+    }, [currentOrders])
 
     function handleChangeCollapse(indexCollapse) {
         const newOpenCollapse = openCollapse.map((element, index) => index === indexCollapse ? !element : element )
         setOpenCollapse(newOpenCollapse)
+    }
+
+    async function handleEditing() {
+        // if (editing && userSelected.id !== user.id) {
+        //     const response = await updateDataUser()
+        //     if (response.message) return
+        // }
+        setEditing(prevState => !prevState)
+    }
+
+    function removeItemToCurrentListItems(index) {
+        const newCurrentOrderList = [...currentOrders.itemsxOrder].filter((item, i) => i !== index)
+        const newTotalCostByItems = newCurrentOrderList.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0)
+        const newCurrentOrders = {
+            ...currentOrders,
+            itemsxOrder: newCurrentOrderList,
+            totalCostByItems: newTotalCostByItems,
+            totalCost: newTotalCostByItems
+        }
+        setCurrentorders(newCurrentOrders)
+    }
+
+    function addItemToCurrentListItems() {
+        console.log('añadiendo elemento a la lista')
     }
 
     return (
@@ -33,48 +80,33 @@ function PriceData({ orders }) {
             }}
         >
             {
-                orders.itemsxOrder && (
+                currentOrders.itemsxOrder && (
                     <>
                         {
-                            orders.itemsxOrder.map((order, index) => (
-                                <Box key={order.id}>
-                                    <List key={order.id}>
-                                        <ListItem
-                                            sx={{
-                                                px: '0px',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            <ListItemText
-                                                onClick={() => {
-                                                    handleChangeCollapse(index)
-                                                }}
-                                                primary={
-                                                <Box
-                                                    component={'div'}
+                            currentOrders.itemsxOrder.map((order, index) => (
+                                <Grid container key={order.id}>
+                                    <Grid
+                                        item
+                                        xs
+                                        key={order.id}
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column'
+                                        }}
+                                    >
+                                        <Box sx={{ width: '100%', position: 'relative' }}>
+                                            <List key={order.id}>
+                                                <ListItem
                                                     sx={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between'
+                                                        px: '0px',
+                                                        cursor: 'pointer'
                                                     }}
                                                 >
-                                                    <Typography>
-                                                        {descriptionWithoutIngredientsOut(order.description)}
-                                                    </Typography>
-                                                    <Typography>
-                                                        ${order.totalCostByItem}
-                                                    </Typography>
-                                                </Box>
-                                                }
-                                            />
-                                        </ListItem>
-                                        <Divider />
-                                    </List>
-
-                                    <Collapse in={openCollapse[index]} timeout={'auto'} unmountOnExit >
-                                        <List>
-                                            <ListItemText
-                                                primary={
-                                                    <>
+                                                    <ListItemText
+                                                        onClick={() => {
+                                                            handleChangeCollapse(index)
+                                                        }}
+                                                        primary={
                                                         <Box
                                                             component={'div'}
                                                             sx={{
@@ -82,27 +114,24 @@ function PriceData({ orders }) {
                                                             justifyContent: 'space-between'
                                                             }}
                                                         >
-                                                            <Typography
-                                                                sx={{
-                                                                    fontSize: '0.875rem',
-                                                                    color: 'rgba(0, 0, 0, 0.6)'
-                                                                }}
-                                                            >
-                                                                {'1 ' + subElements[index].genericPizza.slice(1)}
+                                                            <Typography>
+                                                                {descriptionWithoutIngredientsOut(order.description)}
                                                             </Typography>
-                                                            <Typography
-                                                                sx={{
-                                                                    fontSize: '0.875rem',
-                                                                    color: 'rgba(0, 0, 0, 0.6)'
-                                                                }}
-                                                            >
-                                                                ${order.costPerUnity - order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)}
+                                                            <Typography>
+                                                                ${order.totalCostByItem}
                                                             </Typography>
                                                         </Box>
-                                                        {
-                                                            order.extraIngredients.map(extraIngredient => (
+                                                        }
+                                                    />
+                                                </ListItem>
+                                                <Divider />
+                                            </List>
+                                            <Collapse in={openCollapse[index]} timeout={'auto'} unmountOnExit >
+                                                <List>
+                                                    <ListItemText
+                                                        primary={
+                                                            <>
                                                                 <Box
-                                                                    key={extraIngredient.name}
                                                                     component={'div'}
                                                                     sx={{
                                                                     display: 'flex',
@@ -115,7 +144,7 @@ function PriceData({ orders }) {
                                                                             color: 'rgba(0, 0, 0, 0.6)'
                                                                         }}
                                                                     >
-                                                                        {`${extraIngredient.quantity} x ${extraIngredient.name} ($${extraIngredient.costPerUnit} c/u)`}
+                                                                        {'1 ' + subElements[index].genericPizza.slice(1)}
                                                                     </Typography>
                                                                     <Typography
                                                                         sx={{
@@ -123,18 +152,105 @@ function PriceData({ orders }) {
                                                                             color: 'rgba(0, 0, 0, 0.6)'
                                                                         }}
                                                                     >
-                                                                        ${extraIngredient.cost}
+                                                                        ${order.costPerUnity - order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)}
                                                                     </Typography>
                                                                 </Box>
-                                                            ))
+                                                                {
+                                                                    order.extraIngredients.map(extraIngredient => (
+                                                                        <Box
+                                                                            key={extraIngredient.name}
+                                                                            component={'div'}
+                                                                            sx={{
+                                                                            display: 'flex',
+                                                                            justifyContent: 'space-between'
+                                                                            }}
+                                                                        >
+                                                                            <Typography
+                                                                                sx={{
+                                                                                    fontSize: '0.875rem',
+                                                                                    color: 'rgba(0, 0, 0, 0.6)'
+                                                                                }}
+                                                                            >
+                                                                                {`${extraIngredient.quantity} x ${extraIngredient.name} ($${extraIngredient.costPerUnit} c/u)`}
+                                                                            </Typography>
+                                                                            <Typography
+                                                                                sx={{
+                                                                                    fontSize: '0.875rem',
+                                                                                    color: 'rgba(0, 0, 0, 0.6)'
+                                                                                }}
+                                                                            >
+                                                                                ${extraIngredient.cost}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    ))
+                                                                }
+                                                                {
+                                                                    order.ingredientsOut.map(ingredient => (
+                                                                        <Box
+                                                                            key={ingredient}
+                                                                            component={'div'}
+                                                                            sx={{
+                                                                                display: 'flex',
+                                                                                justifyContent: 'space-between'
+                                                                            }}
+                                                                        >
+                                                                            <Typography
+                                                                                sx={{
+                                                                                    fontSize: '0.875rem',
+                                                                                    color: 'rgba(0, 0, 0, 0.6)',
+                                                                                    textDecoration: 'line-through'
+                                                                                }}
+                                                                            >
+                                                                                {`${ingredient}`}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    ))
+                                                                }
+                                                            </>
                                                         }
-                                                    </>
-                                                }
-                                            />
-                                        </List>
-                                    </Collapse>
-                                </Box>
+                                                    />
+                                                </List>
+                                            </Collapse>
+                                            {
+                                                editing && index > 0 ? (
+                                                    <Box
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: '8px',
+                                                            left: '100%',
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'baseline'
+                                                        }}>
+                                                        <IconButton
+                                                            onClick={() => {removeItemToCurrentListItems(index)}}
+                                                        >
+                                                            <CancelIcon sx={{ color: '#f6685e'}} />
+                                                        </IconButton>
+                                                    </Box>
+                                                ) : null
+                                            }
+                                        </Box>
+                                    </Grid>
+                                    {
+                                        editing ? (
+                                            <Grid item xs={0.7} />
+                                        ) : null
+                                    }
+                                </Grid>
                             ))
+                        }
+
+                        {
+                            editing ? (
+                                <Box>
+                                    <IconButton
+                                        onClick={addItemToCurrentListItems}
+                                    >
+                                        <AddCircleOutlineIcon />
+                                    </IconButton>
+                                </Box>
+                            ) : null
                         }
 
                         <List>
@@ -150,11 +266,11 @@ function PriceData({ orders }) {
                                     {`Total Carrito (MXN) incl. IVA`} 
                                 </Typography>
                                 <Typography>
-                                    ${orders.totalCostByItems}
+                                    ${currentOrders.totalCostByItems}
                                 </Typography>
                             </ListItem>
-                            {
-                                orders.paymentMethod === 'stripe' && (
+                            {/* {
+                                currentOrders.paymentMethod === 'stripe' && (
                                     <>
                                         <ListItem
                                             sx={{
@@ -168,12 +284,12 @@ function PriceData({ orders }) {
                                                 Comisión Stripe:
                                             </Typography>
                                             <Typography>
-                                                ${ orders.commissions }
+                                                ${ currentOrders.commissions }
                                             </Typography>
                                         </ListItem>
                                     </>
                                 )
-                            }
+                            } */}
                         </List>
 
                     </>
@@ -191,8 +307,27 @@ function PriceData({ orders }) {
                     Total
                 </Typography>
                 <Typography>
-                    {`$${orders.totalCost}`}
+                    {`$${currentOrders.totalCost}`}
                 </Typography>
+            </Box>
+            <Box
+                sx={{
+                    pt: '8px',
+                    display: 'flex',
+                    justifyContent: 'flex-end'
+                }}
+            >    
+                <IconButton
+                    onClick={handleEditing}
+                >
+                    {
+                        editing ? (
+                            <CheckIcon />
+                        ) : (
+                            <EditIcon />
+                        )
+                    }
+                </IconButton>
             </Box>
         </Grid>
     )
