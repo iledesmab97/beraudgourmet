@@ -20,7 +20,7 @@ function OtherData({ currentOrder, user, store, dateEmited, dateToRecive, delive
             <UserData user={user} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
             <Divider sx={{ width: '100%'}} />
 
-            <StoreData store={store} />
+            <StoreData store={store} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
             <Divider sx={{ width: '100%'}} />
 
             <DatesData dates={{dateEmited, dateToRecive}} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty}/>
