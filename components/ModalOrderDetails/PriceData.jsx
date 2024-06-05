@@ -52,14 +52,7 @@ function PriceData({ orders }) {
     const { products } = useGetProducts({type: 'pizzas'})
     const { extraIngredients } = useGetExtraIngredients()
     const [pizzasList, setPizzasList] = useState([])
-    // const [sizesList, setSizesList] = useState([])
-    // const [massList, setMassList] = useState([])
     const [extraIngredientsList, setExtraIngredientsList] = useState([])
-    // const [ingredientsList, setIngredientsList] = useState([])
-
-    useEffect(() => {
-        console.log('currentOrders:', currentOrders)
-    }, [currentOrders])
 
     useEffect(() => {
         if (!products) return
@@ -149,6 +142,22 @@ function PriceData({ orders }) {
             costPerUnit: extraIngredients[newExtraIngredient].totalPrice,
             quantity,
             cost: String(quantity * Number(extraIngredients[newExtraIngredient].totalPrice))
+        }
+
+        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
+
+        setCurrentorders(newCurrentOrders)
+    }
+
+    function handleChangeQuantityExtraIngredient({ newQuantity, extraIngredientIndex, orderIndex }) {
+        if (Number.isNaN(Number(newQuantity)) || Number(newQuantity) < 0) return
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        
+        const lastExtraIngredientObject = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex]
+        const newExtraIngredientObject = {
+            ...lastExtraIngredientObject,
+            quantity: newQuantity,
+            cost: String(newQuantity * Number(lastExtraIngredientObject.costPerUnit))
         }
 
         newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
@@ -367,9 +376,10 @@ function PriceData({ orders }) {
                                                                                     >
                                                                                         <TextField
                                                                                             value={`${extraIngredient.quantity}`}
+                                                                                            onChange={(event) => {handleChangeQuantityExtraIngredient({ newQuantity: event.target.value, extraIngredientIndex, orderIndex })}}
                                                                                             variant='standard'
                                                                                             sx={{
-                                                                                                width: '24px',
+                                                                                                width: '54px',
                                                                                             }}
                                                                                             inputProps={{
                                                                                                 style: {
