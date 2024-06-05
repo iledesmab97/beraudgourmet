@@ -139,9 +139,9 @@ function PriceData({ orders }) {
         const { quantity } = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex]
         const newExtraIngredientObject = {
             name: newExtraIngredient,
-            costPerUnit: extraIngredients[newExtraIngredient].totalPrice,
+            costPerUnit: newExtraIngredient ? extraIngredients[newExtraIngredient].totalPrice : '0',
             quantity,
-            cost: String(quantity * Number(extraIngredients[newExtraIngredient].totalPrice))
+            cost: newExtraIngredient ? String(quantity * Number(extraIngredients[newExtraIngredient].totalPrice)) : '0'
         }
 
         newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
@@ -351,7 +351,7 @@ function PriceData({ orders }) {
                                                                     </Typography>
                                                                 </Box>
                                                                 {
-                                                                    order.extraIngredients.map((extraIngredient, extraIngredientIndex) => (
+                                                                    order.extraIngredients.map((extraIngredient, extraIngredientIndex, listExtraIngredients) => (
                                                                         <Box
                                                                             key={extraIngredient.name + String(extraIngredientIndex)}
                                                                             component={'div'}
@@ -379,7 +379,7 @@ function PriceData({ orders }) {
                                                                                             onChange={(event) => {handleChangeQuantityExtraIngredient({ newQuantity: event.target.value, extraIngredientIndex, orderIndex })}}
                                                                                             variant='standard'
                                                                                             sx={{
-                                                                                                width: '54px',
+                                                                                                width: '32px',
                                                                                             }}
                                                                                             inputProps={{
                                                                                                 style: {
@@ -391,9 +391,10 @@ function PriceData({ orders }) {
                                                                                         />
                                                                                         x
                                                                                         <Autocomplete
-                                                                                            value={extraIngredient.name}
+                                                                                            value={ extraIngredient.name }
                                                                                             onChange={(event, newExtraIngredient) => { handleChangeExtraIngredient({newExtraIngredient, extraIngredientIndex, orderIndex}) }}
                                                                                             options={extraIngredientsList}
+                                                                                            getOptionDisabled={(option) => listExtraIngredients.map(extra => extra.name).includes(option)}
                                                                                             renderInput={(params) => {
                                                                                                 return <TextField
                                                                                                     variant='standard'
