@@ -102,6 +102,19 @@ function PriceData({ orders }) {
         console.log('modificando la cantidad')
     }
 
+    function removeIngredientOut({orderIndex, ingredientIndex}) {
+        const newItemsxOrder = [...currentOrders.itemsxOrder]
+        newItemsxOrder[orderIndex] = {
+            ...newItemsxOrder[orderIndex],
+            ingredientsOut: newItemsxOrder[orderIndex].ingredientsOut.filter((ingredientOut, index) => index !== ingredientIndex)
+        }
+        const newCurrentOrders = {
+            ...currentOrders,
+            itemsxOrder: newItemsxOrder
+        }
+        setCurrentorders(newCurrentOrders)
+    }
+
     return (
         <Grid
             sx={{
@@ -112,7 +125,7 @@ function PriceData({ orders }) {
                 currentOrders.itemsxOrder && (
                     <>
                         {
-                            currentOrders.itemsxOrder.map((order, index) => (
+                            currentOrders.itemsxOrder.map((order, orderIndex) => (
                                 <Grid container key={order.id}>
                                     <Grid
                                         item
@@ -133,7 +146,7 @@ function PriceData({ orders }) {
                                                 >
                                                     <ListItemText
                                                         onClick={() => {
-                                                            handleChangeCollapse(index)
+                                                            handleChangeCollapse(orderIndex)
                                                         }}
                                                         primary={
                                                         <Box
@@ -153,9 +166,8 @@ function PriceData({ orders }) {
                                                         }
                                                     />
                                                 </ListItem>
-                                                <Divider />
                                             </List>
-                                            <Collapse in={openCollapse[index]} timeout={'auto'} unmountOnExit >
+                                            <Collapse in={openCollapse[orderIndex]} timeout={'auto'} unmountOnExit >
                                                 <List>
                                                     <ListItemText
                                                         primary={
@@ -163,7 +175,7 @@ function PriceData({ orders }) {
                                                                 sx={{
                                                                     display: 'flex',
                                                                     flexDirection: 'column',
-                                                                    // gap: '8px'
+                                                                    gap: '8px'
                                                                 }}
                                                             >
                                                                 <Box
@@ -265,7 +277,7 @@ function PriceData({ orders }) {
                                                                                     color: 'rgba(0, 0, 0, 0.6)'
                                                                                 }}
                                                                             >
-                                                                                {'1 ' + subElements[index].genericPizza.slice(1)}
+                                                                                {'1 ' + subElements[orderIndex].genericPizza.slice(1)}
                                                                             </Typography>       
                                                                         )
                                                                     }
@@ -279,7 +291,7 @@ function PriceData({ orders }) {
                                                                     </Typography>
                                                                 </Box>
                                                                 {
-                                                                    order.extraIngredients.map(extraIngredient => (
+                                                                    order.extraIngredients.map((extraIngredient, extraIngredientIndex) => (
                                                                         <Box
                                                                             key={extraIngredient.name}
                                                                             component={'div'}
@@ -360,36 +372,58 @@ function PriceData({ orders }) {
                                                                     ))
                                                                 }
                                                                 {
-                                                                    order.ingredientsOut.map(ingredient => (
+                                                                    order.ingredientsOut.map((ingredient, ingredientIndex) => (
                                                                         <Box
                                                                             key={ingredient}
                                                                             component={'div'}
                                                                             sx={{
+                                                                                position: 'relative',
+                                                                                width: 'fit-content',
                                                                                 display: 'flex',
                                                                                 justifyContent: 'space-between'
                                                                             }}
                                                                         >
                                                                             {
                                                                                 editing ? (
-                                                                                    <Autocomplete
-                                                                                        value={ingredient}
-                                                                                        options={products.find(pizza => pizza.name === order.pizza.name).ingredients}
-                                                                                        renderInput={(params) => {
-                                                                                            return <TextField
-                                                                                                variant='standard'
-                                                                                                {...params}
-                                                                                            />
-                                                                                        }}
-                                                                                        sx={{
-                                                                                            width: '150px',
-                                                                                            '& input': {
-                                                                                                fontSize: '0.875rem',
-                                                                                                color: 'rgba(0, 0, 0, 0.6)',
-                                                                                                textDecoration: 'line-through'
-                                                                                                // textAlign: 'center'
-                                                                                            }
-                                                                                        }}
-                                                                                    />
+                                                                                    <>
+                                                                                        <Autocomplete
+                                                                                            value={ingredient}
+                                                                                            options={products.find(pizza => pizza.name === order.pizza.name).ingredients}
+                                                                                            renderInput={(params) => {
+                                                                                                return <TextField
+                                                                                                    variant='standard'
+                                                                                                    {...params}
+                                                                                                />
+                                                                                            }}
+                                                                                            sx={{
+                                                                                                width: '150px',
+                                                                                                '& input': {
+                                                                                                    fontSize: '0.875rem',
+                                                                                                    color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                    textDecoration: 'line-through'
+                                                                                                    // textAlign: 'center'
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                        <Box
+                                                                                            sx={{
+                                                                                                position: 'absolute',
+                                                                                                top: '0px',
+                                                                                                left: '100%',
+                                                                                                transform: 'scale(0.8)'
+                                                                                            }}
+                                                                                        >
+                                                                                            <IconButton
+                                                                                                onClick={() => {removeIngredientOut({ingredientIndex, orderIndex})}}
+                                                                                            >
+                                                                                                <CancelIcon
+                                                                                                    sx={{
+                                                                                                        // scale: 2,
+                                                                                                        color: '#f6685e'
+                                                                                                    }} />
+                                                                                            </IconButton>
+                                                                                        </Box>
+                                                                                    </>
                                                                                 ) : (
                                                                                     <Typography
                                                                                         sx={{
@@ -410,8 +444,9 @@ function PriceData({ orders }) {
                                                     />
                                                 </List>
                                             </Collapse>
+                                            <Divider />
                                             {
-                                                editing && index > 0 ? (
+                                                editing && orderIndex > 0 ? (
                                                     <Box
                                                         sx={{
                                                             position: 'absolute',
@@ -422,7 +457,7 @@ function PriceData({ orders }) {
                                                             alignItems: 'baseline'
                                                         }}>
                                                         <IconButton
-                                                            onClick={() => {removeItemToCurrentListItems(index)}}
+                                                            onClick={() => {removeItemToCurrentListItems(orderIndex)}}
                                                         >
                                                             <CancelIcon sx={{ color: '#f6685e'}} />
                                                         </IconButton>
