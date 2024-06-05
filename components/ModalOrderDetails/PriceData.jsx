@@ -132,7 +132,13 @@ function PriceData({ orders }) {
                                                 <List>
                                                     <ListItemText
                                                         primary={
-                                                            <>
+                                                            <Box
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                    // gap: '8px'
+                                                                }}
+                                                            >
                                                                 <Box
                                                                     component={'div'}
                                                                     sx={{
@@ -247,17 +253,67 @@ function PriceData({ orders }) {
                                                                             component={'div'}
                                                                             sx={{
                                                                             display: 'flex',
-                                                                            justifyContent: 'space-between'
+                                                                            justifyContent: 'space-between',
+                                                                            alignItems: 'center'
                                                                             }}
                                                                         >
-                                                                            <Typography
-                                                                                sx={{
-                                                                                    fontSize: '0.875rem',
-                                                                                    color: 'rgba(0, 0, 0, 0.6)'
-                                                                                }}
-                                                                            >
-                                                                                {`${extraIngredient.quantity} x ${extraIngredient.name} ($${extraIngredient.costPerUnit} c/u)`}
-                                                                            </Typography>
+                                                                            {
+                                                                                editing ? (
+                                                                                    <Box
+                                                                                        sx={{
+                                                                                            width: '80%',
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)',
+                                                                                            display: 'flex',
+                                                                                            alignItems: 'center',
+                                                                                            gap: '8px'
+                                                                                        }}
+                                                                                    >
+                                                                                        <TextField
+                                                                                            variant='standard'
+                                                                                            sx={{
+                                                                                                width: '24px',
+                                                                                            }}
+                                                                                            inputProps={{
+                                                                                                style: {
+                                                                                                    fontSize: '0.875rem',
+                                                                                                    textAlign: 'center',
+                                                                                                    color: 'rgba(0, 0, 0, 0.6)'
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                        x
+                                                                                        <Autocomplete
+                                                                                            options={['Pera', 'Manzana', 'Piña', 'Tomate', 'Queso', 'Chorizo']}
+                                                                                            renderInput={(params) => {
+                                                                                                return <TextField
+                                                                                                    variant='standard'
+                                                                                                    {...params}
+                                                                                                />
+                                                                                            }}
+                                                                                            sx={{
+                                                                                                width: '150px',
+                                                                                                '& input': {
+                                                                                                    fontSize: '0.875rem',
+                                                                                                    color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                    // textAlign: 'center'
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                        <Typography>{`($${extraIngredient.costPerUnit} c/u)`}</Typography>
+                                                                                    </Box>
+
+                                                                                ) : (
+                                                                                    <Typography
+                                                                                        sx={{
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)'
+                                                                                        }}
+                                                                                    >
+                                                                                        {`${extraIngredient.quantity} x ${extraIngredient.name} ($${extraIngredient.costPerUnit} c/u)`}
+                                                                                    </Typography>
+                                                                                )
+                                                                            }
                                                                             <Typography
                                                                                 sx={{
                                                                                     fontSize: '0.875rem',
@@ -279,19 +335,41 @@ function PriceData({ orders }) {
                                                                                 justifyContent: 'space-between'
                                                                             }}
                                                                         >
-                                                                            <Typography
-                                                                                sx={{
-                                                                                    fontSize: '0.875rem',
-                                                                                    color: 'rgba(0, 0, 0, 0.6)',
-                                                                                    textDecoration: 'line-through'
-                                                                                }}
-                                                                            >
-                                                                                {`${ingredient}`}
-                                                                            </Typography>
+                                                                            {
+                                                                                editing ? (
+                                                                                    <Autocomplete
+                                                                                        options={['Zanahoria', 'Queso Mozarella', 'Tomate']}
+                                                                                        renderInput={(params) => {
+                                                                                            return <TextField
+                                                                                                variant='standard'
+                                                                                                {...params}
+                                                                                            />
+                                                                                        }}
+                                                                                        sx={{
+                                                                                            width: '150px',
+                                                                                            '& input': {
+                                                                                                fontSize: '0.875rem',
+                                                                                                color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                // textAlign: 'center'
+                                                                                            }
+                                                                                        }}
+                                                                                    />
+                                                                                ) : (
+                                                                                    <Typography
+                                                                                        sx={{
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)',
+                                                                                            textDecoration: 'line-through'
+                                                                                        }}
+                                                                                    >
+                                                                                        {`${ingredient}`}
+                                                                                    </Typography>
+                                                                                )
+                                                                            }
                                                                         </Box>
                                                                     ))
                                                                 }
-                                                            </>
+                                                            </Box>
                                                         }
                                                     />
                                                 </List>
