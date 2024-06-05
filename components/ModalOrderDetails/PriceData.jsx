@@ -58,6 +58,10 @@ function PriceData({ orders }) {
     // const [ingredientsList, setIngredientsList] = useState([])
 
     useEffect(() => {
+        console.log('currentOrders:', currentOrders)
+    }, [currentOrders])
+
+    useEffect(() => {
         if (!products) return
         setPizzasList(products.map(pizza => pizza.name))
     }, [products])
@@ -135,6 +139,23 @@ function PriceData({ orders }) {
         setCurrentorders(newCurrentOrders)
     }
 
+    function handleChangeExtraIngredient({newExtraIngredient, extraIngredientIndex, orderIndex }) {
+
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+
+        const { quantity } = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex]
+        const newExtraIngredientObject = {
+            name: newExtraIngredient,
+            costPerUnit: extraIngredients[newExtraIngredient].totalPrice,
+            quantity,
+            cost: String(quantity * Number(extraIngredients[newExtraIngredient].totalPrice))
+        }
+
+        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
+
+        setCurrentorders(newCurrentOrders)
+    }
+
     return (
         <Grid
             sx={{
@@ -146,18 +167,17 @@ function PriceData({ orders }) {
                     <>
                         {
                             currentOrders.itemsxOrder.map((order, orderIndex) => (
-                                <Grid container key={order.id}>
+                                <Grid container key={`order(${orderIndex})`}>
                                     <Grid
                                         item
                                         xs
-                                        key={order.id}
                                         sx={{
                                             display: 'flex',
                                             flexDirection: 'column'
                                         }}
                                     >
                                         <Box sx={{ width: '100%', position: 'relative' }}>
-                                            <List key={order.id}>
+                                            <List>
                                                 <ListItem
                                                     sx={{
                                                         px: '0px',
@@ -185,8 +205,8 @@ function PriceData({ orders }) {
                                                                     {descriptionWithoutIngredientsOut(order.description)}
                                                                 </Typography>
                                                                 {
-                                                                    extractElements(order.description).ingredientsOut.map(ingredient => (
-                                                                        <Typography component={'span'} sx={{ display: 'inline' }}>, <CrossText component={'span'}>{ingredient}</CrossText></Typography>
+                                                                    extractElements(order.description).ingredientsOut.map((ingredient, index) => (
+                                                                        <Typography component={'span'} sx={{ display: 'inline' }} key={`${ingredient}(${index})`}>, <CrossText component={'span'}>{ingredient}</CrossText></Typography>
                                                                     ))
                                                                 }
                                                             </Box>
@@ -324,7 +344,7 @@ function PriceData({ orders }) {
                                                                 {
                                                                     order.extraIngredients.map((extraIngredient, extraIngredientIndex) => (
                                                                         <Box
-                                                                            key={extraIngredient.name}
+                                                                            key={extraIngredient.name + String(extraIngredientIndex)}
                                                                             component={'div'}
                                                                             sx={{
                                                                             display: 'flex',
@@ -337,7 +357,6 @@ function PriceData({ orders }) {
                                                                                     <Box
                                                                                         sx={{
                                                                                             position: 'relative',
-                                                                                            // width: '80%',
                                                                                             width: 'fit-content',
                                                                                             fontSize: '0.875rem',
                                                                                             color: 'rgba(0, 0, 0, 0.6)',
@@ -363,6 +382,7 @@ function PriceData({ orders }) {
                                                                                         x
                                                                                         <Autocomplete
                                                                                             value={extraIngredient.name}
+                                                                                            onChange={(event, newExtraIngredient) => { handleChangeExtraIngredient({newExtraIngredient, extraIngredientIndex, orderIndex}) }}
                                                                                             options={extraIngredientsList}
                                                                                             renderInput={(params) => {
                                                                                                 return <TextField
