@@ -127,6 +127,14 @@ function PriceData({ orders }) {
         setCurrentorders(newCurrentOrders)
     }
 
+    function removeExtraIngredient({extraIngredientIndex, orderIndex}) {
+        const newCurrentOrders = {
+            ...currentOrders,
+        }
+        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients.filter((extra, index) => index !== extraIngredientIndex)
+        setCurrentorders(newCurrentOrders)
+    }
+
     return (
         <Grid
             sx={{
@@ -328,7 +336,9 @@ function PriceData({ orders }) {
                                                                                 editing ? (
                                                                                     <Box
                                                                                         sx={{
-                                                                                            width: '80%',
+                                                                                            position: 'relative',
+                                                                                            // width: '80%',
+                                                                                            width: 'fit-content',
                                                                                             fontSize: '0.875rem',
                                                                                             color: 'rgba(0, 0, 0, 0.6)',
                                                                                             display: 'flex',
@@ -370,6 +380,21 @@ function PriceData({ orders }) {
                                                                                             }}
                                                                                         />
                                                                                         <Typography>{`($${extraIngredient.costPerUnit} c/u)`}</Typography>
+                                                                                        <Box
+                                                                                            sx={{
+                                                                                                transform: 'scale(0.8)'
+                                                                                            }}
+                                                                                        >
+                                                                                            <IconButton
+                                                                                                onClick={() => {removeExtraIngredient({extraIngredientIndex, orderIndex})}}
+                                                                                                sx={{ p: '0px' }}
+                                                                                            >
+                                                                                                <CancelIcon
+                                                                                                    sx={{
+                                                                                                        color: '#f6685e'
+                                                                                                    }} />
+                                                                                            </IconButton>
+                                                                                        </Box>
                                                                                     </Box>
 
                                                                                 ) : (
