@@ -17,22 +17,28 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 import { useState, useEffect } from 'react'
+import useGetProducts from '@/hooks/useGetProducts'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
 import { extractElements, descriptionWithoutIngredientsOut } from '@/utils/preparingData'
 
 function PriceData({ orders }) {
 
     const [currentOrders, setCurrentorders] = useState(() => {
-        const newItemsxOrder = orders.itemsxOrder.map(item => {
-            const { ingredientsOut } = extractElements(item.description)
+        const { id, itemsxOrder, totalCost, totalCostByItems } = orders
+        const newItemsxOrder = itemsxOrder.map(item => {
+            const { ingredientsOut, pizza } = extractElements(item.description)
             return {
                 ...item,
-                ingredientsOut
+                ingredientsOut,
+                pizza
             }
         })
         return {
-            ...orders,
-            itemsxOrder: newItemsxOrder
+            id,
+            itemsxOrder: newItemsxOrder,
+            totalCost,
+            totalCostByItems
         }
     })
     const [subElements, setSubElements] = useState(() => {
@@ -41,10 +47,27 @@ function PriceData({ orders }) {
     })
     const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
     const [editing, setEditing] = useState(false)
+    const { products } = useGetProducts({type: 'pizzas'})
+    const { extraIngredients } = useGetExtraIngredients()
+    const [pizzasList, setPizzasList] = useState([])
+    // const [sizesList, setSizesList] = useState([])
+    // const [massList, setMassList] = useState([])
+    const [extraIngredientsList, setExtraIngredientsList] = useState([])
+    // const [ingredientsList, setIngredientsList] = useState([])
 
     useEffect(() => {
-        console.log('currentOrders:', currentOrders)
-    }, [currentOrders])
+        if (!products) return
+        setPizzasList(products.map(pizza => pizza.name))
+    }, [products])
+
+    useEffect(() => {
+        if (!Object.keys(extraIngredients).length) return
+        const newExtraIngredientsList = []
+        for (let extraIngredient in extraIngredients) {
+            newExtraIngredientsList.push(extraIngredient)
+        }
+        setExtraIngredientsList(newExtraIngredientsList)
+    }, [extraIngredients])
 
     function handleChangeCollapse(indexCollapse) {
         const newOpenCollapse = openCollapse.map((element, index) => index === indexCollapse ? !element : element )
@@ -73,6 +96,10 @@ function PriceData({ orders }) {
 
     function addItemToCurrentListItems() {
         console.log('añadiendo elemento a la lista')
+    }
+
+    function handleChangeCount() {
+        console.log('modificando la cantidad')
     }
 
     return (
@@ -159,6 +186,8 @@ function PriceData({ orders }) {
                                                                                 }}
                                                                             >
                                                                                 <TextField
+                                                                                    value={'1'}
+                                                                                    onChange={handleChangeCount}
                                                                                     variant='standard'
                                                                                     sx={{
                                                                                         width: '24px',
@@ -173,7 +202,8 @@ function PriceData({ orders }) {
                                                                                 />
                                                                                 x
                                                                                 <Autocomplete
-                                                                                    options={['Vegetariana', 'Margarita', 'Especial 2']}
+                                                                                    value={order.pizza.name}
+                                                                                    options={pizzasList}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
                                                                                             variant='standard'
@@ -191,7 +221,8 @@ function PriceData({ orders }) {
                                                                                 />
                                                                                 {'('}
                                                                                 <Autocomplete
-                                                                                    options={['30']}
+                                                                                    value={order.pizza.size}
+                                                                                    options={Object.keys(products.find(pizza => pizza.name === order.pizza.name).price)}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
                                                                                             variant='standard'
@@ -199,7 +230,7 @@ function PriceData({ orders }) {
                                                                                         />
                                                                                     }}
                                                                                     sx={{
-                                                                                        width: '80px',
+                                                                                        width: '100px',
                                                                                         '& input': {
                                                                                             fontSize: '0.875rem',
                                                                                             color: 'rgba(0, 0, 0, 0.6)',
@@ -209,7 +240,8 @@ function PriceData({ orders }) {
                                                                                 />
                                                                                 {'cm),'}
                                                                                 <Autocomplete
-                                                                                    options={['Masa Keto']}
+                                                                                    value={order.pizza.masaType}
+                                                                                    options={Object.keys(products.find(pizza => pizza.name === order.pizza.name).price[order.pizza.size])}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
                                                                                             variant='standard'
@@ -270,6 +302,7 @@ function PriceData({ orders }) {
                                                                                         }}
                                                                                     >
                                                                                         <TextField
+                                                                                            value={`${extraIngredient.quantity}`}
                                                                                             variant='standard'
                                                                                             sx={{
                                                                                                 width: '24px',
@@ -284,7 +317,8 @@ function PriceData({ orders }) {
                                                                                         />
                                                                                         x
                                                                                         <Autocomplete
-                                                                                            options={['Pera', 'Manzana', 'Piña', 'Tomate', 'Queso', 'Chorizo']}
+                                                                                            value={extraIngredient.name}
+                                                                                            options={extraIngredientsList}
                                                                                             renderInput={(params) => {
                                                                                                 return <TextField
                                                                                                     variant='standard'
@@ -338,7 +372,8 @@ function PriceData({ orders }) {
                                                                             {
                                                                                 editing ? (
                                                                                     <Autocomplete
-                                                                                        options={['Zanahoria', 'Queso Mozarella', 'Tomate']}
+                                                                                        value={ingredient}
+                                                                                        options={products.find(pizza => pizza.name === order.pizza.name).ingredients}
                                                                                         renderInput={(params) => {
                                                                                             return <TextField
                                                                                                 variant='standard'
@@ -350,6 +385,7 @@ function PriceData({ orders }) {
                                                                                             '& input': {
                                                                                                 fontSize: '0.875rem',
                                                                                                 color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                textDecoration: 'line-through'
                                                                                                 // textAlign: 'center'
                                                                                             }
                                                                                         }}
