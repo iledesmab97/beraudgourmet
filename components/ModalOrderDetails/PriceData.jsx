@@ -16,6 +16,8 @@ import CheckIcon from '@mui/icons-material/Check'
 import CancelIcon from '@mui/icons-material/Cancel'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
+import CrossText from '@/components/CrossText/CrossText'
+
 import { useState, useEffect } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
@@ -115,6 +117,16 @@ function PriceData({ orders }) {
         setCurrentorders(newCurrentOrders)
     }
 
+    function handleChangeIngredientOut({ orderIndex, ingredientIndex, newIngredientOut }) {
+        const newListIngredientsOut = [...currentOrders.itemsxOrder[orderIndex].ingredientsOut]
+        newListIngredientsOut[ingredientIndex] = newIngredientOut
+        const newCurrentOrders = {
+            ...currentOrders,
+        }
+        newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut = newListIngredientsOut
+        setCurrentorders(newCurrentOrders)
+    }
+
     return (
         <Grid
             sx={{
@@ -156,9 +168,20 @@ function PriceData({ orders }) {
                                                             justifyContent: 'space-between'
                                                             }}
                                                         >
-                                                            <Typography>
-                                                                {descriptionWithoutIngredientsOut(order.description)}
-                                                            </Typography>
+                                                            <Box
+                                                                sx={{
+                                                                    width: '85%',
+                                                                }}
+                                                            >
+                                                                <Typography sx={{ display: 'inline' }}>
+                                                                    {descriptionWithoutIngredientsOut(order.description)}
+                                                                </Typography>
+                                                                {
+                                                                    extractElements(order.description).ingredientsOut.map(ingredient => (
+                                                                        <Typography component={'span'} sx={{ display: 'inline' }}>, <CrossText component={'span'}>{ingredient}</CrossText></Typography>
+                                                                    ))
+                                                                }
+                                                            </Box>
                                                             <Typography>
                                                                 ${order.totalCostByItem}
                                                             </Typography>
@@ -372,9 +395,9 @@ function PriceData({ orders }) {
                                                                     ))
                                                                 }
                                                                 {
-                                                                    order.ingredientsOut.map((ingredient, ingredientIndex) => (
+                                                                    order.ingredientsOut.map((ingredient, ingredientIndex, listIngredintsOut) => (
                                                                         <Box
-                                                                            key={ingredient}
+                                                                            key={ingredient + String(ingredientIndex)}
                                                                             component={'div'}
                                                                             sx={{
                                                                                 position: 'relative',
@@ -388,7 +411,9 @@ function PriceData({ orders }) {
                                                                                     <>
                                                                                         <Autocomplete
                                                                                             value={ingredient}
+                                                                                            onChange={( event, newIngredientOut ) => { handleChangeIngredientOut({ orderIndex, ingredientIndex, newIngredientOut }) } }
                                                                                             options={products.find(pizza => pizza.name === order.pizza.name).ingredients}
+                                                                                            getOptionDisabled={(option) => listIngredintsOut.includes(option)}
                                                                                             renderInput={(params) => {
                                                                                                 return <TextField
                                                                                                     variant='standard'
