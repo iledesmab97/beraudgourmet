@@ -8,6 +8,8 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
+import Autocomplete from '@mui/material/Autocomplete'
 
 import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
@@ -138,14 +140,97 @@ function PriceData({ orders }) {
                                                                     justifyContent: 'space-between'
                                                                     }}
                                                                 >
-                                                                    <Typography
-                                                                        sx={{
-                                                                            fontSize: '0.875rem',
-                                                                            color: 'rgba(0, 0, 0, 0.6)'
-                                                                        }}
-                                                                    >
-                                                                        {'1 ' + subElements[index].genericPizza.slice(1)}
-                                                                    </Typography>
+                                                                    {
+                                                                        editing ? (
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: '80%',
+                                                                                    fontSize: '0.875rem',
+                                                                                    color: 'rgba(0, 0, 0, 0.6)',
+                                                                                    display: 'flex',
+                                                                                    alignItems: 'center',
+                                                                                    gap: '8px'
+                                                                                }}
+                                                                            >
+                                                                                <TextField
+                                                                                    variant='standard'
+                                                                                    sx={{
+                                                                                        width: '24px',
+                                                                                    }}
+                                                                                    inputProps={{
+                                                                                        style: {
+                                                                                            fontSize: '0.875rem',
+                                                                                            textAlign: 'center',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)'
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                                x
+                                                                                <Autocomplete
+                                                                                    options={['Vegetariana', 'Margarita', 'Especial 2']}
+                                                                                    renderInput={(params) => {
+                                                                                        return <TextField
+                                                                                            variant='standard'
+                                                                                            {...params}
+                                                                                        />
+                                                                                    }}
+                                                                                    sx={{
+                                                                                        width: '150px',
+                                                                                        '& input': {
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)',
+                                                                                            // textAlign: 'center'
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                                {'('}
+                                                                                <Autocomplete
+                                                                                    options={['30']}
+                                                                                    renderInput={(params) => {
+                                                                                        return <TextField
+                                                                                            variant='standard'
+                                                                                            {...params}
+                                                                                        />
+                                                                                    }}
+                                                                                    sx={{
+                                                                                        width: '80px',
+                                                                                        '& input': {
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)',
+                                                                                            // textAlign: 'center'
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                                {'cm),'}
+                                                                                <Autocomplete
+                                                                                    options={['Masa Keto']}
+                                                                                    renderInput={(params) => {
+                                                                                        return <TextField
+                                                                                            variant='standard'
+                                                                                            {...params}
+                                                                                        />
+                                                                                    }}
+                                                                                    sx={{
+                                                                                        width: '150px',
+                                                                                        '& input': {
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)',
+                                                                                            // textAlign: 'center'
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                            </Box>
+                                                                        ) : (
+                                                                            <Typography
+                                                                                sx={{
+                                                                                    fontSize: '0.875rem',
+                                                                                    color: 'rgba(0, 0, 0, 0.6)'
+                                                                                }}
+                                                                            >
+                                                                                {'1 ' + subElements[index].genericPizza.slice(1)}
+                                                                            </Typography>       
+                                                                        )
+                                                                    }
                                                                     <Typography
                                                                         sx={{
                                                                             fontSize: '0.875rem',
