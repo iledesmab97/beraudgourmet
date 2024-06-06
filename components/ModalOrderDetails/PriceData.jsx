@@ -102,33 +102,15 @@ function PriceData({ orders }) {
     }
 
     function addItemToCurrentListItems() {
-        console.log('añadiendo elemento a la lista')
+        console.log('añadiendo elemento a la lista del pedido')
     }
 
     function handleChangeQuantityPizza({newQuantity, orderIndex}) {
-        console.log('newQuantity:', newQuantity)
-        console.log('orderIndex:', orderIndex)
+        
         if (Number.isNaN(Number(newQuantity)) || Number(newQuantity) < 0) return
         const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
-        
-        const { pizza, extraIngredients } = newCurrentOrders.itemsxOrder[orderIndex]
-        const { masaType, name, size } = pizza
 
-        const pizzaObject = products.find(p => p.name === name)
-        const newCost = Number(pizzaObject.price[size][masaType])
-
-        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
-            masaType,
-            name,
-            size,
-            quantityPizza: newQuantity,
-            cost: newCost * Number(newQuantity)
-        }
-
-        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients = extraIngredients.map(extra => ({
-            ...extra,
-            
-        }))
+        newCurrentOrders.itemsxOrder[orderIndex].quantity = newQuantity
 
         setCurrentorders(newCurrentOrders)
     }
@@ -199,6 +181,8 @@ function PriceData({ orders }) {
 
     function handleChangePizza({newPizza, orderIndex }) {
 
+        if (newPizza === null) return
+
         const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
         
         const { masaType, quantityPizza, size } = newCurrentOrders.itemsxOrder[orderIndex].pizza
@@ -219,6 +203,49 @@ function PriceData({ orders }) {
         newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut = [null]
 
         setCurrentorders(newCurrentOrders)
+    }
+
+    function handleChangeSize({newSize, orderIndex}) {
+
+        if (newSize === null) return
+
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        const lastPizza = newCurrentOrders.itemsxOrder[orderIndex].pizza
+        const newPizzaObject = products.find(p => p.name === lastPizza.name)
+        const newMass = newPizzaObject.price[newSize][lastPizza.masaType] ? newPizzaObject.price[newSize][lastPizza.masaType] : Object.keys(newPizzaObject.price[newSize])[0]
+
+        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+            ...lastPizza,
+            size: newSize,
+            masaType: newMass,
+            cost: newPizzaObject.price[newSize][newMass]
+        }
+
+        setCurrentorders(newCurrentOrders)
+    }
+
+    function handleChangeMass({ newMass, orderIndex }) {
+        
+        if (newMass === null) return
+
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        const lastPizza = newCurrentOrders.itemsxOrder[orderIndex].pizza
+        const newPizzaObject = products.find(p => p.name === lastPizza.name)
+        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+            ...lastPizza,
+            masaType: newMass,
+            cost: newPizzaObject.price[lastPizza.size][newMass]
+        }
+
+        setCurrentorders(newCurrentOrders)
+    }
+
+    function addItemToExtraIngredients({ orderIndex }) {
+        console.log('agregando item a la lista de ingredinetes extra')
+    }
+
+    function addItemToIngredientsOut({ orderIndex }) {
+        console.log('agregando item a la lista de ingredinetes fuera')
     }
 
     return (
@@ -335,6 +362,7 @@ function PriceData({ orders }) {
                                                                                 {'('}
                                                                                 <Autocomplete
                                                                                     value={order.pizza.size}
+                                                                                    onChange={(event, newSize) => { handleChangeSize({newSize, orderIndex}) }}
                                                                                     options={Object.keys(products.find(pizza => pizza.name === order.pizza.name).price)}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
@@ -354,6 +382,7 @@ function PriceData({ orders }) {
                                                                                 {'cm),'}
                                                                                 <Autocomplete
                                                                                     value={order.pizza.masaType}
+                                                                                    onChange={(event, newMass) => { handleChangeMass({ newMass, orderIndex }) }}
                                                                                     options={Object.keys(products.find(pizza => pizza.name === order.pizza.name).price[order.pizza.size])}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
@@ -492,6 +521,17 @@ function PriceData({ orders }) {
                                                                     ))
                                                                 }
                                                                 {
+                                                                    editing ? (
+                                                                        <Box>
+                                                                            <IconButton
+                                                                                onClick={() => {addItemToExtraIngredients({orderIndex})}}
+                                                                            >
+                                                                                <AddCircleOutlineIcon />
+                                                                            </IconButton>
+                                                                        </Box>
+                                                                    ) : null
+                                                                }
+                                                                {
                                                                     order.ingredientsOut.map((ingredient, ingredientIndex, listIngredintsOut) => (
                                                                         <Box
                                                                             key={ingredient + String(ingredientIndex)}
@@ -561,6 +601,17 @@ function PriceData({ orders }) {
                                                                         </Box>
                                                                     ))
                                                                 }
+                                                                {
+                                                                    editing ? (
+                                                                        <Box>
+                                                                            <IconButton
+                                                                                onClick={() => {addItemToIngredientsOut({orderIndex})}}
+                                                                            >
+                                                                                <AddCircleOutlineIcon />
+                                                                            </IconButton>
+                                                                        </Box>
+                                                                    ) : null
+                                                                }
                                                                 <Box
                                                                     sx={{
                                                                         display: 'flex',
@@ -578,9 +629,9 @@ function PriceData({ orders }) {
                                                                         }}
                                                                     >
                                                                         <TextField
-                                                                            value={'1'}
-                                                                            // value={order.pizza.quantityPizza}
-                                                                            // onChange={(event) => {handleChangeQuantityPizza({newQuantity: event.target.value, orderIndex})}}
+                                                                            // value={'1'}
+                                                                            value={order.quantity}
+                                                                            onChange={(event) => {handleChangeQuantityPizza({newQuantity: event.target.value, orderIndex})}}
                                                                             variant='standard'
                                                                             sx={{
                                                                                 width: '32px',
@@ -594,7 +645,7 @@ function PriceData({ orders }) {
                                                                             }}
                                                                             disabled={!editing}
                                                                         />
-                                                                        <Typography>$cash</Typography>
+                                                                        <Typography>${Number(order.pizza.cost) + order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)}</Typography>
                                                                     </Box>
                                                                 </Box>
                                                                 <Box
@@ -605,7 +656,7 @@ function PriceData({ orders }) {
                                                                     }}
                                                                 >
                                                                     <Typography>Total</Typography>
-                                                                    <Typography>$cash</Typography>
+                                                                    <Typography>${order.quantity * (Number(order.pizza.cost) + order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0))}</Typography>
                                                                 </Box>
                                                             </Box>
                                                         }
