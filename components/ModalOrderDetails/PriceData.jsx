@@ -241,11 +241,34 @@ function PriceData({ orders }) {
     }
 
     function addItemToExtraIngredients({ orderIndex }) {
-        console.log('agregando item a la lista de ingredinetes extra')
+
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        const currentListExtas = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients
+        const extraNameToAdd = extraIngredientsList.find(extra => !currentListExtas.map(e => e.name).includes(extra))
+
+        if (!extraNameToAdd) return
+
+        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients.push({
+            name: extraNameToAdd,
+            quantity: 1,
+            costPerUnit: extraIngredients[extraNameToAdd].totalPrice,
+            cost: extraIngredients[extraNameToAdd].totalPrice
+        })
+        setCurrentorders(newCurrentOrders)
     }
 
     function addItemToIngredientsOut({ orderIndex }) {
-        console.log('agregando item a la lista de ingredinetes fuera')
+
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+
+        const currentListIngredientsOut = newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut
+        const pizza = products.find(pizza => pizza.name === newCurrentOrders.itemsxOrder[orderIndex].pizza.name)
+        const ingredientToAdd = pizza.ingredients.find(ingredient => !currentListIngredientsOut.includes(ingredient))
+
+        if (!ingredientToAdd) return
+
+        newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut.push(ingredientToAdd)
+        setCurrentorders(newCurrentOrders)
     }
 
     return (
