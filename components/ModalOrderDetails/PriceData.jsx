@@ -197,6 +197,30 @@ function PriceData({ orders }) {
         setCurrentorders(newCurrentOrders)
     }
 
+    function handleChangePizza({newPizza, orderIndex }) {
+
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        
+        const { masaType, quantityPizza, size } = newCurrentOrders.itemsxOrder[orderIndex].pizza
+
+        const newPizzaObject = products.find(p => p.name === newPizza)
+
+        const newSize = newPizzaObject.price[size] ? size : Object.keys(newPizzaObject.price)[0]
+        const newMass = newPizzaObject.price[newSize][masaType] ? masaType : Object.keys(newPizzaObject.price[newSize])[0]
+
+        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+            name: newPizza,
+            quantityPizza,
+            size: newSize,
+            masaType: newMass,
+            cost: newPizzaObject.price[newSize][newMass]
+        }
+
+        newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut = [null]
+
+        setCurrentorders(newCurrentOrders)
+    }
+
     return (
         <Grid
             sx={{
@@ -291,6 +315,7 @@ function PriceData({ orders }) {
                                                                             >
                                                                                 <Autocomplete
                                                                                     value={order.pizza.name}
+                                                                                    onChange={(event, newPizza) => { handleChangePizza({newPizza, orderIndex }) }}
                                                                                     options={pizzasList}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
