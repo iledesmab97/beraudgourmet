@@ -18,11 +18,26 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 import CrossText from '@/components/CrossText/CrossText'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
-import { extractElements, descriptionWithoutIngredientsOut } from '@/utils/preparingData'
+import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder } from '@/utils/preparingData'
+
+function preparingDataForDescription(order) {
+    const extra = {}
+    order.extraIngredients.forEach(extraIngredient => {
+        extra[extraIngredient.name] = extraIngredient.quantity
+    })
+    return {
+        quantity: order.quantity,
+        name: order.pizza.name,
+        size: order.pizza.size,
+        mass: order.pizza.masaType,
+        extra,
+        ingredientsModal: order.ingredientsOut[0] ? order.ingredientsOut : []
+    }
+}
 
 function PriceData({ orders }) {
 
@@ -35,7 +50,7 @@ function PriceData({ orders }) {
                 ingredientsOut,
                 pizza: {
                     ...pizza,
-                    cost: item.costPerUnity
+                    cost: Number(item.costPerUnity) - item.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost), 0)
                 }
             }
         })
@@ -47,7 +62,13 @@ function PriceData({ orders }) {
         }
     })
     const [subElements, setSubElements] = useState(() => {
-        const listOrders = currentOrders.itemsxOrder.map(order => extractElements(order.description))
+        const listOrders = currentOrders.itemsxOrder.map(order => {
+            const { genericPizza } = extractElements(order.description)
+            return {
+                ...order,
+                genericPizza
+            }
+        })
         return listOrders
     })
     const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
@@ -56,11 +77,7 @@ function PriceData({ orders }) {
     const { extraIngredients } = useGetExtraIngredients()
     const [pizzasList, setPizzasList] = useState([])
     const [extraIngredientsList, setExtraIngredientsList] = useState([])
-
-    // useEffect(() => {
-    //     console.log('currentOrders:', currentOrders)
-    //     console.log('products:', products)
-    // }, [currentOrders])
+    const orderUpdated = useRef(null)
 
     useEffect(() => {
         if (!products) return
@@ -76,81 +93,123 @@ function PriceData({ orders }) {
         setExtraIngredientsList(newExtraIngredientsList)
     }, [extraIngredients])
 
+    useEffect(() => {
+        if (!orderUpdated.current) return
+        const { orderIndex, property } = orderUpdated.current
+        const { id } = currentOrders
+        const newItemsxOrders = JSON.parse(JSON.stringify(subElements))
+        if (property !== 'removeOrder') {
+            let { costPerUnity, totalCostByItem, quantity } = newItemsxOrders[orderIndex]
+            if (['extraIngredients', 'pizza'].includes(property)) {
+                costPerUnity = Number(newItemsxOrders[orderIndex].pizza.cost) + newItemsxOrders[orderIndex].extraIngredients.reduce((acc, cur) => acc + Number(cur.cost), 0)
+                totalCostByItem = costPerUnity * quantity
+            }
+            newItemsxOrders[orderIndex] = {
+                ...newItemsxOrders[orderIndex],
+                description: descriptionOrder(preparingDataForDescription(newItemsxOrders[orderIndex])),
+                costPerUnity,
+                totalCostByItem
+            }
+        }
+        if (subElements.length !== currentOrders.itemsxOrder.length) setOpenCollapse(subElements.map((order, index) => false))
+        setCurrentorders({
+            id,
+            totalCost: newItemsxOrders.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0),
+            totalCostByItems: newItemsxOrders.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0),
+            itemsxOrder: newItemsxOrders
+        })
+        orderUpdated.current = null
+    }, [subElements])
+
     function handleChangeCollapse(indexCollapse) {
         const newOpenCollapse = openCollapse.map((element, index) => index === indexCollapse ? !element : element )
         setOpenCollapse(newOpenCollapse)
     }
 
     async function handleEditing() {
-        // if (editing && userSelected.id !== user.id) {
-        //     const response = await updateDataUser()
-        //     if (response.message) return
-        // }
+        if (editing) {
+            const response = await updateDataOrder()
+            if (response.message) return alert(response.message)
+        }
         setEditing(prevState => !prevState)
     }
 
-    function removeItemToCurrentListItems(index) {
-        const newCurrentOrderList = [...currentOrders.itemsxOrder].filter((item, i) => i !== index)
-        const newTotalCostByItems = newCurrentOrderList.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0)
-        const newCurrentOrders = {
-            ...currentOrders,
-            itemsxOrder: newCurrentOrderList,
-            totalCostByItems: newTotalCostByItems,
-            totalCost: newTotalCostByItems
-        }
-        setCurrentorders(newCurrentOrders)
+    function removeItemToCurrentListItems({orderIndex}) {
+        const newSubElements = subElements.filter((element, index) => index !== orderIndex)
+        orderUpdated.current = {orderIndex, property: 'removeOrder'}
+        setSubElements(newSubElements)
     }
 
     function addItemToCurrentListItems() {
-        console.log('añadiendo elemento a la lista del pedido')
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+
+        const newPizza = products[0]
+        const size = Object.keys(newPizza.price)[0]
+        const mass = Object.keys(newPizza.price[size])[0]
+
+        newSubElements.push({
+            pizza: {
+                name: newPizza.name,
+                size,
+                masaType: mass,
+                quantityPizza: '1',
+                cost: newPizza.price[size][mass],
+            },
+            extraIngredients: [],
+            ingredientsOut: [],
+            quantity: 1,
+            costPerUnity: newPizza.price[size][mass],
+            totalCostByItem: newPizza.price[size][mass]
+        })
+
+        newSubElements[newSubElements.length - 1].description = descriptionOrder(preparingDataForDescription(newSubElements[newSubElements.length - 1]))
+
+        orderUpdated.current = {orderIndex: newSubElements.length -1, property: 'removeOrder'}
+        setSubElements(newSubElements)
     }
 
     function handleChangeQuantityPizza({newQuantity, orderIndex}) {
-        
+
         if (Number.isNaN(Number(newQuantity)) || Number(newQuantity) < 0) return
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
 
-        newCurrentOrders.itemsxOrder[orderIndex].quantity = newQuantity
-
-        setCurrentorders(newCurrentOrders)
+        newSubElements[orderIndex].quantity = newQuantity
+        orderUpdated.current = {orderIndex, property: 'pizza'}
+        setSubElements(newSubElements)
     }
 
     function removeIngredientOut({orderIndex, ingredientIndex}) {
-        const newItemsxOrder = [...currentOrders.itemsxOrder]
-        newItemsxOrder[orderIndex] = {
-            ...newItemsxOrder[orderIndex],
-            ingredientsOut: newItemsxOrder[orderIndex].ingredientsOut.filter((ingredientOut, index) => index !== ingredientIndex)
-        }
-        const newCurrentOrders = {
-            ...currentOrders,
-            itemsxOrder: newItemsxOrder
-        }
-        setCurrentorders(newCurrentOrders)
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+        newSubElements[orderIndex].ingredientsOut = newSubElements[orderIndex].ingredientsOut.filter((ingredientOut, index) => index !== ingredientIndex)
+        orderUpdated.current = {orderIndex, property: 'ingredientsOut'}
+        setSubElements(newSubElements)
     }
 
     function handleChangeIngredientOut({ orderIndex, ingredientIndex, newIngredientOut }) {
-        const newListIngredientsOut = [...currentOrders.itemsxOrder[orderIndex].ingredientsOut]
-        newListIngredientsOut[ingredientIndex] = newIngredientOut
-        const newCurrentOrders = {
-            ...currentOrders,
-        }
-        newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut = newListIngredientsOut
-        setCurrentorders(newCurrentOrders)
+
+        if (newIngredientOut === null) return
+
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+        newSubElements[orderIndex].ingredientsOut[ingredientIndex] = newIngredientOut
+
+        orderUpdated.current = {orderIndex, property: 'ingredientsOut'}
+        setSubElements(newSubElements)
     }
 
     function removeExtraIngredient({extraIngredientIndex, orderIndex}) {
-        const newCurrentOrders = {
-            ...currentOrders,
-        }
-        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients.filter((extra, index) => index !== extraIngredientIndex)
-        setCurrentorders(newCurrentOrders)
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+        newSubElements[orderIndex].extraIngredients = newSubElements[orderIndex].extraIngredients.filter((extra, index) => index !== extraIngredientIndex)
+        orderUpdated.current = {orderIndex, property: 'extraIngredients'}
+        setSubElements(newSubElements)
     }
 
     function handleChangeExtraIngredient({newExtraIngredient, extraIngredientIndex, orderIndex }) {
 
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        if (newExtraIngredient === null) return
 
-        const { quantity } = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex]
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+
+        const { quantity } = newSubElements[orderIndex].extraIngredients[extraIngredientIndex]
         const newExtraIngredientObject = {
             name: newExtraIngredient,
             costPerUnit: newExtraIngredient ? extraIngredients[newExtraIngredient].totalPrice : '0',
@@ -158,41 +217,42 @@ function PriceData({ orders }) {
             cost: newExtraIngredient ? String(quantity * Number(extraIngredients[newExtraIngredient].totalPrice)) : '0'
         }
 
-        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
-
-        setCurrentorders(newCurrentOrders)
+        newSubElements[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
+        orderUpdated.current = {orderIndex, property: 'extraIngredients'}
+        setSubElements(newSubElements)
     }
 
     function handleChangeQuantityExtraIngredient({ newQuantity, extraIngredientIndex, orderIndex }) {
         if (Number.isNaN(Number(newQuantity)) || Number(newQuantity) < 0) return
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
         
-        const lastExtraIngredientObject = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex]
+        const lastExtraIngredientObject = newSubElements[orderIndex].extraIngredients[extraIngredientIndex]
         const newExtraIngredientObject = {
             ...lastExtraIngredientObject,
             quantity: newQuantity,
             cost: String(newQuantity * Number(lastExtraIngredientObject.costPerUnit))
         }
 
-        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
-
-        setCurrentorders(newCurrentOrders)
+        newSubElements[orderIndex].extraIngredients[extraIngredientIndex] = newExtraIngredientObject
+        orderUpdated.current = {orderIndex, property: 'extraIngredients'}
+        setSubElements(newSubElements)
     }
 
     function handleChangePizza({newPizza, orderIndex }) {
 
         if (newPizza === null) return
 
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
         
-        const { masaType, quantityPizza, size } = newCurrentOrders.itemsxOrder[orderIndex].pizza
+        const { masaType, quantityPizza, size } = newSubElements[orderIndex].pizza
 
         const newPizzaObject = products.find(p => p.name === newPizza)
 
         const newSize = newPizzaObject.price[size] ? size : Object.keys(newPizzaObject.price)[0]
         const newMass = newPizzaObject.price[newSize][masaType] ? masaType : Object.keys(newPizzaObject.price[newSize])[0]
 
-        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+        newSubElements[orderIndex].pizza = {
             name: newPizza,
             quantityPizza,
             size: newSize,
@@ -200,75 +260,91 @@ function PriceData({ orders }) {
             cost: newPizzaObject.price[newSize][newMass]
         }
 
-        newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut = [null]
-
-        setCurrentorders(newCurrentOrders)
+        newSubElements[orderIndex].ingredientsOut = [null]
+        orderUpdated.current = {orderIndex, property: 'pizza'}
+        setSubElements(newSubElements)
     }
 
     function handleChangeSize({newSize, orderIndex}) {
 
         if (newSize === null) return
 
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
-        const lastPizza = newCurrentOrders.itemsxOrder[orderIndex].pizza
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+        const lastPizza = newSubElements[orderIndex].pizza
         const newPizzaObject = products.find(p => p.name === lastPizza.name)
         const newMass = newPizzaObject.price[newSize][lastPizza.masaType] ? newPizzaObject.price[newSize][lastPizza.masaType] : Object.keys(newPizzaObject.price[newSize])[0]
 
-        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+        newSubElements[orderIndex].pizza = {
             ...lastPizza,
             size: newSize,
             masaType: newMass,
             cost: newPizzaObject.price[newSize][newMass]
         }
-
-        setCurrentorders(newCurrentOrders)
+        orderUpdated.current = {orderIndex, property: 'pizza'}
+        setSubElements(newSubElements)
     }
 
     function handleChangeMass({ newMass, orderIndex }) {
-        
+
         if (newMass === null) return
 
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
-        const lastPizza = newCurrentOrders.itemsxOrder[orderIndex].pizza
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+        const lastPizza = newSubElements[orderIndex].pizza
         const newPizzaObject = products.find(p => p.name === lastPizza.name)
-        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+        newSubElements[orderIndex].pizza = {
             ...lastPizza,
             masaType: newMass,
             cost: newPizzaObject.price[lastPizza.size][newMass]
         }
-
-        setCurrentorders(newCurrentOrders)
+        orderUpdated.current = {orderIndex, property: 'pizza'}
+        setSubElements(newSubElements)
     }
 
     function addItemToExtraIngredients({ orderIndex }) {
 
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
-        const currentListExtas = newCurrentOrders.itemsxOrder[orderIndex].extraIngredients
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
+        const currentListExtas = newSubElements[orderIndex].extraIngredients
         const extraNameToAdd = extraIngredientsList.find(extra => !currentListExtas.map(e => e.name).includes(extra))
 
         if (!extraNameToAdd) return
 
-        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients.push({
+        newSubElements[orderIndex].extraIngredients.push({
             name: extraNameToAdd,
             quantity: 1,
             costPerUnit: extraIngredients[extraNameToAdd].totalPrice,
             cost: extraIngredients[extraNameToAdd].totalPrice
         })
-        setCurrentorders(newCurrentOrders)
+
+        orderUpdated.current = {orderIndex, property: 'extraIngredients'}
+        setSubElements(newSubElements)
     }
 
     function addItemToIngredientsOut({ orderIndex }) {
 
-        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        const newSubElements = JSON.parse(JSON.stringify(subElements))
 
-        const currentListIngredientsOut = newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut
-        const pizza = products.find(pizza => pizza.name === newCurrentOrders.itemsxOrder[orderIndex].pizza.name)
+        const currentListIngredientsOut = newSubElements[orderIndex].ingredientsOut
+        const pizza = products.find(pizza => pizza.name === newSubElements[orderIndex].pizza.name)
         const ingredientToAdd = pizza.ingredients.find(ingredient => !currentListIngredientsOut.includes(ingredient))
 
         if (!ingredientToAdd) return
 
-        newCurrentOrders.itemsxOrder[orderIndex].ingredientsOut.push(ingredientToAdd)
-        setCurrentorders(newCurrentOrders)
+        newSubElements[orderIndex].ingredientsOut.push(ingredientToAdd)
+
+        orderUpdated.current = {orderIndex, property: 'ingredientsOut'}
+        setSubElements(newSubElements)
+    }
+
+    async function updateDataOrder() {
+        console.log('entrando en update')
+        console.log('currentOrders', currentOrders)
+        console.log('orders', orders)
+
+        if (deepEqual(currentOrders, orders)) {
+            console.log('no hay ningun cambio')
+        }
+        console.log('Actualizando orden...')
+        return 'mensaje'
     }
 
     return (
@@ -279,9 +355,11 @@ function PriceData({ orders }) {
         >
             {
                 currentOrders.itemsxOrder && (
+                    // subElements && (
                     <>
                         {
                             currentOrders.itemsxOrder.map((order, orderIndex) => (
+                                // subElements.map((order, orderIndex) => (
                                 <Grid container key={`order(${orderIndex})`}>
                                     <Grid
                                         item
@@ -443,6 +521,15 @@ function PriceData({ orders }) {
                                                                         ${order.pizza.cost}
                                                                     </Typography>
                                                                 </Box>
+                                                                <Typography
+                                                                    variant='title'
+                                                                    sx={{
+                                                                        mt: '8px',
+                                                                        fontSize: '0.875rem'
+                                                                    }}
+                                                                >
+                                                                    Ingredientes Extra
+                                                                </Typography>
                                                                 {
                                                                     order.extraIngredients.map((extraIngredient, extraIngredientIndex, listExtraIngredients) => (
                                                                         <Box
@@ -554,6 +641,14 @@ function PriceData({ orders }) {
                                                                         </Box>
                                                                     ) : null
                                                                 }
+                                                                <Typography
+                                                                    variant='title'
+                                                                    sx={{
+                                                                        fontSize: '0.875rem'
+                                                                    }}
+                                                                >
+                                                                    Quitar ingredientes
+                                                                </Typography>
                                                                 {
                                                                     order.ingredientsOut.map((ingredient, ingredientIndex, listIngredintsOut) => (
                                                                         <Box
@@ -668,7 +763,10 @@ function PriceData({ orders }) {
                                                                             }}
                                                                             disabled={!editing}
                                                                         />
-                                                                        <Typography>${Number(order.pizza.cost) + order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)}</Typography>
+                                                                        <Typography>
+                                                                            {/* ${Number(order.pizza.cost) + order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)} */}
+                                                                            ${order.costPerUnity}
+                                                                        </Typography>
                                                                     </Box>
                                                                 </Box>
                                                                 <Box
@@ -679,7 +777,10 @@ function PriceData({ orders }) {
                                                                     }}
                                                                 >
                                                                     <Typography>Total</Typography>
-                                                                    <Typography>${order.quantity * (Number(order.pizza.cost) + order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0))}</Typography>
+                                                                    <Typography>
+                                                                        {/* ${order.quantity * (Number(order.pizza.cost) + order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0))} */}
+                                                                        ${order.totalCostByItem}
+                                                                    </Typography>
                                                                 </Box>
                                                             </Box>
                                                         }
@@ -699,7 +800,7 @@ function PriceData({ orders }) {
                                                             alignItems: 'baseline'
                                                         }}>
                                                         <IconButton
-                                                            onClick={() => {removeItemToCurrentListItems(orderIndex)}}
+                                                            onClick={() => {removeItemToCurrentListItems({orderIndex})}}
                                                         >
                                                             <CancelIcon sx={{ color: '#f6685e'}} />
                                                         </IconButton>
