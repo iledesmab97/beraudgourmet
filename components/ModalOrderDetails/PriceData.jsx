@@ -33,7 +33,10 @@ function PriceData({ orders }) {
             return {
                 ...item,
                 ingredientsOut,
-                pizza
+                pizza: {
+                    ...pizza,
+                    cost: item.costPerUnity
+                }
             }
         })
         return {
@@ -53,6 +56,11 @@ function PriceData({ orders }) {
     const { extraIngredients } = useGetExtraIngredients()
     const [pizzasList, setPizzasList] = useState([])
     const [extraIngredientsList, setExtraIngredientsList] = useState([])
+
+    // useEffect(() => {
+    //     console.log('currentOrders:', currentOrders)
+    //     console.log('products:', products)
+    // }, [currentOrders])
 
     useEffect(() => {
         if (!products) return
@@ -97,8 +105,32 @@ function PriceData({ orders }) {
         console.log('añadiendo elemento a la lista')
     }
 
-    function handleChangeCount() {
-        console.log('modificando la cantidad')
+    function handleChangeQuantityPizza({newQuantity, orderIndex}) {
+        console.log('newQuantity:', newQuantity)
+        console.log('orderIndex:', orderIndex)
+        if (Number.isNaN(Number(newQuantity)) || Number(newQuantity) < 0) return
+        const newCurrentOrders = JSON.parse(JSON.stringify(currentOrders))
+        
+        const { pizza, extraIngredients } = newCurrentOrders.itemsxOrder[orderIndex]
+        const { masaType, name, size } = pizza
+
+        const pizzaObject = products.find(p => p.name === name)
+        const newCost = Number(pizzaObject.price[size][masaType])
+
+        newCurrentOrders.itemsxOrder[orderIndex].pizza = {
+            masaType,
+            name,
+            size,
+            quantityPizza: newQuantity,
+            cost: newCost * Number(newQuantity)
+        }
+
+        newCurrentOrders.itemsxOrder[orderIndex].extraIngredients = extraIngredients.map(extra => ({
+            ...extra,
+            
+        }))
+
+        setCurrentorders(newCurrentOrders)
     }
 
     function removeIngredientOut({orderIndex, ingredientIndex}) {
@@ -257,22 +289,6 @@ function PriceData({ orders }) {
                                                                                     gap: '8px'
                                                                                 }}
                                                                             >
-                                                                                <TextField
-                                                                                    value={'1'}
-                                                                                    onChange={handleChangeCount}
-                                                                                    variant='standard'
-                                                                                    sx={{
-                                                                                        width: '24px',
-                                                                                    }}
-                                                                                    inputProps={{
-                                                                                        style: {
-                                                                                            fontSize: '0.875rem',
-                                                                                            textAlign: 'center',
-                                                                                            color: 'rgba(0, 0, 0, 0.6)'
-                                                                                        }
-                                                                                    }}
-                                                                                />
-                                                                                x
                                                                                 <Autocomplete
                                                                                     value={order.pizza.name}
                                                                                     options={pizzasList}
@@ -347,7 +363,7 @@ function PriceData({ orders }) {
                                                                             color: 'rgba(0, 0, 0, 0.6)'
                                                                         }}
                                                                     >
-                                                                        ${order.costPerUnity - order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)}
+                                                                        ${order.pizza.cost}
                                                                     </Typography>
                                                                 </Box>
                                                                 {
@@ -520,6 +536,52 @@ function PriceData({ orders }) {
                                                                         </Box>
                                                                     ))
                                                                 }
+                                                                <Box
+                                                                    sx={{
+                                                                        display: 'flex',
+                                                                        justifyContent: 'space-between',
+                                                                        mt: '16px',
+                                                                        color: 'rgba(0, 0, 0, 0.6)'
+                                                                    }}
+                                                                >
+                                                                    <Typography>Sub Total</Typography>
+                                                                    <Box
+                                                                        sx={{
+                                                                            display: 'flex',
+                                                                            alignItems: 'baseline',
+                                                                            gap: '16px'
+                                                                        }}
+                                                                    >
+                                                                        <TextField
+                                                                            value={'1'}
+                                                                            // value={order.pizza.quantityPizza}
+                                                                            // onChange={(event) => {handleChangeQuantityPizza({newQuantity: event.target.value, orderIndex})}}
+                                                                            variant='standard'
+                                                                            sx={{
+                                                                                width: '32px',
+                                                                            }}
+                                                                            inputProps={{
+                                                                                style: {
+                                                                                    // fontSize: '0.875rem',
+                                                                                    textAlign: 'center',
+                                                                                    color: 'rgba(0, 0, 0, 0.6)'
+                                                                                }
+                                                                            }}
+                                                                            disabled={!editing}
+                                                                        />
+                                                                        <Typography>$cash</Typography>
+                                                                    </Box>
+                                                                </Box>
+                                                                <Box
+                                                                    sx={{
+                                                                        display: 'flex',
+                                                                        justifyContent: 'space-between',
+                                                                        color: 'rgba(0, 0, 0, 0.6)'
+                                                                    }}
+                                                                >
+                                                                    <Typography>Total</Typography>
+                                                                    <Typography>$cash</Typography>
+                                                                </Box>
                                                             </Box>
                                                         }
                                                     />
