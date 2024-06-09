@@ -88,7 +88,7 @@ function PriceData({ orders }) {
                                                                     color: 'rgba(0, 0, 0, 0.6)'
                                                                 }}
                                                             >
-                                                                {subElements[0].genericPizza}
+                                                                {'1 ' + subElements[index].genericPizza.slice(1)}
                                                             </Typography>
                                                             <Typography
                                                                 sx={{
@@ -96,7 +96,7 @@ function PriceData({ orders }) {
                                                                     color: 'rgba(0, 0, 0, 0.6)'
                                                                 }}
                                                             >
-                                                                ${order.genericCost}
+                                                                ${order.costPerUnity - order.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost) , 0)}
                                                             </Typography>
                                                         </Box>
                                                         {

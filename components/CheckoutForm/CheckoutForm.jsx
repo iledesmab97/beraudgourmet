@@ -53,8 +53,8 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                 name: extraIngredient,
                 quantity: extra[extraIngredient]
             })),
-            costItemPerUnit: totalPrice,
-            totalCostByItem: Number(totalPrice) * quantity,
+            costItemPerUnit: totalPrice / quantity,
+            totalCostByItem: Number(totalPrice),
             description: descriptionOrder(item)
         }
     })

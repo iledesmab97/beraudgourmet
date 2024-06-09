@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
 
 import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
@@ -17,14 +18,10 @@ import { updateOrder } from '@/services/orderApi'
 
 import styles from './ModalOrderDetails.module.css'
 
-// const orderInformation = [
-//     {title: 'Método de Pago', name: 'paymentMethod'},
-//     {title: 'Cliente', name: 'name'},
-//     {title: 'Teléfono', name: 'phoneNumber'}
-// ]
-
 const properties = {
-    paymentMethod: 'Método de Pago'
+    paymentMethod: 'Método de Pago',
+    StripeId: 'StripeId',
+    delivery: 'Entrega a domicilio'
 }
 
 const paymentMethods = {
@@ -36,10 +33,14 @@ const paymentMethods = {
 function OrderData({currentOrder, handleUpdateOrderProperty}) {
 
     const [currentValues, setCurrentValues] = useState({
-        paymentMethod: currentOrder.paymentMethod
+        paymentMethod: currentOrder.paymentMethod,
+        StripeId: currentOrder.StripeId,
+        delivery: currentOrder.delivery
     })
     const [editing, setEditing] = useState({
-        paymentMethod: true
+        paymentMethod: false,
+        StripeId: false,
+        delivery: false
     })
     const { handleUpdateAlertMessage } = useGetAlertMessage()
 
@@ -56,17 +57,16 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
             ...editing,
             [property]: !editing[property]
         }
-        if (newEditing[property]) {
-            const updated = await updateProperty(property)
+        if (!newEditing[property]) {
+            const updated = await updateProperty( currentOrder.id, { property, value: currentValues[property] })
             if (!updated) return
         }
         setEditing(newEditing)
     }
 
-    async function updateProperty(property) {
+    async function updateProperty(id, {property, value}) {
         console.log('Editando', properties[property], '...')
-        const value = currentValues[property]
-        const response = await updateOrder(currentOrder.id, {property, value})
+        const response = await updateOrder(id, {property, value})
         let text, status
         if (response.message) {
             text = response.message
@@ -121,7 +121,6 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 {currentOrder.paid ? 'COBRADO' : 'POR COBRAR'}
             </Typography>
             <Box
-                // key={user[item.name]}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -146,7 +145,7 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                         <Select
                             value={currentValues.paymentMethod}
                             onChange={(event) => { handleCurrentValues({ property:'paymentMethod' , value: event.target.value }) }}
-                            disabled={editing.paymentMethod}
+                            disabled={!editing.paymentMethod}
                         >
                             {
                                 Object.keys(paymentMethods).map(method => (
@@ -159,7 +158,7 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                         onClick={() => {handleEditing('paymentMethod')}}
                     >
                         {
-                            editing ? (
+                            editing.paymentMethod ? (
                                 <CheckIcon />
                             ) : (
                                 <EditIcon />
@@ -169,7 +168,6 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 </Box>
             </Box>
             <Box
-                // key={user[item.name]}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -182,15 +180,37 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                 >
                     {currentOrder.paymentMethod === 'stripe' ? 'ID Stripe' : 'Nº Transferencia'}
                 </Typography>
-                <Typography
-                    variant='p'
-                    gutterBottom
+                <Grid
+                    container
+                    alignItems={'center'}
+                    sx={{
+                        width: '50%',
+                    }}
                 >
-                    {currentOrder.StripeId}
-                </Typography>
+                    <Grid item xs>
+                        <TextField
+                            value={currentValues.StripeId ? currentValues.StripeId : ''}
+                            onChange={(e) => {handleCurrentValues({property: 'StripeId', value: e.target.value})}}
+                            disabled={!editing.StripeId}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item sx={{ width: 'fit-content'}} >
+                        <IconButton
+                            onClick={() => {handleEditing('StripeId')}}
+                        >
+                            {
+                                editing.StripeId ? (
+                                    <CheckIcon />
+                                ) : (
+                                    <EditIcon />
+                                )
+                            }
+                        </IconButton>
+                    </Grid>
+                </Grid>
             </Box>
             <Box
-                // key={user[item.name]}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -201,14 +221,37 @@ function OrderData({currentOrder, handleUpdateOrderProperty}) {
                     variant='p'
                     gutterBottom
                 >
-                    Recoger en tienda
+                    Entrega a domicilio
                 </Typography>
-                <Typography
-                    variant='p'
-                    gutterBottom
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                    }}
                 >
-                    {currentOrder.delivery ? 'NO' : 'Sí'}
-                </Typography>
+                    <FormControl>
+                        <Select
+                            value={currentValues.delivery}
+                            onChange={(event) => { handleCurrentValues({ property:'delivery' , value: event.target.value }) }}
+                            disabled={!editing.delivery}
+                        >
+                            <MenuItem value={true}>{'Sí'}</MenuItem>
+                            <MenuItem value={false}>{'No'}</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <IconButton
+                        onClick={() => {handleEditing('delivery')}}
+                    >
+                        {
+                            editing.delivery ? (
+                                <CheckIcon />
+                            ) : (
+                                <EditIcon />
+                            )
+                        }
+                    </IconButton>
+                </Box>
             </Box>
         </>
     )

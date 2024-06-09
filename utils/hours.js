@@ -99,3 +99,8 @@ export function dateInRange({minHour, maxHour, currentDay}) {
     
     return currentDateObject.isAfter(minDateObject) && currentDateObject.isBefore(maxDateObject)
 }
+
+export function objectDateToString(dateObject) {
+    const dateString = dateObject.format('DD/MM/YYYY - hh:mm a')
+    return dateString
+}
