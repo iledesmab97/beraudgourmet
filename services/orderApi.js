@@ -69,3 +69,17 @@ export function requestRemovalOrder(id) {
         })
         .catch(error => ({message: error.message}))
 }
+
+export function changeOrderItems(data) {
+    return fetch(`${PATH_BACK}/orders/changeItems`, {
+        ...requestSettings('PUT'),
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            console.log('Los items de la orden fueron actualizados exitosamente')
+            return data
+        })
+        .catch(error => ({message: error.message}))
+}
