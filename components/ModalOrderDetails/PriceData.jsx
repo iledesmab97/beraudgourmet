@@ -22,7 +22,8 @@ import { useState, useEffect, useRef } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
-import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder } from '@/utils/preparingData'
+import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder, deepUnequal } from '@/utils/preparingData'
+import { changeOrderItems } from '@/services/orderApi'
 
 function preparingDataForDescription(order) {
     const extra = {}
@@ -114,8 +115,8 @@ function PriceData({ orders }) {
         if (subElements.length !== currentOrders.itemsxOrder.length) setOpenCollapse(subElements.map((order, index) => false))
         setCurrentorders({
             id,
-            totalCost: newItemsxOrders.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0),
-            totalCostByItems: newItemsxOrders.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0),
+            totalCost: String(newItemsxOrders.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0)),
+            totalCostByItems: String(newItemsxOrders.reduce((acc, cur) => acc + Number(cur.totalCostByItem), 0)),
             itemsxOrder: newItemsxOrders
         })
         orderUpdated.current = null
@@ -159,10 +160,13 @@ function PriceData({ orders }) {
             ingredientsOut: [],
             quantity: 1,
             costPerUnity: newPizza.price[size][mass],
-            totalCostByItem: newPizza.price[size][mass]
+            totalCostByItem: newPizza.price[size][mass],
         })
 
-        newSubElements[newSubElements.length - 1].description = descriptionOrder(preparingDataForDescription(newSubElements[newSubElements.length - 1]))
+        const description = descriptionOrder(preparingDataForDescription(newSubElements[newSubElements.length - 1]))
+
+        newSubElements[newSubElements.length - 1].description = description
+        newSubElements[newSubElements.length - 1].genericPizza = extractElements(description).genericPizza
 
         orderUpdated.current = {orderIndex: newSubElements.length -1, property: 'removeOrder'}
         setSubElements(newSubElements)
@@ -336,15 +340,29 @@ function PriceData({ orders }) {
     }
 
     async function updateDataOrder() {
-        console.log('entrando en update')
-        console.log('currentOrders', currentOrders)
-        console.log('orders', orders)
 
-        if (deepEqual(currentOrders, orders)) {
-            console.log('no hay ningun cambio')
+        const orderToCompare = JSON.parse(JSON.stringify({...orders}))
+        const { id, itemsxOrder, totalCost, totalCostByItems } = orderToCompare
+
+        const currentOrdersToCompare = JSON.parse(JSON.stringify({...currentOrders}))
+        
+        for ( let order of currentOrdersToCompare.itemsxOrder ) {
+            delete order.pizza
+            delete order.ingredientsOut
+            delete order.genericPizza
+        }
+
+        if (deepEqual(currentOrdersToCompare, { id, itemsxOrder, totalCost, totalCostByItems })) {
+            console.log('No hay cambios para actualizar')
+            return 'No hay cambios para actualizar'
         }
         console.log('Actualizando orden...')
-        return 'mensaje'
+        const differences = deepUnequal(currentOrdersToCompare, { id, itemsxOrder, totalCost, totalCostByItems })
+        
+        // const response = await changeOrderItems(differences)
+        // console.log('response:', response)
+        // return response
+        return 'Hay cambios para actualizar'
     }
 
     return (
