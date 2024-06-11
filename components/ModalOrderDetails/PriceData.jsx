@@ -21,9 +21,11 @@ import CrossText from '@/components/CrossText/CrossText'
 import { useState, useEffect, useRef } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import useGetOrderList from '@/hooks/useGetOrderList'
 
 import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder, deepUnequal } from '@/utils/preparingData'
-import { changeOrderItems } from '@/services/orderApi'
+import { changeOrderItems, getAllOrders } from '@/services/orderApi'
 
 function preparingDataForDescription(order) {
     const extra = {}
@@ -79,6 +81,9 @@ function PriceData({ orders }) {
     const [pizzasList, setPizzasList] = useState([])
     const [extraIngredientsList, setExtraIngredientsList] = useState([])
     const orderUpdated = useRef(null)
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const { handleAddOrderList } = useGetOrderList()
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (!products) return
@@ -341,28 +346,54 @@ function PriceData({ orders }) {
 
     async function updateDataOrder() {
 
+        setLoading(true)
         const orderToCompare = JSON.parse(JSON.stringify({...orders}))
         const { id, itemsxOrder, totalCost, totalCostByItems } = orderToCompare
-
+        const newItemsxOrder = itemsxOrder.map(order => {
+            const { ingredientsOut, pizza, genericPizza } = extractElements(order.description)
+            return {
+                ...order,
+                ingredientsOut,
+                pizza,
+                genericPizza
+            }
+        })
+        
         const currentOrdersToCompare = JSON.parse(JSON.stringify({...currentOrders}))
         
         for ( let order of currentOrdersToCompare.itemsxOrder ) {
-            delete order.pizza
-            delete order.ingredientsOut
-            delete order.genericPizza
+            delete order.pizza.cost
         }
 
-        if (deepEqual(currentOrdersToCompare, { id, itemsxOrder, totalCost, totalCostByItems })) {
+        console.log('Actualizando orden...')
+        const differences = deepUnequal(currentOrdersToCompare, { id, itemsxOrder: newItemsxOrder, totalCost, totalCostByItems })
+
+        if (!Object.keys(differences).length) {
             console.log('No hay cambios para actualizar')
+            setLoading(false)
             return 'No hay cambios para actualizar'
         }
-        console.log('Actualizando orden...')
-        const differences = deepUnequal(currentOrdersToCompare, { id, itemsxOrder, totalCost, totalCostByItems })
-        
-        // const response = await changeOrderItems(differences)
-        // console.log('response:', response)
-        // return response
-        return 'Hay cambios para actualizar'
+        const response = await changeOrderItems(differences)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            getAllOrders().then(data => {
+                handleAddOrderList(data)
+            })
+        }
+        setLoading(false)
+        return response
     }
 
     return (
@@ -914,6 +945,7 @@ function PriceData({ orders }) {
             >    
                 <IconButton
                     onClick={handleEditing}
+                    disabled={loading}
                 >
                     {
                         editing ? (

@@ -262,5 +262,9 @@ export function deepUnequal(value1, value2) {
         differences.itemsxOrder = itemsxOrderDifference
     }
 
+    if (Object.keys(differences).length) {
+        differences.id = value1.id
+    }
+
     return differences
 }
