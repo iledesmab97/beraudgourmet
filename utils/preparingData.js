@@ -258,6 +258,16 @@ export function deepUnequal(value1, value2) {
         }
     }
 
+    const currentOrdersListId = value1.itemsxOrder.map(order => order.id)
+    const ordersToRemove = value2.itemsxOrder.filter(order => !currentOrdersListId.includes(order.id))
+
+    for (let order of ordersToRemove) {
+        itemsxOrderDifference.push({
+            id: order.id,
+            remove: true
+        })
+    }
+
     if (itemsxOrderDifference.length) {
         differences.itemsxOrder = itemsxOrderDifference
     }
