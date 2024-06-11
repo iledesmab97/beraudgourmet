@@ -102,7 +102,7 @@ function UserData({user, currentOrder, handleUpdateOrderProperty}) {
 
     return (
         <>
-            <Typography variant='title'>USUAIRO</Typography>
+            <Typography variant='title'>USUARIO</Typography>
             <Box
                 sx={{
                     width: '100%',
