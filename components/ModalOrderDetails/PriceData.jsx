@@ -44,16 +44,18 @@ function preparingDataForDescription(order) {
 
 function PriceData({ orders }) {
 
+    const { products } = useGetProducts({type: 'pizzas'})
     const [currentOrders, setCurrentorders] = useState(() => {
         const { id, itemsxOrder, totalCost, totalCostByItems } = orders
         const newItemsxOrder = itemsxOrder.map(item => {
             const { ingredientsOut, pizza } = extractElements(item.description)
+            const { size, masaType, name } = pizza
             return {
                 ...item,
                 ingredientsOut,
                 pizza: {
                     ...pizza,
-                    cost: Number(item.costPerUnity) - item.extraIngredients.reduce((acc, cur) => acc + Number(cur.cost), 0)
+                    cost: products.find(p => p.name === name).price[size][masaType]
                 }
             }
         })
@@ -76,7 +78,6 @@ function PriceData({ orders }) {
     })
     const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
     const [editing, setEditing] = useState(false)
-    const { products } = useGetProducts({type: 'pizzas'})
     const { extraIngredients } = useGetExtraIngredients()
     const [pizzasList, setPizzasList] = useState([])
     const [extraIngredientsList, setExtraIngredientsList] = useState([])
@@ -113,8 +114,8 @@ function PriceData({ orders }) {
             newItemsxOrders[orderIndex] = {
                 ...newItemsxOrders[orderIndex],
                 description: descriptionOrder(preparingDataForDescription(newItemsxOrders[orderIndex])),
-                costPerUnity,
-                totalCostByItem
+                costPerUnity: String(costPerUnity),
+                totalCostByItem: String(totalCostByItem)
             }
         }
         if (subElements.length !== currentOrders.itemsxOrder.length) setOpenCollapse(subElements.map((order, index) => false))
@@ -269,7 +270,7 @@ function PriceData({ orders }) {
             cost: newPizzaObject.price[newSize][newMass]
         }
 
-        newSubElements[orderIndex].ingredientsOut = [null]
+        newSubElements[orderIndex].ingredientsOut = []
         orderUpdated.current = {orderIndex, property: 'pizza'}
         setSubElements(newSubElements)
     }
