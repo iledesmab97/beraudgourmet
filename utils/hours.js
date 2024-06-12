@@ -81,23 +81,19 @@ export function getTimeLimitTodaySchedue(place) {
 }
 
 export function dateInRange({minHour, maxHour, currentDay}) {
-    const currentDateObject = currentDay === null ? dayjs() : typeof currentDay === 'string' ? dateStringToDate(currentDay) : currentDay
+    const selectedDateObject = currentDay === null ? dayjs() : typeof currentDay === 'string' ? dateStringToDate(currentDay) : currentDay
     const minTimeObject = typeof minHour === 'string' ? timeStringToObject(minDate) : minHour
     const maxTimeObject = typeof maxHour === 'string' ? timeStringToObject(maxDate) : maxHour
-    
-    const maxDateObject = maxTimeObject.date(currentDateObject.format('D')).month(Number(currentDateObject.format('M')) - 1).year(currentDateObject.format('YYYY'))
 
-    let minDateObject
+    const maxDateObject = maxTimeObject.date(selectedDateObject.format('D')).month(Number(selectedDateObject.format('M')) - 1).year(selectedDateObject.format('YYYY'))
 
-    if (dayjs().isSame(currentDateObject, 'day')) {
-        minDateObject = dayjs().add(29, 'minute')
-    } else if(dayjs().isBefore(currentDateObject, 'day')) {
-        minDateObject = minTimeObject.date(currentDateObject.format('D')).month(Number(currentDateObject.format('M')) - 1).year(currentDateObject.format('YYYY'))
-    } else {
-        return false
+    let minDateObject = minTimeObject.date(selectedDateObject.format('D')).month(Number(selectedDateObject.format('M')) - 1).year(selectedDateObject.format('YYYY'))
+
+    if (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(dayjs().add(29, 'minute'))) {
+        minDateObject = dayjs().add(30, 'minute')
     }
     
-    return currentDateObject.isAfter(minDateObject) && currentDateObject.isBefore(maxDateObject)
+    return selectedDateObject.isSame(minDateObject) || (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(maxDateObject))
 }
 
 export function objectDateToString(dateObject) {
