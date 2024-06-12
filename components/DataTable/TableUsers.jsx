@@ -7,10 +7,9 @@ import TableBody from '@mui/material/TableBody'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
-
+import TablePagination from '@mui/material/TablePagination'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-
 import IconButton from '@mui/material/IconButton'
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -18,12 +17,23 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 
 import ModalUserDetail from '@/components/ModalUserDetail/ModalUserDetail'
+import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { getAllUsers, updateAccount } from '@/services/userApi'
+
+const tabelHeader = [
+    'Estado',
+    'ID',
+    'Nombre',
+    'Email',
+    'Teléfono',
+    'Rol',
+    'Acción'
+]
 
 function TableUsers({ users, handleChangeUsers }) {
 
@@ -32,6 +42,8 @@ function TableUsers({ users, handleChangeUsers }) {
     const [openModal, setOpenModal] = useState(false)
     const openMenu = Boolean(anchorElMenu)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     function closeMenu() {
         setAnchorElMenu(null)
@@ -92,30 +104,57 @@ function TableUsers({ users, handleChangeUsers }) {
         console.log(`No se ha podido ${lastState === 'ACTIVE' ? 'desactivar' : 'activar'} el usuario`)
     }
 
+    function handleChangePage(newPage) {
+        setPage(newPage)
+    }
+
+    function handleChangeRowsPerPage(event) {
+        setRowsPerPage(+event.target.value)
+        setPage(0)
+    }
+
     return (
-        <>
+        <Paper
+            sx={{
+                overflowY: 'hidden',
+            }}
+        >
             <TableContainer
-                component={Paper}
                 sx={{
-                    height: '100%'
+                    height: '500px',
                 }}
             >
-                <Table>
+                <Table stickyHeader >
                     <TableHead>
                         <TableRow>
-                            <TableCell>Estado</TableCell>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>email</TableCell>
-                            <TableCell>Teléfono</TableCell>
-                            <TableCell>Rol</TableCell>
-                            <TableCell>Acción</TableCell>
+                            {
+                                tabelHeader.map(label => (
+                                    <TableCell
+                                        key={label}
+                                        sx={{
+                                            bgcolor: 'rgb(98, 110, 122)',
+                                            color: 'white',
+                                            fontSize: '0.975rem'
+                                        }}
+                                    >
+                                        {label}
+                                    </TableCell>
+                                ))
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {
-                            users.map(user => (
-                                <TableRow key={user.name}>
+                            users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
+                                <TableRow
+                                    key={user.name}
+                                    sx={{
+                                        bgcolor: index % 2 !== 0 ? 'rgba(0, 0, 0, 0.04)' : '',
+                                        '&:hover': {
+                                            bgcolor: 'rgba(0, 0, 0, 0.1)'
+                                        }
+                                    }}
+                                >
                                     <TableCell align='center'>{
                                         user.state === 'ACTIVE' ? (
                                             <CheckCircleIcon sx={{ color: '#4caf50'}} />
@@ -141,6 +180,17 @@ function TableUsers({ users, handleChangeUsers }) {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={users.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => { handleChangePage(newPage) }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={'Filas por página'}
+                ActionsComponent={TablePaginationActions}
+            />
             <Menu
                 anchorEl={anchorElMenu}
                 open={openMenu}
@@ -160,7 +210,7 @@ function TableUsers({ users, handleChangeUsers }) {
             {
                 currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUserTable={updateUserTable} /> : null
             }
-        </>
+        </Paper>
     )
 }
 
