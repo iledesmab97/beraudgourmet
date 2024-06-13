@@ -98,7 +98,7 @@ function AdminPlace() {
     }
 
     return (
-        <Container maxWidth='lg'>
+        <Container maxWidth='lg' sx={{ pb: 5 }}>
             <Grid
                 container
                 spacing={1}
