@@ -132,7 +132,10 @@ function TableUsers() {
                     height: '500px',
                 }}
             >
-                <Table stickyHeader >
+                <Table
+                    stickyHeader
+                    size={ rowsPerPage > 60 ? 'small' : 'medium'}
+                >
                     <TableHead>
                         <TableRow>
                             {
