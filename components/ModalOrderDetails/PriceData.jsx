@@ -50,12 +50,13 @@ function PriceData({ orders }) {
         const newItemsxOrder = itemsxOrder.map(item => {
             const { ingredientsOut, pizza } = extractElements(item.description)
             const { size, masaType, name } = pizza
+            const productFinded = products.find(p => p.name === name)
             return {
                 ...item,
                 ingredientsOut,
                 pizza: {
                     ...pizza,
-                    cost: products.find(p => p.name === name).price[size][masaType]
+                    cost: productFinded ? productFinded.price[size][masaType] : '0'
                 }
             }
         })
