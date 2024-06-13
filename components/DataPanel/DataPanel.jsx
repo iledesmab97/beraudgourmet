@@ -38,34 +38,9 @@ const listToolOptions = {
 function DataPanel({ toolSelected }) {
 
     const [tabSelected, setTabSelected] = useState(0)
-    const [orders, setOrders] = useState([])
-    const [users, setUsers] = useState([])
-    const [list, setList] = useState([])
-
-    useEffect(() => {
-        getAllUsers('all')
-            .then(data => {
-                if (data.message) throw new Error(data.message)
-                setUsers(data)
-            })
-            .catch(error => alert(error.message))
-    }, [])
-
-
-    function updateOrders(newListOrders) {
-        setOrders(newListOrders)
-    }
-
-    function updateList(newList) {
-        setList(newList)
-    }
 
     function handleChange(event, newValue) {
         setTabSelected(newValue)
-    }
-
-    function handleChangeUsers(userList) {
-        setUsers(userList)
     }
 
     return (
@@ -106,7 +81,7 @@ function DataPanel({ toolSelected }) {
                     toolSelected === 'Stores' ? <TableStores /> : null
                 }
                 {
-                    toolSelected === 'Users' ? <TableUsers users={users} handleChangeUsers={handleChangeUsers} /> : null
+                    toolSelected === 'Users' ? <TableUsers /> : null
                 }
             </Box>
         </Grid>
