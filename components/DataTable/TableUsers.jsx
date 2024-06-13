@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-
 import TableContainer from '@mui/material/TableContainer'
 import Table from '@mui/material/Table'
 import TableHead from '@mui/material/TableHead'
@@ -11,6 +10,7 @@ import TablePagination from '@mui/material/TablePagination'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -18,6 +18,8 @@ import CancelIcon from '@mui/icons-material/Cancel'
 
 import ModalUserDetail from '@/components/ModalUserDetail/ModalUserDetail'
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
+import Searcher from '@/components/Searcher/Searcher'
+import HelperMessageToSearch from '@/components/HelperMessageToSearch/HelperMessageToSearch'
 
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
@@ -35,8 +37,9 @@ const tabelHeader = [
     'Acción'
 ]
 
-function TableUsers({ users, handleChangeUsers }) {
+function TableUsers() {
 
+    const [users, setUsers] = useState([])
     const [currentUser, setCurrentUser] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openModal, setOpenModal] = useState(false)
@@ -44,6 +47,10 @@ function TableUsers({ users, handleChangeUsers }) {
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+
+    function handleChangeUsers(userList) {
+        setUsers(userList)
+    }
 
     function closeMenu() {
         setAnchorElMenu(null)
@@ -116,7 +123,8 @@ function TableUsers({ users, handleChangeUsers }) {
     return (
         <Paper
             sx={{
-                overflowY: 'hidden',
+                position: 'relative',
+                // overflowY: 'hidden',
             }}
         >
             <TableContainer
@@ -209,6 +217,27 @@ function TableUsers({ users, handleChangeUsers }) {
             </Menu>
             {
                 currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUserTable={updateUserTable} /> : null
+            }
+            <Searcher
+                handleChangeUsers={handleChangeUsers}
+                sx={{
+                    position: 'absolute',
+                    bottom : '100%',
+                    right: '0px',
+                    m: 2
+                }}
+            />
+            {
+                users.length === 0 ? (
+                    <HelperMessageToSearch
+                        sx={{
+                            position: 'absolute',
+                            top : '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)'
+                        }}
+                    />
+                ) : null
             }
         </Paper>
     )
