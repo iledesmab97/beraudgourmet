@@ -22,7 +22,12 @@ function Searcher({ handleChangeUsers, ...rest }) {
     }
 
     async function findUsers() {
-        const response = await getAllUsers({ name: text, email: text, phoneNumber: text })
+        let response
+        if (!text) {
+            response = []
+        } else {
+            response = await getAllUsers({ name: text, email: text, phoneNumber: text })
+        }
         handleChangeUsers(response)
     }
 
