@@ -90,9 +90,12 @@ export async function saveToken( tokenUser ) {
     return userDataFront
 }
 
-export function getAllUsers(status) {
-    const querys = status === 'all' ? '?all=true' : ''
-    return fetch(`${PATH_BACK}/users${querys}`, {
+export function getAllUsers(querys) {
+    let query
+    if (querys) {
+        query = Object.keys(querys).filter(q => querys[q]).map(q => q + '=' + querys[q] ).join('&&')
+    }
+    return fetch(`${PATH_BACK}/users${query ? '?' + query : ''}`, {
         ...requestSettings()
     })
         .then(response => {
