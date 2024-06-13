@@ -26,10 +26,10 @@ function UserData({user, currentOrder, handleUpdateOrderProperty}) {
     const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     useEffect(() => {
-        getAllUsers('all')
+        getAllUsers()
             .then(data => {
                 if (data.message) throw new Error(data.message)
-                    setUserList(data)
+                setUserList(data)
             })
             .catch(error => alert(error.message))
     }, [])
