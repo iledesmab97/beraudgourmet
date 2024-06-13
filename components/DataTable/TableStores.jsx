@@ -7,18 +7,20 @@ import TableBody from '@mui/material/TableBody'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
-
+import TablePagination from '@mui/material/TablePagination'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-
 import IconButton from '@mui/material/IconButton'
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import ModalStoreDetailAdmin from '@/components/ModalStoreDetailAdmin/ModalStoreDetailAdmin'
+import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
 import { useState, useEffect } from 'react'
 import useGetStoreList from '@/hooks/useGetStoreList'
+
+const columns = ['ID', 'Nombre', 'Ciudad', 'Coordenadas', 'Teléfono', 'Acción']
 
 function listStores(storeList) {
     const arrayStoreList = []
@@ -44,6 +46,8 @@ function TableStores() {
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openStoreDetails, setOpenStoreDetails] = useState(false)
     const openMenu = Boolean(anchorElMenu)
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     function toggleMenu() {
         setAnchorElMenu(null)
@@ -68,20 +72,43 @@ function TableStores() {
         }
     }
 
+    function handleChangePage(newPage) {
+        setPage(newPage)
+    }
+
+    function handleChangeRowsPerPage(event) {
+        setRowsPerPage(+event.target.value)
+        setPage(0)
+    }
+
     return (
-        <>
+        <Paper>
             <TableContainer
-                component={Paper}
+                sx={{
+                    height: '500px',
+                }}
             >
-                <Table>
+                <Table
+                    stickyHeader
+                    size={ rowsPerPage > 60 ? 'small' : 'medium'}
+                >
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Ciudad</TableCell>
-                            <TableCell>Coordenadas</TableCell>
-                            <TableCell>Teléfono</TableCell>
-                            <TableCell>Acción</TableCell>
+                            {
+                                columns.map(label => (
+                                    <TableCell
+                                        key={label}
+                                        align='center'
+                                        sx={{
+                                            bgcolor: 'rgb(98, 110, 122)',
+                                            color: 'white',
+                                            fontSize: '0.975rem'
+                                        }}
+                                    >
+                                        {label}
+                                    </TableCell>
+                                ))
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -106,6 +133,17 @@ function TableStores() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={storeListArray.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => { handleChangePage(newPage) }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={'Filas por página'}
+                ActionsComponent={TablePaginationActions}
+            />
             <Menu
                 anchorEl={anchorElMenu}
                 open={openMenu}
@@ -125,7 +163,7 @@ function TableStores() {
             {
                 currentStore ? <ModalStoreDetailAdmin openStoreDetails={openStoreDetails} handleOpenStoreDetail={handleOpenStoreDetail} currentStore={currentStore} /> : null
             }
-        </>
+        </Paper>
     )
 }
 
