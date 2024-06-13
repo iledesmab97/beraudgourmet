@@ -23,7 +23,6 @@ function Searcher({ handleChangeUsers, ...rest }) {
 
     async function findUsers() {
         const response = await getAllUsers({ name: text, email: text, phoneNumber: text })
-        console.log('response:', response)
         handleChangeUsers(response)
     }
 
