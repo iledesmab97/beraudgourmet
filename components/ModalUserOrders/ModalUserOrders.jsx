@@ -14,7 +14,7 @@ import useGetUser from '@/hooks/useGetUser'
 import { useTheme } from '@mui/material/styles'
 import { useMediaQuery } from '@mui/material'
 
-import { getAllOrders } from '@/services/orderApi'
+import { getAllOrdersOfUser } from '@/services/orderApi'
 import { extractIngredientsOut } from '@/utils/preparingData'
 
 import styles from './ModalUserOrders.module.css'
@@ -55,7 +55,7 @@ function ModalUserOrders() {
 
     useEffect(() => {
         if (!user.id) return
-        getAllOrders(user.id).then( data => {
+        getAllOrdersOfUser(user.id).then( data => {
             if (data.message) return alert(data.message)
             return setOrders(data)
         } )
