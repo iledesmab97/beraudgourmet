@@ -21,6 +21,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import AddIcon from '@mui/icons-material/Add'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
+import TablePagination from '@mui/material/TablePagination'
+
+import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -57,6 +60,8 @@ function TablePizzas() {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'))
     const [totalMatches, setTotalMatches] = useState(false)
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     useEffect(() => {
         if (products) setPizzas(products)
@@ -159,15 +164,47 @@ function TablePizzas() {
         handleCloseMenu()
     }
 
+    function handleChangePage(newPage) {
+        setPage(newPage)
+    }
+
+    function handleChangeRowsPerPage(event) {
+        setRowsPerPage(+event.target.value)
+        setPage(0)
+    }
+
     return (
-        <>
-            <TableContainer className={styles.DataTable} component={Paper}>
-                <Table stickyHeader>
+        <Paper
+            sx={{
+                position: 'relative',
+                // overflowY: 'hidden',
+            }}
+        >
+            <TableContainer
+                className={styles.DataTable}
+                sx={{
+                    height: '500px',
+                }}
+            >
+                <Table
+                    stickyHeader
+                    size={ rowsPerPage > 60 ? 'small' : 'medium'}
+                >
                     <TableHead>
                         <TableRow>
                             {
                                 tableHeaders.pizzas.map(column => (
-                                    <TableCell key={column} align='center'>{column}</TableCell>
+                                    <TableCell
+                                        key={column}
+                                        align='center'
+                                        sx={{
+                                            bgcolor: 'rgb(98, 110, 122)',
+                                            color: 'white',
+                                            fontSize: '0.975rem'
+                                        }}
+                                    >
+                                        {column}
+                                    </TableCell>
                                 ))          
                             }
                         </TableRow>
@@ -215,6 +252,17 @@ function TablePizzas() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={pizzas.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => { handleChangePage(newPage) }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={'Filas por página'}
+                ActionsComponent={TablePaginationActions}
+            />
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -275,7 +323,7 @@ function TablePizzas() {
                     )
                 }
             </Box>
-        </>
+        </Paper>
     )
 }
 

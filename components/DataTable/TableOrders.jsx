@@ -1,22 +1,27 @@
 'use client'
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Box from '@mui/material/Box';
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import TablePagination from '@mui/material/TablePagination'
+
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 
 import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
 import ModalMakeOrder from '@/components/ModalMakeOrder/ModalMakeOrder'
+import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
+import Searcher from '@/components/Searcher/Searcher'
+import HelperMessageToSearch from '@/components/HelperMessageToSearch/HelperMessageToSearch'
 
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -56,6 +61,8 @@ function TableOrders() {
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [ loading, setLoading] = useState(false)
     const { orderList } = useGetOrderList()
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     useEffect(() => {
         setOrders(orderList)
@@ -225,23 +232,61 @@ function TableOrders() {
         setCurrentOrder(orderUpdated)
     }
 
+    function handleChangePage(newPage) {
+        setPage(newPage)
+    }
+
+    function handleChangeRowsPerPage(event) {
+        setRowsPerPage(+event.target.value)
+        setPage(0)
+    } 
+
     return (
-        <>
-            <TableContainer className={styles.DataTable} component={Paper}>
-                <Table stickyHeader>
+        <Paper
+            sx={{
+                position: 'relative',
+            }}
+        >
+            <TableContainer 
+                sx={{
+                    height: '500px',
+                }}
+            >
+                <Table
+                    stickyHeader
+                    size={ rowsPerPage > 60 ? 'small' : 'medium'}
+                >
                     <TableHead>
                         <TableRow>
                             {
                                 tableHeaders.orders.map(column => (
-                                    <TableCell key={column} align='center'>{column}</TableCell>
+                                    <TableCell
+                                        key={column}
+                                        align='center'
+                                        sx={{
+                                            bgcolor: 'rgb(98, 110, 122)',
+                                            color: 'white',
+                                            fontSize: '0.975rem'
+                                        }}
+                                    >
+                                        {column}
+                                    </TableCell>
                                 ))          
                             }
                         </TableRow>
                     </TableHead>
                     <TableBody className={styles.DataTableBody}>
                         {
-                            orders.map((order) => (
-                                <TableRow key={order.id}>
+                            orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
+                                <TableRow
+                                    key={order.id}
+                                    sx={{
+                                        bgcolor: index % 2 !== 0 ? 'rgba(0, 0, 0, 0.04)' : '',
+                                        '&:hover': {
+                                            bgcolor: 'rgba(0, 0, 0, 0.1)'
+                                        }
+                                    }}
+                                >
                                     <TableCell align='center'>{ order.id }</TableCell>
                                     <TableCell align='center'>{ order.user.name }</TableCell>
                                     <TableCell align='center'>{ order.user.phoneNumber }</TableCell>
@@ -279,6 +324,17 @@ function TableOrders() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={orders.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => { handleChangePage(newPage) }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={'Filas por página'}
+                ActionsComponent={TablePaginationActions}
+            />
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -332,7 +388,30 @@ function TableOrders() {
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                 ) : null
             }
-        </>
+            <Searcher
+                handleChangelist={handleUpdateOrders}
+                makeRequest={getAllOrders}
+                propertiesToSearch={['userName', 'userPhoneNumber', 'userEmail']}
+                sx={{
+                    position: 'absolute',
+                    bottom : '100%',
+                    right: '0px',
+                    m: 2
+                }}
+            />
+            {
+                orders.length === 0 ? (
+                    <HelperMessageToSearch
+                        sx={{
+                            position: 'absolute',
+                            top : '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)'
+                        }}
+                    />
+                ) : null
+            }
+        </Paper>
     )
 }
 

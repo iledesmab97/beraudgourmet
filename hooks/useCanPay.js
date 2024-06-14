@@ -7,19 +7,47 @@ import { getTimeLimitTodaySchedue, dateInRange } from '@/utils/hours'
 
 export default function useCanPay() {
     const [canPay, setCanPay] = useState(false)
-    const {orders} = useGetOrders()
+    const { orders } = useGetOrders()
     const { place } = useGetPlace()
     const { user } = useGetUser()
+    const [missing, setMissing] = useState('')
 
     useEffect(() => {
-        const { minHour, maxHour } = getTimeLimitTodaySchedue(place)
-        const currentDay = place.deadLine ? place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime : null
-        if ( !orders.length || !user.email || !place.closerStore || !dateInRange({minHour, maxHour, currentDay})) {
-            if (canPay) return setCanPay(false)
-            return
-        }
-        setCanPay(true)
+        whatDataMissing()
     }, [orders, place, user])
 
-    return { canPay }
+    function whatDataMissing() {
+        const { minHour, maxHour } = getTimeLimitTodaySchedue(place)
+        const currentDay = place.deadLine ? place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime : null
+        if ( !orders.length && !user.email && !place.closerStore && !dateInRange({minHour, maxHour, currentDay})) {
+            setMissing('')
+            if (canPay) setCanPay(false)
+            return 'all'
+        }
+        if (!user.email) {
+            setMissing('user')
+            if (canPay) setCanPay(false)
+            return 'user'
+        }
+        if (!orders.length) {
+            setMissing('orders')
+            if (canPay) setCanPay(false)
+            return 'orders'
+        }
+        if (!place.closerStore) {
+            setMissing('place')
+            if (canPay) setCanPay(false)
+            return 'place'
+        }
+        if (!dateInRange({minHour, maxHour, currentDay})) {
+            setMissing('time')
+            if (canPay) setCanPay(false)
+            return 'time'
+        }
+        setMissing('')
+        setCanPay(true)
+        return null
+    }
+
+    return { canPay, missing, whatDataMissing }
 }

@@ -17,7 +17,7 @@ import MakeOrder from './MakeOrder'
 
 import { useEffect, useState } from 'react'
 
-import { getAllOrders } from '@/services/orderApi'
+import { getAllOrdersOfUser } from '@/services/orderApi'
 
 function OrdersUser({ user }) {
 
@@ -25,11 +25,11 @@ function OrdersUser({ user }) {
     const [orders, setOrders] = useState([])
 
     useEffect(() => {
-        getAllOrders(user.id).then( data => setOrders(data) )
+        getAllOrdersOfUser( user.id ).then( data => setOrders(data) )
     }, [])
 
     function updateOrders() {
-        getAllOrders(user.id).then( data => setOrders(data) )
+        getAllOrdersOfUser( user.id ).then( data => setOrders(data) )
     }
 
     function handleOpenCollaps(index) {

@@ -226,3 +226,55 @@ export function requestSettings(requestType, token, typeFile) {
     }
     return setting ? setting : {}
 }
+
+export function deepUnequal(value1, value2) {
+    const differences = {}
+    
+    if (value1.totalCost !== value2.totalCost) {
+        differences.totalCost = value1.totalCost
+    }
+
+    if (value1.totalCostByItems !== value2.totalCostByItems) {
+        differences.totalCostByItems = value1.totalCostByItems
+    }
+
+    const itemsxOrderDifference = []
+
+    for (let order of value1.itemsxOrder) {
+        const differentProperties = {}
+        const order2 = value2.itemsxOrder.find( o => o.id === order.id)
+        if (!order2) {
+            itemsxOrderDifference.push(order)
+            continue
+        }
+        for (let property in order) {
+            if (!deepEqual(order[property], order2[property])) {
+                differentProperties[property] = order[property]
+            }
+        }
+
+        if (Object.keys(differentProperties).length) {
+            itemsxOrderDifference.push({...differentProperties, id: order.id})
+        }
+    }
+
+    const currentOrdersListId = value1.itemsxOrder.map(order => order.id)
+    const ordersToRemove = value2.itemsxOrder.filter(order => !currentOrdersListId.includes(order.id))
+
+    for (let order of ordersToRemove) {
+        itemsxOrderDifference.push({
+            id: order.id,
+            remove: true
+        })
+    }
+
+    if (itemsxOrderDifference.length) {
+        differences.itemsxOrder = itemsxOrderDifference
+    }
+
+    if (Object.keys(differences).length) {
+        differences.id = value1.id
+    }
+
+    return differences
+}
