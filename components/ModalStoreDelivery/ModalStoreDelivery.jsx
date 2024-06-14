@@ -1,11 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import useGetModal from '@/hooks/useGetModal'
-import useHandlePlace from '@/hooks/useHandlePlace'
-import useGetStoreList from '@/hooks/useGetStoreList'
-import { getAllStoresWithSchedules } from '@/services/storeApi'
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -14,6 +8,13 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 
 import StorePickup from './StorePickup'
 import HomeDelivery from './HomeDelivery'
+
+import { useState, useEffect } from 'react';
+import useGetModal from '@/hooks/useGetModal'
+import useHandlePlace from '@/hooks/useHandlePlace'
+import useGetStoreList from '@/hooks/useGetStoreList'
+
+import { getAllStoresWithSchedules } from '@/services/storeApi'
 
 
 const style = {
@@ -83,6 +84,7 @@ export default function ModalStoreDelivery() {
       >
         <Box sx={style}>
           <Box
+            id='modal-container-storeDelivery'
             sx={{
               height: '100%',
               pr: 1,
