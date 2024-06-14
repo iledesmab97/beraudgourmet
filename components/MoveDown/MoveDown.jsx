@@ -6,14 +6,14 @@ import { scrollToSection } from '@/utils/modal'
 
 import style from './MoveDown.module.css'
 
-export default function MoveDown({ open, section}) {
+export default function MoveDown({ open, sectionToGo}) {
 
     return (
         <>
             {
                 open ? (
                     <IconButton
-                        onClick={() => { scrollToSection(section) }}
+                        onClick={() => { scrollToSection(sectionToGo) }}
                         sx={{
                             position: 'fixed',
                             bottom: '76px',
