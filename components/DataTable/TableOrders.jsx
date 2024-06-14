@@ -20,6 +20,8 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ModalOrderDetail from '@/components/ModalOrderDetails/ModalOrderDetails'
 import ModalMakeOrder from '@/components/ModalMakeOrder/ModalMakeOrder'
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
+import Searcher from '@/components/Searcher/Searcher'
+import HelperMessageToSearch from '@/components/HelperMessageToSearch/HelperMessageToSearch'
 
 import { useState, useRef, useEffect } from 'react';
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -242,7 +244,7 @@ function TableOrders() {
     return (
         <Paper
             sx={{
-                overflowY: 'hidden',
+                position: 'relative',
             }}
         >
             <TableContainer 
@@ -384,6 +386,29 @@ function TableOrders() {
             {
                 currentOrder ? (
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
+                ) : null
+            }
+            <Searcher
+                handleChangelist={handleUpdateOrders}
+                makeRequest={getAllOrders}
+                propertiesToSearch={['userName', 'userPhoneNumber', 'userEmail']}
+                sx={{
+                    position: 'absolute',
+                    bottom : '100%',
+                    right: '0px',
+                    m: 2
+                }}
+            />
+            {
+                orders.length === 0 ? (
+                    <HelperMessageToSearch
+                        sx={{
+                            position: 'absolute',
+                            top : '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)'
+                        }}
+                    />
                 ) : null
             }
         </Paper>

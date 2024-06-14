@@ -222,7 +222,9 @@ function TableUsers() {
                 currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUserTable={updateUserTable} /> : null
             }
             <Searcher
-                handleChangeUsers={handleChangeUsers}
+                handleChangelist={handleChangeUsers}
+                makeRequest={getAllUsers}
+                propertiesToSearch={['name', 'email', 'phoneNumber']}
                 sx={{
                     position: 'absolute',
                     bottom : '100%',

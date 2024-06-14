@@ -6,14 +6,14 @@ import useDebounce from '@/hooks/useDebounce'
 
 import { getAllUsers } from '@/services/userApi'
 
-function Searcher({ handleChangeUsers, ...rest }) {
+function Searcher({ handleChangelist, makeRequest, propertiesToSearch, ...rest }) {
 
     const [text, setText] = useState('')
     const { debounceSetValue } = useDebounce()
 
     useEffect(() => {
         debounceSetValue(() => {
-            findUsers()
+            findElement()
         }, 500)
     }, [text])
 
@@ -21,14 +21,18 @@ function Searcher({ handleChangeUsers, ...rest }) {
         setText(newText)
     }
 
-    async function findUsers() {
+    async function findElement() {
+        const properties = {}
+        propertiesToSearch.forEach(property => {
+            properties[property] = text
+        })
         let response
         if (!text) {
             response = []
         } else {
-            response = await getAllUsers({ name: text, email: text, phoneNumber: text })
+            response = await makeRequest(properties)
         }
-        handleChangeUsers(response)
+        handleChangelist(response)
     }
 
     return (
