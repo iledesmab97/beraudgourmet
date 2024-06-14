@@ -8,6 +8,7 @@ function useMoveDown ({ containerId }) {
 
     useEffect(() => {
         const container = document.querySelector(containerId)
+        if (container.offsetHeight >= container.scrollHeight) return setVisibilityArrow(false)
         container.addEventListener('scroll', handleVisibilityArrow)
 
         return () => {
