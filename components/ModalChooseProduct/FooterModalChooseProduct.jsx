@@ -20,6 +20,7 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                 sm: 'center'
             }}
             spacing={1}
+            wrap='nowrap'
             sx={{
                 height: {
                     xs: '15%',
