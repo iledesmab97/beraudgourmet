@@ -26,14 +26,15 @@ import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
 import MoveDown from '@/components/MoveDown/MoveDown'
 
-import { useState, useEffect } from 'react'
-import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import { useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove'
+
+import { useState, useEffect } from 'react'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import useMoveDown from '@/hooks/useMoveDown'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 import { scrollToSection, showScrollPosition } from '@/utils/modal'
 
@@ -44,10 +45,10 @@ import masses from '@/masses.json'
 
 export default function CustomizePizza ({ name, ingredientsProduct, customizePizza, currentProduct }) {
 
-    const [visibilityArrow, setVisibilityArrow] = useState(true)
     const { extraIngredients } = useGetExtraIngredients()
     const theme = useTheme()
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+    const { visibilityArrow } = useMoveDown({ containerId: isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza' })
 
     const {
         size,
@@ -59,26 +60,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         extra,
         handleExtra
     } = customizePizza
-
-    useEffect(() => {
-        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
-        const container = document.querySelector(idContainer)
-        container.addEventListener('scroll', handleVisibilityArrow)
-
-        return () => {
-            container.removeEventListener('scroll', handleVisibilityArrow)
-        }
-    }, [isLargeScreen])
-
-    function handleVisibilityArrow() {
-        const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
-        const { vertical } = showScrollPosition(idContainer)
-        toggleVisitiblityArrow(vertical === 0 ? true : false)
-    }
-
-    function toggleVisitiblityArrow(newValue) {
-        setVisibilityArrow(newValue)
-    }
 
     return (
         <Grid
@@ -307,7 +288,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
             </Grid>
             <MoveDown
                 open={visibilityArrow}
-                onClose={ () => { toggleVisitiblityArrow(false) }}
                 section={'#modal-subtitle-AGREGAR_INGREDIENTES'}    
             />
         </Grid>
