@@ -1,13 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { scrollToSection, showScrollPosition } from '@/utils/modal'
-import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
-import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
-import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import { useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -28,10 +20,22 @@ import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead';
 import IconButton from '@mui/material/IconButton'
-import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
 import Link from '@mui/material/Link'
+
+import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
+import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import { useState, useEffect } from 'react'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+
+import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove'
+
+import { scrollToSection, showScrollPosition } from '@/utils/modal'
 
 import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
@@ -64,12 +68,16 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         return () => {
             container.removeEventListener('scroll', handleVisibilityArrow)
         }
-    }, [])
+    }, [isLargeScreen])
 
     function handleVisibilityArrow() {
         const idContainer = isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'
         const { vertical } = showScrollPosition(idContainer)
-        setVisibilityArrow(vertical === 0 ? true : false)
+        toggleVisitiblityArrow(vertical === 0 ? true : false)
+    }
+
+    function toggleVisitiblityArrow(newValue) {
+        setVisibilityArrow(newValue)
     }
 
     return (
@@ -87,12 +95,14 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     xs: 'auto',
                     md: '85%'
                 },
+                // position: 'relative',
                 overflowY: {
                     xs: 'hidden',
                     md: 'auto'
                 }
             }}
         >
+            {/* CONTENIDO PARA ELEGIR EL TAMAÑO DE LA PIZZA */}
             {/* <Grid
                 item
                 container
@@ -295,27 +305,11 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     </TableContainer>
                 </Grid>
             </Grid>
-
-                {
-                    visibilityArrow
-                    ? (
-                        <IconButton
-                            onClick={() => {scrollToSection('#modal-subtitle-ELIGE_LA_MASA')}}
-                            sx={{
-                                position: 'fixed',
-                                bottom: '76px',
-                                right: {
-                                    xs: '16px',
-                                    sm: '32px',
-                                    md: '48px'
-                                },
-                                width: 'fit-content'
-                            }}
-                        >
-                            <ArrowDropDownCircleIcon color='primary' />
-                        </IconButton>
-                    ): null
-                }
+            <MoveDown
+                open={visibilityArrow}
+                onClose={ () => { toggleVisitiblityArrow(false) }}
+                section={'#modal-subtitle-AGREGAR_INGREDIENTES'}    
+            />
         </Grid>
     )
 }
