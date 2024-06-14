@@ -1,7 +1,5 @@
 'use client'
 
-import useGetPlace from '@/hooks/useGetPlace'
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button';
@@ -11,25 +9,34 @@ import Autocomplete from '@mui/material/Autocomplete';
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
+
 import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import ItemPlace from '../PlaceFinder/ItemPlace'
 
+import ItemPlace from '../PlaceFinder/ItemPlace'
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import useGetPlace from '@/hooks/useGetPlace'
 import useLocalData from '@/hooks/useLocalData'
+import useMoveDown from '@/hooks/useMoveDown'
 
 export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     const { saveLocalData } = useLocalData()
+    const { visibilityArrow } = useMoveDown({ containerId: '#modal-container-storeDelivery' })
 
     return (
         <>
-            <Box sx={{ width: '100%'}}>    
+            <Box
+                sx={{ width: '100%'}}
+            >    
                 <Typography
-                variant='title'
-                sx={{
-                    alignSelf: 'flex-start'
-                }}
+                    id="modal-subtitle-BUSCAR"
+                    variant='title'
+                    sx={{
+                        alignSelf: 'flex-start'
+                    }}
                 >
                 BUSCAR
                 </Typography>
@@ -74,12 +81,13 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                 }}
             >
                 <Typography
+                    id="modal-subtitle-cityName"
                     variant='title'
                     sx={{
                         alignSelf: 'flex-start'
                     }}
                 >
-                {inputsStore.toUpperCase()}
+                    {inputsStore.toUpperCase()}
                 </Typography>
                 <List
                     sx={{
@@ -246,6 +254,10 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                     }
                 </List>
             </Box>
+            <MoveDown
+              open={visibilityArrow}
+              sectionToGo={'#modal-subtitle-cityName'}
+            />
         </>
     )
 }
