@@ -288,7 +288,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
             </Grid>
             <MoveDown
                 open={visibilityArrow}
-                section={'#modal-subtitle-AGREGAR_INGREDIENTES'}    
+                sectionToGo={'#modal-subtitle-AGREGAR_INGREDIENTES'}    
             />
         </Grid>
     )
