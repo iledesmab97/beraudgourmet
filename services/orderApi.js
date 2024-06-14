@@ -2,9 +2,32 @@ import { requestSettings } from '@/utils/preparingData'
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
-export function getAllOrders(userId) {
-    const lastPath = userId ? `/${userId}` : ''
-    return fetch(`${PATH_BACK}/orders${lastPath}`, {
+export function getAllOrders(querys) {
+
+    let lastPath
+    if (querys) {
+        const { userName, userEmail, userPhoneNumber } = querys
+        
+        if (userName || userEmail || userPhoneNumber) {
+            lastPath = Object.keys(querys).filter(q => querys[q]).map(q => q + '=' + querys[q] ).join('&&')
+        }
+    }
+
+    return fetch(`${PATH_BACK}/orders${lastPath ? '?' + lastPath : ''}`, {
+        ...requestSettings(),
+        cache: 'no-store'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({message: error.message}))
+}
+
+export function getAllOrdersOfUser(userId) {
+
+    return fetch(`${PATH_BACK}/orders/${userId}`, {
         ...requestSettings(),
         cache: 'no-store'
     })
