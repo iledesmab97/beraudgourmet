@@ -2,26 +2,18 @@ import IconButton from '@mui/material/IconButton'
 
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
 
-import { useState, useEffect } from 'react'
-
 import { scrollToSection } from '@/utils/modal'
 
 import style from './MoveDown.module.css'
 
-export default function MoveDown({ open, onClose, section}) {
-
-    useEffect(() => {
-        if (!open) {
-            onClose()
-        }
-    }, [open])
+export default function MoveDown({ open, section}) {
 
     return (
         <>
             {
                 open ? (
                     <IconButton
-                        onClick={() => {scrollToSection(section)}}
+                        onClick={() => { scrollToSection(section) }}
                         sx={{
                             position: 'fixed',
                             bottom: '76px',
