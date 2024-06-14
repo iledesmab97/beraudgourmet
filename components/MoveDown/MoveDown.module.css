@@ -1,0 +1,15 @@
+.buttonMoveDown {
+    animation: move-top-down 2s infinite
+}
+
+@keyframes move-top-down {
+    0% {
+        bottom: 76px
+    }
+    50% {
+        bottom: 90px;
+    }
+    100% {
+        bottom: 76px;
+    }
+}
