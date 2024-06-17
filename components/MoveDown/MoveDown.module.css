@@ -13,3 +13,19 @@
         bottom: 12.5%;
     }
 }
+
+.buttonMoveDown2 {
+    animation: move-top-down2 2s infinite
+}
+
+@keyframes move-top-down2 {
+    0% {
+        bottom: 4%
+    }
+    50% {
+        bottom: 8%;
+    }
+    100% {
+        bottom: 4%;
+    }
+}

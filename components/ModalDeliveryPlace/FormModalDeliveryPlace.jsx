@@ -255,7 +255,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                 }}
             >
                 <Typography
-                    id="modal-modal-title"
+                    id="title-note-formModalDeliveryPlace"
                     variant='p'
                     component="h2"
                     align='right'

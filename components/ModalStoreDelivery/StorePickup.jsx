@@ -14,17 +14,14 @@ import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 
 import ItemPlace from '../PlaceFinder/ItemPlace'
-import MoveDown from '@/components/MoveDown/MoveDown'
 
 import useGetPlace from '@/hooks/useGetPlace'
 import useLocalData from '@/hooks/useLocalData'
-import useMoveDown from '@/hooks/useMoveDown'
 
 export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     const { saveLocalData } = useLocalData()
-    const { visibilityArrow } = useMoveDown({ containerId: '#modal-container-storeDelivery' })
 
     return (
         <>
@@ -254,10 +251,6 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                     }
                 </List>
             </Box>
-            <MoveDown
-              open={visibilityArrow}
-              sectionToGo={'#modal-subtitle-cityName'}
-            />
         </>
     )
 }
