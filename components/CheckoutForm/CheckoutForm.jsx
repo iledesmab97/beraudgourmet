@@ -11,6 +11,8 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
+import MoveDown from '@/components/MoveDown/MoveDown'
+
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
@@ -18,6 +20,7 @@ import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react
 import useGetProducts from '@/hooks/useGetProducts'
 import useLocalData from '@/hooks/useLocalData'
 import useGetAlertDialogMessage from '@/hooks/useGetAlertDialogMessage'
+import useMoveDown from '@/hooks/useMoveDown'
 
 import dayjs from 'dayjs'
 import { contactUs } from '@/utils/contact'
@@ -37,6 +40,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const firstTime = useRef(true)
     const { removeLocalData } = useLocalData()
     const { openAlertDialogMessage } = useGetAlertDialogMessage({ type: 'phoneMissing'})
+    const { visibilityArrow } = useMoveDown({ containerId: '#cotainer-data-CheckoutForm' })
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -360,6 +364,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                         
                     )
             }
+            <MoveDown
+              open={visibilityArrow}
+              sectionToGo={'#title-Pago-CheckoutForm'}
+            />
         </Box>
     )
 }
