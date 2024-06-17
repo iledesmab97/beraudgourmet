@@ -40,7 +40,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const firstTime = useRef(true)
     const { removeLocalData } = useLocalData()
     const { openAlertDialogMessage } = useGetAlertDialogMessage({ type: 'phoneMissing'})
-    const { visibilityArrow } = useMoveDown({ containerId: '#cotainer-data-CheckoutForm' })
 
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
@@ -364,10 +363,6 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
                         
                     )
             }
-            <MoveDown
-              open={visibilityArrow}
-              sectionToGo={'#title-Pago-CheckoutForm'}
-            />
         </Box>
     )
 }
