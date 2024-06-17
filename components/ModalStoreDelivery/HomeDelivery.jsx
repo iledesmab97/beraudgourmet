@@ -9,10 +9,8 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import PlaceFinder from '../PlaceFinder/PlaceFinder';
 import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
-import MoveDown from '@/components/MoveDown/MoveDown'
 
 import { useState } from 'react';
-import useMoveDown from '@/hooks/useMoveDown'
 
 export default function HomeDelivery({
     handleInputsAddress,
@@ -27,8 +25,6 @@ export default function HomeDelivery({
     handleTypeLocation,
     handleCloserStore
 }) {
-
-    const { visibilityArrow } = useMoveDown({ containerId: '#HomeDelivery-container' })
 
     return (
         <>
@@ -82,10 +78,6 @@ export default function HomeDelivery({
                         : null
                 }
             </Box>
-            <MoveDown
-              open={visibilityArrow}
-              sectionToGo={'#title-note-formModalDeliveryPlace'}
-            />
         </>
     )
 }
