@@ -14,6 +14,7 @@ import {Elements} from '@stripe/react-stripe-js'
 import DataOrder from '@/components/ModalCheckoutForm/DataOrder'
 import DataPrice from '@/components/ModalCheckoutForm/DataPrice'
 import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
+import MoveDown from '@/components/MoveDown/MoveDown'
 
 import { loadStripe } from '@stripe/stripe-js'
 import { useEffect, useState, useMemo } from 'react'
@@ -231,6 +232,10 @@ function ModalCheckoutForm() {
                             )
                         }
                     </Grid>
+                    <MoveDown
+                        sectionToGo={'#title-Pago-CheckoutForm'}
+                        containerId={ '#cotainer-data-CheckoutForm' }
+                    />
                 </Box>                
             </Grid>
         </Modal> 
