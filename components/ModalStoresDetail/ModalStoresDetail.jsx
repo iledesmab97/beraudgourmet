@@ -1,16 +1,17 @@
 'use client'
 
-import useGetModal from '@/hooks/useGetModal'
-import useGetPlace from '@/hooks/useGetPlace'
-import ListStores from './ListStores'
-import DetailStore from './DetailStore'
-import useHandleStoresDetail from '@/hooks/useHandleStoresDetail'
-import useGetStoreList from '@/hooks/useGetStoreList'
-
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+
+import ListStores from './ListStores'
+import DetailStore from './DetailStore'
+
+import useGetModal from '@/hooks/useGetModal'
+import useGetPlace from '@/hooks/useGetPlace'
+import useHandleStoresDetail from '@/hooks/useHandleStoresDetail'
+import useGetStoreList from '@/hooks/useGetStoreList'
 
 const style = {
     position: 'absolute',
@@ -87,6 +88,7 @@ function ModalStoresDetail() {
                     </Typography>
                 </Grid>
                 <Grid
+                    id={'ModalStoresDetail-container'}
                     item
                     sm={12}
                     container

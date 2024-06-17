@@ -8,6 +8,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 
 import StorePickup from './StorePickup'
 import HomeDelivery from './HomeDelivery'
+import MoveDown from '@/components/MoveDown/MoveDown'
 
 import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
@@ -164,6 +165,10 @@ export default function ModalStoreDelivery() {
                   handleCloserStore={handleCloserStore}
                 />
             }
+            <MoveDown
+              sectionToGo={ delivery === 'store' ? '#modal-subtitle-cityName' : '#title-note-formModalDeliveryPlace' }
+              containerId={ delivery === 'store' ? '#modal-container-storeDelivery' : '#HomeDelivery-container' }
+            />
           </Box>
         </Box>
       </Modal>

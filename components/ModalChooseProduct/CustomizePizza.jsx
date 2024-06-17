@@ -32,7 +32,6 @@ import RemoveIcon from '@mui/icons-material/Remove'
 
 import { useState, useEffect } from 'react'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import useMoveDown from '@/hooks/useMoveDown'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -48,7 +47,6 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
     const { extraIngredients } = useGetExtraIngredients()
     const theme = useTheme()
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
-    const { visibilityArrow } = useMoveDown({ containerId: isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza' })
 
     const {
         size,
@@ -287,8 +285,8 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 </Grid>
             </Grid>
             <MoveDown
-                open={visibilityArrow}
-                sectionToGo={'#modal-subtitle-AGREGAR_INGREDIENTES'}    
+                sectionToGo={'#modal-subtitle-AGREGAR_INGREDIENTES'}
+                containerId={ isLargeScreen ? '#modal-container-customizePizza' : '#container-modal-order-pizza'}
             />
         </Grid>
     )
