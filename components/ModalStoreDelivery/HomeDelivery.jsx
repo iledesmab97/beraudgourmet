@@ -1,13 +1,18 @@
 'use client'
 
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography';
 import InputAdornment from '@mui/material/InputAdornment'
+
 import SearchIcon from '@mui/icons-material/Search';
+
 import PlaceFinder from '../PlaceFinder/PlaceFinder';
 import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import { useState } from 'react';
+import useMoveDown from '@/hooks/useMoveDown'
 
 export default function HomeDelivery({
     handleInputsAddress,
@@ -23,9 +28,12 @@ export default function HomeDelivery({
     handleCloserStore
 }) {
 
+    const { visibilityArrow } = useMoveDown({ containerId: '#HomeDelivery-container' })
+
     return (
         <>
             <Box
+                id='HomeDelivery-container'
                 sx={{
                     width: '100%',
                     maxHeight: {
@@ -74,6 +82,10 @@ export default function HomeDelivery({
                         : null
                 }
             </Box>
+            <MoveDown
+              open={visibilityArrow}
+              sectionToGo={'#title-note-formModalDeliveryPlace'}
+            />
         </>
     )
 }
