@@ -1,18 +1,5 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import useGetModal from '@/hooks/useGetModal'
-import { loadStripe } from '@stripe/stripe-js'
-import {Elements} from '@stripe/react-stripe-js'
-import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
-import useGetUser from '@/hooks/useGetUser'
-import useGetPlace from '@/hooks/useGetPlace'
-import useGetOrders from '@/hooks/useGetOrders'
-import useGetCheckout from '@/hooks/useGetCheckout'
-import {totalPrice} from '@/utils/priceCar'
-import { createPaymentRequest, updatePaymentRequest } from '@/services/checkoutApi'
-import { descriptionOrder } from '@/utils/preparingData'
-
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
@@ -21,8 +8,25 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
+
+import {Elements} from '@stripe/react-stripe-js'
+
 import DataOrder from '@/components/ModalCheckoutForm/DataOrder'
 import DataPrice from '@/components/ModalCheckoutForm/DataPrice'
+import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
+
+import { loadStripe } from '@stripe/stripe-js'
+import { useEffect, useState, useMemo } from 'react'
+
+import useGetModal from '@/hooks/useGetModal'
+import useGetUser from '@/hooks/useGetUser'
+import useGetPlace from '@/hooks/useGetPlace'
+import useGetOrders from '@/hooks/useGetOrders'
+import useGetCheckout from '@/hooks/useGetCheckout'
+
+import {totalPrice} from '@/utils/priceCar'
+import { createPaymentRequest, updatePaymentRequest } from '@/services/checkoutApi'
+import { descriptionOrder } from '@/utils/preparingData'
 
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
@@ -157,10 +161,11 @@ function ModalCheckoutForm() {
                     </Typography>
                 </Grid>
                 <Box
+                    id='cotainer-data-CheckoutForm'
                     sx={{
                         height: '90%',
                         width: '100%',
-                        overflowY: 'scroll',
+                        overflowY: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -181,6 +186,7 @@ function ModalCheckoutForm() {
                         checkout={checkout}
                     />
                     <Typography
+                        id='title-Pago-CheckoutForm'
                         variant='title'
                         gutterBottom
                         sx={{
