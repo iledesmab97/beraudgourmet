@@ -124,6 +124,19 @@ function ModalCheckoutForm() {
         }
     }, [orders])
 
+    useEffect(() => {
+        if (!orders.length && Object.keys(checkout).length ) return
+        const {totalPriceCar, commissionIVA, IVA, commissionStripe, totalClient} = totalPrice(orders)
+        const newPrices = {
+            totalPriceCar,
+            commissionIVA,
+            IVA,
+            commissionStripe,
+            totalClient
+        }
+        handleAddCheckout(newPrices)
+    }, [orders])
+
     const appearance = {
         theme: 'stripe'
     }
