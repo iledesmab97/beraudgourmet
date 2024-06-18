@@ -16,6 +16,8 @@ import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
 import useHandleSession from '@/hooks/useHandleSession'
 
+import { requestVerification } from '@/services/userApi'
+
 import styles from '@/components/MoveDown/MoveDown.module.css'
 
 const style = {
@@ -53,6 +55,11 @@ function ModalUserInfo() {
     const { handleRemoveUser } = useGetUser()
     const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
     const { closeSession } = useHandleSession()
+
+    async function sendVerification() {
+        const response = await requestVerification({email: user.email})
+        if (response.message) return alert(response.message)
+    }
 
     return (
         <Modal
@@ -154,6 +161,15 @@ function ModalUserInfo() {
                     >
                         Borrar mi cuenta
                     </Button>
+                    {
+                        !user.verified ? (
+                            <Button
+                                onClick={ () => {sendVerification()}}
+                            >
+                                Verificar mi correo electrónico
+                            </Button>
+                        ) : null
+                    }
                 </Grid>
                 <Grid
                     item

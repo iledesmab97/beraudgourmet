@@ -5,14 +5,17 @@ import { useRouter, usePathname } from 'next/navigation'
 
 import { fetchwhoAmI } from '@/services/userApi'
 
+const possiblePaths = [ 'admin', 'pizzas', 'success', 'not-found', 'user-change-password', 'user-verify']
+
 const pathByRoles = {
     '1': ['/admin', '/not-found'],
     '2': ['/admin', '/not-found'],
     '3': [ '/not-found', '/pizzas', '/', '/success', '/user-change-password', '/user-verify'],
-    'pedestrians': [ '/not-found', '/pizzas', '/']
+    'pedestrians': [ '/not-found', '/pizzas', '/user-change-password', '/user-verify', '/']
 }
 
 async function validateUser(currentPath) {
+    const { path } = destructurePath(currentPath)
     const userTokenString = localStorage.getItem('user')
     const userToken = userTokenString ? JSON.parse(userTokenString) : null
     let user
@@ -21,8 +24,22 @@ async function validateUser(currentPath) {
     } else {
         user = {RoleId: 'pedestrians'}
     }
-    if (pathByRoles[user.RoleId].includes(currentPath)) return {allow: true}
+    if (pathByRoles[user.RoleId].includes(path)) return {allow: true}
     return {allow: false, path: pathByRoles[user.RoleId][0] }
+}
+
+function destructurePath(path) {
+    const arrayPartsPath = path.split('/')
+    let correctPath = ''
+    let extraPath = ''
+    arrayPartsPath.forEach(partPath => {
+        if (possiblePaths.includes(partPath)) {
+            correctPath = partPath
+        } else {
+            extraPath = partPath
+        }
+    })
+    return { path: '/' + correctPath, token: extraPath }
 }
 
 function ProtectedRoute({ children }) {
