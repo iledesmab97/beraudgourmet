@@ -11,6 +11,15 @@ export function verifyEmailUser(token) {
         })
 }
 
+export function requestVerification({ email }) {
+    return fetch(`${PATH_BACK}/users/send-verification`, {
+        ...requestSettings('POST'),
+        body: JSON.stringify({ email })
+    })
+        .then(res => res.json())
+        .then(data => data)
+}
+
 export function fetchwhoAmI(token) {
     return fetch(`${PATH_BACK}/users/loged`, { ...requestSettings('GET', token) })
         .then(response => response.json())
