@@ -161,11 +161,15 @@ function ModalUserInfo() {
                     >
                         Borrar mi cuenta
                     </Button>
-                    <Button
-                        onClick={ () => {sendVerification()}}
-                    >
-                        Verificar mi correo electrónico
-                    </Button>
+                    {
+                        !user.verified ? (
+                            <Button
+                                onClick={ () => {sendVerification()}}
+                            >
+                                Verificar mi correo electrónico
+                            </Button>
+                        ) : null
+                    }
                 </Grid>
                 <Grid
                     item
