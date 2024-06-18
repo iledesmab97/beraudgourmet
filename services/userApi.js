@@ -192,3 +192,16 @@ export function verifyUserData(email, password) {
         })
         .catch(error => ({message: error.message}))
 }
+
+export function requestUserArchiving(user) {
+    return fetch(`${PATH_BACK}/users/archive`, {
+        ...requestSettings('POST'),
+        body: JSON.stringify(user)
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
+        })
+        .catch(error => ({message: error.message}))
+}
