@@ -1,18 +1,20 @@
 'use client'
 
-import { useEffect, useState} from 'react'
-import useGetModal from '@/hooks/useGetModal'
-import useGetPlace from '@/hooks/useGetPlace'
-import DateChoose from '@/components/DateChoose/DateChoose'
-import TimeChoose from '@/components/TimeChoose/TimeChoose'
-
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
+
 import PlaceIcon from '@mui/icons-material/Place';
+
+import DateChoose from '@/components/DateChoose/DateChoose'
+import TimeChoose from '@/components/TimeChoose/TimeChoose'
+
+import { useEffect, useState} from 'react'
+import useGetModal from '@/hooks/useGetModal'
+import useGetPlace from '@/hooks/useGetPlace'
 
 export default function StoreSection () {
 
@@ -34,9 +36,11 @@ export default function StoreSection () {
 
   return (
       <Grid
+        id='StoreSection-container'
         container
         spacing={1}
           sx={{
+            position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start'
