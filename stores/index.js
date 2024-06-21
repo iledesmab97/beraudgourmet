@@ -11,6 +11,7 @@ import alertMessageReducer from './alertMessage/slice'
 import alertDialogMessageReducer from './alertDialogMessage/slice'
 import orderListReducer from './orderList/slice'
 import stepsReducer from './steps/slice'
+import drawerReducer from './drawer/slice'
 
 export const store = configureStore({
     reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
         alertMessage: alertMessageReducer,
         alertDialogMessage: alertDialogMessageReducer,
         orderList: orderListReducer,
-        steps: stepsReducer
+        steps: stepsReducer,
+        drawer: drawerReducer
     }
 })
