@@ -29,6 +29,7 @@ import { useTheme } from '@mui/material/styles'
 import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
 import useLocalData from '@/hooks/useLocalData'
+import useGetDrawer from '@/hooks/useGetDrawer'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
@@ -44,6 +45,7 @@ function Menu () {
 
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('md'))
+  const { drawer } = useGetDrawer()
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
 
   // Buscar usuario logueado en caso de existir
@@ -56,6 +58,10 @@ function Menu () {
       }
     })
   }, [])
+
+  useEffect(() => {
+    setOpenOrderRewards(drawer.open)
+  }, [drawer])
 
   // Actualizar el valor de matches para las diferentes dimenciones de pantalla
   useEffect(() => {

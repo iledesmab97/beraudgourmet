@@ -1,13 +1,5 @@
 'use client'
 
-import { forwardRef } from 'react'
-import AboutPizza from './AboutPizza'
-import CustomizePizza from './CustomizePizza'
-import FooterModalChooseProduct from './FooterModalChooseProduct'
-import useGetModal from '@/hooks/useGetModal'
-import useGetOrder from '@/hooks/useGetOrders'
-import useHandleOrder from '@/hooks/useHandleOrder'
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -15,10 +7,21 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles'
 import { useMediaQuery } from '@mui/material'
 
+import AboutPizza from './AboutPizza'
+import CustomizePizza from './CustomizePizza'
+import FooterModalChooseProduct from './FooterModalChooseProduct'
+
+import { forwardRef } from 'react'
+import useGetModal from '@/hooks/useGetModal'
+import useGetOrder from '@/hooks/useGetOrders'
+import useHandleOrder from '@/hooks/useHandleOrder'
+import useHandleShoppingGuide from '@/hooks/useHandleShoppingGuide'
+
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
     const { product, edit, handleCloseModalOrder } = useGetModal({modalType:'order' })
     const { handleAddOrder, handleUpdateOrder } = useGetOrder()
+    const { nextStepGuide } = useHandleShoppingGuide()
 
     const {
         currentProduct,
@@ -142,6 +145,7 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 handleCloseModalOrder={handleCloseModalOrder}
                 handleAddedItem={handleAddedItem}
                 handleUpdateOrder={handleUpdateOrder}
+                nextStep={nextStepGuide}
             />
 
         </Grid>

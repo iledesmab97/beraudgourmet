@@ -4,11 +4,7 @@ import Image from 'next/image'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
-import FormControl from '@mui/material/FormControl'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 
 import UserSection from './UserSection'
 import OrderSection from './OrderSection'
@@ -17,20 +13,15 @@ import TotalPriceSection from './TotalPriceSection'
 import ButtonPay from '@/components/ButtonPay/ButtonPay'
 import SliceProgressBar from '@/components/SliceProgressBar/SliceProgressBar'
 
-import useGetModal from '@/hooks/useGetModal'
-
 import style from './OrderRewards.module.css'
 import logoBeraud from '@/public/images/homeimg/homeimgberaud/logoBeraud.png'
 
 function OrderRewards () {
 
-  const { handleOpenModal } = useGetModal({modalType: 'pay'})
-
   return (
     <Grid
       item
       xs={12}
-      // xs={12}
       md={4}
     >
       <Container

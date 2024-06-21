@@ -18,7 +18,7 @@ import ItemPlace from '../PlaceFinder/ItemPlace'
 import useGetPlace from '@/hooks/useGetPlace'
 import useLocalData from '@/hooks/useLocalData'
 
-export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
+export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal, nextStep }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     const { saveLocalData } = useLocalData()
@@ -237,9 +237,8 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                                 handleAddPlace({closerStore: store})
                                                 saveLocalData('place', {closerStore: store.id})
                                                 handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
-                                                handleCloseModal('place')
+                                                nextStep('store')
                                             }}
-                                            // disabled={!store.open}
                                         >
                                             Haga su pedido ahora
                                         </Button>
