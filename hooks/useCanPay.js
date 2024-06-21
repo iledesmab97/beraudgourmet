@@ -18,8 +18,8 @@ export default function useCanPay() {
 
     function whatDataMissing() {
         const { minHour, maxHour } = getTimeLimitTodaySchedue(place)
-        const currentDay = place.deadLine ? place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime : null
-        if ( !orders.length && !user.email && !place.closerStore && !dateInRange({minHour, maxHour, currentDay})) {
+        const daySelected = place.deadLine ? place.deadLine.date.realDate + ' - ' + place.deadLine.time.realTime : null
+        if ( !orders.length && !user.email && !place.closerStore && !dateInRange({minHour, maxHour, daySelected}).inRange) {
             setMissing('')
             if (canPay) setCanPay(false)
             return 'all'
@@ -39,7 +39,7 @@ export default function useCanPay() {
             if (canPay) setCanPay(false)
             return 'place'
         }
-        if (!dateInRange({minHour, maxHour, currentDay})) {
+        if (!dateInRange({minHour, maxHour, daySelected}).inRange) {
             setMissing('time')
             if (canPay) setCanPay(false)
             return 'time'

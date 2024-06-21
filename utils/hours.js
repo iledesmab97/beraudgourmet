@@ -70,18 +70,25 @@ export function getTimeLimitTodaySchedue(place) {
         maxHour: dayjs()
     }
     const scheduleList = place.closerStore[typeDelivery[place.typeDelivery.name]][typeDelivery[place.typeDelivery.name]]
+
     const orderDay = place.deadLine.date.realDate
+    const orderDayObject = dayjs(orderDay.replaceAll('/', '-'), 'DD-MM-YYYY')
+
     const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay)
+
     const minHour = scheduleOfDay.hours.split(' - ')[0]
     const maxHour = scheduleOfDay.hours.split(' - ')[1]
     return {
-        minHour: timeStringToObject(minHour),
-        maxHour: timeStringToObject(maxHour)
+        minHour: timeStringToObject(minHour).date(orderDayObject.date()).month(orderDayObject.month()).year(orderDayObject.year()),
+        maxHour: timeStringToObject(maxHour).date(orderDayObject.date()).month(orderDayObject.month()).year(orderDayObject.year())
     }
 }
 
-export function dateInRange({minHour, maxHour, currentDay}) {
-    const selectedDateObject = currentDay === null ? dayjs().subtract(1, 'minute') : typeof currentDay === 'string' ? dateStringToDate(currentDay) : currentDay
+export function dateInRange({minHour, maxHour, daySelected}) {
+
+    let why = 'out of time'
+
+    const selectedDateObject = daySelected === null ? dayjs().subtract(1, 'minute') : typeof daySelected === 'string' ? dateStringToDate(daySelected) : daySelected
     const minTimeObject = typeof minHour === 'string' ? timeStringToObject(minDate) : minHour
     const maxTimeObject = typeof maxHour === 'string' ? timeStringToObject(maxDate) : maxHour
 
@@ -89,11 +96,20 @@ export function dateInRange({minHour, maxHour, currentDay}) {
 
     let minDateObject = minTimeObject.date(selectedDateObject.format('D')).month(Number(selectedDateObject.format('M')) - 1).year(selectedDateObject.format('YYYY'))
 
+    if (selectedDateObject.isBefore(dayjs())) {
+        return {inRange: false, why: 'past hour' }
+    }
+
     if (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(dayjs().add(29, 'minute'))) {
+        why = 'too soon'
         minDateObject = dayjs().add(30, 'minute')
     }
     
-    return selectedDateObject.isSame(minDateObject) || (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(maxDateObject))
+    const inRange = selectedDateObject.isSame(minDateObject) || (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(maxDateObject))
+
+    if (inRange) return {inRange}
+
+    return {inRange, why }
 }
 
 export function objectDateToString(dateObject) {
