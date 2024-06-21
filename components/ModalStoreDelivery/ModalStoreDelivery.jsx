@@ -14,6 +14,7 @@ import { useState, useEffect } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import useHandlePlace from '@/hooks/useHandlePlace'
 import useGetStoreList from '@/hooks/useGetStoreList'
+import useHandleShoppingGuide from '@/hooks/useHandleShoppingGuide'
 
 import { getAllStoresWithSchedules } from '@/services/storeApi'
 
@@ -47,6 +48,7 @@ export default function ModalStoreDelivery() {
   const {open, handleCloseModal} = useGetModal({modalType: 'place'})
 
   const [delivery, setDelivery] = useState('store')
+  const { nextStepGuide } = useHandleShoppingGuide()
 
   const {
     inputsStore,
@@ -149,6 +151,7 @@ export default function ModalStoreDelivery() {
                   inputsStore={inputsStore}
                   handleInputsStore={handleInputsStore}
                   handleCloseModal={handleCloseModal}
+                  nextStep={nextStepGuide}
                 />
               : 
                 <HomeDelivery
@@ -163,6 +166,7 @@ export default function ModalStoreDelivery() {
                   handleInputsHome={handleInputsHome}
                   handleTypeLocation={handleTypeLocation}
                   handleCloserStore={handleCloserStore}
+                  nextStep={nextStepGuide}
                 />
             }
             <MoveDown
