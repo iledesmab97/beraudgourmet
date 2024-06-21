@@ -82,6 +82,7 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                             handleAddOrder(currentProduct)
                             handleAddedItem()
                         }
+                        handleCloseModalOrder()
                         nextStep('order')
                     }}
                 >
