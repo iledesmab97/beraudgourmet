@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
-export default function FooterModalChooseProduct({handleQuantity, quantity, totalPrice, edit, handleAddOrder, currentProduct, handleCloseModalOrder, handleAddedItem, handleUpdateOrder}) {
+export default function FooterModalChooseProduct({handleQuantity, quantity, totalPrice, edit, handleAddOrder, currentProduct, handleCloseModalOrder, handleAddedItem, handleUpdateOrder, nextStep}) {
     return (
         <Grid
             container
@@ -20,6 +20,7 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                 sm: 'center'
             }}
             spacing={1}
+            wrap='nowrap'
             sx={{
                 height: {
                     xs: '15%',
@@ -82,6 +83,7 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                             handleAddedItem()
                         }
                         handleCloseModalOrder()
+                        nextStep('order')
                     }}
                 >
                     {edit ? 'Actualizar' : 'Agregar'}

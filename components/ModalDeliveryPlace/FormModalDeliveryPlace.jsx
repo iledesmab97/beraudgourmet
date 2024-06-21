@@ -15,7 +15,7 @@ import Button from '@mui/material/Button'
 import TextArea from '../TextArea/TextArea'
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
-export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, typeLocation, handleTypeLocation, closerStore, currentModal, outModal }) {
+export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, typeLocation, handleTypeLocation, closerStore, currentModal, outModal, nextStep }) {
 
     const { handleCloseModal } = useGetModal({modalType: 'place'})
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
@@ -255,7 +255,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                 }}
             >
                 <Typography
-                    id="modal-modal-title"
+                    id="title-note-formModalDeliveryPlace"
                     variant='p'
                     component="h2"
                     align='right'
@@ -285,7 +285,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                         onClick={() => {
                             handleAddPlace({inputsHome, closerStore})
                             handleTypeDelivery({name: 'home', totalName: 'Entrega a domicilio'})
-                            handleCloseModal(currentModal)
+                            nextStep('store')
                         }}
                         sx={{
                             position: 'fixed',

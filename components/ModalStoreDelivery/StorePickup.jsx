@@ -1,7 +1,5 @@
 'use client'
 
-import useGetPlace from '@/hooks/useGetPlace'
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button';
@@ -11,25 +9,31 @@ import Autocomplete from '@mui/material/Autocomplete';
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
+
 import PlaceIcon from '@mui/icons-material/Place';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+
 import ItemPlace from '../PlaceFinder/ItemPlace'
 
+import useGetPlace from '@/hooks/useGetPlace'
 import useLocalData from '@/hooks/useLocalData'
 
-export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
+export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal, nextStep }) {
 
     const { handleAddPlace, handleTypeDelivery } = useGetPlace()
     const { saveLocalData } = useLocalData()
 
     return (
         <>
-            <Box sx={{ width: '100%'}}>    
+            <Box
+                sx={{ width: '100%'}}
+            >    
                 <Typography
-                variant='title'
-                sx={{
-                    alignSelf: 'flex-start'
-                }}
+                    id="modal-subtitle-BUSCAR"
+                    variant='title'
+                    sx={{
+                        alignSelf: 'flex-start'
+                    }}
                 >
                 BUSCAR
                 </Typography>
@@ -74,12 +78,13 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                 }}
             >
                 <Typography
+                    id="modal-subtitle-cityName"
                     variant='title'
                     sx={{
                         alignSelf: 'flex-start'
                     }}
                 >
-                {inputsStore.toUpperCase()}
+                    {inputsStore.toUpperCase()}
                 </Typography>
                 <List
                     sx={{
@@ -233,8 +238,8 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                                 saveLocalData('place', {closerStore: store.id})
                                                 handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
                                                 handleCloseModal('place')
+                                                nextStep('store')
                                             }}
-                                            // disabled={!store.open}
                                         >
                                             Haga su pedido ahora
                                         </Button>

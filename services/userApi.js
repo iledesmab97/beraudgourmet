@@ -11,6 +11,15 @@ export function verifyEmailUser(token) {
         })
 }
 
+export function requestVerification({ email }) {
+    return fetch(`${PATH_BACK}/users/send-verification`, {
+        ...requestSettings('POST'),
+        body: JSON.stringify({ email })
+    })
+        .then(res => res.json())
+        .then(data => data)
+}
+
 export function fetchwhoAmI(token) {
     return fetch(`${PATH_BACK}/users/loged`, { ...requestSettings('GET', token) })
         .then(response => response.json())
@@ -180,6 +189,19 @@ export function verifyUserData(email, password) {
             const { token } = data
             const user = {...data}
             return {user, token}
+        })
+        .catch(error => ({message: error.message}))
+}
+
+export function requestUserArchiving(user) {
+    return fetch(`${PATH_BACK}/users/archive`, {
+        ...requestSettings('POST'),
+        body: JSON.stringify(user)
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data
         })
         .catch(error => ({message: error.message}))
 }

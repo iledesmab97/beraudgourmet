@@ -23,7 +23,7 @@ function ButtonPay() {
         <FormControl fullWidth>
             <Button
                 variant='contained'
-                color='secondary'
+                color='primary'
                 sx={{ my:1 }}
                 fullWidth
                 disabled={!canPay}

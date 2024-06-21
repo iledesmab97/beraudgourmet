@@ -10,7 +10,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useState, useEffect } from 'react'
 import useGetPlace from '@/hooks/useGetPlace'
 
-import { timeStringToObject, dateInRange, getTimeLimitTodaySchedue } from '@/utils/hours'
+import { timeStringToObject, dateInRange, getTimeLimitTodaySchedue, objectDateToString } from '@/utils/hours'
 
 function differenceTime(now, later) {
     let minutes = later.format('m') - now.format('m')
@@ -29,13 +29,33 @@ export default function TimeChoose() {
     const [textHour, setTextHour] = useState('')
     const [today, setToday] = useState(true)
     const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue(place))
-    const [timeWithinRange, setTimeWithinRange] = useState(dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, currentDay: hour}))
+    const [timeWithinRange, setTimeWithinRange] = useState( () => {
+        const { inRange , why } = dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, daySelected: hour})
+        return { inRange , why }
+    })
+    const [helperText, setHelperText] = useState('')
 
+    // Actualizar el texto de ayuda del input
+    useEffect(() => {
+        let newHelperText = ''
+        const { inRange, why } = timeWithinRange
+        if (inRange) {
+            if (today) newHelperText = textHour
+        } else {
+            if (why === 'past hour') newHelperText = `La hora seleccionada debe ser mayor a la actual (hora actual ${objectDateToString(dayjs()).split(' - ')[1]})`
+            else if (why === 'too soon') newHelperText = `Mínimo 30 minutos entre la hora actual y la hora de entrega (${textHour})`
+            else newHelperText = `Fuera del horario de ${place.typeDelivery.totalName.toLowerCase()} (${objectDateToString(limitHours.minHour).split(' - ')[1]} - ${objectDateToString(limitHours.maxHour).split(' - ')[1]})`
+        }
+        setHelperText(newHelperText)
+    }, [timeWithinRange])
+
+    // Actualizar los límites de horario de la nueva fecha
     useEffect(() => {
         if (!place.deadLine) return
         setLimitHours(getTimeLimitTodaySchedue(place))
     }, [place])
 
+    // Calcular si la nueva fecha seleccionada es hoy o no
     useEffect(() => {
         if (!(place.deadLine && place.deadLine.date)) return
         const currentDay = dayjs()
@@ -78,7 +98,9 @@ export default function TimeChoose() {
     }, [hour])
 
     useEffect(() => {
-        setTimeWithinRange(dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, currentDay: hour}))
+        const dateSelectedObject = dayjs(place.deadLine.date.realDate.replaceAll('/', '-'), 'DD-MM-YYYY').hour(hour.hour()).minute(hour.minute())
+        const { inRange, why } = dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, daySelected: dateSelectedObject})
+        setTimeWithinRange({ inRange, why })
     }, [hour, limitHours])
 
     function handleHour(event) {
@@ -93,14 +115,14 @@ export default function TimeChoose() {
                     label="Hora"
                     slotProps={{
                         textField: {
-                          helperText: timeWithinRange ? today ? textHour : '' : `Fuera del horario de ${place.typeDelivery.totalName.toLowerCase()}`,
+                          helperText: helperText,
                           size:'small'
                         }
                     }}
                     value={hour}
                     onChange={handleHour}
                     disablePast={ place.deadLine ? dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') : false}
-                    minTime={ place.deadLine && dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(29, 'minute') : limitHours.minHour.add(30, 'minute')}
+                    minTime={ place.deadLine && dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(29, 'minute') : limitHours.minHour.add(29, 'minute')}
                     maxTime={limitHours.maxHour}
                 />
             </DemoContainer>

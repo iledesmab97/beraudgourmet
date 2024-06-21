@@ -1,11 +1,14 @@
 'use client'
 
-import useHandleUser from '@/hooks/useHandleUser'
-import UserLoged from './UserLoged'
-import UserNew from './UserNew'
-
 import FormControl from '@mui/material/FormControl'
 import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+
+import UserLoged from './UserLoged'
+import UserNew from './UserNew'
+import SliceProgressBar from '@/components/SliceProgressBar/SliceProgressBar'
+
+import useHandleUser from '@/hooks/useHandleUser'
 
 const styleButtons = {
   textTransform: 'none',
@@ -19,7 +22,9 @@ export default function UserSection () {
 
   return (
     <FormControl
+      id='UserSection-container'
       sx={{
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         gap: '8px'
@@ -48,6 +53,8 @@ export default function UserSection () {
           />
         )
       }
+
+      <SliceProgressBar section={'user'} />
 
     </FormControl>
   )

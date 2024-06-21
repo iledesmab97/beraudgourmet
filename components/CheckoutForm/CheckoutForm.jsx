@@ -11,6 +11,8 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
+import MoveDown from '@/components/MoveDown/MoveDown'
+
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react-stripe-js'
@@ -18,6 +20,7 @@ import {CardElement, PaymentElement, useStripe, useElements} from '@stripe/react
 import useGetProducts from '@/hooks/useGetProducts'
 import useLocalData from '@/hooks/useLocalData'
 import useGetAlertDialogMessage from '@/hooks/useGetAlertDialogMessage'
+import useMoveDown from '@/hooks/useMoveDown'
 
 import dayjs from 'dayjs'
 import { contactUs } from '@/utils/contact'

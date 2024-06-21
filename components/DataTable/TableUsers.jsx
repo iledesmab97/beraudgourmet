@@ -120,6 +120,10 @@ function TableUsers() {
         setPage(0)
     }
 
+    function archiveUser() {
+        console.log('voy a archivar al usuario:', currentUser)
+    }
+
     return (
         <Paper
             sx={{
@@ -216,6 +220,11 @@ function TableUsers() {
                     onClick={handleStatusUser}
                 >
                     { currentUser?.state === 'ACTIVE' ? 'Desactivar' : 'Activar'}
+                </MenuItem>
+                <MenuItem
+                    onClick={archiveUser}
+                >
+                    { 'Archivar' }
                 </MenuItem>
             </Menu>
             {

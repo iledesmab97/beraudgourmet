@@ -1,12 +1,5 @@
 'use client'
 
-
-import useGetModal from '@/hooks/useGetModal'
-import useGetUser from '@/hooks/useGetUser'
-import useHandleUser from '@/hooks/useHandleUser'
-import UserLoged from '../OrderRewards/UserLoged'
-import useHandleSession from '@/hooks/useHandleSession'
-
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -14,6 +7,18 @@ import Typography from '@mui/material/Typography'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
+
+import UserLoged from '../OrderRewards/UserLoged'
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import useGetModal from '@/hooks/useGetModal'
+import useGetUser from '@/hooks/useGetUser'
+import useHandleUser from '@/hooks/useHandleUser'
+import useHandleSession from '@/hooks/useHandleSession'
+
+import { requestVerification } from '@/services/userApi'
+
+import styles from '@/components/MoveDown/MoveDown.module.css'
 
 const style = {
     position: 'absolute',
@@ -41,6 +46,7 @@ const style = {
     // justifyContent: 'flex-start',
     justifyContent: 'space-between',
     gap: 2,
+    overflowY: 'auto'
   };
 
 function ModalUserInfo() {
@@ -50,12 +56,18 @@ function ModalUserInfo() {
     const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
     const { closeSession } = useHandleSession()
 
+    async function sendVerification() {
+        const response = await requestVerification({email: user.email})
+        if (response.message) return alert(response.message)
+    }
+
     return (
         <Modal
             open={open}
             onClose={() => { handleCloseModal('user') }}
         >
             <Grid
+                id={'ModalUserInfor-container'}
                 container
                 sx={style}
                 alignItems={'stretch'}
@@ -149,6 +161,15 @@ function ModalUserInfo() {
                     >
                         Borrar mi cuenta
                     </Button>
+                    {
+                        !user.verified ? (
+                            <Button
+                                onClick={ () => {sendVerification()}}
+                            >
+                                Verificar mi correo electrónico
+                            </Button>
+                        ) : null
+                    }
                 </Grid>
                 <Grid
                     item
@@ -168,15 +189,21 @@ function ModalUserInfo() {
                         {user.email}
                     </Typography>
                     <Button
+                        id={'button-cerrar-sesion'}
                         onClick={ () => {
                             signOff()
                             closeSession()
                             handleCloseModal('user')
                         }}
                     >
-                        Cerrar Cesión
+                        Cerrar Sesión
                     </Button>
                 </Grid>
+                <MoveDown
+                    sectionToGo={'#button-cerrar-sesion'}
+                    containerId={ '#ModalUserInfor-container' }
+                    className={styles.buttonMoveDown2}
+                />
             </Grid>
 
         </Modal>        

@@ -17,10 +17,18 @@ import { searchUser, requestPasswordRecovery } from '@/services/userApi'
 
 const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
 
-function validation(email) {
+function lightValidation(email) {
+    let errors = ''
+    if ( email && !validEmail.test(email)) errors = 'Ingrese un correo válido'
+    return errors
+}
+
+function strongValidation(email) {
     let errors = ''
     if (!email) errors = 'Este campo no puede estar vacío'
-    if ( email && !validEmail.test(email)) errors = 'Ingrese un correo válido'
+    else {
+        errors = lightValidation(email)
+    }
     return errors
 }
 
@@ -38,8 +46,9 @@ function AlertRecoverPassword() {
     }, [alertDialogMessage.open])
 
     useEffect(() => {
+        if (!email) return
         debounceSetValue(() => {
-            const newError = validation(email)
+            const newError = lightValidation(email)
             setErrors(newError)
             if (!newError) {
                 searchUser(email)
@@ -58,8 +67,10 @@ function AlertRecoverPassword() {
     async function sendEmail() {
         console.log('Validando datos...')
         setLoading(true)
-        if (errors) {
+        const newErrors = strongValidation(email)
+        if (newErrors) {
             console.log('Datos inválidos')
+            setErrors(newErrors)
             return setLoading(false)
         }
         console.log('Eviando correo...')
@@ -118,7 +129,7 @@ function AlertRecoverPassword() {
                 <Button
                     variant='contained'
                     onClick={sendEmail}
-                    disabled={errors || loading }
+                    disabled={ Boolean(errors) || loading }
                 >
                         Enviar
                 </Button>
