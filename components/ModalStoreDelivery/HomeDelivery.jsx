@@ -23,7 +23,8 @@ export default function HomeDelivery({
     handleDistanceSaved,
     handleInputsHome,
     handleTypeLocation,
-    handleCloserStore
+    handleCloserStore,
+    nextStep
 }) {
 
     return (
@@ -74,6 +75,7 @@ export default function HomeDelivery({
                             handleInputsHome={handleInputsHome}
                             handleTypeLocation={handleTypeLocation}
                             currentModal='place'
+                            nextStep={nextStep}
                         />
                         : null
                 }
