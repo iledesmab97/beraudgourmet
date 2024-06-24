@@ -285,6 +285,7 @@ export default function FormModalDeliveryPlace ({ inputsHome, handleInputsHome, 
                         onClick={() => {
                             handleAddPlace({inputsHome, closerStore})
                             handleTypeDelivery({name: 'home', totalName: 'Entrega a domicilio'})
+                            handleCloseModal('place')
                             nextStep('store')
                         }}
                         sx={{
