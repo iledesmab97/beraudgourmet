@@ -98,6 +98,7 @@ export default function TimeChoose() {
     }, [hour])
 
     useEffect(() => {
+        if (!place.deadLine) return
         const dateSelectedObject = dayjs(place.deadLine.date.realDate.replaceAll('/', '-'), 'DD-MM-YYYY').hour(hour.hour()).minute(hour.minute())
         const { inRange, why } = dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, daySelected: dateSelectedObject})
         setTimeWithinRange({ inRange, why })
