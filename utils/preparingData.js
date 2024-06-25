@@ -278,3 +278,9 @@ export function deepUnequal(value1, value2) {
 
     return differences
 }
+
+export function validPlaceLocal(localPlace) {
+    const minimumProperties = ['closerStore', 'typeDelivery', 'deadLine']
+    if (minimumProperties.some(property => !(property in localPlace))) return false
+    return true
+}

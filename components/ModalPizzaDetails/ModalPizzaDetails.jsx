@@ -10,6 +10,10 @@ import PizzaImage from './PizzaImage'
 import PizzaText from './PizzaText'
 import PizzaIngredients from './PizzaIngredients'
 import PizzaCharacteristics from './PizzaCharacteristics'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
@@ -54,11 +58,11 @@ const style = {
 
 function validate(inputsChecked) {
     const errors = {}
-    const { name, image, text, ingredients, price } = inputsChecked
+    const { name, image, text, ingredients, price, type } = inputsChecked
     if (!name) errors.name = true
     if (!image) errors.image = true
     if (!text) errors.text = true
-    if (!ingredients) errors.ingredients = true
+    if (!ingredients && type !== 'customizable') errors.ingredients = true
     if (!price) errors.price = true
     return errors
 }
@@ -71,12 +75,28 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     const [processing, setProcessing] = useState(false)
     const [errors, setErrors] = useState({})
     const [inputsChecked, setInputsChecked] = useState({})
+    const [pizzaType, setPizzaType] = useState('')
 
     useEffect(() => {
         if (!openPizzaDetail || pizzaNew) return
         const [newPizza] = products.filter(element => element.id === pizza.id)
         setPizza(newPizza)
     }, [products])
+
+    useEffect(() => {
+        if ( pizzaType === 'customizable' ) {
+            const newPizza = { ...pizza}
+            newPizza.ingredients = ['']
+            setPizza(newPizza)
+        } else {
+            const newInputChecked = { ...inputsChecked }
+            newInputChecked.ingredients = false
+
+            if ( inputsChecked.ingredients !== newInputChecked.ingredients ) {
+                setInputsChecked(newInputChecked)
+            }
+        }
+    }, [pizzaType])
 
     function handleChangeInput({value, property}) {
         setPizza(prevState => ({
@@ -112,9 +132,13 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
             return setErrors(newErrors)
         }
 
+        const ingredients = pizza.ingredients.filter(i => i)
+
         // Peparando los datos
         const pizzaToCreate = {
-            ...pizza
+            ...pizza,
+            ingredients,
+            type: pizzaType
         }
         delete pizzaToCreate.price
         const costs = []
@@ -162,6 +186,12 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
         handleUpdateProduct(newProduct)
     }
 
+    function handleChangeTypePizza(value) {
+        setPizzaType(value)
+        handleInputsChecked( 'type', value)
+        handleChangeInput({value, property: 'type'})
+    }
+
     return (
         <Modal
             open={ openPizzaDetail }
@@ -170,17 +200,49 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
             <Box
                 sx={style}
             >
-                <InputUpdate
-                    value={pizza.name}
-                    updateProperty={updatePizza}
-                    updateState={updatePizzaState}
-                    properties={{ property: 'name', id: pizza.id}}
-                    handleChangeInput={handleChangeInput}
-                    pizzaNew={pizzaNew}
-                    placeholder={'Nombre'}
-                    errors={errors?.name}
-                    handleInputsChecked={handleInputsChecked}
-                />
+                <Box
+                    sx={{
+                        position: 'relative',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    <InputUpdate
+                        value={pizza.name}
+                        updateProperty={updatePizza}
+                        updateState={updatePizzaState}
+                        properties={{ property: 'name', id: pizza.id}}
+                        handleChangeInput={handleChangeInput}
+                        pizzaNew={pizzaNew}
+                        placeholder={'Nombre'}
+                        errors={errors?.name}
+                        handleInputsChecked={handleInputsChecked}
+                    />
+                    <Box
+                        sx={{
+                            width:'fit-content',
+                            minWidth: '100px',
+                            position: 'absolute',
+                            top: '0px',
+                            right: '0px'
+                        }}
+                    >    
+                        <FormControl fullWidth>
+                            <InputLabel>Tipo</InputLabel>
+                            <Select
+                                label='Tipo'
+                                value={pizzaType}
+                                onChange={(event) => { handleChangeTypePizza(event.target.value) }}
+                                // onChange={(event) => { handleInputsChecked( 'type', event.target.value) }}
+                            >
+                                <MenuItem value={'standard'}>Estandar</MenuItem>
+                                <MenuItem value={'customizable'}>Perzonalisable</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Box>
 
                 <Box
                     sx={{
@@ -223,15 +285,19 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                     
                     <Divider sx={{ width: '100%'}} />
                     
-                    <PizzaIngredients
-                        ingredients={pizza.ingredients}
-                        id={pizza.id}
-                        handleChangeInput={handleChangeInput}
-                        pizzaNew={pizzaNew}
-                        property={'ingredients'}
-                        errors={errors?.ingredients}
-                        handleInputsChecked={handleInputsChecked}
-                    />
+                    {
+                        pizzaType !== 'customizable' ? (
+                            <PizzaIngredients
+                                ingredients={pizza.ingredients}
+                                id={pizza.id}
+                                handleChangeInput={handleChangeInput}
+                                pizzaNew={pizzaNew}
+                                property={'ingredients'}
+                                errors={errors?.ingredients}
+                                handleInputsChecked={handleInputsChecked}
+                            />
+                        ) : null
+                    }
                     
                     <Divider sx={{ width: '100%'}} />
                     

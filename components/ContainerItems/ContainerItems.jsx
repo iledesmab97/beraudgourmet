@@ -15,25 +15,14 @@ import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import useHandleSteps from '@/hooks/useHandleSteps'
 
-import itemsJSON from '@/menuStore.json'
-
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
-import { fetchwhoAmI } from '@/services/userApi'
 
-// import style from './ContainerItems.module.css'
-
-function updatePrice(price) {
-  const priceWithIVA = Number(price) * 1.16
-  const priceWithIVA_and_ComissionStripe = (priceWithIVA * 0.036 + 3) * 1.16
-  return Math.ceil(priceWithIVA + priceWithIVA_and_ComissionStripe)
-}
-
-function ContainerItems () {
+function ContainerItems() {
 
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
   const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
   const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
-  const steps = useHandleSteps()
+  const { steps } = useHandleSteps()
 
   useEffect(() => {
     if (!(products && products.pizzas)) {
@@ -130,13 +119,6 @@ function ContainerItems () {
           ))
         }
       </Grid>
-        {/* <Button
-          onClick={() => {
-            fetchwhoAmI().then(data => console.log('data:', data))
-          }}
-        >
-          Quien soy
-        </Button> */}
     </Grid>
   )
 }
