@@ -4,7 +4,7 @@ import useGetOrders from '@/hooks/useGetOrders'
 import useGetStoreList from '@/hooks/useGetStoreList'
 import useGetProducts from '@/hooks/useGetProducts'
 
-import { deepEqual, listStores } from '@/utils/preparingData'
+import { deepEqual, listStores, validPlaceLocal } from '@/utils/preparingData'
 
 function useLocalData() {
     
@@ -21,6 +21,10 @@ function useLocalData() {
         if(!storeListArray.length) return
         const placeLocal = getLocalData('place')
         if (firstTime.current && placeLocal) {
+            const isPlaceValid = validPlaceLocal(placeLocal)
+            if (!isPlaceValid) {
+                return removeLocalData('place')
+            }
             firstTime.current = false
             const closerStore = storeListArray.find(store => store.id === placeLocal.closerStore)
             if (!Object.keys(place).length && placeLocal && closerStore) {
