@@ -65,13 +65,12 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
             destination: address,
             travelMode: 'DRIVING'
           })
-          let currentDistance = results.routes[0].legs[0].distance.text
-          const numberCurrentDistance = Number(currentDistance.split(" ")[0])
-          if ( numberCurrentDistance < newDistance ) {
-            newDistance = numberCurrentDistance
+          let currentDistance = results.routes[0].legs[0].distance.value / 1000
+          if ( currentDistance < newDistance ) {
+            newDistance = currentDistance
             closerStore = store
-            if ( numberCurrentDistance <= 15 ) cityStore = city.name
-            if ( numberCurrentDistance < 1) break
+            if ( currentDistance <= 15 ) cityStore = city.name
+            if ( currentDistance < 1 ) break
           }
         }
       }
