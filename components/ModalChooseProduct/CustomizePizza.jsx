@@ -126,39 +126,43 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 </Grid>
             </Grid>
 
-            <Grid
-                item
-                container
-                direction={'column'}
-                spacing={1}
-            >
-                <Grid item>
-                    <Typography
-                        id="modal-modal-description"
-                        variant='title'
+            {
+                ingredientsProduct.length > 0 ? (
+                    <Grid
+                        item
+                        container
+                        direction={'column'}
+                        spacing={1}
                     >
-                        QUITAR INGREDIENTES
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <FormGroup onChange={handleIngredientsModal}>
-                        {
-                            ingredientsProduct.map((ingredient, index) => (
-                                <FormControlLabel
-                                    key={ingredient + index}
-                                    control={
-                                        <Checkbox
-                                            checked={ ingredientsModal.includes(ingredient) ? false : true} 
-                                        />
-                                    }
-                                    label={ingredient}
-                                    sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
-                                />        
-                            ))
-                        }
-                    </FormGroup>
-                </Grid>
-            </Grid>
+                        <Grid item>
+                            <Typography
+                                id="modal-modal-description"
+                                variant='title'
+                            >
+                                QUITAR INGREDIENTES
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <FormGroup onChange={handleIngredientsModal}>
+                                {
+                                    ingredientsProduct.map((ingredient, index) => (
+                                        <FormControlLabel
+                                            key={ingredient + index}
+                                            control={
+                                                <Checkbox
+                                                    checked={ ingredientsModal.includes(ingredient) ? false : true} 
+                                                />
+                                            }
+                                            label={ingredient}
+                                            sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
+                                        />        
+                                    ))
+                                }
+                            </FormGroup>
+                        </Grid>
+                    </Grid>
+                ) : null
+            }
 
             <Grid
                 item

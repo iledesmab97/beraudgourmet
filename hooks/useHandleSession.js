@@ -10,13 +10,13 @@ export default function useHandleSession() {
     const { handleUpdateOrderToInitialState } = useGetOrders()
 
     const closeSession = useCallback(async () => {
+        removeLocalData('orders')
+        removeLocalData('place')
+        removeLocalData('user')
         // Reiniciar place
         await handleUpdatePlaceToInitialState()
         // Reinciar orders
         await handleUpdateOrderToInitialState()
-        removeLocalData('orders')
-        removeLocalData('place')
-        removeLocalData('user')
     }, [])
 
     return { closeSession }
