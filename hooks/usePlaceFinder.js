@@ -43,7 +43,6 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
 
     function handleSelect (event, value, reason) {
       const suggestion = event.target.textContent
-      console.log('suggestion:', suggestion)
       setSelectedSuggestion(value);
       handleSetAddress(suggestion)
       setValue(suggestion, false) // false para no borrar el valor del campo
