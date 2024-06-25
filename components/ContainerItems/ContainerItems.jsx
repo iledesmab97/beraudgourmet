@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import useGetModal from '@/hooks/useGetModal'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import useHandleSteps from '@/hooks/useHandleSteps'
 
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 
@@ -21,6 +22,7 @@ function ContainerItems() {
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
   const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
   const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
+  const { steps } = useHandleSteps()
 
   useEffect(() => {
     if (!(products && products.pizzas)) {
