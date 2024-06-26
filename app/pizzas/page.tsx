@@ -22,6 +22,7 @@ import CookieAlert from '@/components/CookiesAlert/CookieAlert'
 import AlertPhoneMissing from '@/components/AlertPhoneMissing/AlertPhoneMissing'
 import ShoppingCartButton from '@/components/ShoppingCartButton/ShoppingCartButton'
 import AlertRecoverPassword from '@/components/AlertRecorverPassword/AlertRecorverPassword'
+import PizzaCustomizable from '@/components/PizzaCustomizable/PizzaCustomizable'
 
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
@@ -82,6 +83,7 @@ function Menu () {
           position: 'relative'
         }}
       >
+        <PizzaCustomizable />
         <ContainerItems />
         {
           totalMatches === 'true' ? (
