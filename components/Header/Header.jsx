@@ -1,23 +1,30 @@
 'use client'
 
-import Image from 'next/image'
-
 import AppBar from '@mui/material/AppBar'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+
 import Link from 'next/link'
+import Image from 'next/image'
+
 import CurrentSession from '@/components/CurrentSession/CurrentSession'
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
+
 import logoBeraund from '../../public/images/homeimg/homeimgberaud/logoBeraud.png'
 import links from '../NavBar/navbarpaths.json'
 
 import { scrollToSection } from '@/utils/moveIntoPage'
+
+const navImage = {
+  Pizzas: <LocalPizzaIcon />
+}
 
 function getSubNav(currentPath) {
   const route = links.filter((route) => {
@@ -70,13 +77,14 @@ function Header() {
                         color: '#4e5762'
                       }}
                     >
-                      <Typography variant='title'>{link.title}</Typography>
+                      {navImage[link.title]}
+                      {/* <Typography variant='title'>{link.title}</Typography> */}
                     </Link>
                   ))
                 }
               </Toolbar>
-              <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
-                {/* {
+              {/* <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
+                {
                   subNav.map(link => (
                     <Link
                       key={link.title}
@@ -87,8 +95,8 @@ function Header() {
                       <Typography variant='title'>{link.title}</Typography>
                     </Link>
                   ))
-                } */}
-              </Toolbar>
+                }
+              </Toolbar> */}
             </>
           ) : null
         }
