@@ -102,7 +102,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     const [processing, setProcessing] = useState(false)
     const [errors, setErrors] = useState({})
     const [inputsChecked, setInputsChecked] = useState({})
-    const [pizzaType, setPizzaType] = useState('')
+    const [pizzaType, setPizzaType] = useState( pizzaNew ? '' : pizza.type)
 
     useEffect(() => {
         if (!openPizzaDetail || pizzaNew) return
@@ -271,10 +271,10 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                                 </FormControl>
                             ) : (
                                 <TextField
-                                    value={ pizza.type ? typesOfPizzas[pizza.type] : 'Estandar'}
+                                    value={ pizzaType ? typesOfPizzas[pizzaType] : 'Estandar'}
                                     disabled={true}
                                     inputProps={{
-                                        sx: calculateWithTypePizza(pizza.type)
+                                        sx: calculateWithTypePizza(pizzaType)
                                     }}
                                 />
                             )
