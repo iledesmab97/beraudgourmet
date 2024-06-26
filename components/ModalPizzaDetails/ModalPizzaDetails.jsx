@@ -56,6 +56,33 @@ const style = {
     gap: 2,
 }
 
+const typesOfPizzas = {
+    standard: 'Estandar',
+    customizable: 'Personalizable'
+}
+
+function calculateWithTypePizza(type) {
+    const styles = {}
+    switch (type) {
+        case 'standard': {
+            // styles.boxSizing = 'content-box',
+            styles.width = '56px'
+            break
+        }
+        case 'customizable': {
+            // styles.boxSizing = 'content-box',
+            styles.width = '94px'
+            break
+        }
+        default: {
+            // styles.boxSizing = 'content-box',
+            styles.width = '56px'
+            break
+        }
+    }
+    return styles
+}
+
 function validate(inputsChecked) {
     const errors = {}
     const { name, image, text, ingredients, price, type } = inputsChecked
@@ -75,7 +102,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     const [processing, setProcessing] = useState(false)
     const [errors, setErrors] = useState({})
     const [inputsChecked, setInputsChecked] = useState({})
-    const [pizzaType, setPizzaType] = useState('')
+    const [pizzaType, setPizzaType] = useState( pizzaNew ? '' : pizza.type)
 
     useEffect(() => {
         if (!openPizzaDetail || pizzaNew) return
@@ -228,19 +255,30 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                             top: '0px',
                             right: '0px'
                         }}
-                    >    
-                        <FormControl fullWidth>
-                            <InputLabel>Tipo</InputLabel>
-                            <Select
-                                label='Tipo'
-                                value={pizzaType}
-                                onChange={(event) => { handleChangeTypePizza(event.target.value) }}
-                                // onChange={(event) => { handleInputsChecked( 'type', event.target.value) }}
-                            >
-                                <MenuItem value={'standard'}>Estandar</MenuItem>
-                                <MenuItem value={'customizable'}>Perzonalisable</MenuItem>
-                            </Select>
-                        </FormControl>
+                    >
+                        {
+                            pizzaNew ? (
+                                <FormControl fullWidth>
+                                    <InputLabel>Tipo</InputLabel>
+                                    <Select
+                                        label='Tipo'
+                                        value={pizzaType}
+                                        onChange={(event) => { handleChangeTypePizza(event.target.value) }}
+                                    >
+                                        <MenuItem value={'standard'}>Estandar</MenuItem>
+                                        <MenuItem value={'customizable'}>Personalizable</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            ) : (
+                                <TextField
+                                    value={ pizzaType ? typesOfPizzas[pizzaType] : 'Estandar'}
+                                    disabled={true}
+                                    inputProps={{
+                                        sx: calculateWithTypePizza(pizzaType)
+                                    }}
+                                />
+                            )
+                        }
                     </Box>
                 </Box>
 
