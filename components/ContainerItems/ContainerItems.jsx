@@ -57,7 +57,7 @@ function ContainerItems() {
         spacing={2}
       >
         {
-          products && products.filter(item => item.status === 'ACTIVE').map((item, index) => (
+          products && products.filter(item => item.status === 'ACTIVE' && item.type !== 'customizable' ).map((item, index) => (
             <Grid
               item
               key={item.name + index}
