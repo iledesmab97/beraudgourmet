@@ -12,6 +12,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import CurrentSession from '@/components/CurrentSession/CurrentSession'
+import NavBar from '@/components/NavBar/NavBar'
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
@@ -63,43 +64,7 @@ function Header() {
           </Box>
           <CurrentSession />
         </Toolbar>
-        {
-          pathname !== '/admin' ? (
-            <>
-              <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
-                {
-                  links.map(link => (
-                    <Link
-                      href={link.path}
-                      key={link.title}
-                      style={{
-                        textDecoration: 'none',
-                        color: '#4e5762'
-                      }}
-                    >
-                      {navImage[link.title]}
-                      {/* <Typography variant='title'>{link.title}</Typography> */}
-                    </Link>
-                  ))
-                }
-              </Toolbar>
-              {/* <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
-                {
-                  subNav.map(link => (
-                    <Link
-                      key={link.title}
-                      color='#000'
-                      sx={{textDecoration: 'none', cursor: 'pointer'}}
-                      onClick={() => { scrollToSection(link.path, -192) }}
-                    >
-                      <Typography variant='title'>{link.title}</Typography>
-                    </Link>
-                  ))
-                }
-              </Toolbar> */}
-            </>
-          ) : null
-        }
+        <NavBar />
       </Container>
     </AppBar>
   );
