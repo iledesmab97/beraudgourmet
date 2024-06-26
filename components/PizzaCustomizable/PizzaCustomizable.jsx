@@ -32,10 +32,11 @@ function PizzaCustomizable() {
                 container
                 xs={12}
                 component={Paper}
-                elevation={5}
+                elevation={10}
                 sx={{
                     height: '350px',
-                    borderRadius: '20px'
+                    borderRadius: '20px',
+                    bgcolor: '#295386'
                 }}
             >
                 {
@@ -70,8 +71,27 @@ function PizzaCustomizable() {
                                             flexDirection: 'column'
                                         }}
                                     >
-                                        <Typography variant='encabezado' >{customizablePizza.name}</Typography>
-                                        <Typography variant='p' >{customizablePizza.text}</Typography>
+                                        <Typography
+                                            component={'h1'}
+                                            variant='encabezado'
+                                            align='center'
+                                            sx={{
+                                                color: 'white'
+                                            }}
+                                        >
+                                            {customizablePizza.name}
+                                        </Typography>
+                                        <Typography
+                                            component={'p'}
+                                            variant='p'
+                                            align='center'
+                                            sx={{
+                                                color: 'white',
+                                                fontSize: '1.3rem'
+                                            }}
+                                        >
+                                            {customizablePizza.text}
+                                        </Typography>
                                     </CardContent>
                                 </Grid>
                                 <Grid
@@ -94,10 +114,16 @@ function PizzaCustomizable() {
                                     >
                                         <Button
                                             onClick={ () => { handleOpenModalOrder({item: customizablePizza }) }}
-                                            variant='contained'
                                             sx={{
                                                 height: '100%',
-                                                width: '100%'
+                                                width: '100%',
+                                                borderRadius: '100px',
+                                                bgcolor: '#FFFFFF',
+                                                '&:hover': {
+                                                    bgcolor: '#4e5762',
+                                                    color: '#FFFFFF'
+                                                },
+                                                fontSize: '1.5rem'
                                             }}
                                         >
                                             Empieza aquí
