@@ -1,5 +1,8 @@
+import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import Paper from '@mui/material/Paper'
+import IconButton from '@mui/material/IconButton'
+
+import MenuIcon from '@mui/icons-material/Menu'
 
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza'
 
@@ -9,6 +12,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import useGetDrawer from '@/hooks/useGetDrawer'
 
 import links from './navbarpaths.json'
 
@@ -16,22 +20,29 @@ const navImage = {
   Pizzas: <LocalPizzaIcon />
 }
 
+const stylesBasics = {
+  minWidth: '160px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alingItems: 'center',
+  backgroundColor: '#f5f5f5',
+}
+
 const stylesMediumScreens = {
-  position: 'fixed',
-  top: '2%',
+  position: 'absolute',
+  top: '84px',
   left: '50%',
   transform: 'translateX(-50%)',
   zIndex: '1',
-  backgroundColor: '#f5f5f5',
   boxShadow: '0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12)',
-  // boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
   borderRadius: '50px',
 }
 
 function styleGiver(matches) {
-  let styles = {}
+  let styles = stylesBasics
   if (matches) {
     styles = {
+      ...styles,
       ...stylesMediumScreens
     }
   }
@@ -44,10 +55,39 @@ function NavBar() {
   // const [subNav, setSubNav] = useState(getSubNav(pathname))
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('md'))
+  const { handleChangeOpenDrawer } = useGetDrawer()
 
   // useEffect(() => {
   //   handleSubNav(getSubNav(pathname))
   // }, [pathname])
+
+  useEffect(() => {
+    if (!matches) return
+
+    const navBar = document.querySelector('#navBar-contianer')
+    const body = document.getElementsByTagName('html')[0]
+
+    function handlePosition() {
+      
+      const topDistance = navBar.getBoundingClientRect().top
+      const { position } = navBar.style
+
+      if (body.scrollTop >= 63 && position !== 'fixed') {
+        navBar.style.top = topDistance + 'px'
+        navBar.style.position = 'fixed'
+      } else if (body.scrollTop < 63 && position !== 'absolute') {
+        navBar.style.top = 84 + 'px'
+        navBar.style.position = 'absolute'
+      }
+    }
+    window.addEventListener('scroll', handlePosition)
+
+    return () => {
+      window.removeEventListener('scroll', handlePosition)
+      navBar.style.position = ''
+      navBar.style.top = ''
+    }
+  }, [matches])
 
   // function handleSubNav(newSubNav) {
   //   setSubNav(newSubNav)
@@ -58,23 +98,40 @@ function NavBar() {
   return (
     <>
       <Toolbar
+        id='navBar-contianer'
         component='nav'
         sx={styleGiver(matches)}
       >
+        <Box
+          sx={{
+            display: 'flex',
+            alingItems: 'center'
+          }}
+        >
+          {
+            links.map(link => (
+              <Link
+                href={link.path}
+                key={link.title}
+                style={{
+                  textDecoration: 'none',
+                  color: '#4e5762'
+                }}
+              >
+                {navImage[link.title]}
+                {/* <Typography variant='title'>{link.title}</Typography> */}
+              </Link>
+            ))
+          }
+        </Box>
         {
-          links.map(link => (
-            <Link
-              href={link.path}
-              key={link.title}
-              style={{
-                textDecoration: 'none',
-                color: '#4e5762'
-              }}
+          matches && (
+            <IconButton
+              onClick={() => {handleChangeOpenDrawer(true)}}
             >
-              {navImage[link.title]}
-              {/* <Typography variant='title'>{link.title}</Typography> */}
-            </Link>
-          ))
+              <MenuIcon />
+            </IconButton>
+          )
         }
       </Toolbar>
       {/* <Toolbar component='nav' sx={{justifyContent: 'flex-start', gap: 3}} >
