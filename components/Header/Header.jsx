@@ -49,7 +49,11 @@ function Header() {
   }
 
   return (
-    <AppBar color='default' sx={{ position: 'relative'}}>
+    <AppBar
+      id='header-container'
+      color='default'
+      sx={{ position: 'relative'}}
+    >
       <Container maxWidth="lg">
         <Toolbar
           sx={{
