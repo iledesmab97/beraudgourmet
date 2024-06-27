@@ -74,13 +74,14 @@ function Menu () {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: '40px'}}>
+    <Container maxWidth="lg" sx={{ mt: matches ? '100px' : '40px'}}>
       <Grid
         container
         spacing={5}
         sx={{
           pb: 3,
-          position: 'relative'
+          position: 'relative',
+          // mt: matches ? '16px' : '0px'
         }}
       >
         <PizzaCustomizable />
@@ -95,16 +96,6 @@ function Menu () {
               >
                 <OrderRewards />
               </Drawer>
-              <IconButton
-                onClick={() => {toggleOpenOrderRewards(true)}}
-                sx={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '0',
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
             </>
           ) : totalMatches === 'false' ? <OrderRewards /> : null
         }
