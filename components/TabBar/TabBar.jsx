@@ -12,7 +12,15 @@ import styles from './TabBar.module.css'
 function TabBar({ tabSelected, handleChange, listTabs }) {
 
     return (
-        <Box className={styles.TabsBar}>
+        <Box
+            className={styles.TabsBar}
+            sx={{
+                mb: {
+                    xs: '88px',
+                    sm: '16px'
+                }
+            }}
+        >
             <Tabs
                 value={tabSelected}
                 onChange={handleChange}
