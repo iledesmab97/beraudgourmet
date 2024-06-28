@@ -233,7 +233,11 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         width: '100%',
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        mb: {
+                            xs: '60px',
+                            sm: '0px'
+                        }
                     }}
                 >
                     <InputUpdate
@@ -252,8 +256,18 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                             width:'fit-content',
                             minWidth: '100px',
                             position: 'absolute',
-                            top: '0px',
-                            right: '0px'
+                            top: {
+                                xs: '66px',
+                                sm: '0px'
+                            },
+                            right: {
+                                xs: '',
+                                sm: '0px'
+                            },
+                            left: {
+                                xs: '26px',
+                                sm: ''
+                            }
                         }}
                     >
                         {
