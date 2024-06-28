@@ -22,6 +22,7 @@ import CookieAlert from '@/components/CookiesAlert/CookieAlert'
 import AlertPhoneMissing from '@/components/AlertPhoneMissing/AlertPhoneMissing'
 import ShoppingCartButton from '@/components/ShoppingCartButton/ShoppingCartButton'
 import AlertRecoverPassword from '@/components/AlertRecorverPassword/AlertRecorverPassword'
+import PizzaCustomizable from '@/components/PizzaCustomizable/PizzaCustomizable'
 
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
@@ -73,15 +74,17 @@ function Menu () {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: '40px'}}>
+    <Container maxWidth="lg" sx={{ mt: matches ? '100px' : '40px'}}>
       <Grid
         container
         spacing={5}
         sx={{
           pb: 3,
-          position: 'relative'
+          position: 'relative',
+          // mt: matches ? '16px' : '0px'
         }}
       >
+        <PizzaCustomizable />
         <ContainerItems />
         {
           totalMatches === 'true' ? (
@@ -93,16 +96,6 @@ function Menu () {
               >
                 <OrderRewards />
               </Drawer>
-              <IconButton
-                onClick={() => {toggleOpenOrderRewards(true)}}
-                sx={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '0',
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
             </>
           ) : totalMatches === 'false' ? <OrderRewards /> : null
         }
