@@ -49,8 +49,22 @@ function ContainerItems() {
       xs={12}
       md={8}
     >
-      <Typography  variant='encabezado'>
-        Pizzas
+      <Typography
+        component={'h1'}
+        variant='encabezado'
+        sx={{
+          width: {
+            xs: '244px',
+            sm: '100%'
+          },
+          mb: '16px',
+          fontSize: {
+            xs: '2.0rem',
+            sm: '2.8rem'
+          },
+        }}
+      >
+        Nuestra selección de Pizzas
       </Typography>
       <Grid
         container
@@ -76,9 +90,11 @@ function ContainerItems() {
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                   <CardMedia
-                    component='div'
+                    component='img'
                     sx={{
-                      pt: '100%'
+                      width: 'auto',
+                      height: '194px',
+                      objectFit: 'contain'
                     }}
                     image={item.image}
                   />
@@ -87,7 +103,17 @@ function ContainerItems() {
                       flexGrow: 1,
                     }}
                   >
-                    <Typography gutterBottom variant='title' component='h2'>
+                    <Typography
+                      gutterBottom
+                      variant='title'
+                      component='h2'
+                      sx={{
+                        fontSize: {
+                          xs: '1.5rem',
+                          sm: '1.2rem',
+                        }
+                      }}
+                    >
                       {item.name}
                     </Typography>
                     <br/>
