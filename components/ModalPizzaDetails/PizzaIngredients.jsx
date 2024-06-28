@@ -26,17 +26,17 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
     }
 
     function updateExtraIngredient(data) {
-        const {id, property, value} = data
+        const {id, properties} = data
         let index
         const newListExtraIngredinets = [...allExtraIngredients]
-        let [newExtraIngredient] = newListExtraIngredinets.filter((extra, i) => {
+        let newExtraIngredient = newListExtraIngredinets.find((extra, i) => {
             if (extra.id !== id) return false
             index = i
             return true
         })
         newExtraIngredient = {
             ...newExtraIngredient,
-            [property]: value
+            ...properties
         }
         newListExtraIngredinets[index] = newExtraIngredient
         setAllExtraIngredients(newListExtraIngredinets)
@@ -45,7 +45,7 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
     function addExtraIngredient(data) {
         const { id, name, cost } = data
         const newListExtraIngredinets = [...allExtraIngredients]
-        newListExtraIngredinets.push({id, name, cost})
+        newListExtraIngredinets.push({ id, name, cost, available: true })
         setAllExtraIngredients(newListExtraIngredinets)
     }
 
