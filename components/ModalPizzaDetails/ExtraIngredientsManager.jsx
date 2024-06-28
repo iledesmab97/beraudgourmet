@@ -8,6 +8,9 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import Button from '@mui/material/Button'
 import InputUpdate from '../InputUpdate/InputUpdate'
+import InputAdornment from '@mui/material/InputAdornment'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
 
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
@@ -26,6 +29,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
     const [currentExtraIngredient, setCurrentExtraIngredient]  = useState({})
     const [inputName, setInputName] = useState('')
     const [inputCost, setInputCost] = useState(null)
+    const [available, setAvailable] = useState(false)
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
@@ -45,6 +49,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
         const [newCurrentExtraIngredient] = allExtraIngredients.filter(extra => extra.name === value)
         setCurrentExtraIngredient(newCurrentExtraIngredient)
         setInputCost(newCurrentExtraIngredient.cost)
+        setAvailable(newCurrentExtraIngredient.available)
     }
 
     function handleChangeInputName(value) {
@@ -59,6 +64,10 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
         setErrors(newError)
     }
 
+    function handleChangeAvailable(value) {
+        setAvailable(value)
+    }
+
     async function updatedeExtraIngredient() {
         console.log('validando datos...')
         setLoading(true)
@@ -68,8 +77,16 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
             return setErrors(newErrors)
         }
         console.log('datos validados con exito')
+        const newValues = {}
+        if (currentExtraIngredient.available !== available) {
+            newValues.available = available
+        }
+        if (currentExtraIngredient.cost != inputCost ) {
+            newValues.cost = inputCost
+        }
         console.log('guardando información...')
-        const response = await updateExtraIngredient(currentExtraIngredient.id, {property: 'cost', value: inputCost})
+
+        const response = await updateExtraIngredient(currentExtraIngredient.id, newValues)
         let text, status
         if (response.message) {
             text = response.message
@@ -86,12 +103,11 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
         if (!response.message) {
             handleExtraIngredients({
                 id: currentExtraIngredient.id,
-                property: 'cost',
-                value: inputCost
+                properties: newValues
             }, 'update')
             setCurrentExtraIngredient(prevState => ({
                 ...prevState,
-                cost: inputCost
+                ...newValues
             }))
         }
         console.log('Información guardada con exito')
@@ -211,6 +227,25 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                                 onChange={(event) => {handleChangeInputCost(event.target.value)}}
                                 error={Boolean(errors.cost)}
                                 helperText={errors.cost}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">$</InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={available}
+                                        onChange={(event) => {handleChangeAvailable(event.target.checked)}}
+                                    />
+                                }
+                                label='Disponible'
+                                sx={{
+                                    position: 'relative',
+                                    left: '-12px',
+                                    m: '0px'
+                                }}
                             />
                         </Grid>
                     ) : currentExtraIngredient.cost === '' ? (
@@ -264,7 +299,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
                         <Button
                             variant='contained'
                             onClick={updatedeExtraIngredient}
-                            disabled={loading || currentExtraIngredient.cost === inputCost}
+                            disabled={ loading || currentExtraIngredient.cost === inputCost && currentExtraIngredient.available === available }
                         >
                             Actualizar</Button>
                         <Button
