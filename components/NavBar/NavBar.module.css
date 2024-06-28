@@ -15,3 +15,7 @@
     justify-content: space-around;
     gap: 20px;
 }
+
+.linkToPath {
+    scroll-behavior: smooth;
+}
