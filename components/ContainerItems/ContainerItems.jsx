@@ -126,7 +126,7 @@ function ContainerItems() {
                         position: 'relative'
                       }}
                     >
-                      <Typography variant='texto'>
+                      <Typography component={'p'} variant='texto'>
                         {item.text}
                       </Typography>
                       <Box
