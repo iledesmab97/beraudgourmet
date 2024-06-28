@@ -129,6 +129,10 @@ function TableUsers() {
             sx={{
                 position: 'relative',
                 // overflowY: 'hidden',
+                mt: {
+                    xs: '70px',
+                    sm: '0px'
+                }
             }}
         >
             <TableContainer
@@ -244,6 +248,7 @@ function TableUsers() {
             {
                 users.length === 0 ? (
                     <HelperMessageToSearch
+                        text={'Busca algún elemento desde la barra del buscador'}
                         sx={{
                             position: 'absolute',
                             top : '50%',
