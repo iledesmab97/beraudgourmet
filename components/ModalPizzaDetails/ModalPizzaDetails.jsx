@@ -21,6 +21,8 @@ import { useEffect, useState } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { getPizzasWithCosts, updatePizza, addNewPizza } from '@/services/productApi'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 const style = {
     position: 'absolute',
@@ -83,6 +85,30 @@ function calculateWithTypePizza(type) {
     return styles
 }
 
+function styleGiver(matches) {
+    let styles = {
+        width:'fit-content',
+        minWidth: '100px',
+        position: 'absolute',
+        top: {
+            xs: '66px',
+            sm: '0px'
+        }
+    }
+    if (matches) {
+        styles = {
+            ...styles,
+            left: '26px'
+        }
+    } else {
+        styles = {
+            ...styles,
+            right: '0px'
+        }
+    }
+    return styles
+}
+
 function validate(inputsChecked) {
     const errors = {}
     const { name, image, text, ingredients, price, type } = inputsChecked
@@ -103,6 +129,8 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
     const [errors, setErrors] = useState({})
     const [inputsChecked, setInputsChecked] = useState({})
     const [pizzaType, setPizzaType] = useState( pizzaNew ? '' : pizza.type)
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('md'))
 
     useEffect(() => {
         if (!openPizzaDetail || pizzaNew) return
@@ -252,23 +280,7 @@ function ModalPizzaDetails({ openPizzaDetail, handleOpenPizzaDetail, currentPizz
                         handleInputsChecked={handleInputsChecked}
                     />
                     <Box
-                        sx={{
-                            width:'fit-content',
-                            minWidth: '100px',
-                            position: 'absolute',
-                            top: {
-                                xs: '66px',
-                                sm: '0px'
-                            },
-                            right: {
-                                xs: '',
-                                sm: '0px'
-                            },
-                            left: {
-                                xs: '26px',
-                                sm: ''
-                            }
-                        }}
+                        sx={styleGiver(matches)}
                     >
                         {
                             pizzaNew ? (
