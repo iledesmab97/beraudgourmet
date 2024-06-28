@@ -248,6 +248,7 @@ function TableUsers() {
             {
                 users.length === 0 ? (
                     <HelperMessageToSearch
+                        text={'Busca algún elemento desde la barra del buscador'}
                         sx={{
                             position: 'absolute',
                             top : '50%',
