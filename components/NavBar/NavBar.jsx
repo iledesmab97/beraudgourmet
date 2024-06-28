@@ -14,6 +14,8 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useGetDrawer from '@/hooks/useGetDrawer'
 
+import { scrollToSection } from '@/utils/modal'
+
 import styles from './NavBar.module.css'
 import links from './navbarpaths.json'
 
@@ -109,14 +111,11 @@ function NavBar() {
             alingItems: 'center'
           }}
         >
-          <Link
-            className={styles.linkToPath}
-            href={'#title-pizzas-container'}
+          <IconButton
+            onClick={() => { scrollToSection('#title-pizzas-container') }}
           >
-            <IconButton>
-              <LocalPizzaIcon />
-            </IconButton>
-          </Link>
+            <LocalPizzaIcon />
+          </IconButton>
         </Box>
         {
           matches && (
