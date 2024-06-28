@@ -14,6 +14,7 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useGetDrawer from '@/hooks/useGetDrawer'
 
+import styles from './NavBar.module.css'
 import links from './navbarpaths.json'
 
 const navImage = {
@@ -108,21 +109,14 @@ function NavBar() {
             alingItems: 'center'
           }}
         >
-          {
-            links.map(link => (
-              <Link
-                href={link.path}
-                key={link.title}
-                style={{
-                  textDecoration: 'none',
-                  color: '#4e5762'
-                }}
-              >
-                {navImage[link.title]}
-                {/* <Typography variant='title'>{link.title}</Typography> */}
-              </Link>
-            ))
-          }
+          <Link
+            className={styles.linkToPath}
+            href={'#title-pizzas-container'}
+          >
+            <IconButton>
+              <LocalPizzaIcon />
+            </IconButton>
+          </Link>
         </Box>
         {
           matches && (
