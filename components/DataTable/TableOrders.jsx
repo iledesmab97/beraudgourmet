@@ -411,6 +411,7 @@ function TableOrders() {
             {
                 orders.length === 0 ? (
                     <HelperMessageToSearch
+                        text={'Buscando ordenes...'}
                         sx={{
                             position: 'absolute',
                             top : '50%',
