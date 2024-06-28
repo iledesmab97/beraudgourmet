@@ -94,7 +94,9 @@ function ContainerItems() {
                     sx={{
                       width: 'auto',
                       height: '194px',
-                      objectFit: 'contain'
+                      objectFit: 'contain',
+                      mt: '16px',
+                      mx: '8px'
                     }}
                     image={item.image}
                   />
