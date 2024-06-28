@@ -129,6 +129,10 @@ function TableUsers() {
             sx={{
                 position: 'relative',
                 // overflowY: 'hidden',
+                mt: {
+                    xs: '70px',
+                    sm: '0px'
+                }
             }}
         >
             <TableContainer
