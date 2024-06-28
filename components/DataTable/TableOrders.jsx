@@ -388,7 +388,7 @@ function TableOrders() {
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                 ) : null
             }
-            <Searcher
+            {/* <Searcher
                 handleChangelist={handleUpdateOrders}
                 makeRequest={getAllOrders}
                 propertiesToSearch={['userName', 'userPhoneNumber', 'userEmail']}
@@ -407,7 +407,7 @@ function TableOrders() {
                     },
                     m: 2
                 }}
-            />
+            /> */}
             {
                 orders.length === 0 ? (
                     <HelperMessageToSearch
