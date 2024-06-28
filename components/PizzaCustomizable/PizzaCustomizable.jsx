@@ -11,13 +11,17 @@ import Paper from '@mui/material/Paper'
 import { useState, useEffect } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetModal from '@/hooks/useGetModal'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 function PizzaCustomizable() {
 
     const { products } = useGetProducts({type:'pizzas'})
     const [customizablePizza, setCustomizablePizza] = useState(null)
     const { handleOpenModalOrder } = useGetModal({modalType:'order'})
-    
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'))
+
     useEffect(() => {
         if ( !products || !products.length ) return
         const newCustomizablePizza = products.find(pizza => pizza.type === 'customizable')
@@ -35,10 +39,13 @@ function PizzaCustomizable() {
                 xs={12}
                 component={Paper}
                 elevation={10}
+                wrap='nowrap'
                 sx={{
-                    height: '350px',
+                    height: matches ? '130px' : '350px',
                     borderRadius: '20px',
-                    bgcolor: '#295386'
+                    bgcolor: '#295386',
+                    position: matches ? 'relative' : 'static',
+                    overflow: 'hidden'
                 }}
             >
                 <Grid item xs sx={{ maxHeight: '100%' }} >
@@ -47,8 +54,10 @@ function PizzaCustomizable() {
                         alt='Titulo de la pizza'
                         sx={{
                             position: 'relative',
-                            top: 32,
-                            height: '100%',
+                            top: matches ? '-33px' : 32,
+                            left: matches ? '-68px' : '0px',
+                            height: matches ? '229px' : '100%',
+                            width: matches ? 'auto' : '100%',
                             objectFit: 'contain'
                         }}
                         image={customizablePizza.image}
@@ -75,7 +84,11 @@ function PizzaCustomizable() {
                                 variant='encabezado'
                                 align='center'
                                 sx={{
-                                    color: 'white'
+                                    position: matches ? 'absolute' : 'static',
+                                    top: '5px',
+                                    left: '-107px',
+                                    color: 'white',
+                                    fontSize: matches ? '1.4rem' : '2.8rem'
                                 }}
                             >
                                 {customizablePizza.name}
@@ -85,8 +98,11 @@ function PizzaCustomizable() {
                                 variant='p'
                                 align='center'
                                 sx={{
+                                    position: matches ? 'absolute' : 'static',
+                                    top: '48px',
+                                    left: '-95px',
                                     color: 'white',
-                                    fontSize: '1.3rem'
+                                    fontSize: matches ? '1rem' : '1.3rem'
                                 }}
                             >
                                 {customizablePizza.text}
@@ -105,29 +121,33 @@ function PizzaCustomizable() {
                             p: 2
                         }}
                     >
-                        <CardActions
-                            sx={{
-                                height: '80%',
-                                width: '100%'
-                            }}
-                        >
-                            <Button
-                                onClick={ () => { handleOpenModalOrder({item: customizablePizza }) }}
-                                sx={{
-                                    height: '100%',
-                                    width: '100%',
-                                    borderRadius: '100px',
-                                    bgcolor: '#FFFFFF',
-                                    '&:hover': {
-                                        bgcolor: '#4e5762',
-                                        color: '#FFFFFF'
-                                    },
-                                    fontSize: '1.5rem'
-                                }}
-                            >
-                                Empieza aquí
-                            </Button>
-                        </CardActions>
+                        {
+                            !matches ? (
+                                <CardActions
+                                    sx={{
+                                        height: '80%',
+                                        width: '100%'
+                                    }}
+                                >
+                                    <Button
+                                        onClick={ () => { handleOpenModalOrder({item: customizablePizza }) }}
+                                        sx={{
+                                            height: '100%',
+                                            width: '100%',
+                                            borderRadius: '100px',
+                                            bgcolor: '#FFFFFF',
+                                            '&:hover': {
+                                                bgcolor: '#4e5762',
+                                                color: '#FFFFFF'
+                                            },
+                                            fontSize: '1.5rem'
+                                        }}
+                                    >
+                                        Empieza aquí
+                                    </Button>
+                                </CardActions>
+                            ) : null
+                        }
                     </Grid>
                 </Grid>                           
             </Grid>
