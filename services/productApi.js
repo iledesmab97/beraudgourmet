@@ -85,12 +85,13 @@ export async function getExtraIngredients() {
     .then(data => {
       const extraIngredinetList = {}
       data.forEach(extraIngredient => {
-        const {id, name, cost, costIVAStripe} = extraIngredient
+        const {id, name, cost, costIVAStripe, available} = extraIngredient
         extraIngredinetList[name] = {
           id,
           name,
           price: cost,
-          totalPrice: costIVAStripe
+          totalPrice: costIVAStripe,
+          available
         }
       })
       return extraIngredinetList
