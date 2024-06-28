@@ -201,7 +201,7 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                         >
                         <TableBody>
                             {
-                            Object.values(extraIngredients).map((ingredient) => {
+                            Object.values(extraIngredients).filter(ingredient => ingredient.available).map((ingredient) => {
                                 return (
                                 <TableRow
                                     key={ingredient.name}
