@@ -68,18 +68,18 @@ function NavBar() {
     const body = document.getElementsByTagName('html')[0]
 
     function handlePosition() {
-      
       const topDistance = navBar.getBoundingClientRect().top
       const { position } = navBar.style
 
       if (body.scrollTop >= 63 && position !== 'fixed') {
-        navBar.style.top = topDistance + 'px'
         navBar.style.position = 'fixed'
+        navBar.style.top = 21 + 'px'
       } else if (body.scrollTop < 63 && position !== 'absolute') {
         navBar.style.top = 84 + 'px'
         navBar.style.position = 'absolute'
       }
     }
+
     window.addEventListener('scroll', handlePosition)
 
     return () => {
