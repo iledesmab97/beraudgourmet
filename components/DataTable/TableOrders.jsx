@@ -393,9 +393,18 @@ function TableOrders() {
                 makeRequest={getAllOrders}
                 propertiesToSearch={['userName', 'userPhoneNumber', 'userEmail']}
                 sx={{
-                    position: 'absolute',
-                    bottom : '100%',
-                    right: '0px',
+                    position: {
+                        xs: 'absolute',
+                        sm: 'absolute',
+                    },
+                    bottom : {
+                        xs: '100%',
+                        sm: '100%',
+                    },
+                    right: {
+                        xs: '0px',
+                        sm: '0px',
+                    },
                     m: 2
                 }}
             />
