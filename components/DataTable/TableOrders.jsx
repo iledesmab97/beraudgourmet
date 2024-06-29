@@ -388,20 +388,30 @@ function TableOrders() {
                     <ModalOrderDetail openOrderDetail={openOrderDetail} handleOpenOrderDetail={handleOpenOrderDetail} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                 ) : null
             }
-            <Searcher
+            {/* <Searcher
                 handleChangelist={handleUpdateOrders}
                 makeRequest={getAllOrders}
                 propertiesToSearch={['userName', 'userPhoneNumber', 'userEmail']}
                 sx={{
-                    position: 'absolute',
-                    bottom : '100%',
-                    right: '0px',
+                    position: {
+                        xs: 'absolute',
+                        sm: 'absolute',
+                    },
+                    bottom : {
+                        xs: '100%',
+                        sm: '100%',
+                    },
+                    right: {
+                        xs: '0px',
+                        sm: '0px',
+                    },
                     m: 2
                 }}
-            />
+            /> */}
             {
                 orders.length === 0 ? (
                     <HelperMessageToSearch
+                        text={'Buscando ordenes...'}
                         sx={{
                             position: 'absolute',
                             top : '50%',

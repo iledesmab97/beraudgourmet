@@ -57,6 +57,9 @@ function DataPanel({ toolSelected }) {
             <Typography
                 variant='encabezado'
                 component={'h1'}
+                sx={{
+                    my: '16px'
+                }}
             >
                 {listToolOptions[toolSelected].title}
             </Typography>
