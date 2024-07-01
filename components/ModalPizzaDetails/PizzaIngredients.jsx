@@ -7,12 +7,15 @@ import IngredientsManager from './IngredientsManager'
 import ExtraIngredientsManager from './ExtraIngredientsManager'
 
 import { useState, useEffect } from 'react'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+
 import { getAllIngredients, getAllExtraIngredients } from '@/services/productApi'
 
 function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, property, handleInputsChecked, errors, ...props }) {
 
     const [allIngredients, setAllIngredients] = useState([])
     const [allExtraIngredients, setAllExtraIngredients] = useState([])
+    const { handleUpdateExtraIngredient, handleAddExtraIngredient, handleRemoveExtraIngredient } = useGetExtraIngredients()
 
     useEffect(() => {
         getAllIngredients()
@@ -35,24 +38,39 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
             return true
         })
         newExtraIngredient = {
-            ...newExtraIngredient,
-            ...properties
+            ...data
         }
         newListExtraIngredinets[index] = newExtraIngredient
         setAllExtraIngredients(newListExtraIngredinets)
+        const { name, cost, costIVAStripe, available } = data
+        handleUpdateExtraIngredient({
+            id,
+            name,
+            available,
+            price: cost,
+            totalPrice: costIVAStripe
+        })
     }
 
     function addExtraIngredient(data) {
-        const { id, name, cost } = data
         const newListExtraIngredinets = [...allExtraIngredients]
-        newListExtraIngredinets.push({ id, name, cost, available: true })
+        newListExtraIngredinets.push(data)
         setAllExtraIngredients(newListExtraIngredinets)
+        const { id, name, cost, costIVAStripe, available } = data
+        handleAddExtraIngredient({
+            id,
+            name,
+            available,
+            price: cost,
+            totalPrice: costIVAStripe
+        })
     }
 
     function removeExtraIngredientOfList(data) {
         const {id} = data
         const newAllExtraIngredients = [...allExtraIngredients].filter(extra => extra.id !== id)
         setAllExtraIngredients(newAllExtraIngredients)
+        handleRemoveExtraIngredient(data)
     }
 
     function handleExtraIngredients(data, operation) {
