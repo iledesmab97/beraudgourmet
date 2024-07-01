@@ -92,7 +92,7 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
             text = response.message
             status = 'error'
         } else {
-            text = response
+            text = 'Extra ingredient updated successfully'
             status = 'success'
         }
         handleUpdateAlertMessage({
@@ -102,12 +102,10 @@ function ExtraIngredientsManager({ allExtraIngredients, handleExtraIngredients }
         })
         if (!response.message) {
             handleExtraIngredients({
-                id: currentExtraIngredient.id,
-                properties: newValues
+                ...response
             }, 'update')
             setCurrentExtraIngredient(prevState => ({
-                ...prevState,
-                ...newValues
+                ...response
             }))
         }
         console.log('Información guardada con exito')
