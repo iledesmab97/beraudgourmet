@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { addExtraIngredientsList } from '@/stores/extraIngredients/slice'
+import { addExtraIngredientsList, addExtraIngredient, removeExtraIngredient, updateExtraIngredient } from '@/stores/extraIngredients/slice'
 
 export default function useGetExtraIngredients() {
 
@@ -9,6 +9,18 @@ export default function useGetExtraIngredients() {
     function handleAddExtraIngredinetsList({extraIngredientsList}) {
         dispatch(addExtraIngredientsList({extraIngredientsList}))
     }
+
+    function handleUpdateExtraIngredient(extraIngredientUpdated) {
+        dispatch(updateExtraIngredient(extraIngredientUpdated))
+    }
+
+    function handleAddExtraIngredient(newExtraIngredient) {
+        dispatch(addExtraIngredient(newExtraIngredient))
+    }
+
+    function handleRemoveExtraIngredient(extraIngredientToRemove) {
+        dispatch(removeExtraIngredient(extraIngredientToRemove))
+    }
     
-    return { extraIngredients, handleAddExtraIngredinetsList }
+    return { extraIngredients, handleAddExtraIngredinetsList, handleUpdateExtraIngredient, handleAddExtraIngredient, handleRemoveExtraIngredient }
 }
