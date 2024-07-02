@@ -203,16 +203,16 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     }
 
     async function bayByTransferens() {
-        await registerOrder({
-            ...dataOrders,
-            paymentMethod: 'transfer',
-            paid: false,
-        })
-        removeLocalData('orders')
-        removeLocalData('place')
+        // await registerOrder({
+        //     ...dataOrders,
+        //     paymentMethod: 'transfer',
+        //     paid: false,
+        // })
+        // removeLocalData('orders')
+        // removeLocalData('place')
         contactUs({context: 'transfer', name: user.name, order: textOrderToWhatsapp })
-        handleCloseModal('pay')
-        return router.push('/success')
+        // handleCloseModal('pay')
+        // return router.push('/success')
     }
 
     return (
