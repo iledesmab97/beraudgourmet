@@ -65,7 +65,7 @@ function NavBar() {
   // }, [pathname])
 
   useEffect(() => {
-    if ( !matches || pathname === '/admin' ) return
+    if ( !matches || pathname !== '/pizzas' ) return
 
     const navBar = document.querySelector('#navBar-contianer')
     const body = document.getElementsByTagName('html')[0]
@@ -96,7 +96,7 @@ function NavBar() {
   //   setSubNav(newSubNav)
   // }
 
-  if (pathname === '/admin') return null
+  if (pathname !== '/pizzas') return null
 
   return (
     <>

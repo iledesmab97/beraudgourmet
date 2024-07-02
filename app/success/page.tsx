@@ -35,8 +35,8 @@ function SuccessPay() {
             justifyContent='center'
             alignItems='center'
             sx={{
-                // bgcolor: 'green',
-                py: '5%'
+                position: 'absolute',
+                top: '30%',
             }}
         >
             <Box
