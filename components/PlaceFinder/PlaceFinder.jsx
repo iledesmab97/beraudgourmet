@@ -78,7 +78,7 @@ function PlaceFinder({
             size='small'
             margin='dense'
             error={withinLimit === null ? false : !withinLimit}
-            helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 15 km. Distancia actual: ${distance} km` } 
+            helperText={ withinLimit === null || withinLimit ? '' : `Maxima destancia 7 km. Distancia actual: ${distance} km` } 
           />)}
       />
     {/* <GoogleMap center={center} zoom={15} mapContainerStyle={{width: '100%', height: '500px'}}/> */}

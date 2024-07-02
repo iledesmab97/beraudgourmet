@@ -146,7 +146,7 @@ function PizzaCustomizable() {
                                                 borderRadius: '100px',
                                                 bgcolor: '#FFFFFF',
                                                 '&:hover': {
-                                                    bgcolor: '#4e5762',
+                                                    bgcolor: 'rgb(149,159,171)',
                                                     color: '#FFFFFF'
                                                 },
                                                 fontSize: '1.5rem'

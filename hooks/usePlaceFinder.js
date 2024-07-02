@@ -69,7 +69,7 @@ export default function usePlaceFinder({ inputAddress , distanceSaved, closerSto
           if ( currentDistance < newDistance ) {
             newDistance = currentDistance
             closerStore = store
-            if ( currentDistance <= 15 ) cityStore = city.name
+            if ( currentDistance <= 7 ) cityStore = city.name
             if ( currentDistance < 1 ) break
           }
         }

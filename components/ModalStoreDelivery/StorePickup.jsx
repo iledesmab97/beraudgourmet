@@ -241,7 +241,7 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                                                 nextStep('store')
                                             }}
                                         >
-                                            Haga su pedido ahora
+                                            Recoger en esta tienda
                                         </Button>
                                     </Grid>
                                 </Grid>
