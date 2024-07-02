@@ -174,7 +174,7 @@ export default function StoreSection () {
                 fullWidth
                 onClick={() => {handleOpenModal('place')}}
               >
-                  Ver la lista de tiendas
+                  Método de entrega
               </Button>
             </>
           )
