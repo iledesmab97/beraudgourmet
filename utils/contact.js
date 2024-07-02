@@ -13,6 +13,7 @@ const typeText = {
 
 export function contactUs({context, name, order}) {
     if (context === 'transfer') {
+        console.log('link al que te redirijo:', `https://wa.me/${phoneNumber}/?text=${typeText[context](name) + order}`)
         return window.open(`https://wa.me/${phoneNumber}/?text=${typeText[context](name) + order}`, '_blank')
     }
 }
