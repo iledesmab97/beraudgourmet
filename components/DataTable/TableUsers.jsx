@@ -225,11 +225,11 @@ function TableUsers() {
                 >
                     { currentUser?.state === 'ACTIVE' ? 'Desactivar' : 'Activar'}
                 </MenuItem>
-                <MenuItem
+                {/* <MenuItem
                     onClick={archiveUser}
                 >
                     { 'Archivar' }
-                </MenuItem>
+                </MenuItem> */}
             </Menu>
             {
                 currentUser ? <ModalUserDetail openModal={openModal} handleOpenModal={handleOpenModal} currentUser={currentUser} updateUserTable={updateUserTable} /> : null
