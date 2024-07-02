@@ -96,7 +96,7 @@ function NavBar() {
   //   setSubNav(newSubNav)
   // }
 
-  if (pathname === '/admin') return null
+  if (pathname !== '/pizzas') return null
 
   return (
     <>
