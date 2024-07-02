@@ -111,7 +111,7 @@ export default function ModalStoreDelivery() {
                 mb: 5
               }}
             >
-              {delivery === 'store' ? 'Encuentre su tienda' : 'Indique el lugar de entrega'}
+              {delivery === 'store' ? 'Encuentre su tienda más cercana' : 'Indique el lugar de entrega'}
             </Typography>
 
             <ButtonGroup
