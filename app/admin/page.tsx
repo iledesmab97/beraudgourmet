@@ -3,6 +3,8 @@
 import ToolLateralBar from '@/components/ToolLateralBar/ToolLateralBar'
 import DataPanel from '@/components/DataPanel/DataPanel'
 import AlertMessage from '@/components/AlertMessage/AlertMessage'
+import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary'
+import Ups from '@/components/Ups/Ups'
 
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -98,45 +100,47 @@ function AdminPlace() {
     }
 
     return (
-        <Container maxWidth='lg' sx={{ pb: 5 }}>
-            <Grid
-                container
-                spacing={1}
-                alignItems='stretch'
-                justifyContent='space-between'
-                className={styles.AdminContainer}
-                sx={{
-                    position: 'relative'
-                }}
-            >
-                {
-                    totalMatches === 'true' ? (
-                        <>
-                            <Drawer
-                                open={openToolLateralBar}
-                                onClose={() => {handleOpenToolLateralBar(false)}}
-                                anchor='left'
-                            >
-                                <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
-                            </Drawer>
-                            <IconButton
-                                onClick={() => {handleOpenToolLateralBar(true)}}
-                                sx={{
-                                position: 'absolute',
-                                top: '16px',
-                                right: '0',
-                                }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        </>
+        <ErrorBoundary>
+            <Container maxWidth='lg' sx={{ pb: 5 }}>
+                <Grid
+                    container
+                    spacing={1}
+                    alignItems='stretch'
+                    justifyContent='space-between'
+                    className={styles.AdminContainer}
+                    sx={{
+                        position: 'relative'
+                    }}
+                >
+                    {
+                        totalMatches === 'true' ? (
+                            <>
+                                <Drawer
+                                    open={openToolLateralBar}
+                                    onClose={() => {handleOpenToolLateralBar(false)}}
+                                    anchor='left'
+                                >
+                                    <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} />
+                                </Drawer>
+                                <IconButton
+                                    onClick={() => {handleOpenToolLateralBar(true)}}
+                                    sx={{
+                                    position: 'absolute',
+                                    top: '16px',
+                                    right: '0',
+                                    }}
+                                >
+                                    <MenuIcon />
+                                </IconButton>
+                            </>
 
-                    ) : totalMatches === 'false' ? <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} /> : null
-                }
-                <DataPanel toolSelected={toolSelected} />
-            </Grid>
-            <AlertMessage/>
-        </Container>
+                        ) : totalMatches === 'false' ? <ToolLateralBar toolSelected={toolSelected} handleToolSelected={handleToolSelected} /> : null
+                    }
+                    <DataPanel toolSelected={toolSelected} />
+                </Grid>
+                <AlertMessage/>
+            </Container>
+        </ErrorBoundary>
     )
 }
 
