@@ -63,9 +63,9 @@ function Header() {
             justifyContent: 'space-between'
           }}
         >
-          <Box>
+          <Link href={'/pizzas'}>
             <Image src={logoBeraund} alt={'logoBeraund'} width={130}/>
-          </Box>
+          </Link>
           <CurrentSession />
         </Toolbar>
         <NavBar />
