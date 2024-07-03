@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton'
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-import ModalStoreDetailAdmin from '@/components/ModalStoreDetailAdmin/ModalStoreDetailAdmin'
+import ModalPizzaExtraIngredientDetails from '@/components/ModalPizzaExtraIngredientDetails/ModalPizzaExtraIngredientDetails'
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
 import { useState, useEffect } from 'react'
@@ -28,7 +28,7 @@ function TablePizzaExtraIngredients() {
     const { extraIngredients } = useGetExtraIngredients()
     const [extraIngredientSelected, setExtraIngredientSelected] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
-    const [openExtraIngreientDetails, setOpenExtraIngredientsDetails] = useState(false)
+    const [openExtraIngredientDetails, setOpenExtraIngredientsDetails] = useState(false)
     const openMenu = Boolean(anchorElMenu)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -51,13 +51,13 @@ function TablePizzaExtraIngredients() {
         setExtraIngredientSelected(ingredient)
     }
 
-    // function handleOpenExtraIngredientDetails(value) {
-    //     openExtraIngreientDetails(value)
-    //     toggleMenu()
-    //     if (!value) {
-    //         setExtraIngredientSelected(null)
-    //     }
-    // }
+    function handleOpenExtraIngredientDetails(value) {
+        setOpenExtraIngredientsDetails(value)
+        toggleMenu()
+        if (!value) {
+            setExtraIngredientSelected(null)
+        }
+    }
 
     function handleChangePage(newPage) {
         setPage(newPage)
@@ -136,7 +136,7 @@ function TablePizzaExtraIngredients() {
                 onClose={toggleMenu}
             >
                 <MenuItem
-                    // onClick={() => {handleOpenExtraIngredientDetails(true)}}
+                    onClick={() => {handleOpenExtraIngredientDetails(true)}}
                 >
                     Ver Detalles
                 </MenuItem>
@@ -147,7 +147,13 @@ function TablePizzaExtraIngredients() {
                 </MenuItem>
             </Menu>
             {
-                // extraIngredientSelected ? <ModalStoreDetailAdmin openStoreDetails={openStoreDetails} handleOpenExtraIngredientDetails={handleOpenExtraIngredientDetails} extraIngredientSelected={extraIngredientSelected} /> : null
+                extraIngredientSelected ? (
+                    <ModalPizzaExtraIngredientDetails
+                        openExtraIngredientDetails={openExtraIngredientDetails}
+                        handleOpenExtraIngredientDetails={handleOpenExtraIngredientDetails}
+                        extraIngredientSelected={extraIngredientSelected}
+                    />
+                ) : null
             }
         </Paper>
     )
