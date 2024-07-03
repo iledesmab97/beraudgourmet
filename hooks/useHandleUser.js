@@ -295,7 +295,7 @@ function useHandleUser() {
         if ( errors.email || errors.password || errors.name || errors.numberPhone ) return setErrors(errors)
         const userBack = userDataFromFrontToBack({ email, password, name, numberPhone})
         const response = await newAccount(userBack)
-        if (response.message) return console.log('Error:', response.message)
+        if (response.message) return alert(response.message)
         const userFront = userDataFromBackToFront(response)
         saveLocalData('user', response.token)
         handleAddUser(userFront)
