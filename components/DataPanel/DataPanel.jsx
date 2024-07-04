@@ -36,7 +36,7 @@ const listToolOptions = {
     },
     'Extra Ingredients': {
         title: 'Lista de Ingredientes Extra',
-        listTabs: ['Todos los ingredientes extra']
+        listTabs: ['Todos']
     }
 }
 
