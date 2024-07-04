@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-
 import TableContainer from '@mui/material/TableContainer'
 import Table from '@mui/material/Table'
 import TableHead from '@mui/material/TableHead'
@@ -11,20 +10,24 @@ import TablePagination from '@mui/material/TablePagination'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
+import AddIcon from '@mui/icons-material/Add'
 
 import ModalPizzaExtraIngredientDetails from '@/components/ModalPizzaExtraIngredientDetails/ModalPizzaExtraIngredientDetails'
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 import { removeExtraIngredient } from '@/services/productApi'
-
+import { deepEqual } from '@/utils/preparingData'
 
 const columns = ['Disponible', 'Nombre', 'Inventario', 'Precio ($)', 'Acción']
 
@@ -39,6 +42,9 @@ function TablePizzaExtraIngredients() {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down('sm'))
+    const newExtraIngredient = useRef(false)
 
     function toggleMenu() {
         setAnchorElMenu(null)
@@ -52,6 +58,12 @@ function TablePizzaExtraIngredients() {
         }
         setPizzaExtraIngredientsList(newPizzaExtraIngerdientList)
     }, [extraIngredients])
+
+    useEffect(() => {
+        if (!deepEqual(extraIngredientSelected, {name: '', price: ''})) return
+        newExtraIngredient.current = true
+        handleOpenExtraIngredientDetails(true)
+    }, [extraIngredientSelected])
 
     function handleClickButtonAction(event, ingredient) {
         setAnchorElMenu(event.currentTarget)
@@ -110,6 +122,13 @@ function TablePizzaExtraIngredients() {
             return console.log('Ingrediente eliminado exitosamente')
         }
         return console.log('No se pudo borra el ingrediente...')
+    }
+
+    function addNewExtraIngredient() {
+        setExtraIngredientSelected({
+            name: '',
+            price: ''
+        })
     }
 
     return (
@@ -206,9 +225,44 @@ function TablePizzaExtraIngredients() {
                         extraIngredientSelected={extraIngredientSelected}
                         updateExtraIngredientOfList={updateExtraIngredientOfList}
                         extraIngredients={extraIngredients}
+                        newExtraIngredient={newExtraIngredient.current}
                     />
                 ) : null
             }
+            <Box
+                sx={{
+                    position: 'absolute',
+                    bottom: '102%',
+                    right: '16px'
+                }}
+            >
+                {
+                    !matches ? (
+                        <Button
+                            variant='contained'
+                            startIcon={<AddIcon />}
+                            onClick={addNewExtraIngredient}
+                            disabled={!extraIngredients}
+                        >
+                            Nueva Pizza
+                        </Button>
+                    ) : (
+                        <IconButton
+                            onClick={addNewExtraIngredient}
+                            disabled={!extraIngredients}
+                            sx={{
+                                bgcolor: '#295386',
+                                color: 'white',
+                                '&:hover': {
+                                    color: '#295386'
+                                }
+                            }}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    )
+                }
+            </Box>
         </Paper>
     )
 }
