@@ -21,6 +21,10 @@ import TablePaginationActions from '@/components/TablePaginationActions/TablePag
 
 import { useState, useEffect } from 'react'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
+
+import { removeExtraIngredient } from '@/services/productApi'
+
 
 const columns = ['Disponible', 'Nombre', 'Inventario', 'Precio ($)', 'Acción']
 
@@ -34,6 +38,7 @@ function TablePizzaExtraIngredients() {
     const openMenu = Boolean(anchorElMenu)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     function toggleMenu() {
         setAnchorElMenu(null)
@@ -78,6 +83,33 @@ function TablePizzaExtraIngredients() {
         } else {
             handleUpdateExtraIngredient(newExtraIngredient)
         }
+    }
+
+    async function deleteExtraIngredient() {
+        toggleMenu()
+        console.log('eliminando ingrediente extra...')
+
+        const response = await removeExtraIngredient(extraIngredientSelected.id)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            const newExtraIngredients = {...extraIngredients}
+            delete newExtraIngredients[extraIngredientSelected.name]
+            handleAddExtraIngredinetsList({extraIngredientsList: newExtraIngredients})
+            return console.log('Ingrediente eliminado exitosamente')
+        }
+        return console.log('No se pudo borra el ingrediente...')
     }
 
     return (
@@ -161,7 +193,7 @@ function TablePizzaExtraIngredients() {
                     Ver Detalles
                 </MenuItem>
                 <MenuItem
-                    // onClick={() => {handleOpenExtraIngredientDetails(true)}}
+                    onClick={deleteExtraIngredient}
                 >
                     Eliminar
                 </MenuItem>
