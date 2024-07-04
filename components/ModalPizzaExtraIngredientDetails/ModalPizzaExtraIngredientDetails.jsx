@@ -147,7 +147,10 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
         return error
     }
 
-    function addExtraIngredient() {
+    async function addExtraIngredient() {
+        setLoading(true)
+        console.log('añadiendo nuevo ingrediente extra...')
+        console.log('validando datos...')
         if (Object.values(checkerNewExtraIngredient).some(property => !property)) {
             const newMissingData = {}
             for (let property in checkerNewExtraIngredient) {
@@ -156,9 +159,38 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
             }
 
             setMissingData(newMissingData)
-            return console.log('aun falta indicar algo')
+            return console.log('Faltan datos...')
         }
-        console.log('chevere. estamos creando el nuevo ingrediente extra')
+        console.log('datos validados con exito')
+        console.log('guardando información...')
+        const response = await makeExtraIngredient(inputs)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = 'Ingrediente extra creado exitosamente'
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            const { name, cost , costIVAStripe, available, id } = response
+            updateExtraIngredientOfList({ newExtraIngredient: {
+                id,
+                name,
+                price: cost,
+                totalPrice: costIVAStripe,
+                available
+            }})
+            setLoading(false)
+            return handleOpenExtraIngredientDetails(false)
+        }
+        console.log('No se ha podido crear el ingrediente')
+        setLoading(false)
     }
 
     return (
