@@ -61,7 +61,6 @@ function TablePizzaExtraIngredients() {
 
     useEffect(() => {
         if (!deepEqual(extraIngredientSelected, {name: '', price: ''})) return
-        newExtraIngredient.current = true
         handleOpenExtraIngredientDetails(true)
     }, [extraIngredientSelected])
 
@@ -125,6 +124,7 @@ function TablePizzaExtraIngredients() {
     }
 
     function addNewExtraIngredient() {
+        newExtraIngredient.current = true
         setExtraIngredientSelected({
             name: '',
             price: ''
