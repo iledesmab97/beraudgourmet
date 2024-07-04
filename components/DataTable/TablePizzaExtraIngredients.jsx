@@ -34,7 +34,7 @@ const columns = ['Disponible', 'Nombre', 'Inventario', 'Precio ($)', 'Acción']
 function TablePizzaExtraIngredients() {
 
     const [pizzaExtraIngredientList, setPizzaExtraIngredientsList] = useState([])
-    const { extraIngredients, handleAddExtraIngredinetsList, handleUpdateExtraIngredient } = useGetExtraIngredients()
+    const { extraIngredients, handleAddExtraIngredinetsList, handleUpdateExtraIngredient, handleAddExtraIngredient } = useGetExtraIngredients()
     const [extraIngredientSelected, setExtraIngredientSelected] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openExtraIngredientDetails, setOpenExtraIngredientsDetails] = useState(false)
@@ -91,8 +91,10 @@ function TablePizzaExtraIngredients() {
             const newExtraIngredients = {...extraIngredients, [newExtraIngredient.name]: newExtraIngredient}
             delete newExtraIngredients[lastExtraIngredient.name]
             handleAddExtraIngredinetsList({extraIngredientsList: newExtraIngredients})
-        } else {
+        } else if(property === 'cost' || property === 'available') {
             handleUpdateExtraIngredient(newExtraIngredient)
+        } else {
+            handleAddExtraIngredient(newExtraIngredient)
         }
     }
 
