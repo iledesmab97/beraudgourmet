@@ -68,7 +68,16 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
     function validationName(name) {
         let error = ''
         if (!name) error = 'Este campo no puede estar vacío'
-        if (extraIngredients[name]) error = 'El nombre del ingrediente ya existe'
+        else if (extraIngredients[name]) error = 'El nombre del ingrediente ya existe'
+        return error
+    }
+
+    function validationPrice(price) {
+        let error = ''
+        const isNumber = !/[^0-9]/.test(price)
+        if (!price) error = 'Este campo no puede estar vacio'
+        else if (!isNumber) error = 'Debes colocar solo números'
+        else if (Number(price) < 0) error = 'Colocar solo números positivos'
         return error
     }
 
@@ -133,6 +142,7 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             properties={{ id: extraIngredient.id, property: 'cost' }}
                             updateState={updateExtraIngredientFront}
                             startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                            validateError={validationPrice}
                             sx={{
                                 width: '160px'
                             }}
