@@ -41,7 +41,7 @@ const style = {
     gap: 2,
 }
 
-function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList, extraIngredients }) {
+function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList, extraIngredients, newExtraIngredient }) {
 
     const [extraIngredient, setExtraIngredient] = useState(extraIngredientSelected)
     const [loading, setLoading] = useState(false)
@@ -155,7 +155,7 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                                 color: extraIngredient.available ? '#295386' : '#f6685e'
                             }}
                         >
-                            {extraIngredient.name} Nº{extraIngredient.id}
+                            {!newExtraIngredient ? `${extraIngredient.name} Nº${extraIngredient.id}` : ''}
                         </Typography>
                     </Grid>
                     
@@ -200,26 +200,31 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                         <Divider />
                     </Grid>
 
-                    
-                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
-                        <Typography>Precio al público:</Typography>
-                    </Grid>
-                    <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
-                        <TextField
-                            value={extraIngredient.totalPrice}
-                            disabled
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start">$</InputAdornment>
-                            }}
-                            sx={{
-                                width: '160px'
-                            }}
-                        />
+                    {
+                        !newExtraIngredient ? (
+                            <>
+                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
+                                    <Typography>Precio al público:</Typography>
+                                </Grid>
+                                <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
+                                    <TextField
+                                        value={extraIngredient.totalPrice}
+                                        disabled
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">$</InputAdornment>
+                                        }}
+                                        sx={{
+                                            width: '160px'
+                                        }}
+                                    />
 
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Divider />
-                    </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
+                            </>
+                        ) : null
+                    }
 
                     <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
                         <Typography>Cantidad en inventario:</Typography>
@@ -235,21 +240,27 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Divider />
-                    </Grid>
-                    <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={extraIngredient.available}
-                                    onChange={(event) => {handleChangeAvailable(event.target.checked)}}
-                                    disabled={loading}
-                                />
-                            }
-                            label={ extraIngredient.available ? 'Disponible' : 'No disponible'}
-                        />
-                    </Grid>
+                    {
+                        !newExtraIngredient ? (
+                            <>
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
+                                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={extraIngredient.available}
+                                                onChange={(event) => {handleChangeAvailable(event.target.checked)}}
+                                                disabled={loading}
+                                            />
+                                        }
+                                        label={ extraIngredient.available ? 'Disponible' : 'No disponible'}
+                                    />
+                                </Grid>
+                            </>
+                        ) : null
+                    }
                 </Grid>
             </Box>
         </Modal>
