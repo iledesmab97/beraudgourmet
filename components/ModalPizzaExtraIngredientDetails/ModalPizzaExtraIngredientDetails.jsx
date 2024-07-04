@@ -38,7 +38,7 @@ const style = {
     gap: 2,
 }
 
-function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList }) {
+function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList, extraIngredients }) {
 
     const [extraIngredient, setExtraIngredient] = useState(extraIngredientSelected)
 
@@ -52,6 +52,13 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
         const newExtraIngredient = {...extraIngredient, [property]: value}
         updateExtraIngredientOfList({newExtraIngredient, lastExtraIngredient: {...extraIngredient}, property})
         setExtraIngredient(newExtraIngredient)
+    }
+
+    function validationName(name) {
+        let error = ''
+        if (!name) error = 'Este campo no puede estar vacío'
+        if (extraIngredients[name]) error = 'El nombre del ingrediente ya existe'
+        return error
     }
 
     return (
@@ -94,8 +101,9 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             updateProperty={updateExtraIngredientDB}
                             properties={{ id:extraIngredient.id, property: 'name' }}
                             updateState={updateExtraIngredientFront}
+                            validateError={validationName}
                             sx={{
-                                width: '160px'
+                                width: '200px'
                             }}
                         />
                     </Grid>
