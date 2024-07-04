@@ -20,7 +20,7 @@ function errorStyles(error) {
     }
 }
 
-function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, validateError, handleInputsChecked, ...props}) {
+function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, validateError, handleInputsChecked, startAdornment, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(pizzaNew || false)
@@ -109,7 +109,8 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
                             )
                         }
                     </IconButton>
-                )
+                ),
+                startAdornment: startAdornment ? startAdornment : null
             }}
             {...props}
         />
