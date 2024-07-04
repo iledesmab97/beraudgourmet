@@ -11,6 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
 import { useState, useEffect, useRef } from 'react'
+import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 import { updateExtraIngredient, makeExtraIngredient, removeExtraIngredient } from '@/services/productApi'
 
@@ -42,7 +43,9 @@ const style = {
 function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList, extraIngredients }) {
 
     const [extraIngredient, setExtraIngredient] = useState(extraIngredientSelected)
+    const [loading, setLoading] = useState(false)
     const totalNewExtraIngredient = useRef(null)
+    const { handleUpdateAlertMessage } = useGetAlertMessage()
 
     async function updateExtraIngredientDB(id, {property, value}) {
         const response = await updateExtraIngredient(id, {[property]: value})
@@ -55,14 +58,42 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
         const newProperties = {}
         if (property === 'name') {
             newProperties.name = value
-        } else {
+        } else if (property === 'cost') {
             const { cost, costIVAStripe } = totalNewExtraIngredient.current
             newProperties.price = cost
             newProperties.totalPrice = costIVAStripe
+        } else if (property === 'available') {
+            newProperties.available = value
         }
         const newExtraIngredient = {...extraIngredient, ...newProperties}
         updateExtraIngredientOfList({ newExtraIngredient, lastExtraIngredient: {...extraIngredient}, property })
         setExtraIngredient(newExtraIngredient)
+    }
+
+    async function handleChangeAvailable(newValue) {
+        setLoading(true)
+        console.log('guardando información...')
+
+        const response = await updateExtraIngredientDB(extraIngredient.id, { property: 'available', value: newValue })
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            updateExtraIngredientFront({ property: 'available', value: newValue })
+            setLoading(false)
+        }
+        console.log('Ha ocurrido un error...')
+        setLoading(false)
     }
 
     function validationName(name) {
@@ -106,7 +137,11 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             alignItems: 'center'
                         }}
                     >
-                        <Typography component={'h1'} variant='encabezado' sx={{ fontSize: '2.0rem' }}>
+                        <Typography
+                            component={'h1'}
+                            variant='encabezado'
+                            sx={{ fontSize: '2.0rem' }}
+                        >
                             {extraIngredient.name} Nº{extraIngredient.id}
                         </Typography>
                     </Grid>
@@ -193,11 +228,12 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     <FormControlLabel
                         control={
                             <Switch
-                                // checked={available}
-                                // onChange={(event) => {handleChangeAvailable(event.target.checked)}}
+                                checked={extraIngredient.available}
+                                onChange={(event) => {handleChangeAvailable(event.target.checked)}}
+                                disabled={loading}
                             />
                         }
-                        label='Disponible'
+                        label={ extraIngredient.available ? 'Disponible' : 'No disponible'}
                         sx={{
                             position: 'absolute',
                             top: '24px',
