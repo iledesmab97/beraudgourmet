@@ -12,7 +12,9 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CancelIcon from '@mui/icons-material/Cancel'
 
 import ModalPizzaExtraIngredientDetails from '@/components/ModalPizzaExtraIngredientDetails/ModalPizzaExtraIngredientDetails'
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
@@ -20,7 +22,7 @@ import TablePaginationActions from '@/components/TablePaginationActions/TablePag
 import { useState, useEffect } from 'react'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
-const columns = ['ID', 'Nombre', 'Inventario', 'Precio ($)', 'Acción']
+const columns = ['Disponible', 'Nombre', 'Inventario', 'Precio ($)', 'Acción']
 
 function TablePizzaExtraIngredients() {
 
@@ -112,7 +114,15 @@ function TablePizzaExtraIngredients() {
                         {
                             pizzaExtraIngredientList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(ingredient => (
                                 <TableRow key={ingredient.name}>
-                                    <TableCell align='center'>{ingredient.id}</TableCell>
+                                    <TableCell align='center'>
+                                        {
+                                            ingredient.available ? (
+                                                <CheckCircleIcon sx={{ color: '#4caf50'}} />
+                                            ) : (
+                                                <CancelIcon sx={{ color: '#f6685e'}} />
+                                            )
+                                        }
+                                    </TableCell>
                                     <TableCell>{ingredient.name}</TableCell>
                                     <TableCell align='center'>Infinito</TableCell>
                                     <TableCell align='center'>{ingredient.totalPrice}</TableCell>
