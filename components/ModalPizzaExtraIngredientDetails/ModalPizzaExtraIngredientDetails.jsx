@@ -10,7 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { updateExtraIngredient, makeExtraIngredient, removeExtraIngredient } from '@/services/productApi'
 
@@ -42,16 +42,26 @@ const style = {
 function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList, extraIngredients }) {
 
     const [extraIngredient, setExtraIngredient] = useState(extraIngredientSelected)
+    const totalNewExtraIngredient = useRef(null)
 
     async function updateExtraIngredientDB(id, {property, value}) {
         const response = await updateExtraIngredient(id, {[property]: value})
+        totalNewExtraIngredient.current = response
         if (response.message) return response
         return 'Se ha actualizado exitosamente'
     }
 
     function updateExtraIngredientFront({ id, property, value }) {
-        const newExtraIngredient = {...extraIngredient, [property]: value}
-        updateExtraIngredientOfList({newExtraIngredient, lastExtraIngredient: {...extraIngredient}, property})
+        const newProperties = {}
+        if (property === 'name') {
+            newProperties.name = value
+        } else {
+            const { cost, costIVAStripe } = totalNewExtraIngredient.current
+            newProperties.price = cost
+            newProperties.totalPrice = costIVAStripe
+        }
+        const newExtraIngredient = {...extraIngredient, ...newProperties}
+        updateExtraIngredientOfList({ newExtraIngredient, lastExtraIngredient: {...extraIngredient}, property })
         setExtraIngredient(newExtraIngredient)
     }
 
@@ -119,9 +129,9 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                         <InputUpdate
                             value={extraIngredient.price}
-                            updateProperty={null}
-                            properties={null}
-                            updateState={null}
+                            updateProperty={updateExtraIngredientDB}
+                            properties={{ id: extraIngredient.id, property: 'cost' }}
+                            updateState={updateExtraIngredientFront}
                             startAdornment={<InputAdornment position="start">$</InputAdornment>}
                             sx={{
                                 width: '160px'
