@@ -25,7 +25,7 @@ const columns = ['ID', 'Nombre', 'Inventario', 'Precio', 'Acción']
 function TablePizzaExtraIngredients() {
 
     const [pizzaExtraIngredientList, setPizzaExtraIngredientsList] = useState([])
-    const { extraIngredients } = useGetExtraIngredients()
+    const { extraIngredients, handleAddExtraIngredinetsList, handleUpdateExtraIngredient } = useGetExtraIngredients()
     const [extraIngredientSelected, setExtraIngredientSelected] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openExtraIngredientDetails, setOpenExtraIngredientsDetails] = useState(false)
@@ -66,6 +66,16 @@ function TablePizzaExtraIngredients() {
     function handleChangeRowsPerPage(event) {
         setRowsPerPage(+event.target.value)
         setPage(0)
+    }
+
+    function updateExtraIngredientOfList({newExtraIngredient, lastExtraIngredient, property}) {
+        if (property === 'name') {
+            const newExtraIngredients = {...extraIngredients, [newExtraIngredient.name]: newExtraIngredient}
+            delete newExtraIngredients[lastExtraIngredient.name]
+            handleAddExtraIngredinetsList({extraIngredientsList: newExtraIngredients})
+        } else {
+            handleUpdateExtraIngredient(newExtraIngredient)
+        }
     }
 
     return (
@@ -152,6 +162,7 @@ function TablePizzaExtraIngredients() {
                         openExtraIngredientDetails={openExtraIngredientDetails}
                         handleOpenExtraIngredientDetails={handleOpenExtraIngredientDetails}
                         extraIngredientSelected={extraIngredientSelected}
+                        updateExtraIngredientOfList={updateExtraIngredientOfList}
                     />
                 ) : null
             }
