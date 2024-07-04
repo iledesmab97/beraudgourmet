@@ -26,6 +26,7 @@ const style = {
         md: '750px'
     },
     height: 'auto',
+    maxHeight: '530px',
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
@@ -124,7 +125,16 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     container
                     spacing={3}
                     sx={{
-                        position: 'relative'
+                        position: 'relative',
+                        top: '8px',
+                        height: '100%',
+                        width: '100%',
+                        overflowY: 'auto',
+                        pr: {
+                            xs: 2,
+                            sm: 4,
+                            md: 5
+                        },
                     }}
                 >
                     <Grid
@@ -161,7 +171,7 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             updateState={updateExtraIngredientFront}
                             validateError={validationName}
                             sx={{
-                                width: '200px'
+                                width: '160px'
                             }}
                         />
                     </Grid>
@@ -228,21 +238,18 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={extraIngredient.available}
-                                onChange={(event) => {handleChangeAvailable(event.target.checked)}}
-                                disabled={loading}
-                            />
-                        }
-                        label={ extraIngredient.available ? 'Disponible' : 'No disponible'}
-                        sx={{
-                            position: 'absolute',
-                            top: '24px',
-                            right: '0px',
-                        }}
-                    />
+                    <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={extraIngredient.available}
+                                    onChange={(event) => {handleChangeAvailable(event.target.checked)}}
+                                    disabled={loading}
+                                />
+                            }
+                            label={ extraIngredient.available ? 'Disponible' : 'No disponible'}
+                        />
+                    </Grid>
                 </Grid>
             </Box>
         </Modal>
