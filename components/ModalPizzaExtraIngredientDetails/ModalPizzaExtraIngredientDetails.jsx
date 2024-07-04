@@ -9,7 +9,9 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+import { updateExtraIngredient, makeExtraIngredient, removeExtraIngredient } from '@/services/productApi'
 
 const style = {
     position: 'absolute',
@@ -36,9 +38,21 @@ const style = {
     gap: 2,
 }
 
-function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected }) {
+function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOpenExtraIngredientDetails, extraIngredientSelected, updateExtraIngredientOfList }) {
 
     const [extraIngredient, setExtraIngredient] = useState(extraIngredientSelected)
+
+    async function updateExtraIngredientDB(id, {property, value}) {
+        const response = await updateExtraIngredient(id, {[property]: value})
+        if (response.message) return response
+        return 'Se ha actualizado exitosamente'
+    }
+
+    function updateExtraIngredientFront({ id, property, value }) {
+        const newExtraIngredient = {...extraIngredient, [property]: value}
+        updateExtraIngredientOfList({newExtraIngredient, lastExtraIngredient: {...extraIngredient}, property})
+        setExtraIngredient(newExtraIngredient)
+    }
 
     return (
         <Modal
@@ -77,9 +91,9 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     <Grid item xs sx={{ display: 'flex', justifyContent: 'flex-end', alignItems:'center' }}>
                         <InputUpdate
                             value={extraIngredient.name}
-                            updateProperty={null}
-                            properties={null}
-                            updateState={null}
+                            updateProperty={updateExtraIngredientDB}
+                            properties={{ id:extraIngredient.id, property: 'name' }}
+                            updateState={updateExtraIngredientFront}
                             sx={{
                                 width: '160px'
                             }}
