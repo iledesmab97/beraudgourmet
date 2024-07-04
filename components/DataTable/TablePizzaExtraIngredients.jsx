@@ -20,7 +20,7 @@ import TablePaginationActions from '@/components/TablePaginationActions/TablePag
 import { useState, useEffect } from 'react'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
-const columns = ['ID', 'Nombre', 'Inventario', 'Precio', 'Acción']
+const columns = ['ID', 'Nombre', 'Inventario', 'Precio ($)', 'Acción']
 
 function TablePizzaExtraIngredients() {
 
