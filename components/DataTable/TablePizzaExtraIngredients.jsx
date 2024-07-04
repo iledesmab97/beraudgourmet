@@ -163,6 +163,7 @@ function TablePizzaExtraIngredients() {
                         handleOpenExtraIngredientDetails={handleOpenExtraIngredientDetails}
                         extraIngredientSelected={extraIngredientSelected}
                         updateExtraIngredientOfList={updateExtraIngredientOfList}
+                        extraIngredients={extraIngredients}
                     />
                 ) : null
             }
