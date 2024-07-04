@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import InputAdornment from '@mui/material/InputAdornment'
+import Button from '@mui/material/Button'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
@@ -47,6 +48,39 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
     const [loading, setLoading] = useState(false)
     const totalNewExtraIngredient = useRef(null)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [checkerNewExtraIngredient, setCheckerNewExtraIngredient] = useState( newExtraIngredient ? {
+        name: false,
+        cost: false,
+    } : null)
+    const [inputs, setInputs] = useState({
+        name: '',
+        cost: ''
+    })
+    const [missingData, setMissingData] = useState(newExtraIngredient ? {
+        name: null,
+        cost: null,
+    } : null)
+
+    function handleChangeInput({ value, property }) {
+        const newInputs = {
+            ...inputs,
+            [property]: value
+        }
+        setInputs(newInputs)
+    }
+
+    function handleInputsChecked(property, status) {
+        const newCheckerExtraIngredient = {
+            ...checkerNewExtraIngredient,
+            [property]: status
+        }
+        const newMissingData = {
+            ...missingData,
+            [property]: !status
+        }
+        setCheckerNewExtraIngredient(newCheckerExtraIngredient)
+        setMissingData(newMissingData)
+    }
 
     async function updateExtraIngredientDB(id, {property, value}) {
         const response = await updateExtraIngredient(id, {[property]: value})
@@ -106,11 +140,25 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
 
     function validationPrice(price) {
         let error = ''
-        const isNumber = !/[^0-9]/.test(price)
+        const isNumber = !/[^0-9.]/.test(price)
         if (!price) error = 'Este campo no puede estar vacio'
         else if (!isNumber) error = 'Debes colocar solo números'
         else if (Number(price) < 0) error = 'Colocar solo números positivos'
         return error
+    }
+
+    function addExtraIngredient() {
+        if (Object.values(checkerNewExtraIngredient).some(property => !property)) {
+            const newMissingData = {}
+            for (let property in checkerNewExtraIngredient) {
+                if (checkerNewExtraIngredient[property]) continue
+                newMissingData[property] = true
+            }
+
+            setMissingData(newMissingData)
+            return console.log('aun falta indicar algo')
+        }
+        console.log('chevere. estamos creando el nuevo ingrediente extra')
     }
 
     return (
@@ -170,6 +218,10 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             properties={{ id:extraIngredient.id, property: 'name' }}
                             updateState={updateExtraIngredientFront}
                             validateError={validationName}
+                            pizzaNew={newExtraIngredient}
+                            handleChangeInput={handleChangeInput}
+                            handleInputsChecked={handleInputsChecked}
+                            errors={missingData.name}
                             sx={{
                                 width: '160px'
                             }}
@@ -191,6 +243,10 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             updateState={updateExtraIngredientFront}
                             startAdornment={<InputAdornment position="start">$</InputAdornment>}
                             validateError={validationPrice}
+                            pizzaNew={newExtraIngredient}
+                            handleChangeInput={handleChangeInput}
+                            handleInputsChecked={handleInputsChecked}
+                            errors={missingData.cost}
                             sx={{
                                 width: '160px'
                             }}
@@ -222,24 +278,24 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                                 <Grid item xs={12}>
                                     <Divider />
                                 </Grid>
+                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
+                                    <Typography>Cantidad en inventario:</Typography>
+                                </Grid>
+                                <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <InputUpdate
+                                        value={'infinity'}
+                                        updateProperty={null}
+                                        properties={null}
+                                        updateState={null}
+                                        sx={{
+                                            width: '160px'
+                                        }}
+                                    />
+                                </Grid>
                             </>
                         ) : null
                     }
-
-                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
-                        <Typography>Cantidad en inventario:</Typography>
-                    </Grid>
-                    <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <InputUpdate
-                            value={'infinity'}
-                            updateProperty={null}
-                            properties={null}
-                            updateState={null}
-                            sx={{
-                                width: '160px'
-                            }}
-                        />
-                    </Grid>
+                    
                     {
                         !newExtraIngredient ? (
                             <>
@@ -259,6 +315,18 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                                     />
                                 </Grid>
                             </>
+                        ) : null
+                    }
+                    {
+                        newExtraIngredient ? (
+                            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <Button
+                                    variant='contained'
+                                    onClick={addExtraIngredient}
+                                >
+                                    Agregar
+                                </Button>
+                            </Grid>
                         ) : null
                     }
                 </Grid>
