@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import InputAdornment from '@mui/material/InputAdornment'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
@@ -121,6 +122,7 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             updateProperty={null}
                             properties={null}
                             updateState={null}
+                            startAdornment={<InputAdornment position="start">$</InputAdornment>}
                             sx={{
                                 width: '160px'
                             }}
@@ -138,6 +140,9 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                         <TextField
                             value={extraIngredient.totalPrice}
                             disabled
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">$</InputAdornment>
+                            }}
                             sx={{
                                 width: '160px'
                             }}
