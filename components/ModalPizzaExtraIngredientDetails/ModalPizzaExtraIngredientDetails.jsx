@@ -3,6 +3,9 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import TextField from '@mui/material/TextField'
+
+import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
 import { useState } from 'react'
 
@@ -63,43 +66,74 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     </Grid>
                     
                     
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography>Nombre:</Typography>
                     </Grid>
-                    <Grid item xs>
-                        <Typography>{extraIngredient.name}</Typography>
+                    <Grid item xs sx={{ display: 'flex', justifyContent: 'flex-end', alignItems:'center' }}>
+                        <InputUpdate
+                            value={extraIngredient.name}
+                            updateProperty={null}
+                            properties={null}
+                            updateState={null}
+                            sx={{
+                                width: '160px'
+                            }}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
                     
                     
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
                         <Typography>Precio:</Typography>
                     </Grid>
-                    <Grid item>
-                        <Typography>{extraIngredient.price}</Typography>
+                    <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <InputUpdate
+                            value={extraIngredient.price}
+                            updateProperty={null}
+                            properties={null}
+                            updateState={null}
+                            sx={{
+                                width: '160px'
+                            }}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
 
                     
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
                         <Typography>Precio al público:</Typography>
                     </Grid>
-                    <Grid item xs>
-                        <Typography>${extraIngredient.totalPrice}</Typography>
+                    <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
+                        <TextField
+                            value={extraIngredient.totalPrice}
+                            disabled
+                            sx={{
+                                width: '160px'
+                            }}
+                        />
+
                     </Grid>
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
                         <Typography>Cantidad en inventario:</Typography>
                     </Grid>
-                    <Grid item>
-                        <Typography>{'Infinito'}</Typography>
+                    <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <InputUpdate
+                            value={'infinity'}
+                            updateProperty={null}
+                            properties={null}
+                            updateState={null}
+                            sx={{
+                                width: '160px'
+                            }}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <Divider />
