@@ -140,7 +140,10 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                         <Typography
                             component={'h1'}
                             variant='encabezado'
-                            sx={{ fontSize: '2.0rem' }}
+                            sx={{
+                                fontSize: '2.0rem',
+                                color: extraIngredient.available ? '#295386' : '#f6685e'
+                            }}
                         >
                             {extraIngredient.name} Nº{extraIngredient.id}
                         </Typography>
