@@ -4,6 +4,8 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
@@ -49,6 +51,9 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                 <Grid
                     container
                     spacing={3}
+                    sx={{
+                        position: 'relative'
+                    }}
                 >
                     <Grid
                         item
@@ -138,6 +143,20 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                // checked={available}
+                                // onChange={(event) => {handleChangeAvailable(event.target.checked)}}
+                            />
+                        }
+                        label='Disponible'
+                        sx={{
+                            position: 'absolute',
+                            top: '24px',
+                            right: '0px',
+                        }}
+                    />
                 </Grid>
             </Box>
         </Modal>
