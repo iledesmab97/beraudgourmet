@@ -20,7 +20,7 @@ function errorStyles(error) {
     }
 }
 
-function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, handleInputsChecked, ...props}) {
+function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, validateError, handleInputsChecked, startAdornment, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(pizzaNew || false)
@@ -36,7 +36,12 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
     async function handleEdit() {
         if (!edit) return setEdit(true)
         console.log('Validando datos...')
-        const newError = validation(myValue)
+        let newError
+        if (validateError) {
+            newError = validateError(myValue)
+        } else {
+            newError = validation(myValue)
+        }
         if (newError) {
             console.log('Error en la validación de datos')
             return setError(newError)
@@ -104,7 +109,8 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
                             )
                         }
                     </IconButton>
-                )
+                ),
+                startAdornment: startAdornment ? startAdornment : null
             }}
             {...props}
         />
