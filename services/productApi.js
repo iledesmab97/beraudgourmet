@@ -243,9 +243,9 @@ export function getSalads() {
   return fetch(`${PATH_BACK}/salads`)
     .then(response => response.json())
     .then(data => {
-      const pizzaList = data.map(pizza => {
+      const saladList = data.map(pizza => {
           const { id, name, text, image, ingredients, status, type  } = pizza
-          const newPizzaData = {
+          const newSaladData = {
             id,
             name,
             text,
@@ -254,8 +254,8 @@ export function getSalads() {
             status,
             type
           }
-          return newPizzaData
+          return newSaladData
       })
-      return pizzaList
+      return saladList
   })
 }
