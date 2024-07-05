@@ -152,85 +152,85 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
     //     }
     // }, [saladType])
 
-    // function handleChangeInput({value, property}) {
-    //     setSalad(prevState => ({
-    //         ...prevState,
-    //         [property]: value
-    //     }))
-    // }
+    function handleChangeInput({value, property}) {
+        setSalad(prevState => ({
+            ...prevState,
+            [property]: value
+        }))
+    }
 
-    // function handleInputsChecked(property, value) {
-    //     const newInputsChecked = {
-    //         ...inputsChecked,
-    //         [property]: value
-    //     }
-    //     setInputsChecked(newInputsChecked)
-    //     const newErrorsProperty = validate(newInputsChecked)[property]
-    //     setErrors(prevState => ({
-    //         ...prevState,
-    //         [property]: newErrorsProperty
-    //     }))
-    // }
+    function handleInputsChecked(property, value) {
+        const newInputsChecked = {
+            ...inputsChecked,
+            [property]: value
+        }
+        setInputsChecked(newInputsChecked)
+        const newErrorsProperty = validate(newInputsChecked)[property]
+        setErrors(prevState => ({
+            ...prevState,
+            [property]: newErrorsProperty
+        }))
+    }
 
-    // async function addPizza() {
-    //     console.log('Agregando nueva salad...')
-    //     setProcessing(true)
+    async function addSalad() {
+        console.log('Agregando una nueva ensalada...')
+        setProcessing(true)
 
-    //     // Validación de datos
-    //     console.log('Validando datos...')
-    //     const newErrors = validate(inputsChecked)
+        // Validación de datos
+        console.log('Validando datos...')
+        const newErrors = validate(inputsChecked)
 
-    //     if (Object.keys(newErrors).length) {
-    //         console.log('Error en la validación de datos')
-    //         setProcessing(false)
-    //         return setErrors(newErrors)
-    //     }
+        if (Object.keys(newErrors).length) {
+            console.log('Error en la validación de datos')
+            setProcessing(false)
+            return setErrors(newErrors)
+        }
 
-    //     const ingredients = salad.ingredients.filter(i => i)
+        const ingredients = salad.ingredients.filter(i => i)
 
-    //     // Peparando los datos
-    //     const pizzaToCreate = {
-    //         ...salad,
-    //         ingredients,
-    //         type: saladType
-    //     }
-    //     delete pizzaToCreate.price
-    //     const costs = []
-    //     Object.keys(salad.price).forEach(size => {
-    //         Object.keys(salad.price[size]).forEach(mass => {
-    //             const cost = salad.price[size][mass]
-    //             costs.push({size, mass, cost})
-    //         })
-    //     })
-    //     pizzaToCreate.costs = costs
+        // Peparando los datos
+        const pizzaToCreate = {
+            ...salad,
+            ingredients,
+            type: saladType
+        }
+        delete pizzaToCreate.price
+        const costs = []
+        Object.keys(salad.price).forEach(size => {
+            Object.keys(salad.price[size]).forEach(mass => {
+                const cost = salad.price[size][mass]
+                costs.push({size, mass, cost})
+            })
+        })
+        pizzaToCreate.costs = costs
 
-    //     // Haciendo la solicitud
-    //     const response = await addNewPizza(pizzaToCreate)
-    //     let text, status
-    //     if (response.message) {
-    //         text = response.message
-    //         status = 'error'
-    //     } else {
-    //         text = 'Pizza created successfully'
-    //         status = 'success'
-    //     }
-    //     handleUpdateAlertMessage({
-    //         checked: true,
-    //         text,
-    //         status
-    //     })
-    //     if (!response.message) {
-    //         await getPizzasWithCosts().then(data => {
-    //             handleAddProductsList({
-    //             type: 'pizzas',
-    //             products: data
-    //             })
-    //         })
-    //         console.log('Pizza agregada exitosamente')
-    //         handleOpenSaladDetail(false)
-    //     }
-    //     setProcessing(false)
-    // }
+        // Haciendo la solicitud
+        // const response = await addNewPizza(pizzaToCreate)
+        // let text, status
+        // if (response.message) {
+        //     text = response.message
+        //     status = 'error'
+        // } else {
+        //     text = 'Pizza created successfully'
+        //     status = 'success'
+        // }
+        // handleUpdateAlertMessage({
+        //     checked: true,
+        //     text,
+        //     status
+        // })
+        // if (!response.message) {
+        //     await getPizzasWithCosts().then(data => {
+        //         handleAddProductsList({
+        //         type: 'pizzas',
+        //         products: data
+        //         })
+        //     })
+        //     console.log('Pizza agregada exitosamente')
+        //     handleOpenSaladDetail(false)
+        // }
+        // setProcessing(false)
+    }
 
     // function updatePizzaState(product) {
     //     const newProduct = {
@@ -271,12 +271,12 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                         value={salad.name}
                         // updateProperty={updatePizza}
                         // updateState={updatePizzaState}
-                        // properties={{ property: 'name', id: salad.id}}
-                        // handleChangeInput={handleChangeInput}
-                        saladNew={saladNew}
+                        properties={{ property: 'name', id: salad.id}}
+                        handleChangeInput={handleChangeInput}
+                        handleInputsChecked={handleInputsChecked}
+                        pizzaNew={saladNew}
                         placeholder={'Nombre'}
-                        // errors={errors?.name}
-                        // handleInputsChecked={handleInputsChecked}
+                        errors={errors?.name}
                     />
                     {/* <Box
                         sx={styleGiver(matches)}
@@ -324,11 +324,11 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     <SaladImage
                         salad={salad}
                         property={'image'}
-                        // handleChangeInput={handleChangeInput}
+                        handleChangeInput={handleChangeInput}
+                        handleInputsChecked={handleInputsChecked}
                         saladNew={saladNew}
                         placeholder={'URL de la ensalada'}
-                        // errors={errors?.image}
-                        // handleInputsChecked={handleInputsChecked}
+                        errors={errors?.image}
                     />
 
                     <Divider sx={{ width: '100%'}} />
@@ -337,13 +337,13 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                         value={salad.text}
                         // updateProperty={updatePizza}
                         // updateState={updatePizzaState}
-                        // properties={{ property: 'text', id: salad.id}}
+                        properties={{ property: 'text', id: salad.id}}
                         fullWidth={true}
-                        // handleChangeInput={handleChangeInput}
-                        saladNew={saladNew}
-                        // placeholder={'Texto de la salad'}
-                        // errors={errors?.text}
-                        // handleInputsChecked={handleInputsChecked}
+                        handleChangeInput={handleChangeInput}
+                        handleInputsChecked={handleInputsChecked}
+                        pizzaNew={saladNew}
+                        placeholder={'Texto de la ensalada'}
+                        errors={errors?.text}
                     />
                     
                     <Divider sx={{ width: '100%'}} />
@@ -365,11 +365,11 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     <SaladIngredients
                         ingredients={salad.ingredients}
                         id={salad.id}
-                        // handleChangeInput={handleChangeInput}
+                        handleChangeInput={handleChangeInput}
+                        handleInputsChecked={handleInputsChecked}
                         saladNew={saladNew}
                         property={'ingredients'}
-                        // errors={errors?.ingredients}
-                        // handleInputsChecked={handleInputsChecked}
+                        errors={errors?.ingredients}
                     />
                     
                     <Divider sx={{ width: '100%'}} />
@@ -396,7 +396,7 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                         >
                             <Button
                                 variant='contained'
-                                // onClick={addPizza}
+                                onClick={addSalad}
                                 disabled={processing}
                             >
                                 { processing ? 'Procesando' : 'Agregar'}
