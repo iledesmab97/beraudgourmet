@@ -15,7 +15,7 @@ import Box from '@mui/material/Box'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import ModalPizzaDetail from '@/components/ModalPizzaDetails/ModalPizzaDetails'
+
 import EditIcon from '@mui/icons-material/Edit'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import AddIcon from '@mui/icons-material/Add'
@@ -23,6 +23,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import TablePagination from '@mui/material/TablePagination'
 
+import ModalSaladDetails from '@/components/ModalSaladDetails/ModalSaladDetails'
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
 import { useState, useRef, useEffect } from 'react';
@@ -50,7 +51,7 @@ const colorsCell = {
 function TableSalads() {
 
     const [anchorEl, setAnchorEl] = useState(null)
-    const [currentSalad, setCurrentSalad] = useState(null)
+    const [saladSelected, setCurrentSalad] = useState(null)
     const [openSaladDetail, setOpenSaladDetail] = useState(false)
     const open = Boolean(anchorEl)
     const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'salads'})
@@ -70,13 +71,13 @@ function TableSalads() {
     useEffect(() => {
         if (!saladNew.current) return
         setOpenSaladDetail(true)
-    }, [currentSalad])
+    }, [saladSelected])
 
     useEffect(() => {
         setTotalMatches(matches)
     }, [matches])
 
-    function handleOpenPizzaDetail(value) {
+    function handleOpenSaladDetail(value) {
         setOpenSaladDetail(value)
         handleCloseMenu()
         if (!value) {
@@ -95,7 +96,7 @@ function TableSalads() {
     }
 
     // async function handleRemovePizza() {
-    //     const response = await removePizza(currentSalad.id)
+    //     const response = await removePizza(saladSelected.id)
     //     let text, status
     //     if (response.message) {
     //         text = response.message
@@ -112,35 +113,30 @@ function TableSalads() {
     //     if (!response.message) {
     //         handleDeleteProduct({
     //             type: 'salads',
-    //             id: currentSalad.id
+    //             id: saladSelected.id
     //         })
     //     }
     //     handleCloseMenu()
     // }
 
-    // function addNewPizza() {
-    //     setCurrentSalad({
-    //         id: 0,
-    //         name: '',
-    //         text: '',
-    //         image: '',
-    //         ingredients: [''],
-    //         price: {
-    //             '30cm': {
-    //                 'Masa Tradicional': ''
-    //             }
-    //         }
-    //     })
-    //     saladNew.current = true
-    //     handleOpenPizzaDetail(true)
-    // }
+    function addNewPizza() {
+        saladNew.current = true
+        setCurrentSalad({
+            name: '',
+            text: '',
+            image: '',
+            ingredients: [''],
+            price: '',
+            totalPrice: ''
+        })
+    }
 
     // async function handleStatusPizza() {
     //     const properties = {
     //         property: 'status',
-    //         value: currentSalad.status === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
+    //         value: saladSelected.status === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
     //     }
-    //     const response = await updatePizza(currentSalad.id, properties)
+    //     const response = await updatePizza(saladSelected.id, properties)
     //     let text, status
     //     if (response.message) {
     //         text = response.message
@@ -158,7 +154,7 @@ function TableSalads() {
     //         handleUpdateProduct({
     //             ...properties,
     //             type: 'salads',
-    //             id: currentSalad.id
+    //             id: saladSelected.id
     //         })
     //     }
     //     handleCloseMenu()
@@ -268,28 +264,33 @@ function TableSalads() {
                 open={open}
                 onClose={handleCloseMenu}
             >
-                <MenuItem
+                {/* <MenuItem
                     // onClick={handleStatusPizza}
                 >
-                    { currentSalad?.status ? 'Desactivar' : 'Activar'}
-                </MenuItem>
+                    { saladSelected?.status ? 'Desactivar' : 'Activar'}
+                </MenuItem> */}
                 <MenuItem
-                    // onClick={() => { handleOpenPizzaDetail(true) }}
+                    // onClick={() => { handleOpenSaladDetail(true) }}
                 >
                     Ver Detalles
                 </MenuItem>
-                <MenuItem
+                {/* <MenuItem
                     // onClick={handleRemovePizza}
                 >
                     Eliminar
-                </MenuItem>
+                </MenuItem> */}
             </Menu>
-            {/* {
-                currentSalad ? (
-                    <ModalPizzaDetail openSaladDetail={openSaladDetail} handleOpenPizzaDetail={handleOpenPizzaDetail} currentSalad={currentSalad} saladNew={saladNew.current} />
+            {
+                saladSelected ? (
+                    <ModalSaladDetails
+                        openSaladDetail={openSaladDetail}
+                        handleOpenSaladDetail={handleOpenSaladDetail}
+                        saladSelected={saladSelected}
+                        saladNew={saladNew.current}
+                    />
                 ) : null
-            } */}
-            {/* <Box
+            }
+            <Box
                 sx={{
                     position: 'absolute',
                     bottom: '102%',
@@ -322,7 +323,7 @@ function TableSalads() {
                         </IconButton>
                     )
                 }
-            </Box> */}
+            </Box>
         </Paper>
     )
 }
