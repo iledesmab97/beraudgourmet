@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
+import CostSection from '@/components/ModalSaladDetails/CostSection'
 
 import { useEffect, useState } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
@@ -383,6 +384,11 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                         errors={errors?.price}
                         handleInputsChecked={handleInputsChecked}
                     /> */}
+
+                    <CostSection
+                        salad={saladSelected}
+                        saladNew={saladNew}
+                    />
 
                 </Box>
                 {
