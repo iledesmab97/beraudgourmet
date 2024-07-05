@@ -86,9 +86,9 @@ function TableSalads() {
         }
     }
 
-    function handleClickButtonAction(event, pizza) {
+    function handleClickButtonAction(event, salad) {
         setAnchorEl(event.currentTarget)
-        setCurrentSalad(pizza)
+        setCurrentSalad(salad)
     }
 
     function handleCloseMenu() {
