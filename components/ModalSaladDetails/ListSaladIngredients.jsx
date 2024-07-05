@@ -38,11 +38,11 @@ function errorStyles(error) {
     }
 }
 
-function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, errorsIngredients, handleInputsChecked, ...props }) {
+function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInput, property, saladNew, errorsIngredients, handleInputsChecked, ...props }) {
 
     const [ingredientsList, setIngredientsList] = useState(ingredients)
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
-    const [edit, setEdit] = useState(pizzaNew || false)
+    const [edit, setEdit] = useState(saladNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const [loading, setLoading] = useState(false)
@@ -72,7 +72,7 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
             return setLoading(false)    
         }
         if (!isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
-            if (!pizzaNew) await saveIngredients()    
+            if (!saladNew) await saveIngredients()    
             handleChangeInput({value: currentIngredientList, property})
             handleInputsChecked(property, true)
         }
@@ -127,7 +127,7 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
                 position: 'relative'
             }}
         >
-            <Typography variant='title' >Ingredientes de la Pizza</Typography>
+            <Typography variant='title' >Ingredientes de la Ensalada</Typography>
             {
                 allIngredients.length ? (
                     <List
