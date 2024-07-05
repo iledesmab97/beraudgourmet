@@ -91,7 +91,7 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
         <TextField
             value={myValue}
             onChange={handleChange}
-            disabled={!(pizzaNew || edit )}
+            disabled={!edit}
             error={Boolean(error)}
             helperText={error}
             InputProps={{
