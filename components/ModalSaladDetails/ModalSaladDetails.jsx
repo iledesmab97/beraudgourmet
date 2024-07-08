@@ -317,6 +317,8 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     <SaladImage
                         salad={salad}
                         property={'image'}
+                        updateProperty={updateSalad}
+                        updateState={updateSaladState}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         saladNew={saladNew}
