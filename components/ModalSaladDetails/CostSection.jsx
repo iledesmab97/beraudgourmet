@@ -7,7 +7,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 import InputUpdate from '@/components/InputUpdate/InputUpdate'
 
-function CostSection({ salad, saladNew }) {
+function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsChecked }) {
     return (
         <Grid
             container
@@ -25,15 +25,15 @@ function CostSection({ salad, saladNew }) {
             </Grid>
             <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                 <InputUpdate
-                    value={salad.price}
+                    value={salad.cost}
                     // updateProperty={updateExtraIngredientDB}
                     // updateState={updateExtraIngredientFront}
                     properties={{ id: salad.id, property: 'cost' }}
                     // validateError={validationPrice}
                     pizzaNew={saladNew}
-                    // errors={missingData.cost}
-                    // handleChangeInput={handleChangeInput}
-                    // handleInputsChecked={handleInputsChecked}
+                    errors={errors.cost}
+                    handleChangeInput={handleChangeInput}
+                    handleInputsChecked={handleInputsChecked}
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                     sx={{
                         width: '160px'
@@ -43,21 +43,27 @@ function CostSection({ salad, saladNew }) {
             <Grid item xs={12}>
                 <Divider />
             </Grid>
-            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
-                <Typography>Precio al público:</Typography>
-            </Grid>
-            <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
-                <TextField
-                    value={salad.totalPrice}
-                    disabled
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>
-                    }}
-                    sx={{
-                        width: '160px'
-                    }}
-                />
-            </Grid>
+            {
+                !saladNew ? (
+                    <>
+                        <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }} >
+                            <Typography>Precio al público:</Typography>
+                        </Grid>
+                        <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
+                            <TextField
+                                value={salad.costIVAStripe}
+                                disabled
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment>
+                                }}
+                                sx={{
+                                    width: '160px'
+                                }}
+                            />
+                        </Grid>
+                    </>
+                ) : null
+            }
         </Grid>
     )
 }
