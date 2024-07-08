@@ -19,7 +19,7 @@ import { useState } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
 
-import { updatePizza } from '@/services/productApi'
+import { updateSalad } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
 function validation(listIngredients) {
@@ -44,7 +44,7 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
     const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
     const [edit, setEdit] = useState(saladNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
+    const { handleUpdateProduct } = useGetProducts({type:'salads'})
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
 
@@ -88,7 +88,7 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
 
     async function saveIngredients() {
         console.log('Guardando información...')  
-        const response = await updatePizza( id, {
+        const response = await updateSalad( id, {
             property: 'ingredients',
             value: currentIngredientList
         })
@@ -108,7 +108,7 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
         if (!response.message) {
             setIngredientsList(currentIngredientList)
             handleUpdateProduct({
-                type: 'pizzas',
+                type: 'salads',
                 id: id,
                 property: 'ingredients',
                 value: currentIngredientList
