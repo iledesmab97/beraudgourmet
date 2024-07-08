@@ -33,6 +33,20 @@ export default function useGetProducts ({type}) {
         })
         dispatch(updateProductsList({type, newProductList}))
     }
+
+    function handleAddProduct({ type, newProduct }) {
+        const newProductToAdd = {
+            ...newProduct,
+            price: newProduct.cost,
+            totalPrice: newProduct.costIVAStripe
+        }
+        delete newProductToAdd.cost
+        delete newProductToAdd.costIVA
+        delete newProductToAdd.costIVAStripe
+        const newProductList = [...products]
+        newProductList.push(newProductToAdd)
+        dispatch(updateProductsList({ type, newProductList }))
+    }
     
-    return { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct }
+    return { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct, handleAddProduct }
 }
