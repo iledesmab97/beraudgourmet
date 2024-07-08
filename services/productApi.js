@@ -243,8 +243,9 @@ export function getSalads() {
   return fetch(`${PATH_BACK}/salads`)
     .then(response => response.json())
     .then(data => {
+      if (data.message) throw new Error(data.message)
       const saladList = data.map(pizza => {
-          const { id, name, text, image, ingredients, status, type  } = pizza
+          const { id, name, text, image, ingredients, status, type, cost, costIVAStripe  } = pizza
           const newSaladData = {
             id,
             name,
@@ -252,18 +253,36 @@ export function getSalads() {
             image,
             ingredients,
             status,
-            type
+            type,
+            price: cost,
+            totalPrice: costIVAStripe
           }
           return newSaladData
       })
       return saladList
   })
+  .catch(error => ({ message: error.message}))
 }
 
 export async function addNewSalad(salad) {
   return fetch(`${PATH_BACK}/salads`, {
     ...requestSettings('POST'),
     body: JSON.stringify(salad)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
+
+export async function updateSalad(id, body) {
+  return fetch(`${PATH_BACK}/salads/${id}`, {
+    ...requestSettings('PUT'),
+    body: JSON.stringify(body)
   })
     .then(response => {
       return response.json()
