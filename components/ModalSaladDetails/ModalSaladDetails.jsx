@@ -20,7 +20,7 @@ import CostSection from '@/components/ModalSaladDetails/CostSection'
 import { useEffect, useState } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import { getPizzasWithCosts, updatePizza, addNewSalad } from '@/services/productApi'
+import { getPizzasWithCosts, updateSalad, addNewSalad } from '@/services/productApi'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -225,13 +225,13 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
         setProcessing(false)
     }
 
-    // function updatePizzaState(product) {
-    //     const newProduct = {
-    //         ...product,
-    //         type: 'pizzas',
-    //     }
-    //     handleUpdateProduct(newProduct)
-    // }
+    function updateSaladState(product) {
+        const newProduct = {
+            ...product,
+            type: 'salads',
+        }
+        handleUpdateProduct(newProduct)
+    }
 
     // function handleChangeTypePizza(value) {
     //     setSaladType(value)
@@ -262,8 +262,8 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                 >
                     <InputUpdate
                         value={salad.name}
-                        // updateProperty={updatePizza}
-                        // updateState={updatePizzaState}
+                        updateProperty={updateSalad}
+                        updateState={updateSaladState}
                         properties={{ property: 'name', id: salad.id}}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
@@ -317,6 +317,8 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     <SaladImage
                         salad={salad}
                         property={'image'}
+                        updateProperty={updateSalad}
+                        updateState={updateSaladState}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         saladNew={saladNew}
@@ -328,8 +330,8 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     
                     <InputUpdate
                         value={salad.text}
-                        // updateProperty={updatePizza}
-                        // updateState={updatePizzaState}
+                        updateProperty={updateSalad}
+                        updateState={updateSaladState}
                         properties={{ property: 'text', id: salad.id}}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}

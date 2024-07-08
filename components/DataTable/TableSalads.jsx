@@ -271,7 +271,7 @@ function TableSalads() {
                     { saladSelected?.status ? 'Desactivar' : 'Activar'}
                 </MenuItem> */}
                 <MenuItem
-                    // onClick={() => { handleOpenSaladDetail(true) }}
+                    onClick={() => { handleOpenSaladDetail(true) }}
                 >
                     Ver Detalles
                 </MenuItem>

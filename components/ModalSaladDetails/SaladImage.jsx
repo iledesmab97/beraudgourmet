@@ -12,7 +12,7 @@ import { useState, useRef, useEffect } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { updatePizza, sendImage } from '@/services/productApi'
+import { updateSalad, sendImage } from '@/services/productApi'
 
 const regexImage = /^https?:\/\/.*\.(jpeg|jpg|png|gif|bmp)$/i
 
@@ -46,7 +46,7 @@ function SaladImage({ salad, property, handleChangeInput, saladNew, errors, hand
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
     const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(salad.image ? salad.image : salad.image + " ")
-    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
+    const { handleUpdateProduct } = useGetProducts({type:'salads'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const fileInput = useRef()
 
@@ -83,7 +83,7 @@ function SaladImage({ salad, property, handleChangeInput, saladNew, errors, hand
         }
         console.log('Guardando los datos...')
         setLoading(true)
-        const response = await updatePizza( salad.id, {property: 'image', value: url})
+        const response = await updateSalad( salad.id, {property: 'image', value: url})
         let text, status
         if (response.message) {
             text = response.message
@@ -99,7 +99,7 @@ function SaladImage({ salad, property, handleChangeInput, saladNew, errors, hand
         })
         if (!response.message) {
             handleUpdateProduct({
-                type: 'pizzas',
+                type: 'salads',
                 id: salad.id,
                 property: 'image',
                 value: url
