@@ -328,8 +328,8 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     
                     <InputUpdate
                         value={salad.text}
-                        // updateProperty={updatePizza}
-                        // updateState={updateSaladState}
+                        updateProperty={updateSalad}
+                        updateState={updateSaladState}
                         properties={{ property: 'text', id: salad.id}}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
