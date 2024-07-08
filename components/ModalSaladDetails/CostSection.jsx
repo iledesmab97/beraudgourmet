@@ -25,7 +25,7 @@ function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsC
             </Grid>
             <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                 <InputUpdate
-                    value={salad.cost}
+                    value={salad.price}
                     // updateProperty={updateExtraIngredientDB}
                     // updateState={updateExtraIngredientFront}
                     properties={{ id: salad.id, property: 'cost' }}
@@ -51,7 +51,7 @@ function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsC
                         </Grid>
                         <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
                             <TextField
-                                value={salad.costIVAStripe}
+                                value={salad.totalPrice}
                                 disabled
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">$</InputAdornment>
