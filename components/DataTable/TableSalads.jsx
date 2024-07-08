@@ -51,7 +51,7 @@ const colorsCell = {
 function TableSalads() {
 
     const [anchorEl, setAnchorEl] = useState(null)
-    const [saladSelected, setCurrentSalad] = useState(null)
+    const [saladSelected, setSaladSelected] = useState(null)
     const [openSaladDetail, setOpenSaladDetail] = useState(false)
     const open = Boolean(anchorEl)
     const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'salads'})
@@ -65,7 +65,8 @@ function TableSalads() {
     const [rowsPerPage, setRowsPerPage] = useState(10)
 
     useEffect(() => {
-        if (products) setSalads(products)
+        if (!products) return
+        setSalads(products)
     }, [products])
 
     useEffect(() => {
@@ -81,14 +82,14 @@ function TableSalads() {
         setOpenSaladDetail(value)
         handleCloseMenu()
         if (!value) {
-            setCurrentSalad(null)
+            setSaladSelected(null)
             saladNew.current = false
         }
     }
 
     function handleClickButtonAction(event, salad) {
         setAnchorEl(event.currentTarget)
-        setCurrentSalad(salad)
+        setSaladSelected(salad)
     }
 
     function handleCloseMenu() {
@@ -119,15 +120,15 @@ function TableSalads() {
     //     handleCloseMenu()
     // }
 
-    function addNewPizza() {
+    function addNewSalad() {
         saladNew.current = true
-        setCurrentSalad({
+        setSaladSelected({
             name: '',
             text: '',
             image: '',
             ingredients: [''],
-            price: '',
-            totalPrice: ''
+            cost: '',
+            costIVAStripe: ''
         })
     }
 
@@ -302,14 +303,14 @@ function TableSalads() {
                         <Button
                             variant='contained'
                             startIcon={<AddIcon />}
-                            onClick={addNewPizza}
+                            onClick={addNewSalad}
                             disabled={!products}
                         >
                             Nueva Pizza
                         </Button>
                     ) : (
                         <IconButton
-                            onClick={addNewPizza}
+                            onClick={addNewSalad}
                             disabled={!products}
                             sx={{
                                 bgcolor: '#295386',
