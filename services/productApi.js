@@ -259,3 +259,18 @@ export function getSalads() {
       return saladList
   })
 }
+
+export async function addNewSalad(salad) {
+  return fetch(`${PATH_BACK}/salads`, {
+    ...requestSettings('POST'),
+    body: JSON.stringify(salad)
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(response => {
+      if (response.message) throw new Error(response.message)
+      return response
+    })
+    .catch(error => ({message: error.message}))
+}
