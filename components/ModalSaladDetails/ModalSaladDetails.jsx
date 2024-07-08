@@ -20,7 +20,7 @@ import CostSection from '@/components/ModalSaladDetails/CostSection'
 import { useEffect, useState } from 'react'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import { getPizzasWithCosts, updatePizza, addNewPizza } from '@/services/productApi'
+import { getPizzasWithCosts, updatePizza, addNewSalad } from '@/services/productApi'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -111,18 +111,18 @@ function styleGiver(matches) {
 
 function validate(inputsChecked) {
     const errors = {}
-    const { name, image, text, ingredients, price, type } = inputsChecked
+    const { name, image, text, ingredients, cost, type } = inputsChecked
     if (!name) errors.name = true
     if (!image) errors.image = true
     if (!text) errors.text = true
     if (!ingredients && type !== 'customizable') errors.ingredients = true
-    if (!price) errors.price = true
+    if (!cost) errors.cost = true
     return errors
 }
 
 function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelected, saladNew }) {
 
-    const { products, handleUpdateProduct, handleAddProductsList } = useGetProducts({type:'salads'})
+    const { products, handleUpdateProduct, handleAddProductsList, handleAddProduct } = useGetProducts({type:'salads'})
     const [salad, setSalad] = useState(saladSelected)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [processing, setProcessing] = useState(false)
@@ -137,6 +137,10 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
         const [newSalad] = products.filter(element => element.id === salad.id)
         setSalad(newSalad)
     }, [products])
+
+    useEffect(() => {
+        setSalad(saladSelected)
+    }, [saladSelected])
 
     // useEffect(() => {
     //     if ( saladType === 'customizable' ) {
@@ -187,50 +191,38 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
             return setErrors(newErrors)
         }
 
-        const ingredients = salad.ingredients.filter(i => i)
-
-        // Peparando los datos
-        const pizzaToCreate = {
+        // Preparando los datos
+        const saladToCreate = {
             ...salad,
-            ingredients,
-            type: saladType
+            ingredients: salad.ingredients,
+            // type: saladType
         }
-        delete pizzaToCreate.price
-        const costs = []
-        Object.keys(salad.price).forEach(size => {
-            Object.keys(salad.price[size]).forEach(mass => {
-                const cost = salad.price[size][mass]
-                costs.push({size, mass, cost})
-            })
-        })
-        pizzaToCreate.costs = costs
+        delete saladToCreate.price
+        delete saladToCreate.totalPrice
 
         // Haciendo la solicitud
-        // const response = await addNewPizza(pizzaToCreate)
-        // let text, status
-        // if (response.message) {
-        //     text = response.message
-        //     status = 'error'
-        // } else {
-        //     text = 'Pizza created successfully'
-        //     status = 'success'
-        // }
-        // handleUpdateAlertMessage({
-        //     checked: true,
-        //     text,
-        //     status
-        // })
-        // if (!response.message) {
-        //     await getPizzasWithCosts().then(data => {
-        //         handleAddProductsList({
-        //         type: 'pizzas',
-        //         products: data
-        //         })
-        //     })
-        //     console.log('Pizza agregada exitosamente')
-        //     handleOpenSaladDetail(false)
-        // }
-        // setProcessing(false)
+        const response = await addNewSalad(saladToCreate)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = 'Ensalada creada exitosamente'
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            handleAddProduct({ type: 'salads', newProduct: response })
+            console.log('Ensalada agregada exitosamente')
+            setProcessing(false)
+            return handleOpenSaladDetail(false)
+        }
+        console.log('No se ha podido agregar la ensalada correctamente...')
+        setProcessing(false)
     }
 
     // function updatePizzaState(product) {
@@ -388,6 +380,9 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     <CostSection
                         salad={saladSelected}
                         saladNew={saladNew}
+                        errors={errors}
+                        handleChangeInput={handleChangeInput}
+                        handleInputsChecked={handleInputsChecked}
                     />
 
                 </Box>
