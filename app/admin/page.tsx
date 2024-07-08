@@ -26,7 +26,7 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 import { lookingForUserLoged } from '@/services/userApi'
-import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
+import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
 import { getAllStoresWithSchedules } from '@/services/storeApi'
 import { getAllOrders } from '@/services/orderApi'
 
@@ -62,6 +62,14 @@ function AdminPlace() {
             getPizzasWithCosts().then(data => {
                 handleAddProductsList({
                 type: 'pizzas',
+                products: data
+                })
+            })
+        }
+        if (!(products && products.salads)) {
+            getSalads().then(data => {
+                handleAddProductsList({
+                type: 'salads',
                 products: data
                 })
             })
