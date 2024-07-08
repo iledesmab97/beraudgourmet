@@ -9,6 +9,7 @@ import TableOrders from '@/components/DataTable/TableOrders'
 import TablePizzas from '@/components/DataTable/TablePizzas'
 import TableStores from '@/components/DataTable/TableStores'
 import TableUsers from '@/components/DataTable/TableUsers'
+import TablePizzaExtraIngredients from '@/components/DataTable/TablePizzaExtraIngredients'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -32,6 +33,10 @@ const listToolOptions = {
     Users: {
         title: 'Lista de Usuarios',
         listTabs: ['Todos los usuarios']
+    },
+    'Extra Ingredients': {
+        title: 'Lista de Ingredientes Extra',
+        listTabs: ['Todos']
     }
 }
 
@@ -85,6 +90,9 @@ function DataPanel({ toolSelected }) {
                 }
                 {
                     toolSelected === 'Users' ? <TableUsers /> : null
+                }
+                {
+                    toolSelected === 'Extra Ingredients' ? <TablePizzaExtraIngredients /> : null
                 }
             </Box>
         </Grid>

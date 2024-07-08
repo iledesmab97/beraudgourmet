@@ -16,7 +16,7 @@ import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
 import useHandleSession from '@/hooks/useHandleSession'
 
-import { requestVerification } from '@/services/userApi'
+import { requestVerification, updateMyAccount } from '@/services/userApi'
 
 import styles from '@/components/MoveDown/MoveDown.module.css'
 
@@ -59,6 +59,21 @@ function ModalUserInfo() {
     async function sendVerification() {
         const response = await requestVerification({email: user.email})
         if (response.message) return alert(response.message)
+    }
+
+    function deleteAccount() {
+        updateMyAccount({ property: 'state', value: 'DESACTIVE'})
+            .then(data => {
+                if (data.message) throw new Error(data.message)
+                executeLogout()
+            })
+            .catch(error => alert(error.message))
+    }
+
+    function executeLogout() {
+        signOff()
+        closeSession()
+        handleCloseModal('user')
     }
 
     return (
@@ -157,7 +172,7 @@ function ModalUserInfo() {
                         Ver historial de ordenes
                     </Button>
                     <Button
-                        onClick={ () => {}}
+                        onClick={deleteAccount}
                     >
                         Borrar mi cuenta
                     </Button>
@@ -190,11 +205,7 @@ function ModalUserInfo() {
                     </Typography>
                     <Button
                         id={'button-cerrar-sesion'}
-                        onClick={ () => {
-                            signOff()
-                            closeSession()
-                            handleCloseModal('user')
-                        }}
+                        onClick={executeLogout}
                     >
                         Cerrar Sesión
                     </Button>
