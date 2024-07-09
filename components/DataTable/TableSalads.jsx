@@ -33,7 +33,7 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
-import { getPizzas, getPizzaCosts, removePizza, updatePizza } from '@/services/productApi'
+import { getPizzas, getPizzaCosts, removePizza, updatePizza, updateSalad } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
 
 import styles from './DataTable.module.css'
@@ -63,6 +63,7 @@ function TableSalads() {
     const [totalMatches, setTotalMatches] = useState(false)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (!products) return
@@ -132,34 +133,36 @@ function TableSalads() {
         })
     }
 
-    // async function handleStatusPizza() {
-    //     const properties = {
-    //         property: 'status',
-    //         value: saladSelected.status === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
-    //     }
-    //     const response = await updatePizza(saladSelected.id, properties)
-    //     let text, status
-    //     if (response.message) {
-    //         text = response.message
-    //         status = 'error'
-    //     } else {
-    //         text = response
-    //         status = 'success'
-    //     }
-    //     handleUpdateAlertMessage({
-    //         checked: true,
-    //         text,
-    //         status
-    //     })
-    //     if (!response.message) {
-    //         handleUpdateProduct({
-    //             ...properties,
-    //             type: 'salads',
-    //             id: saladSelected.id
-    //         })
-    //     }
-    //     handleCloseMenu()
-    // }
+    async function handleStatusPizza() {
+        setLoading(true)
+        const properties = {
+            property: 'status',
+            value: saladSelected.status === 'ACTIVE' ? 'DESACTIVE' : 'ACTIVE'
+        }
+        const response = await updateSalad(saladSelected.id, properties)
+        let text, status
+        if (response.message) {
+            text = response.message
+            status = 'error'
+        } else {
+            text = response
+            status = 'success'
+        }
+        handleUpdateAlertMessage({
+            checked: true,
+            text,
+            status
+        })
+        if (!response.message) {
+            handleUpdateProduct({
+                ...properties,
+                type: 'salads',
+                id: saladSelected.id
+            })
+        }
+        setLoading(false)
+        handleCloseMenu()
+    }
 
     function handleChangePage(newPage) {
         setPage(newPage)
@@ -265,11 +268,12 @@ function TableSalads() {
                 open={open}
                 onClose={handleCloseMenu}
             >
-                {/* <MenuItem
-                    // onClick={handleStatusPizza}
+                <MenuItem
+                    disabled={loading}
+                    onClick={handleStatusPizza}
                 >
-                    { saladSelected?.status ? 'Desactivar' : 'Activar'}
-                </MenuItem> */}
+                    { saladSelected.status === 'ACTIVE' ? 'Desactivar' : 'Activar'}
+                </MenuItem>
                 <MenuItem
                     onClick={() => { handleOpenSaladDetail(true) }}
                 >
