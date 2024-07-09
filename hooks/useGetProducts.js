@@ -47,6 +47,20 @@ export default function useGetProducts ({type}) {
         newProductList.push(newProductToAdd)
         dispatch(updateProductsList({ type, newProductList }))
     }
+
+    function handleUpdateManyPropertiesProduct(newProduct) {
+        const { type, id, properties } = newProduct
+        let index
+        const productToUpdate = products.find((element, i) => {
+            if (element.id !== id) return false
+            index = i
+            return true
+        })
+        const productUpdated = {...productToUpdate, ...properties}
+        const newProductList = [...products]
+        newProductList[index] = productUpdated
+        dispatch(updateProductsList({type, newProductList}))
+    }
     
-    return { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct, handleAddProduct }
+    return { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct, handleAddProduct, handleUpdateManyPropertiesProduct }
 }
