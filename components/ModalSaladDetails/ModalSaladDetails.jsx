@@ -122,7 +122,7 @@ function validate(inputsChecked) {
 
 function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelected, saladNew }) {
 
-    const { products, handleUpdateProduct, handleAddProductsList, handleAddProduct } = useGetProducts({type:'salads'})
+    const { products, handleUpdateProduct, handleAddProductsList, handleAddProduct, handleUpdateManyPropertiesProduct } = useGetProducts({type:'salads'})
     const [salad, setSalad] = useState(saladSelected)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [processing, setProcessing] = useState(false)
@@ -231,6 +231,18 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
             type: 'salads',
         }
         handleUpdateProduct(newProduct)
+    }
+
+    function updateSaladStateCost(product) {
+        const newProduct = {
+            ...product,
+            type: 'salads',
+        }
+        handleUpdateManyPropertiesProduct(newProduct)
+        setSalad(prevState => ({
+            ...prevState,
+            ...product.properties
+        }))
     }
 
     // function handleChangeTypePizza(value) {
@@ -369,22 +381,14 @@ function ModalSaladDetails({ openSaladDetail, handleOpenSaladDetail, saladSelect
                     
                     <Divider sx={{ width: '100%'}} />
                     
-                    {/* <PizzaCharacteristics
-                        pizzaId={salad.id}
-                        sizes={salad.price}
-                        handleChangeInput={handleChangeInput}
-                        saladNew={saladNew}
-                        property={'price'}
-                        errors={errors?.price}
-                        handleInputsChecked={handleInputsChecked}
-                    /> */}
-
                     <CostSection
-                        salad={saladSelected}
+                        salad={salad}
                         saladNew={saladNew}
                         errors={errors}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
+                        updateProperty={updateSalad}
+                        updateState={updateSaladStateCost}
                     />
 
                 </Box>
