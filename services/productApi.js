@@ -16,7 +16,8 @@ export function getPizzas() {
             image,
             ingredients,
             status,
-            type
+            type,
+            productType: 'pizza'
           }
           return newPizzaData
       })
@@ -255,7 +256,8 @@ export function getSalads() {
             status,
             type,
             price: cost,
-            totalPrice: costIVAStripe
+            totalPrice: costIVAStripe,
+            productType: 'salad'
           }
           return newSaladData
       })
