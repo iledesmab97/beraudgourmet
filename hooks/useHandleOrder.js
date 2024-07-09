@@ -3,21 +3,40 @@ import useGetModal from '@/hooks/useGetModal'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import items from '@/menuStore.json'
 
+function initialInput(product) {
+    const genericInput = {
+        ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
+        extra: product?.extra ? product.extra : {},
+        quantity: product?.quantity ? product.quantity : 1,
+    }
+    const extraInput = {}
+    if (product.productType === 'pizza') {
+        extraInput.size = product.size ? product.size : '30cm',
+        extraInput.mass = product?.mass ? product.mass : Object.keys(product.price['30cm'])[0]
+    }
+
+    const totalInput = {
+        ...genericInput,
+        ...extraInput
+    }
+
+    return totalInput
+}
+
 export default function useHandleOrder({ product }) {
 
     const [currentProduct, setCurrentProduct] = useState(product)
     const { extraIngredients } = useGetExtraIngredients()
-    const [inputs, setInputs] = useState({
-        size: product.size ? product.size : '30cm',
-        quantity: product?.quantity ? product.quantity : 1,
-        mass: product?.mass ? product.mass : Object.keys(product.price['30cm'])[0],
-        ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
-        extra: product?.extra ? product.extra : {}
-    })
+    const [inputs, setInputs] = useState(initialInput(product))
     const { edit, handleUpdateModalOrder} = useGetModal({modalType:'order'})
 
     const totalPrice = useMemo(() => {
-        const price = product.price[inputs.size][inputs.mass]
+        let price
+        if (product.productType === 'salad') {
+            price = product.totalPrice
+        } else {
+            price = product.price[inputs.size][inputs.mass]
+        }
         const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
             const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0
             return acc + quantity * extraIngredients[cur].totalPrice
