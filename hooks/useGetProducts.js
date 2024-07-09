@@ -4,6 +4,7 @@ import { addProductsList, updateProductsList } from '@/stores/products/slice'
 export default function useGetProducts ({type}) {
 
     const products = useAppSelector(state => state.products[type])
+    const totalProducts = useAppSelector(state => state.products)
     const dispatch = useAppDispatch()
 
     function handleAddProductsList({type, products}) {
@@ -62,5 +63,5 @@ export default function useGetProducts ({type}) {
         dispatch(updateProductsList({type, newProductList}))
     }
     
-    return { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct, handleAddProduct, handleUpdateManyPropertiesProduct }
+    return { products, totalProducts, handleAddProductsList, handleUpdateProduct, handleDeleteProduct, handleAddProduct, handleUpdateManyPropertiesProduct }
 }
