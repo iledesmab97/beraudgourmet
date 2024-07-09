@@ -31,6 +31,10 @@ import { useLoadScript } from "@react-google-maps/api"
 import useLogedUser from '@/hooks/useLogedUser'
 import useLocalData from '@/hooks/useLocalData'
 import useGetDrawer from '@/hooks/useGetDrawer'
+import useGetProducts from '@/hooks/useGetProducts'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+
+import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
@@ -48,6 +52,10 @@ function Menu () {
   const matches = useMediaQuery(theme.breakpoints.down('md'))
   const { drawer } = useGetDrawer()
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
+  const { totalProducts, handleAddProductsList } = useGetProducts({type:'pizzas'})
+  const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
+  const [pizzas, setPizzas] = useState([])
+  const [salads, setSalads] = useState([])
 
   // Buscar usuario logueado en caso de existir
   useEffect(() => {
@@ -59,6 +67,44 @@ function Menu () {
       }
     })
   }, [])
+
+  // Cargar los productos e ingredientes
+  useEffect(() => {
+    if (!(totalProducts && totalProducts.pizzas)) {
+      getPizzasWithCosts()
+        .then(data => {
+          handleAddProductsList({
+            type: 'pizzas',
+            products: data
+          })
+        })
+    }
+    if (!(extraIngredients && Object.keys(extraIngredients).length)) {
+      getExtraIngredients()
+        .then(data => {
+          handleAddExtraIngredinetsList({ extraIngredientsList: data })
+        })
+    }
+    if (!(totalProducts && totalProducts.salads)) {
+      getSalads().then(data => {
+        handleAddProductsList({
+          type: 'salads',
+          products: data
+        })
+      })
+    }
+  }, [])
+
+  // Actualizar la lista de productos
+  useEffect(() => {
+    if (!totalProducts) return
+    if (totalProducts.pizzas) { 
+      setPizzas(totalProducts.pizzas)
+    }
+    if (totalProducts.salads) {
+      setSalads(totalProducts.salads)
+    }
+  }, [totalProducts])
 
   useEffect(() => {
     setOpenOrderRewards(drawer.open)
@@ -85,7 +131,16 @@ function Menu () {
         }}
       >
         <PizzaCustomizable />
-        <ContainerItems />
+        <Grid
+          container
+          item
+          xs={12}
+          md={8}
+          spacing={3}
+        >
+          <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} />
+          <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} />
+        </Grid>
         {
           totalMatches === 'true' ? (
             <>
