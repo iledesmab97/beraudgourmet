@@ -17,37 +17,15 @@ import useHandleSteps from '@/hooks/useHandleSteps'
 
 import { getPizzasWithCosts, getExtraIngredients } from '@/services/productApi'
 
-function ContainerItems() {
+function ContainerItems({ itemList, title }) {
 
   const {handleOpenModalOrder} = useGetModal({modalType:'order'})
-  const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
-  const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
-  const { steps } = useHandleSteps()
-
-  useEffect(() => {
-    if (!(products && products.pizzas)) {
-      getPizzasWithCosts()
-        .then(data => {
-          handleAddProductsList({
-            type: 'pizzas',
-            products: data
-          })
-        })
-    }
-    if (!(extraIngredients && Object.keys(extraIngredients).length)) {
-      getExtraIngredients()
-        .then(data => {
-          handleAddExtraIngredinetsList({ extraIngredientsList: data })
-        })
-    }
-  }, [])
 
   return (
     <Grid
       id='Pizza-Section'
       item
       xs={12}
-      md={8}
     >
       <Typography
         id='title-pizzas-container'
@@ -65,14 +43,14 @@ function ContainerItems() {
           },
         }}
       >
-        Nuestra selección de Pizzas
+        {title}
       </Typography>
       <Grid
         container
         spacing={2}
       >
         {
-          products && products.filter(item => item.status === 'ACTIVE' && item.type !== 'customizable' ).map((item, index) => (
+          itemList.filter(item => item.status === 'ACTIVE' && item.type !== 'customizable' ).map((item, index) => (
             <Grid
               item
               key={item.name + index}
