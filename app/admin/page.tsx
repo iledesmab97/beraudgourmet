@@ -99,8 +99,8 @@ function AdminPlace() {
         setTotalMatches(String(matches))
     }, [matches])
 
-    function handleToolSelected(event: any) {
-        setToolSelected(event.target.textContent)
+    function handleToolSelected(newTool: string) {
+        setToolSelected(newTool)
     }
 
     function handleOpenToolLateralBar(value: boolean) {
