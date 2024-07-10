@@ -72,7 +72,7 @@ function ToolLateralBar({ toolSelected, handleToolSelected }) {
                                         opacity: 1
                                     }
                                 }}
-                                onClick={handleToolSelected}
+                                onClick={() => {handleToolSelected(tool.name)}}
                             >
                                 <ListItemIcon
                                     sx={ toolSelected === tool.name ? {
