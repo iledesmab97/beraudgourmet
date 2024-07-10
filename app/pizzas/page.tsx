@@ -54,8 +54,8 @@ function Menu () {
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
   const { totalProducts, handleAddProductsList } = useGetProducts({type:'pizzas'})
   const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
-  const [pizzas, setPizzas] = useState([])
-  const [salads, setSalads] = useState([])
+  const [pizzas, setPizzas] = useState(null)
+  const [salads, setSalads] = useState(null)
 
   // Buscar usuario logueado en caso de existir
   useEffect(() => {
@@ -138,8 +138,14 @@ function Menu () {
           md={8}
           spacing={3}
         >
-          <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} />
-          <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} />
+          {
+            pizzas && salads ? (
+              <>
+                <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} />
+                <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} />
+              </>
+            ) : null
+          }
         </Grid>
         {
           totalMatches === 'true' ? (
