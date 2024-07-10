@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import useGetModal from '@/hooks/useGetModal'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import items from '@/menuStore.json'
 
 function initialInput(product) {
     const genericInput = {
@@ -28,12 +27,12 @@ export default function useHandleOrder({ product }) {
     const [currentProduct, setCurrentProduct] = useState(product)
     const { extraIngredients } = useGetExtraIngredients()
     const [inputs, setInputs] = useState(initialInput(product))
-    const { edit, handleUpdateModalOrder} = useGetModal({modalType:'order'})
+    const { handleUpdateModalOrder} = useGetModal({modalType:'order'})
 
     const totalPrice = useMemo(() => {
         let price
         if (product.productType === 'salad') {
-            price = product.totalPrice
+            price = product.totalPriceByUnity
         } else {
             price = product.price[inputs.size][inputs.mass]
         }
@@ -47,17 +46,12 @@ export default function useHandleOrder({ product }) {
     }, [inputs])
 
     const updateValue = useRef(null)
-    const firstLoad = useRef(true)
-    const addedItem = useRef(false)
-
-    function handleAddedItem() {
-        addedItem.current = !addedItem.current
-    }
 
     function handleCurrentProduct(newProduct) {
         setCurrentProduct(newProduct)
     }
 
+    // Actualizar el currentProduct para asignarle las características específicas del pedido
     useEffect(() => {
         const newCurrentProduct = {
             ...currentProduct,
@@ -71,20 +65,10 @@ export default function useHandleOrder({ product }) {
         handleCurrentProduct(newCurrentProduct)
     }, [])
 
+    // Actualizar las especificaciones del pedido en el global storage cuando se cierra el modal ChooseProduct
+
     useEffect(() => {
-        firstLoad.current = false
-        return () => {
-            if (edit) return
-            if (addedItem.current) {
-                for (const item of items) {
-                    if (item.name === currentProduct.name) {
-                        handleUpdateModalOrder(item)
-                    }
-                }
-            } else {
-                handleUpdateModalOrder(currentProduct)
-            }
-        }
+        handleUpdateModalOrder(currentProduct)
     }, [currentProduct])
 
     useEffect(() => {
@@ -174,6 +158,5 @@ export default function useHandleOrder({ product }) {
         handleMass,
         handleIngredientsModal,
         handleExtra,
-        handleAddedItem
     }
 }
