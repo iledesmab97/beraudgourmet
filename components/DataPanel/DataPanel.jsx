@@ -7,6 +7,7 @@ import { getAllUsers } from '@/services/userApi'
 import TabBar from '@/components/TabBar/TabBar'
 import TableOrders from '@/components/DataTable/TableOrders'
 import TablePizzas from '@/components/DataTable/TablePizzas'
+import TableSalads from '@/components/DataTable/TableSalads'
 import TableStores from '@/components/DataTable/TableStores'
 import TableUsers from '@/components/DataTable/TableUsers'
 import TablePizzaExtraIngredients from '@/components/DataTable/TablePizzaExtraIngredients'
@@ -25,6 +26,10 @@ const listToolOptions = {
     Pizzas: {
         title: 'Lista de Pizzas',
         listTabs: ['Todas las pizzas']
+    },
+    Salads: {
+        title: 'Lista de Ensaladas',
+        listTabs: ['Todas las ensaladas']
     },
     Stores: {
         title: 'Lista de Tiendas',
@@ -84,6 +89,9 @@ function DataPanel({ toolSelected }) {
                 }
                 {
                     toolSelected === 'Pizzas' ? <TablePizzas /> : null
+                }
+                {
+                    toolSelected === 'Salads' ? <TableSalads /> : null
                 }
                 {
                     toolSelected === 'Stores' ? <TableStores /> : null

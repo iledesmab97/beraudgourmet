@@ -15,6 +15,7 @@ import LocalPizzaIcon from '@mui/icons-material/LocalPizza'
 import StoreIcon from '@mui/icons-material/Store'
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag'
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined'
+import TakeoutDiningIcon from '@mui/icons-material/TakeoutDining'
 
 import styles from './ToolLateralBar.module.css'
 
@@ -26,6 +27,10 @@ const listTools = [
     {
         name: 'Pizzas',
         icon: LocalPizzaIcon
+    },
+    {
+        name: 'Salads',
+        icon: TakeoutDiningIcon
     },
     {
         name: 'Stores',
