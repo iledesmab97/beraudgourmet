@@ -263,28 +263,32 @@ function TableSalads() {
                 labelRowsPerPage={'Filas por página'}
                 ActionsComponent={TablePaginationActions}
             />
-            <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleCloseMenu}
-            >
-                <MenuItem
-                    disabled={loading}
-                    onClick={handleStatusPizza}
-                >
-                    { saladSelected.status === 'ACTIVE' ? 'Desactivar' : 'Activar'}
-                </MenuItem>
-                <MenuItem
-                    onClick={() => { handleOpenSaladDetail(true) }}
-                >
-                    Ver Detalles
-                </MenuItem>
-                {/* <MenuItem
-                    // onClick={handleRemovePizza}
-                >
-                    Eliminar
-                </MenuItem> */}
-            </Menu>
+            {
+                saladSelected ? (
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleCloseMenu}
+                    >
+                        <MenuItem
+                            disabled={loading}
+                            onClick={handleStatusPizza}
+                        >
+                            { saladSelected.status === 'ACTIVE' ? 'Desactivar' : 'Activar'}
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => { handleOpenSaladDetail(true) }}
+                        >
+                            Ver Detalles
+                        </MenuItem>
+                        {/* <MenuItem
+                            // onClick={handleRemovePizza}
+                        >
+                            Eliminar
+                        </MenuItem> */}
+                    </Menu>
+                ) : null
+            }
             {
                 saladSelected ? (
                     <ModalSaladDetails
