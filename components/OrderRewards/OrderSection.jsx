@@ -80,7 +80,7 @@ export default function OrderSection () {
                           }`}
                           {
                             order.ingredientsModal.map((ingredient, index) => (
-                              <Box key={ingredient + index} component={'label'}>{ order.productType === 'pizza' ? ', ' : Object.keys(order.extra).length ? ', ' : '' }<CrossText component={'span'}>{ingredient}</CrossText></Box>
+                              <Box key={ingredient + index} component={'label'}>{ order.productType === 'pizza' ? ', ' : Object.keys(order.extra).length || index > 0 ? ', ' : '' }<CrossText component={'span'}>{ingredient}</CrossText></Box>
                             ))
                           }
                         </>
