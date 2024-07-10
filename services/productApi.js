@@ -256,7 +256,7 @@ export function getSalads() {
             status,
             type,
             price: cost,
-            totalPrice: costIVAStripe,
+            totalPriceByUnity: costIVAStripe,
             productType: 'salad'
           }
           return newSaladData
