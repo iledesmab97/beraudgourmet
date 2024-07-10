@@ -33,6 +33,7 @@ import useLocalData from '@/hooks/useLocalData'
 import useGetDrawer from '@/hooks/useGetDrawer'
 import useGetProducts from '@/hooks/useGetProducts'
 import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import useHandleSteps from '@/hooks/useHandleSteps'
 
 import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
 
@@ -54,6 +55,7 @@ function Menu () {
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
   const { totalProducts, handleAddProductsList } = useGetProducts({type:'pizzas'})
   const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
+  const { steps } = useHandleSteps()
   const [pizzas, setPizzas] = useState(null)
   const [salads, setSalads] = useState(null)
 
