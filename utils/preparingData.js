@@ -36,13 +36,36 @@ export function oneUserDataFromFrontToBack(propertyFront) {
     return propertyFront
 }
 
-export function descriptionOrder(order) {
-    const primrayData = order.quantity + ' x ' + order.name + ` (${order.size})`
-    const extraIngredients = `${order.mass}${Object.keys(order.extra).map(ingredient => {
-        return `, ${order.extra[ingredient]}x ${ingredient}`
-        }).join('')
-        }`
-    const ingredientsOut = order.ingredientsModal.map( ingredient => `~${ingredient}~` ).join(', ')
+export function descriptionOrder(order, type) {
+    let primrayData, extraIngredients, ingredientsOut
+    switch (type) {
+        case 'pizza': {
+            primrayData = order.quantity + ' x ' + order.name + ` (${order.size})`
+            extraIngredients = `${order.mass}${Object.keys(order.extra).map(ingredient => {
+                return `, ${order.extra[ingredient]}x ${ingredient}`
+                }).join('')
+                }`
+            ingredientsOut = order.ingredientsModal.map( ingredient => `~${ingredient}~` ).join(', ')
+            break
+        }
+        case 'salad': {
+            primrayData = order.quantity + ' x ' + order.name
+            extraIngredients = `${Object.keys(order.extra).map(ingredient => {
+                return `${order.extra[ingredient]}x ${ingredient}`
+                }).join(', ')
+                }`
+            ingredientsOut = order.ingredientsModal.map( ingredient => `~${ingredient}~` ).join(', ')
+            break
+        }
+        default: {
+            primrayData = order.quantity + ' x ' + order.name + ` (${order.size})`
+            extraIngredients = `${order.mass}${Object.keys(order.extra).map(ingredient => {
+                return `, ${order.extra[ingredient]}x ${ingredient}`
+                }).join('')
+                }`
+            ingredientsOut = order.ingredientsModal.map( ingredient => `~${ingredient}~` ).join(', ')
+        }
+    }
     return primrayData + (extraIngredients ? ', ' : '') + extraIngredients + (ingredientsOut ? ', ' : '') + ingredientsOut
 }
 
