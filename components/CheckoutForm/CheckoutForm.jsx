@@ -44,10 +44,10 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
     const textOrderToWhatsapp = orders.map(order => descriptionOrder(order)).join("; ")
 
     const orderItems = orders.map(item => {
-        const { size, mass, quantity, ingredientsModal, extra, totalPrice } = item
+        const { size, mass, quantity, ingredientsModal, extra, totalPrice, productType } = item
         return {
             name: item.name,
-            itemType: 'pizza',
+            itemType: productType,
             size,
             mass,
             quantity,
@@ -58,7 +58,7 @@ export default function CheckoutForm({user, place, orders, checkout, payment_met
             })),
             costItemPerUnit: totalPrice / quantity,
             totalCostByItem: Number(totalPrice),
-            description: descriptionOrder(item)
+            description: descriptionOrder(item, item.productType)
         }
     })
     const dataOrders = {
