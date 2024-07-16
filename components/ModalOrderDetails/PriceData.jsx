@@ -479,9 +479,13 @@ function PriceData({ orders }) {
         })
         if (!response.message) {
             getAllOrders().then(data => {
-                handleAddOrderList(data)
-                setOrdersState((prevState) => data.find(order => order.id === prevState.id))
+                handleAddOrderList(data)                
             })
+            const newOrder = {
+                ...orderToCompare,
+                ...currentOrdersToCompare
+            }
+            setOrdersState(newOrder)
         }
         setLoading(false)
         return response
