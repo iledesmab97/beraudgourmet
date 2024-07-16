@@ -32,7 +32,6 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
         handleMass,
         handleIngredientsModal,
         handleExtra,
-        handleAddedItem
     } = useHandleOrder({ product })
 
     const theme = useTheme()
@@ -143,7 +142,6 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 handleAddOrder={handleAddOrder}
                 currentProduct={currentProduct}
                 handleCloseModalOrder={handleCloseModalOrder}
-                handleAddedItem={handleAddedItem}
                 handleUpdateOrder={handleUpdateOrder}
                 nextStep={nextStepGuide}
             />

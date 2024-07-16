@@ -15,14 +15,15 @@ function DataPrice({ orders, payment_method, checkout }) {
                 width: '100%'
             }}
         >
+            <Divider />
             {
                 orders && orders.length && (
                     <>
+
                         {
                             orders.map((order, index) => (
 
                                 <Box key={order.name + order.totalPrice + ' ' + index}>
-                                    <Divider />
                                     <ListItem
                                         sx={{
                                             px: '0px'
@@ -37,7 +38,7 @@ function DataPrice({ orders, payment_method, checkout }) {
                                                 justifyContent: 'space-between'
                                                 }}
                                             >
-                                                { order.quantity + ' x ' + order.name + ` (${order.size})`}
+                                                { order.quantity + ' x ' + order.name + ( order.productType === 'pizza' ? ` (${order.size})` : '')}
                                                 <Typography>
                                                     ${order.totalPrice}
                                                 </Typography>
@@ -46,9 +47,9 @@ function DataPrice({ orders, payment_method, checkout }) {
                                             secondary={
                                             <>
                                                 {
-                                                    `${order.mass}${Object.keys(order.extra).map(ingredient => {
-                                                        return `, ${order.extra[ingredient]}x ${ingredient}`
-                                                    }).join('')
+                                                    `${ order.productType === 'pizza' ? order.mass : ''}${ ( order.productType === 'pizza' && Object.keys(order.extra).length ? ', ' : '') + Object.keys(order.extra).map(ingredient => {
+                                                        return `${order.extra[ingredient]}x ${ingredient}`
+                                                    }).join(', ')
                                                     }`
                                                 }
                                                 {
@@ -56,7 +57,7 @@ function DataPrice({ orders, payment_method, checkout }) {
                                                         <Box
                                                             key={ingredient + index}
                                                             component={'label'}
-                                                        >, <CrossText component={'span'}>{ingredient}</CrossText>
+                                                        >{ order.productType === 'pizza' ? ', ' : Object.keys(order.extra).length || index > 0 ? ', ' : '' }<CrossText component={'span'}>{ingredient}</CrossText>
                                                         </Box>
                                                     ))
                                                 }

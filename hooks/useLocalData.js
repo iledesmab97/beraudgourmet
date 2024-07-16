@@ -10,7 +10,7 @@ function useLocalData() {
     
     const { place, handleAddPlace } = useGetPlace()
     const { orders, handleUpdateTotalOrders } = useGetOrders()
-    const { products } = useGetProducts({type: 'pizzas'})
+    const { totalProducts } = useGetProducts({type: 'pizzas'})
     const { storeList } = useGetStoreList()
     const [storeListArray, setStoreListArray] = useState([])
 
@@ -50,38 +50,66 @@ function useLocalData() {
         setStoreListArray(listStores(storeList))
     }, [storeList])
 
+    // Actualizar las ordenes en función del localStorage en la primera carga y en el resto actualizar el local storage 
     useEffect(() => {
-        if( !products || !products.length) return
+        if( !totalProducts || !totalProducts.pizzas || !totalProducts.salads ) return
         const ordersLocal = getLocalData('orders')
         if (firstTimeOrders.current) {
             firstTimeOrders.current = false
             if (!orders.length && ordersLocal?.length) {
+                const { pizzas, salads } = totalProducts
                 handleUpdateTotalOrders(ordersLocal.map(item => {
-                    const product = products.find(element => element.id === item.id)
+                    const { productType } = item
+                    let dataItemDB
+                    switch (productType) {
+                        case 'pizza': {
+                            dataItemDB = pizzas.find(element => element.id === item.id)
+                            break
+                        }
+                        case 'salad': {
+                            dataItemDB = salads.find(element => element.id === item.id)
+                            break
+                        }
+                    }
                     return {
-                        ...product,
+                        ...dataItemDB,
                         ...item
                     }
                 }))
             }
         } else {
             const orderToCompare = orders.map(item => {
-                const { id, size, quantity, mass, ingredientsModal, extra, totalPrice } = item
-                return {
+                const {productType} = item
+                const { id, quantity, ingredientsModal, extra, totalPrice } = item
+                let objectToSave = {
                     id,
-                    size,
                     quantity,
-                    mass,
                     ingredientsModal,
                     extra,
-                    totalPrice
+                    totalPrice,
+                    productType
                 }
+                switch (productType) {
+                    case 'pizza': {
+                        const { size, mass } = item
+                        objectToSave = {
+                            ...objectToSave,
+                            size,
+                            mass
+                        }
+                        break
+                    }
+                    case 'salad': {
+                        break
+                    }
+                }
+                return objectToSave
             })
             if (!deepEqual(ordersLocal, orderToCompare)) {
                 saveLocalData('orders', orderToCompare)
             }
         }
-    }, [orders, products])
+    }, [orders, totalProducts])
 
     const getLocalData = useCallback((key) => {
         const dataFromLocal = localStorage.getItem(key)

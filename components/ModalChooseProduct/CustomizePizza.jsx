@@ -100,31 +100,35 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                     <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
                 </Grid>
             </Grid> */}
-            <Grid
-                item
-                container
-                direction={'column'}
-                alignItems={'flex-start'}
-                wrap='nowrap'
-                spacing={1}
-            >
-                <Grid item>
-                    <Typography
-                        id="modal-subtitle-ELIGE_LA_MASA"
-                        variant='title'
+            {
+                currentProduct.productType === 'pizza' ? (
+                    <Grid
+                        item
+                        container
+                        direction={'column'}
+                        alignItems={'flex-start'}
+                        wrap='nowrap'
+                        spacing={1}
                     >
-                        ELIGE LA MASA
-                    </Typography>
-                </Grid>
-                <Grid
-                    item
-                    sx={{
-                        width: '95%'
-                    }}
-                >
-                    <MasaTypesPizza listMass={currentProduct.price[size]} mass={mass} handleMass={handleMass} />
-                </Grid>
-            </Grid>
+                        <Grid item>
+                            <Typography
+                                id="modal-subtitle-ELIGE_LA_MASA"
+                                variant='title'
+                            >
+                                ELIGE LA MASA
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            sx={{
+                                width: '95%'
+                            }}
+                        >
+                            <MasaTypesPizza listMass={currentProduct.price[size]} mass={mass} handleMass={handleMass} />
+                        </Grid>
+                    </Grid>
+                ) : null
+            }
 
             {
                 ingredientsProduct.length > 0 ? (
