@@ -74,33 +74,82 @@ export function extractIngredientsOut(text) {
     return resultados.map(ingredient => ingredient[1])
 }
 
-export function extractElements(text) {
+export function extractElements(text, kindProduct) {
+    let genericDataItem, item, destructuringX, quantityItem, name, masaType, size, extraIngredients, objectItem
     const allElements = text.split(", ")
-    const genericPizza = [allElements[0], allElements[1]].join(', ')
-    const pizza =  allElements[0]
-    const destructuringX = pizza.split(" x ")
-    const quantityPizza = destructuringX[0]
-    const name = destructuringX[1].split(' (')[0]
-    const masaType = allElements[1]
-    const size = [...text.match(regExpSize)][1]
-    const extraIngredients = allElements.filter((item, index) => (index > 1) && !item.includes('~')).map(item => {
-        const itemDivided = item.split('x ')
-        return {
-            quantity: itemDivided[0],
-            name: itemDivided[1]
+    switch (kindProduct) {
+        case 'pizza': {
+            genericDataItem = [allElements[0], allElements[1]].join(', ')
+            item =  allElements[0]
+            destructuringX = item.split(" x ")
+            quantityItem = destructuringX[0]
+            name = destructuringX[1].split(' (')[0]
+            masaType = allElements[1]
+            size = [...text.match(regExpSize)][1]
+            extraIngredients = allElements.filter((item, index) => (index > 1) && !item.includes('~')).map(item => {
+                const itemDivided = item.split('x ')
+                return {
+                    quantity: itemDivided[0],
+                    name: itemDivided[1]
+                }
+            })
+            objectItem = {
+                name,
+                masaType,
+                size,
+                quantityItem
+            }
+            break
         }
-    })
+        case 'salad': {
+            genericDataItem = allElements[0]
+            item =  allElements[0]
+            destructuringX = item.split(" x ")
+            quantityItem = destructuringX[0]
+            name = destructuringX[1]
+            extraIngredients = allElements.filter((item, index) => (index > 0) && !item.includes('~')).map(item => {
+                const itemDivided = item.split('x ')
+                return {
+                    quantity: itemDivided[0],
+                    name: itemDivided[1]
+                }
+            })
+            objectItem = {
+                name,
+                quantityItem
+            }
+            break
+        }
+        default: {
+            genericDataItem = [allElements[0], allElements[1]].join(', ')
+            item =  allElements[0]
+            destructuringX = item.split(" x ")
+            quantityItem = destructuringX[0]
+            name = destructuringX[1].split(' (')[0]
+            masaType = allElements[1]
+            size = [...text.match(regExpSize)][1]
+            extraIngredients = allElements.filter((item, index) => (index > 1) && !item.includes('~')).map(item => {
+                const itemDivided = item.split('x ')
+                return {
+                    quantity: itemDivided[0],
+                    name: itemDivided[1]
+                }
+            })
+            objectItem = {
+                name,
+                masaType,
+                size,
+                quantityItem
+            }
+        }
+    }
+    
     const ingredientsOut = extractIngredientsOut(text)
     return {
         ingredientsOut,
         extraIngredients,
-        pizza: {
-            name,
-            masaType,
-            size,
-            quantityPizza
-        },
-        genericPizza
+        item: objectItem,
+        genericDataItem
     }
 }
 
@@ -277,7 +326,7 @@ export function deepUnequal(value1, value2) {
         }
 
         if (Object.keys(differentProperties).length) {
-            itemsxOrderDifference.push({...differentProperties, id: order.id})
+            itemsxOrderDifference.push({...differentProperties, id: order.id, KindProduct: order.KindProduct})
         }
     }
 
@@ -287,7 +336,8 @@ export function deepUnequal(value1, value2) {
     for (let order of ordersToRemove) {
         itemsxOrderDifference.push({
             id: order.id,
-            remove: true
+            remove: true,
+            KindProduct: order.KindProduct
         })
     }
 
