@@ -278,11 +278,11 @@ function TablePizzas() {
                 >
                     Ver Detalles
                 </MenuItem>
-                <MenuItem
+                {/* <MenuItem
                     onClick={handleRemovePizza}
                 >
                     Eliminar
-                </MenuItem>
+                </MenuItem> */}
             </Menu>
             {
                 currentPizza ? (
