@@ -70,7 +70,7 @@ function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsC
                 id: response.id,
                 properties: {
                     price: response.cost,
-                    totalPrice: response.costIVAStripe
+                    totalPriceByUnity: response.costIVAStripe
                 }
             })
 
@@ -158,7 +158,7 @@ function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsC
                         </Grid>
                         <Grid item xs sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} >
                             <TextField
-                                value={salad.totalPrice}
+                                value={salad.totalPriceByUnity}
                                 disabled
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">$</InputAdornment>

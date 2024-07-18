@@ -66,7 +66,7 @@ export default function OrderSection () {
                             }
                           }}
                         >
-                          { order.quantity + ' x ' + order.name + ` (${order.size})`}
+                          { order.quantity + ' x ' + order.name + (order.productType === 'pizza' ? ` (${order.size})` : '')}
                           <Typography>
                             ${order.totalPrice}
                           </Typography>
@@ -74,13 +74,13 @@ export default function OrderSection () {
                       }
                       secondary={
                         <>
-                          {`${order.mass}${Object.keys(order.extra).map(ingredient => {
-                            return `, ${order.extra[ingredient]}x ${ingredient}`
-                          }).join('')
+                          {`${order.productType === 'pizza' ? order.mass + '' : ''}${ ( order.productType === 'pizza' && Object.keys(order.extra).length ? ', ' : '') + Object.keys(order.extra).map(ingredient => {
+                            return `${order.extra[ingredient]}x ${ingredient}`
+                          }).join(', ')
                           }`}
                           {
                             order.ingredientsModal.map((ingredient, index) => (
-                              <Box key={ingredient + index} component={'label'}>, <CrossText component={'span'}>{ingredient}</CrossText></Box>
+                              <Box key={ingredient + index} component={'label'}>{ order.productType === 'pizza' ? ', ' : Object.keys(order.extra).length || index > 0 ? ', ' : '' }<CrossText component={'span'}>{ingredient}</CrossText></Box>
                             ))
                           }
                         </>

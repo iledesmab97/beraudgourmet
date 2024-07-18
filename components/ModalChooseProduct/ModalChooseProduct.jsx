@@ -1,8 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
 import useGetModal from '@/hooks/useGetModal'
-import useHandleOder from '@/hooks/useHandleOrder'
 import ChooseProduct from './ChooseProduct'
 
 import Modal from '@mui/material/Modal';
