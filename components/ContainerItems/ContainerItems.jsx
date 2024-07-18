@@ -41,7 +41,7 @@ const PrevArrow = (props) => {
     </IconButton>
   );
 };
-function ContainerItems({ itemList, title }) {
+function ContainerItems({ itemList, title, sectionId }) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -62,12 +62,11 @@ function ContainerItems({ itemList, title }) {
 
   return (
     <Grid
-      id='Pizza-Section'
+      id={sectionId}
       item
       xs={12}
     >
       <Typography
-        id='title-pizzas-container'
         component={'h1'}
         variant='encabezado'
         sx={{
