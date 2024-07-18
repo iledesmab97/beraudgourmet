@@ -5,19 +5,17 @@ import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza'
+import {SaladIcon,
+  PizzaIcon} from '../../public/svg/index.js';
 
-import Link from 'next/link'
 
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useGetDrawer from '@/hooks/useGetDrawer'
 
 import { scrollToSection } from '@/utils/modal'
-
-import styles from './NavBar.module.css'
-import links from './navbarpaths.json'
 
 const navImage = {
   Pizzas: <LocalPizzaIcon />
@@ -67,7 +65,7 @@ function NavBar() {
   useEffect(() => {
     if ( !matches || pathname !== '/pizzas' ) return
 
-    const navBar = document.querySelector('#navBar-contianer')
+    const navBar = document.querySelector('#navBar-container')
     const body = document.getElementsByTagName('html')[0]
 
     function handlePosition() {
@@ -101,7 +99,7 @@ function NavBar() {
   return (
     <>
       <Toolbar
-        id='navBar-contianer'
+        id='navBar-container'
         component='nav'
         sx={styleGiver(matches)}
       >
@@ -112,9 +110,14 @@ function NavBar() {
           }}
         >
           <IconButton
-            onClick={() => { scrollToSection('#title-pizzas-container') }}
+            onClick={() => { scrollToSection('#pizzasSection') }}
           >
-            <LocalPizzaIcon />
+            <PizzaIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => { scrollToSection('#saladsSection') }}
+          >
+            <SaladIcon/>
           </IconButton>
         </Box>
         {

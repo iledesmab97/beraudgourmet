@@ -143,8 +143,8 @@ function Menu () {
           {
             pizzas && salads ? (
               <>
-                <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} />
-                <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} />
+                <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} sectionId={'pizzasSection'}/>
+                <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} sectionId={'saladsSection'} />
               </>
             ) : null
           }
