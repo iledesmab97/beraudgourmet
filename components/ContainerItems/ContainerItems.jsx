@@ -84,7 +84,7 @@ function ContainerItems({ itemList, title }) {
       >
         {title}
       </Typography>
-      {isSmallScreen ? (
+      {isSmallScreen && itemList.length >= 2 ? (
         <Slider {...settings}>
           {itemList.filter(item => item.status === 'ACTIVE' && item.type !== 'customizable').map((item, index) => (
             <div key={item.name + index}>
