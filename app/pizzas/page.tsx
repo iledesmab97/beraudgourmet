@@ -72,35 +72,29 @@ function Menu () {
 
   // Cargar los productos e ingredientes
   useEffect(() => {
-    if (!(totalProducts && totalProducts.pizzas)) {
-      getPizzasWithCosts()
-        .then(data => {
-          handleAddProductsList({
-            type: 'pizzas',
-            products: data
-          })
-        })
-    }
-    if (!(extraIngredients && Object.keys(extraIngredients).length)) {
-      getExtraIngredients()
-        .then(data => {
-          handleAddExtraIngredinetsList({ extraIngredientsList: data })
-        })
-    }
-    if (!(totalProducts && totalProducts.salads)) {
-      getSalads().then(data => {
-        handleAddProductsList({
-          type: 'salads',
-          products: data
-        })
+
+    async function uploadProducts() {
+      const pizzaList = await getPizzasWithCosts()
+      handleAddProductsList({
+        type: 'pizzas',
+        products: pizzaList
       })
+      const saladList = await getSalads()
+      handleAddProductsList({
+        type: 'salads',
+        products: saladList
+      })
+      const ingredientList = await getExtraIngredients()
+      handleAddExtraIngredinetsList({ extraIngredientsList: ingredientList })
     }
+
+    uploadProducts()
   }, [])
 
   // Actualizar la lista de productos
   useEffect(() => {
     if (!totalProducts) return
-    if (totalProducts.pizzas) { 
+    if (totalProducts.pizzas) {
       setPizzas(totalProducts.pizzas)
     }
     if (totalProducts.salads) {
@@ -141,9 +135,15 @@ function Menu () {
           spacing={3}
         >
           {
-            pizzas && salads ? (
+            pizzas ? (
               <>
                 <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} />
+              </>
+            ) : null
+          }
+          {
+            salads ? (
+              <>
                 <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} />
               </>
             ) : null
