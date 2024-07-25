@@ -10,14 +10,11 @@ import StorePickup from './StorePickup'
 import HomeDelivery from './HomeDelivery'
 import MoveDown from '@/components/MoveDown/MoveDown'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useGetModal from '@/hooks/useGetModal'
 import useHandlePlace from '@/hooks/useHandlePlace'
 import useGetStoreList from '@/hooks/useGetStoreList'
 import useHandleShoppingGuide from '@/hooks/useHandleShoppingGuide'
-
-import { getAllStoresWithSchedules } from '@/services/storeApi'
-
 
 const style = {
   position: 'absolute',
@@ -64,14 +61,7 @@ export default function ModalStoreDelivery() {
     handleCloserStore
   } = useHandlePlace()
 
-  const { storeList, handleAddStoreList } = useGetStoreList()
-
-  useEffect(() => {
-    if (storeList && Object.keys(storeList).length) return
-    getAllStoresWithSchedules().then(storeList => {
-      handleAddStoreList(storeList)
-    })
-  }, [])
+  const { storeList } = useGetStoreList()
 
   function handlePlace (place) {
     setDelivery(place)
