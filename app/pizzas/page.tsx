@@ -3,8 +3,6 @@
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Drawer from '@mui/material/Drawer'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
 
 import ContainerItems from '../../components/ContainerItems/ContainerItems'
 import OrderRewards from '../../components/OrderRewards/OrderRewards'
@@ -28,14 +26,10 @@ import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useLoadScript } from "@react-google-maps/api"
-import useLogedUser from '@/hooks/useLogedUser'
-import useLocalData from '@/hooks/useLocalData'
 import useGetDrawer from '@/hooks/useGetDrawer'
 import useGetProducts from '@/hooks/useGetProducts'
-import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 import useHandleSteps from '@/hooks/useHandleSteps'
-
-import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
+import useLoadData from '@/hooks/useLoadData'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
@@ -46,49 +40,20 @@ function Menu () {
     googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
     libraries: ['places'],
   });
-  const { gerUserLoged } = useLogedUser()
-  const { saveLocalData, getLocalData } = useLocalData()
 
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('md'))
   const { drawer } = useGetDrawer()
   const [openOrderRewards, setOpenOrderRewards] = useState(false)
-  const { totalProducts, handleAddProductsList } = useGetProducts({type:'pizzas'})
-  const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
+  const { totalProducts } = useGetProducts({type:'pizzas'})
   const { steps } = useHandleSteps()
   const [pizzas, setPizzas] = useState(null)
   const [salads, setSalads] = useState(null)
+  const { loadData } = useLoadData()
 
-  // Buscar usuario logueado en caso de existir
+  // Cargar los productos, ingredientes, usuarios y tiendas
   useEffect(() => {
-    gerUserLoged().then((response: any) => {
-      const userLoged = response
-      const acceptCookies = getLocalData('acceptCookies')
-      if (!acceptCookies && userLoged) {
-        saveLocalData('acceptCookies', true)
-      }
-    })
-  }, [])
-
-  // Cargar los productos e ingredientes
-  useEffect(() => {
-
-    async function uploadProducts() {
-      const pizzaList = await getPizzasWithCosts()
-      handleAddProductsList({
-        type: 'pizzas',
-        products: pizzaList
-      })
-      const saladList = await getSalads()
-      handleAddProductsList({
-        type: 'salads',
-        products: saladList
-      })
-      const ingredientList = await getExtraIngredients()
-      handleAddExtraIngredinetsList({ extraIngredientsList: ingredientList })
-    }
-
-    uploadProducts()
+    loadData()
   }, [])
 
   // Actualizar la lista de productos
