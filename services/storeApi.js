@@ -18,7 +18,7 @@ export function getAllStores() {
               phone: store.phoneNumber,
               coordinates: store.coordinates
           }))
-        return newData
+          return newData
         })
         .catch(error => ({message: error.message})) 
 }
