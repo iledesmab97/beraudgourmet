@@ -302,16 +302,19 @@ export function requestSettings(requestType, token, typeFile) {
 export function deepUnequal(value1, value2) {
     const differences = {}
     
+    // Difference in totalCost
     if (value1.totalCost !== value2.totalCost) {
         differences.totalCost = value1.totalCost
     }
 
+    // Difference in totalCostByItems
     if (value1.totalCostByItems !== value2.totalCostByItems) {
         differences.totalCostByItems = value1.totalCostByItems
     }
 
     const itemsxOrderDifference = []
 
+    // Difference in itemsxOrder
     for (let order of value1.itemsxOrder) {
         const differentProperties = {}
         const order2 = value2.itemsxOrder.find( o => o.id === order.id)
