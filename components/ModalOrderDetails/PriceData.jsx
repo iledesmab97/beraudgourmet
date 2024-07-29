@@ -469,7 +469,7 @@ function PriceData({ orders }) {
             text = response.message
             status = 'error'
         } else {
-            text = response
+            text = 'Data updated successfully'
             status = 'success'
         }
         handleUpdateAlertMessage({
@@ -485,10 +485,12 @@ function PriceData({ orders }) {
                 ...orderToCompare,
                 ...currentOrdersToCompare
             }
-            setOrdersState(newOrder)
+            setOrdersState(response)
+            setLoading(false)
+            return 'Data updated successfully'
         }
         setLoading(false)
-        return response
+        return {message: response.message}
     }
 
     function findOptions(itemOrder, option, extraOption) {

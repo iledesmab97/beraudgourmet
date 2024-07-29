@@ -24,6 +24,7 @@ import useGetOrderList from '@/hooks/useGetOrderList'
 import { useLoadScript } from "@react-google-maps/api"
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import useLoadData from '@/hooks/useLoadData'
 
 import { lookingForUserLoged } from '@/services/userApi'
 import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
@@ -50,49 +51,10 @@ function AdminPlace() {
     const matches = useMediaQuery(theme.breakpoints.down('md'))
     const [totalMatches, setTotalMatches] = useState('null')
     const [openToolLateralBar, setOpenToolLateralBar] = useState(false)
+    const { loadData } = useLoadData()
 
     useEffect(() => {
-        lookingForUserLoged()
-            .then( userLoged => {
-                if (!userLoged) return
-                handleAddUser(userLoged)
-            })
-            .catch(error => alert(error.message))
-        if (!(products && products.pizzas)) {
-            getPizzasWithCosts().then(data => {
-                handleAddProductsList({
-                type: 'pizzas',
-                products: data
-                })
-            })
-        }
-        if (!(products && products.salads)) {
-            getSalads().then(data => {
-                handleAddProductsList({
-                type: 'salads',
-                products: data
-                })
-            })
-        }
-        if (!(storeList && Object.keys(storeList).length)) {
-            getAllStoresWithSchedules().then(storeList => {
-                handleAddStoreList(storeList)
-            })
-        }
-        if (!orderList.length) {
-            getAllOrders()
-                .then(data => {
-                    if (data.message) throw new Error(data.message)
-                    handleAddOrderList(data)
-                })
-                .catch(error => alert(error.message))
-        }
-        if (!Object.keys(extraIngredients).length) {
-            getExtraIngredients().then(data => {
-                handleAddExtraIngredinetsList({ extraIngredientsList: data })
-            })
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        loadData('admin')
     }, [])
 
     useEffect(() => {

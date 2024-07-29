@@ -9,6 +9,9 @@ import OrderData from '@/components/ModalOrderDetails/OrderData'
 import OtherData from '@/components/ModalOrderDetails/OtherData'
 import PriceData from '@/components/ModalOrderDetails/PriceData'
 
+import { useState, useEffect, useRef } from 'react'
+
+import { getOneOrder } from '@/services/orderApi'
 import styles from './ModalOrderDetails.module.css'
 import dayjs from 'dayjs'
 
@@ -43,6 +46,24 @@ const style = {
 
 function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrder, handleUpdateOrderProperty }) {
 
+    const [order, setOrder] = useState(null)
+    const firstTime = useRef(true)
+
+    useEffect(() => {
+        if (!firstTime.current) return
+        fetchOrder(currentOrder.id)
+        firstTime.current = false
+    }, [])
+
+    async function fetchOrder(id) {
+        const response = await getOneOrder(id)
+        if (response.message) {
+            alert(response.message)
+            return
+        }
+        setOrder(response)
+    }
+
     return (
         <Modal
             open={ openOrderDetail }
@@ -72,23 +93,29 @@ function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrde
                         boxSizing: 'border-box'
                     }}
                 >
-                    <OrderData currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
-                    <Divider sx={{ width: '100%'}} />
+                    {
+                        order ? (
+                            <>
+                                <OrderData currentOrder={order} handleUpdateOrderProperty={handleUpdateOrderProperty} />
+                                <Divider sx={{ width: '100%'}} />
 
-                    <PriceData
-                        orders={currentOrder}
-                    />
-                    <Divider sx={{ width: '100%'}} />
-                    
-                    <OtherData
-                        currentOrder={currentOrder}
-                        user={currentOrder.user}
-                        store={currentOrder.store}
-                        dateEmited={currentOrder.applicationDate}
-                        dateToRecive={currentOrder.deliveryDate}
-                        deliveryInformation={currentOrder.deliveryInformation}
-                        handleUpdateOrderProperty={handleUpdateOrderProperty}
-                    />   
+                                <PriceData
+                                    orders={order}
+                                />
+                                <Divider sx={{ width: '100%'}} />
+                                
+                                <OtherData
+                                    currentOrder={order}
+                                    user={order.user}
+                                    store={order.store}
+                                    dateEmited={order.applicationDate}
+                                    dateToRecive={order.deliveryDate}
+                                    deliveryInformation={order.deliveryInformation}
+                                    handleUpdateOrderProperty={handleUpdateOrderProperty}
+                                />  
+                            </>
+                        ) : null
+                    } 
                 </Box>                
             </Grid>
         </Modal> 

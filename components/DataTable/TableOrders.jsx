@@ -34,7 +34,7 @@ import { captureFundsRequest } from '@/services/checkoutApi'
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    orders: [ 'ID' ,'Nombre', 'Teléfono' ,'Método de Pago','Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
+    orders: [ 'ID' ,'Método de Pago', 'Fecha de entrega', 'Tipo', 'Estatus', 'Total ($)', 'Acción' ]
 }
 
 const paymentMethodIndex = {
@@ -288,8 +288,6 @@ function TableOrders() {
                                     }}
                                 >
                                     <TableCell align='center'>{ order.id }</TableCell>
-                                    <TableCell align='center'>{ order.user.name }</TableCell>
-                                    <TableCell align='center'>{ order.user.phoneNumber }</TableCell>
                                     <TableCell align='center'>{ paymentMethodIndex[order.paymentMethod] }</TableCell>
                                     <TableCell
                                         align='center'

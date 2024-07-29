@@ -27,7 +27,7 @@ export function getAllOrders(querys) {
 
 export function getAllOrdersOfUser(userId) {
 
-    return fetch(`${PATH_BACK}/orders/${userId}`, {
+    return fetch(`${PATH_BACK}/orders/user/${userId}`, {
         ...requestSettings(),
         cache: 'no-store'
     })
@@ -35,6 +35,19 @@ export function getAllOrdersOfUser(userId) {
         .then(data => {
             if (data.message) throw new Error(data.message)
             return data
+        })
+        .catch(error => ({message: error.message}))
+}
+
+export function getOneOrder(orderId) {
+    return fetch(`${PATH_BACK}/orders/${orderId}`, {
+        ...requestSettings(),
+        cache: 'no-store'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message)
+            return data[0]
         })
         .catch(error => ({message: error.message}))
 }
