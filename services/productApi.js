@@ -7,6 +7,7 @@ export function getPizzas() {
   return fetch(`${PATH_BACK}/pizzas`)
     .then(response => response.json())
     .then(data => {
+      if (data.message) throw new Error(data.message)
       const pizzaList = data.map(pizza => {
           const { id, name, text, image, ingredients, status, type  } = pizza
           const newPizzaData = {
@@ -23,6 +24,7 @@ export function getPizzas() {
       })
       return pizzaList
   })
+  .catch(error => ({message: error.message}))
 }
 
 export function getPizzaCosts({type}) {
@@ -81,7 +83,7 @@ export function getPizzaCosts({type}) {
 }
 
 export async function getExtraIngredients() {
-  return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
+  return fetch(`${PATH_BACK}/ingredients`)
     .then(response => response.json())
     .then(data => {
       const extraIngredinetList = {}
@@ -91,7 +93,7 @@ export async function getExtraIngredients() {
           id,
           name,
           price: cost,
-          totalPrice: costIVAStripe,
+          totalPrice: costIVAStripe ? costIVAStripe : '0',
           available
         }
       })
@@ -139,13 +141,13 @@ export async function removePizza(id) {
 }
 
 export async function getAllIngredients() {
-  return fetch(`${PATH_BACK}/pizzaIngredients`)
+  return fetch(`${PATH_BACK}/ingredients`)
     .then(response => response.json())
     .then(data => data)
 }
 
 export async function getAllExtraIngredients() {
-  return fetch(`${PATH_BACK}/pizzaExtraIngredients`)
+  return fetch(`${PATH_BACK}/ingredients`)
     .then(response => response.json())
     .then(data => data)
 }
@@ -197,22 +199,22 @@ export async function updateCharacteristicsPizza(id, body) {
 }
 
 export function updateExtraIngredient(id, properties) {
-  return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
+  return fetch(`${PATH_BACK}/ingredients/${id}`, {
     ...requestSettings('PUT'),
     body: JSON.stringify(properties)
   })
     .then(response => {
       return response.json()
     })
-    .then(response => {
-      if (response.message) throw new Error(response.message)
-      return response
+    .then(data => {
+      if (data.message) throw new Error(data.message)
+      return data
     })
     .catch(error => ({message: error.message}))
 }
 
 export function makeExtraIngredient(properties) {
-  return fetch(`${PATH_BACK}/pizzaExtraIngredients`, {
+  return fetch(`${PATH_BACK}/ingredients`, {
     ...requestSettings('POST'),
     body: JSON.stringify(properties)
   })
@@ -227,7 +229,7 @@ export function makeExtraIngredient(properties) {
 }
 
 export function removeExtraIngredient(id) {
-  return fetch(`${PATH_BACK}/pizzaExtraIngredients/${id}`, {
+  return fetch(`${PATH_BACK}/ingredients/${id}`, {
     ...requestSettings('DELETE'),
   })
     .then(response => {
