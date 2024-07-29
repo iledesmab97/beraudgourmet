@@ -3,7 +3,7 @@ import { requestSettings } from '@/utils/preparingData'
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
 
 export function addIngredient(name) {
-    return fetch(`${PATH_BACK}/pizzaIngredients`, {
+    return fetch(`${PATH_BACK}/ingredients`, {
         ...requestSettings('POST'),
         body: JSON.stringify({name})
     })
@@ -21,7 +21,7 @@ export function addIngredient(name) {
 
 export function removeIngredient({id, name}) {
     if (id) {
-        return fetch(`${PATH_BACK}/pizzaIngredients/${id}`, {
+        return fetch(`${PATH_BACK}/ingredients/${id}`, {
             ...requestSettings('DELETE')
         })
             .then(response => {
@@ -36,7 +36,7 @@ export function removeIngredient({id, name}) {
             })
     }
     else if (name) {
-        return fetch(`${PATH_BACK}/pizzaIngredients`, {
+        return fetch(`${PATH_BACK}/ingredients`, {
             ...requestSettings('DELETE'),
             body: JSON.stringify({name})
         })
