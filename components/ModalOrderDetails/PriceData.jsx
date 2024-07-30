@@ -100,7 +100,7 @@ function PriceData({ orders }) {
     const orderUpdated = useRef(null)
     const updateTotalSubElement = useRef(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleAddOrderList } = useGetOrderList()
+    const { orderList, handleAddOrderList } = useGetOrderList()
     const [loading, setLoading] = useState(false)
 
     // Actualizar la información del estado subElements
@@ -478,7 +478,7 @@ function PriceData({ orders }) {
             status
         })
         if (!response.message) {
-            getAllOrders().then(data => {
+            getAllOrders({ p: orderList.currentPage, items: orderList.itemsxPage}).then(data => {
                 handleAddOrderList(data)                
             })
             const newOrder = {
