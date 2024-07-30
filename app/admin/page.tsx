@@ -26,11 +26,6 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useLoadData from '@/hooks/useLoadData'
 
-import { lookingForUserLoged } from '@/services/userApi'
-import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
-import { getAllStoresWithSchedules } from '@/services/storeApi'
-import { getAllOrders } from '@/services/orderApi'
-
 import styles from './page.module.css'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
@@ -38,11 +33,6 @@ const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 function AdminPlace() {
 
     const [ toolSelected, setToolSelected] = useState('Orders')
-    const { handleAddUser } = useGetUser()
-    const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
-    const { storeList, handleAddStoreList } = useGetStoreList()
-    const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
-    const { orderList, handleAddOrderList } = useGetOrderList()
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries: ['places'],
