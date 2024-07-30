@@ -51,6 +51,7 @@ const colorsCell = {
 
 function TableOrders() {
 
+    const { orderList, handleAddOrderList } = useGetOrderList()
     const [orders, setOrders] = useState([])
     const [anchorEl, setAnchorEl] = useState(null)
     const [currentOrder, setCurrentOrder] = useState(null)
@@ -60,12 +61,14 @@ function TableOrders() {
     const [openMakeOrder, setOpenMakeOrder] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [ loading, setLoading] = useState(false)
-    const { orderList } = useGetOrderList()
     const [page, setPage] = useState(0)
+    const [count, setCount] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
 
     useEffect(() => {
-        setOrders(orderList)
+        setOrders(orderList.list)
+        setPage(orderList.currentPage)
+        setCount(orderList.totalOrders)
     }, [orderList])
 
     function handleUpdateOrders(newOrders) {
@@ -232,8 +235,11 @@ function TableOrders() {
         setCurrentOrder(orderUpdated)
     }
 
-    function handleChangePage(newPage) {
+    async function handleChangePage(newPage) {
+        const newOrderList = await getAllOrders({ p: newPage, items: rowsPerPage})
+        handleAddOrderList(newOrderList)
         setPage(newPage)
+        setCount(newOrderList.totalOrders)
     }
 
     function handleChangeRowsPerPage(event) {
@@ -277,7 +283,7 @@ function TableOrders() {
                     </TableHead>
                     <TableBody className={styles.DataTableBody}>
                         {
-                            orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
+                            orders.map((order, index) => (
                                 <TableRow
                                     key={order.id}
                                     sx={{
@@ -325,7 +331,7 @@ function TableOrders() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={orders.length}
+                count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={(event, newPage) => { handleChangePage(newPage) }}
