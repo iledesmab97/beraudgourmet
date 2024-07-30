@@ -31,6 +31,7 @@ export function getPizzaCosts({type}) {
     return fetch(`${PATH_BACK}/pizzaCosts`)
       .then(response => response.json())
       .then(data => {
+        if (data.message) throw new Error(data.message)
         const pizzaCostsList = data.map(pizzaCost => {
           const { id, cost, costIVA, costIVAStripe, pizza, pizzaCharacteristics } = pizzaCost
           const newPizzaCost = {
@@ -79,7 +80,7 @@ export function getPizzaCosts({type}) {
           return listCostsObject
         }
         return pizzaCostsList
-    })
+      })
 }
 
 export async function getExtraIngredients() {
@@ -102,6 +103,7 @@ export async function getExtraIngredients() {
 }
 
 export async function getPizzasWithCosts() {
+  try {
     const pizzasList = await getPizzas()
     const pizzaCharacteristicsList = await getPizzaCosts({type: 'object'})
     const totalPizzasList = pizzasList.map(pizza => ({
@@ -109,6 +111,10 @@ export async function getPizzasWithCosts() {
       price: pizzaCharacteristicsList[pizza.name]
     }))
     return totalPizzasList
+  }
+  catch(error) {
+    return {message: error.message}
+  }
 }
 
 export async function updatePizza(id, body) {
