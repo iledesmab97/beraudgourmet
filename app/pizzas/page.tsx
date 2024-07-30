@@ -100,7 +100,7 @@ function Menu () {
           spacing={3}
         >
           {
-            pizzas ? (
+            pizzas && salads ? (
               <>
                 <ContainerItems itemList={pizzas} title={'Nuestra selección de Pizzas'} sectionId={'pizzasSection'}/>
                 <ContainerItems itemList={salads} title={'Nuestra selección de Ensaladas'} sectionId={'saladsSection'} />
