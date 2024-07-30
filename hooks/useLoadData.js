@@ -20,7 +20,7 @@ function useLoadData() {
     const { saveLocalData, getLocalData } = useLocalData()
     const { handleAddStoreList } = useGetStoreList()
     const { handleAddUser } = useGetUser()
-    const { handleAddOrderList } = useGetOrderList()
+    const { orderList, handleAddOrderList } = useGetOrderList()
 
     const loadData = useCallback(async (rol) => {
 
@@ -39,10 +39,14 @@ function useLoadData() {
         }
         // Cargar las pizzas
         const pizzaList = await getPizzasWithCosts()
-        handleAddProductsList({
-            type: 'pizzas',
-            products: pizzaList
-        })
+        if (pizzaList.message) {
+            alert(pizzaList.message)
+        } else {
+            handleAddProductsList({
+                type: 'pizzas',
+                products: pizzaList
+            })
+        }
         // Cargar las ensaladas
         const saladList = await getSalads()
         handleAddProductsList({
@@ -57,9 +61,9 @@ function useLoadData() {
         handleAddExtraIngredinetsList({ extraIngredientsList: ingredientList })
         // Cargar ordenes
         if (rol === 'admin') {
-            const orderList = await getAllOrders()
-            if (orderList.message) alert(orderList.message)
-            handleAddOrderList(orderList)
+            const newOrderList = await getAllOrders({ p: orderList.currentPage })
+            if (newOrderList.message) alert(newOrderList.message)
+            else handleAddOrderList(newOrderList)
         }
     }, [])
 
