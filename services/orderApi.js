@@ -132,3 +132,16 @@ export function changeOrderItems(data) {
         })
         .catch((error) => ({ message: error.message }));
 }
+
+export function getDeliveryInformationOfOrder(id) {
+    return fetch(`${PATH_BACK}/deliveryInformation/${id}`, {
+        ...requestSettings(),
+        cache: "no-store",
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            return data;
+        })
+        .catch((error) => ({ message: error.message }));
+}
