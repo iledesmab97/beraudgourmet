@@ -28,8 +28,29 @@ export function getPizzas() {
         .catch((error) => ({ message: error.message }));
 }
 
-export function getOnePizza(id) {
+export function getOnePizzaById(id) {
     return fetch(`${PATH_BACK}/pizzas/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            const { id, name, text, image, ingredients, status, type } = data;
+            const newPizzaData = {
+                id,
+                name,
+                text,
+                image,
+                ingredients,
+                status,
+                type,
+                productType: "pizza",
+            };
+            return newPizzaData;
+        })
+        .catch((error) => ({ message: error.message }));
+}
+
+export function getOnePizzaByName(name) {
+    return fetch(`${PATH_BACK}/pizzas/name/${name}`)
         .then((response) => response.json())
         .then((data) => {
             if (data.message) throw new Error(data.message);
@@ -315,8 +336,41 @@ export function getSalads() {
         .catch((error) => ({ message: error.message }));
 }
 
-export function getOneSalad(id) {
+export function getOneSaladById(id) {
     return fetch(`${PATH_BACK}/salads/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            const {
+                id,
+                name,
+                text,
+                image,
+                ingredients,
+                status,
+                type,
+                cost,
+                costIVAStripe,
+            } = data;
+            const newSaladData = {
+                id,
+                name,
+                text,
+                image,
+                ingredients,
+                status,
+                type,
+                price: cost,
+                totalPriceByUnity: costIVAStripe,
+                productType: "salad",
+            };
+            return newSaladData;
+        })
+        .catch((error) => ({ message: error.message }));
+}
+
+export function getOneSaladByName(name) {
+    return fetch(`${PATH_BACK}/salads/name/${name}`)
         .then((response) => response.json())
         .then((data) => {
             if (data.message) throw new Error(data.message);
