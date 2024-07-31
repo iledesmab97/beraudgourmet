@@ -1,38 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = {}
-
+import { addProductsListThunk } from "@/stores/actions/products";
+const initialState = {};
 export const productsSlice = createSlice({
-    name: 'products',
+    name: "products",
     initialState,
-    reducers: {
-        addProductsList: (state, action) => {
-            const { type, products } = action.payload
-            if (state[type]) {
-                const productsFitered = products.filter( product => {
-                    return !state[type].some(producIncluded => producIncluded.name === product.name)
-                } )
-                return {
-                    ...state,
-                    [type]: [...state[type], ...productsFitered]
-                }
-            } else {
-                return {
-                    ...state,
-                    [type]: [...products]
-                }
-            }
-        },
-        updateProductsList: (state, action) => {
-            const { type, newProductList } = action.payload
-            return {
-                ...state,
-                [type]: newProductList
-            }
-        }
-    }
-})
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(addProductsListThunk.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(addProductsListThunk.fulfilled, (state, action) => {
+                const { pizzas, salads } = action.payload;
+                state.pizzas = pizzas;
+                state.salads = salads;
+                state.status = "succeeded";
+            })
+            .addCase(addProductsListThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+    },
+});
 
-export default productsSlice.reducer
-
-export const { addProductsList, updateProductsList } = productsSlice.actions
+export default productsSlice.reducer;
