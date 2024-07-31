@@ -35,17 +35,32 @@ export function getAllOrdersOfUser(userId) {
         .catch((error) => ({ message: error.message }));
 }
 
-export function getOneOrder(orderId) {
-    return fetch(`${PATH_BACK}/orders/${orderId}`, {
-        ...requestSettings(),
-        cache: "no-store",
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            return data;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function getOneOrder(orderId) {
+    try {
+        const response = await fetch(`${PATH_BACK}/orders/${orderId}`, {
+            ...requestSettings(),
+            cache: "no-store",
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getItemsOrder(orderId) {
+    try {
+        const response = await fetch(`${PATH_BACK}/orders/items/${orderId}`, {
+            ...requestSettings(),
+            cache: "no-store",
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
 export function updateOrder(id, body) {
