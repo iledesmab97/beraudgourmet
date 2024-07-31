@@ -23,8 +23,12 @@ const transformationDatesNames = {
     dateToRecive: 'deliveryDate'
 }
 
-function DatesData({dates, currentOrder, handleUpdateOrderProperty}) {
+function DatesData({currentOrder, handleUpdateOrderProperty}) {
 
+    const [dates, setDates] = useState({
+        dateEmited: currentOrder.applicationDate,
+        dateToRecive: currentOrder.deliveryDate
+    })
     const [datesObject, setDatesObject] = useState(() => {
         return {
             dateEmited: dateStringToDate(dates.dateEmited),
