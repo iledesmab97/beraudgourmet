@@ -43,7 +43,7 @@ export function getOneOrder(orderId) {
         .then((response) => response.json())
         .then((data) => {
             if (data.message) throw new Error(data.message);
-            return data[0];
+            return data;
         })
         .catch((error) => ({ message: error.message }));
 }
