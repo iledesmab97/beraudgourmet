@@ -10,20 +10,44 @@ import CheckIcon from '@mui/icons-material/Check'
 import { useState, useEffect } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
-import { getAllUsers } from '@/services/userApi'
+import { getAllUsers, getOneUserById } from '@/services/userApi'
 import { updateOrder } from '@/services/orderApi'
 
-function UserData({user, currentOrder, handleUpdateOrderProperty}) {
+function UserData({currentOrder, handleUpdateOrderProperty}) {
 
-    const [userSelected, setUserSelected] = useState(user)
+    const [userSelected, setUserSelected] = useState(null)
     const [inputValue, setInputValue] = useState({
-        id: user.id ? String(user.id) : '',
-        name: user.name ? user.name : '',
-        phoneNumber: user.phoneNumber ? user.phoneNumber : ''
+        id: '',
+        name: '',
+        phoneNumber: ''
     })
     const [editing, setEditing] = useState(false)
     const [userList, setUserList] = useState([])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        async function getUser() {
+            const user = await getOneUserById(currentOrder.UserId)
+            if (user.message) {
+                setError(user.message)
+            } else {
+                setUserSelected(user)
+            }
+            setLoading(false)
+        }
+        getUser()
+    }, [])
+
+    useEffect(() => {
+        if (!userSelected) return
+        setInputValue({
+            id: String(userSelected.id),
+            name: userSelected.name,
+            phoneNumber: userSelected.phoneNumber
+        })
+    }, [userSelected])
 
     useEffect(() => {
         getAllUsers()
@@ -103,127 +127,139 @@ function UserData({user, currentOrder, handleUpdateOrderProperty}) {
     return (
         <>
             <Typography variant='title'>USUARIO</Typography>
-            <Box
-                sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                }}
-            >
-                <Typography
-                    variant='p'
-                    gutterBottom
-                >
-                    {`ID:`}
-                </Typography>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}
-                >
-                    <Autocomplete
-                        value={userSelected.id ? String(userSelected.id) : null}
-                        onChange={(event, id) => {handleChangeUserSelected({property: 'id', value: id})}}
-                        inputValue={inputValue.id}
-                        onInputChange={(event, id) => {handleChangeInputUserValue({property: 'id', value: id})}}
-                        options={userList.map(user => String(user.id))}
-                        sx={{ width: '125px' }}
-                        renderInput={(params) => {
-                            return <TextField {...params} />
-                        }}
-                        disabled={!editing}
-                    />
-                </Box>
-            </Box>
-            <Box
-                sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                }}
-            >
-                <Typography
-                    variant='p'
-                    gutterBottom
-                >
-                    Cliente:
-                </Typography>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}
-                >
-                    <Autocomplete
-                        value={userSelected.name ? userSelected.name : null}
-                        onChange={(event, name) => {handleChangeUserSelected({property: 'name', value: name})}}
-                        inputValue={inputValue.name}
-                        onInputChange={(event, name) => {handleChangeInputUserValue({property: 'name', value: name})}}
-                        options={userList.map(user => user.name)}
-                        sx={{ width: '150px' }}
-                        renderInput={(params) => {
-                            return <TextField {...params} />
-                        }}
-                        disabled={!editing}
-                    />
-                </Box>
-            </Box>
-            <Box
-                sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                }}
-            >
-                <Typography
-                    variant='p'
-                    gutterBottom
-                >
-                    Teléfono
-                </Typography>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}
-                >
-                    <Autocomplete
-                        value={userSelected.phoneNumber ? userSelected.phoneNumber : null}
-                        onChange={(event, phoneNumber) => {handleChangeUserSelected({property: 'phoneNumber', value: phoneNumber})}}
-                        inputValue={inputValue.phoneNumber}
-                        onInputChange={(event, phoneNumber) => {handleChangeInputUserValue({property: 'phoneNumber', value: phoneNumber})}}
-                        options={userList.filter(user => user.phoneNumber).map(user => user.phoneNumber)}
-                        sx={{ width: '200px' }}
-                        renderInput={(params) => {
-                            return <TextField {...params} />
-                        }}
-                        disabled={!editing}
-                    />
-                </Box>
-            </Box>
-            <Box
-                sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'flex-end'
-                }}
-            >
-                <IconButton
-                    onClick={handleEditing}
-                >
-                    {
-                        editing ? (
-                            <CheckIcon />
-                        ) : (
-                            <EditIcon />
-                        )
-                    }
-                </IconButton>
-            </Box>
+            {
+                loading && <h1>Loading...</h1>
+            }
+            {
+                error && <h1>Error: {error}</h1>
+            }
+            {
+                userSelected ? (
+                    <>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                {`ID:`}
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}
+                            >
+                                <Autocomplete
+                                    value={userSelected.id ? String(userSelected.id) : null}
+                                    onChange={(event, id) => {handleChangeUserSelected({property: 'id', value: id})}}
+                                    inputValue={inputValue.id}
+                                    onInputChange={(event, id) => {handleChangeInputUserValue({property: 'id', value: id})}}
+                                    options={userList.map(user => String(user.id))}
+                                    sx={{ width: '125px' }}
+                                    renderInput={(params) => {
+                                        return <TextField {...params} />
+                                    }}
+                                    disabled={!editing}
+                                />
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                Cliente:
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}
+                            >
+                                <Autocomplete
+                                    value={userSelected.name ? userSelected.name : null}
+                                    onChange={(event, name) => {handleChangeUserSelected({property: 'name', value: name})}}
+                                    inputValue={inputValue.name}
+                                    onInputChange={(event, name) => {handleChangeInputUserValue({property: 'name', value: name})}}
+                                    options={userList.map(user => user.name)}
+                                    sx={{ width: '150px' }}
+                                    renderInput={(params) => {
+                                        return <TextField {...params} />
+                                    }}
+                                    disabled={!editing}
+                                />
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <Typography
+                                variant='p'
+                                gutterBottom
+                            >
+                                Teléfono
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}
+                            >
+                                <Autocomplete
+                                    value={userSelected.phoneNumber ? userSelected.phoneNumber : null}
+                                    onChange={(event, phoneNumber) => {handleChangeUserSelected({property: 'phoneNumber', value: phoneNumber})}}
+                                    inputValue={inputValue.phoneNumber}
+                                    onInputChange={(event, phoneNumber) => {handleChangeInputUserValue({property: 'phoneNumber', value: phoneNumber})}}
+                                    options={userList.filter(user => user.phoneNumber).map(user => user.phoneNumber)}
+                                    sx={{ width: '200px' }}
+                                    renderInput={(params) => {
+                                        return <TextField {...params} />
+                                    }}
+                                    disabled={!editing}
+                                />
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'flex-end'
+                            }}
+                        >
+                            <IconButton
+                                onClick={handleEditing}
+                            >
+                                {
+                                    editing ? (
+                                        <CheckIcon />
+                                    ) : (
+                                        <EditIcon />
+                                    )
+                                }
+                            </IconButton>
+                        </Box>
+                    </>
+                ) : null
+            }
         </>
     )
 }
