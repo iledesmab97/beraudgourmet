@@ -1,6 +1,10 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
+import { useState, useEffect } from 'react'
+
+import { getDeliveryInformationOfOrder } from '@/services/orderApi'
+
 const address = [
     { title: 'Direccion de entrega', name: 'address' },
     { title: 'Ciudad', name: 'townOrCity' },
@@ -9,39 +13,62 @@ const address = [
     { title: 'Nota', name:'note' }
 ]
 
-function DeliveryData({deliveryInformation}) {
+function DeliveryData({ currentOrder }) {
+
+    const [delivery, setDelivery] = useState(null)
+    const [loading, setLoadig] = useState(true)
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        async function getDeliveryInformation() {
+            const response = await getDeliveryInformationOfOrder(currentOrder.id)
+            if (response.message) setError(response.message)
+            else setDelivery(response)
+            setLoadig(false)
+        }
+        getDeliveryInformation()
+    }, [])
+
     return (
         <>
             <Typography variant='title'>INFORMACIÓN DE ENTREGA</Typography>
             {
-                address.map((item) => (
-                    
-                    deliveryInformation[item.name] ? (
-                        <Box
-                            key={item.name}
-                            sx={{
-                                width: '100%',
-                                display: 'flex',
-                                justifyContent: 'space-between'
-                            }}
-                        >    
-                            <Typography
-                                variant='p'
-                                gutterBottom
-                            >
-                                {`${item.title}:`}
-                            </Typography>
-                            <Typography
-                                variant='p'
-                                gutterBottom
-                                align='right'
-                            >
-                                {deliveryInformation[item.name]}
-                            </Typography>
-                        </Box>
-                    ) : null
-                    
-                ))
+                loading && <h1>Loading...</h1>
+            }
+            {
+                error && <h1>Error: {error}</h1>
+            }
+            {
+                delivery ? (
+                    address.map((item) => (
+                            
+                        delivery[item.name] ? (
+                            <Box
+                                key={item.name}
+                                sx={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'space-between'
+                                }}
+                            >    
+                                <Typography
+                                    variant='p'
+                                    gutterBottom
+                                >
+                                    {`${item.title}:`}
+                                </Typography>
+                                <Typography
+                                    variant='p'
+                                    gutterBottom
+                                    align='right'
+                                >
+                                    {delivery[item.name]}
+                                </Typography>
+                            </Box>
+                        ) : null
+                        
+                    ))
+                ) : null
             }
         </>
     )
