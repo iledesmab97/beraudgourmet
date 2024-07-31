@@ -28,6 +28,27 @@ export function getPizzas() {
         .catch((error) => ({ message: error.message }));
 }
 
+export function getOnePizza(id) {
+    return fetch(`${PATH_BACK}/pizzas/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            const { id, name, text, image, ingredients, status, type } = data;
+            const newPizzaData = {
+                id,
+                name,
+                text,
+                image,
+                ingredients,
+                status,
+                type,
+                productType: "pizza",
+            };
+            return newPizzaData;
+        })
+        .catch((error) => ({ message: error.message }));
+}
+
 export function getPizzaCosts({ type }) {
     return fetch(`${PATH_BACK}/pizzaCosts`)
         .then((response) => response.json())
