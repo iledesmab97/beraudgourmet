@@ -25,7 +25,7 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetOrderList from '@/hooks/useGetOrderList'
 
 import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder, deepUnequal } from '@/utils/preparingData'
-import { changeOrderItems, getAllOrders } from '@/services/orderApi'
+import { changeOrderItems, getAllOrders, getItemsOrder } from '@/services/orderApi'
 
 function preparingDataForDescription(order) {
     const extra = {}
@@ -42,55 +42,20 @@ function preparingDataForDescription(order) {
     }
 }
 
-function PriceData({ orders }) {
+function PriceData({ order }) {
 
     const { products, totalProducts } = useGetProducts({type: 'pizzas'})
-    const [ordersState, setOrdersState] = useState(JSON.parse(JSON.stringify(orders)))
+    const [ordersState, setOrdersState] = useState(JSON.parse(JSON.stringify(order)))
     const [currentOrders, setCurrentorders] = useState(() => {
-        const { id, itemsxOrder, totalCost, totalCostByItems } = orders
-        const newItemsxOrder = itemsxOrder.map(currentItem => {
-            const { KindProduct } = currentItem
-            const { ingredientsOut, item } = extractElements(currentItem.description, KindProduct)
-            const { size, masaType, name } = item
-            const productFinded = totalProducts[KindProduct + 's'].find(p => p.name === name)
-            let cost
-            switch (KindProduct) {
-                case 'pizza': {
-                    cost = productFinded ? productFinded.price[size][masaType] : '0'
-                    break
-                }
-                case 'salad': {
-                    cost = productFinded ? productFinded.totalPriceByUnity : '0'
-                    break
-                }
-            }
-            return {
-                ...currentItem,
-                ingredientsOut,
-                item: {
-                    // ...currentItem,
-                    ...item,
-                    cost
-                }
-            }
-        })
+        const { id, totalCost, totalCostByItems } = order
         return {
             id,
-            itemsxOrder: newItemsxOrder,
+            itemsxOrder: [],
             totalCost,
             totalCostByItems
         }
     })
-    const [subElements, setSubElements] = useState(() => {
-        const listOrders = currentOrders.itemsxOrder.map(order => {
-            const { genericDataItem } = extractElements(order.description, order.KindProduct)
-            return {
-                ...order,
-                genericDataItem
-            }
-        })
-        return listOrders
-    })
+    const [subElements, setSubElements] = useState([])
     const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
     const [editing, setEditing] = useState(false)
     const { extraIngredients } = useGetExtraIngredients()
@@ -102,6 +67,13 @@ function PriceData({ orders }) {
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { orderList, handleAddOrderList } = useGetOrderList()
     const [loading, setLoading] = useState(false)
+    const [loadingItems, setLoadingItems] = useState(true)
+    const [errorItems, setErrorItems] = useState('')
+
+    // Buscar los items de la orde
+    useEffect(() => {
+        getItems()
+    }, [])
 
     // Actualizar la información del estado subElements
     useEffect(() => {
@@ -172,6 +144,48 @@ function PriceData({ orders }) {
         })
         orderUpdated.current = null
     }, [subElements])
+
+    async function getItems() {
+        const itemsxOrder = await getItemsOrder(currentOrders.id)
+        if (itemsxOrder.message) setErrorItems(itemsxOrder.message)
+        else {
+            const newItemsxOrder = itemsxOrder.map(currentItem => {
+                const { KindProduct } = currentItem
+                const { ingredientsOut, item, genericDataItem, extraIngredients } = extractElements(currentItem.description, KindProduct)
+                const { size, masaType, name } = item
+                const productFinded = totalProducts[KindProduct === 1 ? 'pizzas' : 'salads'].find(p => p.name === name)
+                let cost
+                switch (KindProduct) {
+                    case 'pizza': {
+                        cost = productFinded ? productFinded.price[size][masaType] : '0'
+                        break
+                    }
+                    case 'salad': {
+                        cost = productFinded ? productFinded.totalPriceByUnity : '0'
+                        break
+                    }
+                }
+                return {
+                    ...currentItem,
+                    ingredientsOut,
+                    extraIngredients,
+                    item: {
+                        // ...currentItem,
+                        ...item,
+                        cost
+                    },
+                    genericDataItem
+                }
+            })
+            const newCurrentOrder = {
+                ...currentOrders,
+                itemsxOrder: newItemsxOrder
+            }
+            setCurrentorders(newCurrentOrder)
+            setSubElements(newItemsxOrder)
+        }
+        setLoadingItems(false)
+    }
 
     function handleChangeCollapse(indexCollapse) {
         const newOpenCollapse = openCollapse.map((element, index) => index === indexCollapse ? !element : element )
@@ -510,6 +524,7 @@ function PriceData({ orders }) {
                     }
                     case 'ingredientsOut': {
                         optionList = pizzaFinded.ingredients
+                        break
                     }
                 }
                 break
@@ -545,12 +560,16 @@ function PriceData({ orders }) {
             }}
         >
             {
-                currentOrders.itemsxOrder && (
-                    // subElements && (
+                loadingItems && <h1>Loading...</h1>
+            }
+            {
+                errorItems && <h1>Error: {errorItems}</h1>
+            }
+            {
+                (currentOrders.itemsxOrder.length && subElements.length) ? (
                     <>
                         {
                             currentOrders.itemsxOrder.map((order, orderIndex) => (
-                                // subElements.map((order, orderIndex) => (
                                 <Grid container key={`order(${orderIndex})`}>
                                     <Grid
                                         item
@@ -1065,7 +1084,7 @@ function PriceData({ orders }) {
                         </List>
 
                     </>
-                )
+                ) : null
             }
             
             <Box
