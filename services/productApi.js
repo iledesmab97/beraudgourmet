@@ -70,6 +70,16 @@ export function getOnePizzaByName(name) {
         .catch((error) => ({ message: error.message }));
 }
 
+export function getPizzaIngredients(name) {
+    return fetch(`${PATH_BACK}/pizzas/ingredients/${name}`)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            return data;
+        })
+        .catch((error) => ({ message: error.message }));
+}
+
 export function getPizzaCosts({ type }) {
     return fetch(`${PATH_BACK}/pizzaCosts`)
         .then((response) => response.json())
