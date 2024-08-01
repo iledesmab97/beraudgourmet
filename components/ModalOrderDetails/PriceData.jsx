@@ -26,6 +26,7 @@ import useGetOrderList from '@/hooks/useGetOrderList'
 
 import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder, deepUnequal } from '@/utils/preparingData'
 import { changeOrderItems, getAllOrders, getItemsOrder } from '@/services/orderApi'
+import { getPizzaIngredients } from '@/services/productApi'
 
 function preparingDataForDescription(order) {
     const extra = {}
@@ -69,6 +70,10 @@ function PriceData({ order }) {
     const [loading, setLoading] = useState(false)
     const [loadingItems, setLoadingItems] = useState(true)
     const [errorItems, setErrorItems] = useState('')
+    const [openIngredients, setOpenIngredients] = useState(false)
+    const [productIngredients, setProductIngredients] = useState([])
+    const productName = useRef('')
+    const loadingIngredients = openIngredients && productIngredients.length === 0
 
     // Buscar los items de la orde
     useEffect(() => {
@@ -154,6 +159,38 @@ function PriceData({ order }) {
         })
         orderUpdated.current = null
     }, [subElements])
+
+    // Hacer búsqueda de los ingredientes del producto seleccionado
+    useEffect(() => {
+        let active = true
+        if (!loadingIngredients) {
+            return undefined
+        }
+
+        async function getProductIngredients() {
+            const ingredients = await getPizzaIngredients(productName.current)
+            if (active) {
+                setProductIngredients(ingredients.map(ingredient => ingredient.name))
+            }
+        }
+        getProductIngredients()
+
+        return () => {
+            active = false
+        }
+    }, [loadingIngredients])
+
+    // Borrar la lista de ingredientes cuando se cierra el Autocomplete
+    useEffect(() => {
+        if (!openIngredients) {
+            setProductIngredients([])
+        }
+    }, [openIngredients])
+
+    function handleChangeOpenIngredientsList(value, name) {
+        productName.current = name
+        setOpenIngredients(value)
+    }
 
     async function getItems() {
         const itemsxOrder = await getItemsOrder(currentOrders.id)
@@ -539,10 +576,6 @@ function PriceData({ order }) {
                         optionList = Object.keys(pizzaFinded.price[extraOption])
                         break
                     }
-                    case 'ingredientsOut': {
-                        optionList = pizzaFinded.ingredients
-                        break
-                    }
                 }
                 break
             }
@@ -776,71 +809,71 @@ function PriceData({ order }) {
                                                                             }}
                                                                         >
                                                                             {
-                                                                                editing ? (null
-                                                                                    // <Box
-                                                                                    //     sx={{
-                                                                                    //         position: 'relative',
-                                                                                    //         width: 'fit-content',
-                                                                                    //         fontSize: '0.875rem',
-                                                                                    //         color: 'rgba(0, 0, 0, 0.6)',
-                                                                                    //         display: 'flex',
-                                                                                    //         alignItems: 'center',
-                                                                                    //         gap: '8px'
-                                                                                    //     }}
-                                                                                    // >
-                                                                                    //     <TextField
-                                                                                    //         value={`${extraIngredient.quantity}`}
-                                                                                    //         onChange={(event) => {handleChangeQuantityExtraIngredient({ newQuantity: event.target.value, extraIngredientIndex, orderIndex })}}
-                                                                                    //         variant='standard'
-                                                                                    //         sx={{
-                                                                                    //             width: '32px',
-                                                                                    //         }}
-                                                                                    //         inputProps={{
-                                                                                    //             style: {
-                                                                                    //                 fontSize: '0.875rem',
-                                                                                    //                 textAlign: 'center',
-                                                                                    //                 color: 'rgba(0, 0, 0, 0.6)'
-                                                                                    //             }
-                                                                                    //         }}
-                                                                                    //     />
-                                                                                    //     x
-                                                                                    //     <Autocomplete
-                                                                                    //         value={ extraIngredient.name }
-                                                                                    //         onChange={(event, newExtraIngredient) => { handleChangeExtraIngredient({newExtraIngredient, extraIngredientIndex, orderIndex}) }}
-                                                                                    //         options={extraIngredientsList}
-                                                                                    //         getOptionDisabled={(option) => listExtraIngredients.map(extra => extra.name).includes(option)}
-                                                                                    //         renderInput={(params) => {
-                                                                                    //             return <TextField
-                                                                                    //                 variant='standard'
-                                                                                    //                 {...params}
-                                                                                    //             />
-                                                                                    //         }}
-                                                                                    //         sx={{
-                                                                                    //             width: '150px',
-                                                                                    //             '& input': {
-                                                                                    //                 fontSize: '0.875rem',
-                                                                                    //                 color: 'rgba(0, 0, 0, 0.6)',
-                                                                                    //                 // textAlign: 'center'
-                                                                                    //             }
-                                                                                    //         }}
-                                                                                    //     />
-                                                                                    //     <Typography>{`($${extraIngredient.costPerUnit} c/u)`}</Typography>
-                                                                                    //     <Box
-                                                                                    //         sx={{
-                                                                                    //             transform: 'scale(0.8)'
-                                                                                    //         }}
-                                                                                    //     >
-                                                                                    //         <IconButton
-                                                                                    //             onClick={() => {removeExtraIngredient({extraIngredientIndex, orderIndex})}}
-                                                                                    //             sx={{ p: '0px' }}
-                                                                                    //         >
-                                                                                    //             <CancelIcon
-                                                                                    //                 sx={{
-                                                                                    //                     color: '#f6685e'
-                                                                                    //                 }} />
-                                                                                    //         </IconButton>
-                                                                                    //     </Box>
-                                                                                    // </Box>
+                                                                                editing ? (
+                                                                                    <Box
+                                                                                        sx={{
+                                                                                            position: 'relative',
+                                                                                            width: 'fit-content',
+                                                                                            fontSize: '0.875rem',
+                                                                                            color: 'rgba(0, 0, 0, 0.6)',
+                                                                                            display: 'flex',
+                                                                                            alignItems: 'center',
+                                                                                            gap: '8px'
+                                                                                        }}
+                                                                                    >
+                                                                                        <TextField
+                                                                                            value={`${extraIngredient.quantity}`}
+                                                                                            onChange={(event) => {handleChangeQuantityExtraIngredient({ newQuantity: event.target.value, extraIngredientIndex, orderIndex })}}
+                                                                                            variant='standard'
+                                                                                            sx={{
+                                                                                                width: '32px',
+                                                                                            }}
+                                                                                            inputProps={{
+                                                                                                style: {
+                                                                                                    fontSize: '0.875rem',
+                                                                                                    textAlign: 'center',
+                                                                                                    color: 'rgba(0, 0, 0, 0.6)'
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                        x
+                                                                                        <Autocomplete
+                                                                                            value={ extraIngredient.name }
+                                                                                            onChange={(event, newExtraIngredient) => { handleChangeExtraIngredient({newExtraIngredient, extraIngredientIndex, orderIndex}) }}
+                                                                                            options={extraIngredientsList}
+                                                                                            getOptionDisabled={(option) => listExtraIngredients.map(extra => extra.name).includes(option)}
+                                                                                            renderInput={(params) => {
+                                                                                                return <TextField
+                                                                                                    variant='standard'
+                                                                                                    {...params}
+                                                                                                />
+                                                                                            }}
+                                                                                            sx={{
+                                                                                                width: '150px',
+                                                                                                '& input': {
+                                                                                                    fontSize: '0.875rem',
+                                                                                                    color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                    // textAlign: 'center'
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                        <Typography>{`($${extraIngredient.costPerUnit} c/u)`}</Typography>
+                                                                                        <Box
+                                                                                            sx={{
+                                                                                                transform: 'scale(0.8)'
+                                                                                            }}
+                                                                                        >
+                                                                                            <IconButton
+                                                                                                onClick={() => {removeExtraIngredient({extraIngredientIndex, orderIndex})}}
+                                                                                                sx={{ p: '0px' }}
+                                                                                            >
+                                                                                                <CancelIcon
+                                                                                                    sx={{
+                                                                                                        color: '#f6685e'
+                                                                                                    }} />
+                                                                                            </IconButton>
+                                                                                        </Box>
+                                                                                    </Box>
                                                                                 ) : (
                                                                                     <Typography
                                                                                         sx={{
@@ -864,14 +897,14 @@ function PriceData({ order }) {
                                                                     ))
                                                                 }
                                                                 {
-                                                                    editing ? (null
-                                                                        // <Box>
-                                                                        //     <IconButton
-                                                                        //         onClick={() => {addItemToExtraIngredients({orderIndex})}}
-                                                                        //     >
-                                                                        //         <AddCircleOutlineIcon />
-                                                                        //     </IconButton>
-                                                                        // </Box>
+                                                                    editing ? (
+                                                                        <Box>
+                                                                            <IconButton
+                                                                                onClick={() => {addItemToExtraIngredients({orderIndex})}}
+                                                                            >
+                                                                                <AddCircleOutlineIcon />
+                                                                            </IconButton>
+                                                                        </Box>
                                                                     ) : null
                                                                 }
                                                                 <Typography
@@ -895,48 +928,52 @@ function PriceData({ order }) {
                                                                             }}
                                                                         >
                                                                             {
-                                                                                editing ? (null
-                                                                                    // <>
-                                                                                    //     <Autocomplete
-                                                                                    //         value={ingredient}
-                                                                                    //         onChange={( event, newIngredientOut ) => { handleChangeIngredientOut({ orderIndex, ingredientIndex, newIngredientOut }) } }
-                                                                                    //         options={findOptions(order, 'ingredientsOut')}
-                                                                                    //         getOptionDisabled={(option) => listIngredintsOut.includes(option)}
-                                                                                    //         renderInput={(params) => {
-                                                                                    //             return <TextField
-                                                                                    //                 variant='standard'
-                                                                                    //                 {...params}
-                                                                                    //             />
-                                                                                    //         }}
-                                                                                    //         sx={{
-                                                                                    //             width: '150px',
-                                                                                    //             '& input': {
-                                                                                    //                 fontSize: '0.875rem',
-                                                                                    //                 color: 'rgba(0, 0, 0, 0.6)',
-                                                                                    //                 textDecoration: 'line-through'
-                                                                                    //                 // textAlign: 'center'
-                                                                                    //             }
-                                                                                    //         }}
-                                                                                    //     />
-                                                                                    //     <Box
-                                                                                    //         sx={{
-                                                                                    //             position: 'absolute',
-                                                                                    //             top: '0px',
-                                                                                    //             left: '100%',
-                                                                                    //             transform: 'scale(0.8)'
-                                                                                    //         }}
-                                                                                    //     >
-                                                                                    //         <IconButton
-                                                                                    //             onClick={() => {removeIngredientOut({ingredientIndex, orderIndex})}}
-                                                                                    //         >
-                                                                                    //             <CancelIcon
-                                                                                    //                 sx={{
-                                                                                    //                     // scale: 2,
-                                                                                    //                     color: '#f6685e'
-                                                                                    //                 }} />
-                                                                                    //         </IconButton>
-                                                                                    //     </Box>
-                                                                                    // </>
+                                                                                editing ? (
+                                                                                    <>
+                                                                                        <Autocomplete
+                                                                                            open={openIngredients}
+                                                                                            onOpen={() => handleChangeOpenIngredientsList(true, order.item.name)}
+                                                                                            onClose={() => handleChangeOpenIngredientsList(false, order.item.name)}
+                                                                                            value={ingredient}
+                                                                                            onChange={( event, newIngredientOut ) => { handleChangeIngredientOut({ orderIndex, ingredientIndex, newIngredientOut }) } }
+                                                                                            options={productIngredients}
+                                                                                            getOptionDisabled={(option) => listIngredintsOut.includes(option)}
+                                                                                            loading={loadingIngredients}
+                                                                                            renderInput={(params) => {
+                                                                                                return <TextField
+                                                                                                    {...params}
+                                                                                                    variant='standard'
+                                                                                                />
+                                                                                            }}
+                                                                                            sx={{
+                                                                                                width: '150px',
+                                                                                                '& input': {
+                                                                                                    fontSize: '0.875rem',
+                                                                                                    color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                    textDecoration: 'line-through'
+                                                                                                    // textAlign: 'center'
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                        <Box
+                                                                                            sx={{
+                                                                                                position: 'absolute',
+                                                                                                top: '0px',
+                                                                                                left: '100%',
+                                                                                                transform: 'scale(0.8)'
+                                                                                            }}
+                                                                                        >
+                                                                                            <IconButton
+                                                                                                onClick={() => {removeIngredientOut({ingredientIndex, orderIndex})}}
+                                                                                            >
+                                                                                                <CancelIcon
+                                                                                                    sx={{
+                                                                                                        // scale: 2,
+                                                                                                        color: '#f6685e'
+                                                                                                    }} />
+                                                                                            </IconButton>
+                                                                                        </Box>
+                                                                                    </>
                                                                                 ) : (
                                                                                     <Typography
                                                                                         sx={{
@@ -953,14 +990,14 @@ function PriceData({ order }) {
                                                                     ))
                                                                 }
                                                                 {
-                                                                    editing ? (null
-                                                                        // <Box>
-                                                                        //     <IconButton
-                                                                        //         onClick={() => {addItemToIngredientsOut({orderIndex})}}
-                                                                        //     >
-                                                                        //         <AddCircleOutlineIcon />
-                                                                        //     </IconButton>
-                                                                        // </Box>
+                                                                    editing ? (
+                                                                        <Box>
+                                                                            <IconButton
+                                                                                onClick={() => {addItemToIngredientsOut({orderIndex})}}
+                                                                            >
+                                                                                <AddCircleOutlineIcon />
+                                                                            </IconButton>
+                                                                        </Box>
                                                                     ) : null
                                                                 }
                                                                 <Box
