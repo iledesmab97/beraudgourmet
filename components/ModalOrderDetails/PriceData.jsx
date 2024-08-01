@@ -525,10 +525,10 @@ function PriceData({ order }) {
     }
 
     function findOptions(itemOrder, option, extraOption) {
-        const { KindProduct } = itemOrder
+        const { KindProductId } = itemOrder
         let optionList = []
-        switch (KindProduct) {
-            case 'pizza': {
+        switch (KindProductId) {
+            case 1: {
                 const pizzaFinded = products.find(pizza => pizza.name === itemOrder.item.name)
                 switch (option) {
                     case 'size': {
@@ -546,7 +546,7 @@ function PriceData({ order }) {
                 }
                 break
             }
-            case 'salad': {
+            case 2: {
                 const saladFinded = totalProducts['salads'].find(salad => salad.name === itemOrder.item.name)
                 optionList = saladFinded.ingredients
                 break
@@ -688,50 +688,51 @@ function PriceData({ order }) {
                                                                                     }}
                                                                                 />
                                                                                 {
-                                                                                    // order.KindProduct === 'pizza' ? (
-                                                                                    //     <>
-                                                                                    //         {'('}
-                                                                                    //         <Autocomplete
-                                                                                    //             value={order.item.size}
-                                                                                    //             onChange={(event, newSize) => { handleChangeSize({newSize, orderIndex}) }}
-                                                                                    //             options={findOptions(order, 'size')}
-                                                                                    //             renderInput={(params) => {
-                                                                                    //                 return <TextField
-                                                                                    //                     variant='standard'
-                                                                                    //                     {...params}
-                                                                                    //                 />
-                                                                                    //             }}
-                                                                                    //             sx={{
-                                                                                    //                 width: '100px',
-                                                                                    //                 '& input': {
-                                                                                    //                     fontSize: '0.875rem',
-                                                                                    //                     color: 'rgba(0, 0, 0, 0.6)',
-                                                                                    //                     // textAlign: 'center'
-                                                                                    //                 }
-                                                                                    //             }}
-                                                                                    //         />
-                                                                                    //         {'cm),'}
-                                                                                    //         <Autocomplete
-                                                                                    //             value={order.item.masaType}
-                                                                                    //             onChange={(event, newMass) => { handleChangeMass({ newMass, orderIndex }) }}
-                                                                                    //             options={findOptions(order, 'mass', order.item.size)}
-                                                                                    //             renderInput={(params) => {
-                                                                                    //                 return <TextField
-                                                                                    //                     variant='standard'
-                                                                                    //                     {...params}
-                                                                                    //                 />
-                                                                                    //             }}
-                                                                                    //             sx={{
-                                                                                    //                 width: '150px',
-                                                                                    //                 '& input': {
-                                                                                    //                     fontSize: '0.875rem',
-                                                                                    //                     color: 'rgba(0, 0, 0, 0.6)',
-                                                                                    //                     // textAlign: 'center'
-                                                                                    //                 }
-                                                                                    //             }}
-                                                                                    //         />
-                                                                                    //     </>
-                                                                                    // ) : null
+                                                                                    order.KindProductId === 1 ? (
+                                                                                        <>
+                                                                                            {'('}
+                                                                                            <Autocomplete
+                                                                                                value={order.item.size}
+                                                                                                onChange={(event, newSize) => { handleChangeSize({newSize, orderIndex}) }}
+                                                                                                options={findOptions(order, 'size')}
+                                                                                                renderInput={(params) => {
+                                                                                                    return <TextField
+                                                                                                        variant='standard'
+                                                                                                        {...params}
+                                                                                                    />
+                                                                                                }}
+                                                                                                sx={{
+                                                                                                    width: '100px',
+                                                                                                    '& input': {
+                                                                                                        fontSize: '0.875rem',
+                                                                                                        color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                        // textAlign: 'center'
+                                                                                                    }
+                                                                                                }}
+                                                                                            />
+                                                                                            {'cm),'}
+                                                                                            
+                                                                                            <Autocomplete
+                                                                                                value={order.item.masaType}
+                                                                                                onChange={(event, newMass) => { handleChangeMass({ newMass, orderIndex }) }}
+                                                                                                options={findOptions(order, 'mass', order.item.size)}
+                                                                                                renderInput={(params) => {
+                                                                                                    return <TextField
+                                                                                                        variant='standard'
+                                                                                                        {...params}
+                                                                                                    />
+                                                                                                }}
+                                                                                                sx={{
+                                                                                                    width: '150px',
+                                                                                                    '& input': {
+                                                                                                        fontSize: '0.875rem',
+                                                                                                        color: 'rgba(0, 0, 0, 0.6)',
+                                                                                                        // textAlign: 'center'
+                                                                                                    }
+                                                                                                }}
+                                                                                            />
+                                                                                        </>
+                                                                                    ) : null
                                                                                 }
                                                                             </Box>
                                                                         ) : (
