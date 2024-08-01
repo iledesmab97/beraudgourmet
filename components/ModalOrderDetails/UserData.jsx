@@ -13,9 +13,8 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { getAllUsers, getOneUserById } from '@/services/userApi'
 import { updateOrder } from '@/services/orderApi'
 
-function UserData({currentOrder, handleUpdateOrderProperty}) {
+function UserData({ userSelected, loading, error,  currentOrder, handleUpdateOrderProperty}) {
 
-    const [userSelected, setUserSelected] = useState(null)
     const [inputValue, setInputValue] = useState({
         id: '',
         name: '',
@@ -24,21 +23,6 @@ function UserData({currentOrder, handleUpdateOrderProperty}) {
     const [editing, setEditing] = useState(false)
     const [userList, setUserList] = useState([])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
-
-    useEffect(() => {
-        async function getUser() {
-            const user = await getOneUserById(currentOrder.UserId)
-            if (user.message) {
-                setError(user.message)
-            } else {
-                setUserSelected(user)
-            }
-            setLoading(false)
-        }
-        getUser()
-    }, [])
 
     useEffect(() => {
         if (!userSelected) return
