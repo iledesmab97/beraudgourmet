@@ -56,7 +56,7 @@ function PriceData({ order }) {
         }
     })
     const [subElements, setSubElements] = useState([])
-    const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
+    const [openCollapse, setOpenCollapse] = useState([])
     const [editing, setEditing] = useState(false)
     const { extraIngredients } = useGetExtraIngredients()
     const [pizzaList, setPizzaList] = useState([])
@@ -74,6 +74,12 @@ function PriceData({ order }) {
     useEffect(() => {
         getItems()
     }, [])
+
+    // Actualizar openCollapse
+    useEffect(() => {
+        if (subElements.length === openCollapse.length) return
+        setOpenCollapse(() => subElements.map(() => false))
+    }, [subElements])
 
     // Actualizar la información del estado subElements
     useEffect(() => {
@@ -150,25 +156,32 @@ function PriceData({ order }) {
         if (itemsxOrder.message) setErrorItems(itemsxOrder.message)
         else {
             const newItemsxOrder = itemsxOrder.map(currentItem => {
-                const { KindProduct } = currentItem
-                const { ingredientsOut, item, genericDataItem, extraIngredients } = extractElements(currentItem.description, KindProduct)
+                const { KindProductId } = currentItem
+                const dataExtractOfDescription = extractElements(currentItem.description, KindProductId)
+                const { ingredientsOut, item, genericDataItem } = dataExtractOfDescription
+                const extraIngredientsFromDescription = dataExtractOfDescription.extraIngredients
                 const { size, masaType, name } = item
-                const productFinded = totalProducts[KindProduct === 1 ? 'pizzas' : 'salads'].find(p => p.name === name)
+                const productFinded = totalProducts[KindProductId === 1 ? 'pizzas' : 'salads'].find(p => p.name === name)
                 let cost
-                switch (KindProduct) {
-                    case 'pizza': {
+                switch (KindProductId) {
+                    case 1: {
                         cost = productFinded ? productFinded.price[size][masaType] : '0'
                         break
                     }
-                    case 'salad': {
+                    case 2: {
                         cost = productFinded ? productFinded.totalPriceByUnity : '0'
                         break
                     }
                 }
+                const extraIngredientsData = extraIngredientsFromDescription.map(extra => extraIngredients[extra.name])
                 return {
                     ...currentItem,
                     ingredientsOut,
-                    extraIngredients,
+                    extraIngredients: extraIngredientsFromDescription.map((extra, index) => ({
+                        ...extra,
+                        costPerUnit: extraIngredientsData[index].totalPrice,
+                        cost: String(extraIngredientsData[index].totalPrice * extra.quantity)
+                    })),
                     item: {
                         // ...currentItem,
                         ...item,
