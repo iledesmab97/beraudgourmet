@@ -13,40 +13,21 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { updateOrder } from '@/services/orderApi'
 import { getAllStores, getOneStoreById } from '@/services/storeApi'
 
-function StoreData({ currentOrder, handleUpdateOrderProperty }) {
+function StoreData({ storeSelected, loading, error, currentOrder, handleUpdateOrderProperty }) {
 
-    const [storeSelected, setStoreSelected] = useState(null)
     const [inputValue, setInputValue] = useState({
         id: '',
         name: ''
     })
     const [editing, setEditing] = useState(false)
     const [storeList, setStoreList] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
+    const [open, setOpen] = useState({
+        openId: false,
+        openName: false,
+    })
+    const loadingStoreList = Object.keys(open).some(i => open[i]) && storeList.length === 0
+
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-
-    useEffect(() => {
-        async function getStore() {
-            const store = await getOneStoreById(currentOrder.StoreId)
-            if (store.message) {
-                setError(store.message)
-            } else {
-                setStoreSelected(store)
-            }
-            setLoading(false)
-        }
-        getStore()
-    }, [])
-
-    useEffect(() => {
-        getAllStores()
-            .then(data => {
-                if (data.message) throw new Error(data.message)
-                setStoreList(data)
-            })
-            .catch(error => alert(error.message))
-    }, [])
 
     useEffect(() => {
         if (!storeSelected) return
@@ -55,6 +36,38 @@ function StoreData({ currentOrder, handleUpdateOrderProperty }) {
             name: storeSelected.name
         })
     }, [storeSelected])
+
+    useEffect(() => {
+        let active = true
+        if (!loadingStoreList) {
+            return
+        }
+
+        async function getStores() {
+            const newStoreList = await getAllStores()
+            if (newStoreList.message) {
+                alert(newStoreList.message)
+            } else {
+                if (active) {
+                    setStoreList(newStoreList)
+                }
+            }
+        }
+
+        getStores()
+        
+        return () => {
+            active = false
+        }
+
+    }, [open])
+
+    function handleChangeOpen(value, item) {
+        setOpen(prevState => ({
+            ...prevState,
+            [item]: value
+        }))
+    }
 
     async function handleEditing() {
         if (editing && storeSelected.id !== store.id) {
@@ -156,6 +169,11 @@ function StoreData({ currentOrder, handleUpdateOrderProperty }) {
                                 }}
                             >
                                 <Autocomplete
+                                    open={open['openId']}
+                                    onOpen={() => {handleChangeOpen(true, 'openId')}}
+                                    onClose={() => {handleChangeOpen(false, 'openId')}}
+                                    getOptionDisabled={(option) => String(option) === String(storeSelected.id)}
+                                    loading={loadingStoreList}
                                     value={storeSelected.id ? String(storeSelected.id) : null}
                                     onChange={(event, id) => {handleChangeStoreSelected({property: 'id', value: id})}}
                                     inputValue={inputValue.id}
@@ -190,6 +208,11 @@ function StoreData({ currentOrder, handleUpdateOrderProperty }) {
                                 }}
                             >
                                 <Autocomplete
+                                    open={open['openName']}
+                                    onOpen={() => {handleChangeOpen(true, 'openName')}}
+                                    onClose={() => {handleChangeOpen(false, 'openName')}}
+                                    getOptionDisabled={(option) => String(option) === String(storeSelected.name)}
+                                    loading={loadingStoreList}
                                     value={storeSelected.name ? storeSelected.name : null}
                                     onChange={(event, name) => {handleChangeStoreSelected({property: 'name', value: name})}}
                                     inputValue={inputValue.name}
@@ -221,7 +244,7 @@ function StoreData({ currentOrder, handleUpdateOrderProperty }) {
                                 gutterBottom
                                 align='right'
                             >
-                                {storeSelected.phoneNumber}
+                                {storeSelected.phone}
                             </Typography>
                         </Box>
                         <Box
@@ -242,7 +265,7 @@ function StoreData({ currentOrder, handleUpdateOrderProperty }) {
                                 gutterBottom
                                 align='right'
                             >
-                                {storeSelected.address}
+                                {storeSelected.place}
                             </Typography>
                         </Box>
                         <Box
