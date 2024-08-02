@@ -23,6 +23,12 @@ function UserData({ userSelected, loading, error,  currentOrder, handleUpdateOrd
     const [editing, setEditing] = useState(false)
     const [userList, setUserList] = useState([])
     const { handleUpdateAlertMessage } = useGetAlertMessage()
+    const [open, setOpen] = useState({
+        openId: false,
+        openName: false,
+        openPhone: false
+    })
+    const loadingUserList = Object.keys(open).some(i => open[i]) && userList.length === 0
 
     useEffect(() => {
         if (!userSelected) return
@@ -34,13 +40,36 @@ function UserData({ userSelected, loading, error,  currentOrder, handleUpdateOrd
     }, [userSelected])
 
     useEffect(() => {
-        getAllUsers()
-            .then(data => {
-                if (data.message) throw new Error(data.message)
-                setUserList(data)
-            })
-            .catch(error => alert(error.message))
-    }, [])
+        let active = true
+        if (!loadingUserList) {
+            return
+        }
+
+        async function getUsers() {
+            const newUserList = await getAllUsers()
+            if (newUserList.message) {
+                alert(newUserList.message)
+            } else {
+                if (active) {
+                    setUserList(newUserList)
+                }
+            }
+        }
+
+        getUsers()
+        
+        return () => {
+            active = false
+        }
+
+    }, [open])
+
+    function handleChangeOpen(value, item) {
+        setOpen(prevState => ({
+            ...prevState,
+            [item]: value
+        }))
+    }
 
     async function handleEditing() {
         if (editing && userSelected.id !== user.id) {
@@ -141,6 +170,11 @@ function UserData({ userSelected, loading, error,  currentOrder, handleUpdateOrd
                                 }}
                             >
                                 <Autocomplete
+                                    open={open['openId']}
+                                    onOpen={() => {handleChangeOpen(true, 'openId')}}
+                                    onClose={() => {handleChangeOpen(false, 'openId')}}
+                                    getOptionDisabled={(option) => String(option) === String(userSelected.id)}
+                                    loading={loadingUserList}
                                     value={userSelected.id ? String(userSelected.id) : null}
                                     onChange={(event, id) => {handleChangeUserSelected({property: 'id', value: id})}}
                                     inputValue={inputValue.id}
@@ -175,6 +209,11 @@ function UserData({ userSelected, loading, error,  currentOrder, handleUpdateOrd
                                 }}
                             >
                                 <Autocomplete
+                                    open={open['openName']}
+                                    onOpen={() => {handleChangeOpen(true, 'openName')}}
+                                    onClose={() => {handleChangeOpen(false, 'openName')}}
+                                    getOptionDisabled={(option) => String(option) === String(userSelected.name)}
+                                    loading={loadingUserList}
                                     value={userSelected.name ? userSelected.name : null}
                                     onChange={(event, name) => {handleChangeUserSelected({property: 'name', value: name})}}
                                     inputValue={inputValue.name}
@@ -209,6 +248,11 @@ function UserData({ userSelected, loading, error,  currentOrder, handleUpdateOrd
                                 }}
                             >
                                 <Autocomplete
+                                    open={open['openPhone']}
+                                    onOpen={() => {handleChangeOpen(true, 'openPhone')}}
+                                    onClose={() => {handleChangeOpen(false, 'openPhone')}}
+                                    getOptionDisabled={(option) => String(option) === String(userSelected.phoneNumber)}
+                                    loading={loadingUserList}
                                     value={userSelected.phoneNumber ? userSelected.phoneNumber : null}
                                     onChange={(event, phoneNumber) => {handleChangeUserSelected({property: 'phoneNumber', value: phoneNumber})}}
                                     inputValue={inputValue.phoneNumber}
