@@ -40,7 +40,7 @@ import { useSelector } from 'react-redux';
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    pizzas: [ 'Estatus','Nombre', 'Ingredientes', 'Imagen', 'Acción' ]
+    pizzas: [ 'Estatus','Nombre', 'Imagen', 'Acción' ]
 }
 
 const colorsCell = {
@@ -211,43 +211,50 @@ function TablePizzas() {
                     </TableHead>
                     <TableBody className={styles.DataTableBody}>
                         {
-                            pizzas.map((pizza) => (
-                                <TableRow key={pizza.id}>
-                                    <TableCell align='center'>{
-                                        pizza.status === 'ACTIVE' ? (
-                                            <CheckCircleIcon sx={{ color: '#4caf50'}} />
-                                        ) : (
-                                            <CancelIcon sx={{ color: '#f6685e'}} />
-                                        )
-                                    }</TableCell>
-                                    <TableCell align='center'>{pizza.name}</TableCell>
-                                    <TableCell align='center'>{pizza.ingredients.join(', ')}</TableCell>
-                                    <TableCell align='center'>
-                                        {
-                                            pizza.image ? (
-                                                <Image
-                                                    src={pizza.image}
-                                                    alt={pizza.name}
-                                                    width={130}
-                                                    height={100}
-                                                    style={{
-                                                        objectFit: 'contain'
-                                                    }}
-                                                />
-                                            ) : null
-                                        }
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <IconButton
-                                            onClick={(event) => {
-                                                handleClickButtonAction(event, pizza)
-                                            }}
-                                        >
-                                            <MoreHorizIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                            status === 'loading' && <h1>{status}...</h1> 
+                        }
+                        {
+                            error && <h1>{error}</h1>
+                        }
+                        {
+                            pizzas ? (
+                                pizzas.map((pizza) => (
+                                    <TableRow key={pizza.id}>
+                                        <TableCell align='center'>{
+                                            pizza.status === 'ACTIVE' ? (
+                                                <CheckCircleIcon sx={{ color: '#4caf50'}} />
+                                            ) : (
+                                                <CancelIcon sx={{ color: '#f6685e'}} />
+                                            )
+                                        }</TableCell>
+                                        <TableCell align='center'>{pizza.name}</TableCell>
+                                        <TableCell align='center'>
+                                            {
+                                                pizza.image ? (
+                                                    <Image
+                                                        src={pizza.image}
+                                                        alt={pizza.name}
+                                                        width={130}
+                                                        height={100}
+                                                        style={{
+                                                            objectFit: 'contain'
+                                                        }}
+                                                    />
+                                                ) : null
+                                            }
+                                        </TableCell>
+                                        <TableCell align='center'>
+                                            <IconButton
+                                                onClick={(event) => {
+                                                    handleClickButtonAction(event, pizza)
+                                                }}
+                                            >
+                                                <MoreHorizIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : null
                         }
                     </TableBody>
                 </Table>
@@ -255,7 +262,7 @@ function TablePizzas() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={pizzas.length}
+                count={ pizzas ? pizzas.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={(event, newPage) => { handleChangePage(newPage) }}

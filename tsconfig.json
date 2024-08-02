@@ -30,6 +30,6 @@
         ".next/types/**/*.ts",
         "theme/ThemeRegistry.jsx",
         "app/pizzas/page.jsx"
-    ],
+, "app/admin/page.jsx"    ],
     "exclude": ["node_modules"]
 }

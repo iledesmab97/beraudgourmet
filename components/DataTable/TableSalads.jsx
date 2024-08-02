@@ -40,7 +40,7 @@ import { useSelector } from 'react-redux';
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
-    salads: [ 'Estatus','Nombre', 'Ingredientes', 'Imagen', 'Acción' ]
+    salads: [ 'Estatus','Nombre', 'Imagen', 'Acción' ]
 }
 
 const colorsCell = {
@@ -209,43 +209,50 @@ function TableSalads() {
                     </TableHead>
                     <TableBody className={styles.DataTableBody}>
                         {
-                            salads.map((salad) => (
-                                <TableRow key={salad.id}>
-                                    <TableCell align='center'>{
-                                        salad.status === 'ACTIVE' ? (
-                                            <CheckCircleIcon sx={{ color: '#4caf50'}} />
-                                        ) : (
-                                            <CancelIcon sx={{ color: '#f6685e'}} />
-                                        )
-                                    }</TableCell>
-                                    <TableCell align='center'>{salad.name}</TableCell>
-                                    <TableCell align='center'>{salad.ingredients.join(', ')}</TableCell>
-                                    <TableCell align='center'>
-                                        {
-                                            salad.image ? (
-                                                <Image
-                                                    src={salad.image}
-                                                    alt={salad.name}
-                                                    width={130}
-                                                    height={100}
-                                                    style={{
-                                                        objectFit: 'contain'
-                                                    }}
-                                                />
-                                            ) : null
-                                        }
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <IconButton
-                                            onClick={(event) => {
-                                                handleClickButtonAction(event, salad)
-                                            }}
-                                        >
-                                            <MoreHorizIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                            status === 'loading' && <h1>{status}...</h1> 
+                        }
+                        {
+                            error && <h1>{error}</h1>
+                        }
+                        {
+                            salads ? (
+                                salads.map((salad) => (
+                                    <TableRow key={salad.id}>
+                                        <TableCell align='center'>{
+                                            salad.status === 'ACTIVE' ? (
+                                                <CheckCircleIcon sx={{ color: '#4caf50'}} />
+                                            ) : (
+                                                <CancelIcon sx={{ color: '#f6685e'}} />
+                                            )
+                                        }</TableCell>
+                                        <TableCell align='center'>{salad.name}</TableCell>
+                                        <TableCell align='center'>
+                                            {
+                                                salad.image ? (
+                                                    <Image
+                                                        src={salad.image}
+                                                        alt={salad.name}
+                                                        width={130}
+                                                        height={100}
+                                                        style={{
+                                                            objectFit: 'contain'
+                                                        }}
+                                                    />
+                                                ) : null
+                                            }
+                                        </TableCell>
+                                        <TableCell align='center'>
+                                            <IconButton
+                                                onClick={(event) => {
+                                                    handleClickButtonAction(event, salad)
+                                                }}
+                                            >
+                                                <MoreHorizIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : null
                         }
                     </TableBody>
                 </Table>
@@ -253,7 +260,7 @@ function TableSalads() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={salads.length}
+                count={ salads ? salads.length : 0 }
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={(event, newPage) => { handleChangePage(newPage) }}
