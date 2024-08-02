@@ -4,27 +4,22 @@ import ToolLateralBar from '@/components/ToolLateralBar/ToolLateralBar'
 import DataPanel from '@/components/DataPanel/DataPanel'
 import AlertMessage from '@/components/AlertMessage/AlertMessage'
 import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary'
-import Ups from '@/components/Ups/Ups'
 
 import Container from '@mui/material/Container'
-import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 
 import MenuIcon from '@mui/icons-material/Menu'
 
 import { useState, useEffect } from 'react'
-import useGetUser from '@/hooks/useGetUser';
-import useGetProducts from '@/hooks/useGetProducts'
-import useGetStoreList from '@/hooks/useGetStoreList'
-import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import useGetOrderList from '@/hooks/useGetOrderList'
 import { useLoadScript } from "@react-google-maps/api"
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useLoadData from '@/hooks/useLoadData'
+
+import { useDispatch } from 'react-redux'
+import { addProductsListThunk } from '@/stores/actions/products'
 
 import styles from './page.module.css'
 
@@ -42,20 +37,26 @@ function AdminPlace() {
     const [totalMatches, setTotalMatches] = useState('null')
     const [openToolLateralBar, setOpenToolLateralBar] = useState(false)
     const { loadData } = useLoadData()
+    const dispatch = useDispatch();
 
     useEffect(() => {
         loadData('admin')
     }, [])
 
+
+    useEffect(() => {
+        dispatch(addProductsListThunk());
+    }, [dispatch]);
+
     useEffect(() => {
         setTotalMatches(String(matches))
     }, [matches])
 
-    function handleToolSelected(newTool: string) {
+    function handleToolSelected(newTool) {
         setToolSelected(newTool)
     }
 
-    function handleOpenToolLateralBar(value: boolean) {
+    function handleOpenToolLateralBar(value) {
         setOpenToolLateralBar(value)
     }
 

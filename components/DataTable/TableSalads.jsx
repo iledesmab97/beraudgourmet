@@ -35,6 +35,7 @@ import { useTheme } from '@mui/material/styles'
 import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { getPizzas, getPizzaCosts, removePizza, updatePizza, updateSalad } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
+import { useSelector } from 'react-redux';
 
 import styles from './DataTable.module.css'
 
@@ -54,8 +55,7 @@ function TableSalads() {
     const [saladSelected, setSaladSelected] = useState(null)
     const [openSaladDetail, setOpenSaladDetail] = useState(false)
     const open = Boolean(anchorEl)
-    const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'salads'})
-    const [salads, setSalads] = useState( products ? products : [])
+    const { products, handleUpdateProduct } = useGetProducts({type:'salads'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const saladNew = useRef(false)
     const theme = useTheme()
@@ -64,11 +64,9 @@ function TableSalads() {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [loading, setLoading] = useState(false)
-
-    useEffect(() => {
-        if (!products) return
-        setSalads(products)
-    }, [products])
+    const { salads, status, error } = useSelector(
+        (state) => state.products
+    );
 
     useEffect(() => {
         if (!saladNew.current) return

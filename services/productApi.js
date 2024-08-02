@@ -3,37 +3,13 @@ import { requestSettings } from "@/utils/preparingData";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-export function getPizzas() {
-    return fetch(`${PATH_BACK}/pizzas`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const pizzaList = data.map((pizza) => {
-                const { id, name, text, image, ingredients, status, type } =
-                    pizza;
-                const newPizzaData = {
-                    id,
-                    name,
-                    text,
-                    image,
-                    ingredients,
-                    status,
-                    type,
-                    productType: "pizza",
-                };
-                return newPizzaData;
-            });
-            return pizzaList;
-        })
-        .catch((error) => ({ message: error.message }));
-}
-
-export function getOnePizzaById(id) {
-    return fetch(`${PATH_BACK}/pizzas/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const { id, name, text, image, ingredients, status, type } = data;
+export async function getPizzas() {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzas`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const pizzaList = data.map((pizza) => {
+            const { id, name, text, image, ingredients, status, type } = pizza;
             const newPizzaData = {
                 id,
                 name,
@@ -45,102 +21,138 @@ export function getOnePizzaById(id) {
                 productType: "pizza",
             };
             return newPizzaData;
-        })
-        .catch((error) => ({ message: error.message }));
-}
-
-export function getOnePizzaByName(name) {
-    return fetch(`${PATH_BACK}/pizzas/name/${name}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const { id, name, text, image, ingredients, status, type } = data;
-            const newPizzaData = {
-                id,
-                name,
-                text,
-                image,
-                ingredients,
-                status,
-                type,
-                productType: "pizza",
-            };
-            return newPizzaData;
-        })
-        .catch((error) => ({ message: error.message }));
-}
-
-export function getPizzaIngredients(name) {
-    return fetch(`${PATH_BACK}/pizzas/ingredients/${name}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            return data;
-        })
-        .catch((error) => ({ message: error.message }));
-}
-
-export function getPizzaCosts({ type }) {
-    return fetch(`${PATH_BACK}/pizzaCosts`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const pizzaCostsList = data.map((pizzaCost) => {
-                const {
-                    id,
-                    cost,
-                    costIVA,
-                    costIVAStripe,
-                    pizza,
-                    pizzaCharacteristics,
-                } = pizzaCost;
-                const newPizzaCost = {
-                    id,
-                    cost,
-                    costIVA: twoDecimals(costIVA),
-                    costIVAStripe,
-                    pizza,
-                    pizzaCharacteristics,
-                };
-                return newPizzaCost;
-            });
-            if (type === "object") {
-                const listCostsObject = {};
-                pizzaCostsList.forEach((pizzaCost) => {
-                    const { costIVAStripe, pizza, pizzaCharacteristics } =
-                        pizzaCost;
-                    const { mass, size } = pizzaCharacteristics;
-
-                    if (listCostsObject[pizza]) {
-                        // cost per mass
-                        const costPerMass = {
-                            ...listCostsObject[pizza][size],
-                            [mass]: costIVAStripe,
-                        };
-                        // mass per size
-                        const massPerSize = {
-                            ...listCostsObject[pizza],
-                            [size]: costPerMass,
-                        };
-
-                        listCostsObject[pizza] = massPerSize;
-                    } else {
-                        // cost per mass
-                        const costPerMass = {
-                            [mass]: costIVAStripe,
-                        };
-                        // mass per size
-                        const massPerSize = {
-                            [size]: costPerMass,
-                        };
-
-                        listCostsObject[pizza] = massPerSize;
-                    }
-                });
-                return listCostsObject;
-            }
-            return pizzaCostsList;
         });
+        return pizzaList;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getOnePizzaById(id) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzas/${id}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const { id: id_1, name, text, image, ingredients, status, type } = data;
+        const newPizzaData = {
+            id,
+            name,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+            productType: "pizza",
+        };
+        return newPizzaData;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getOnePizzaByName(name) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzas/name/${name}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const {
+            id,
+            name: name_1,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+        } = data;
+        const newPizzaData = {
+            id,
+            name,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+            productType: "pizza",
+        };
+        return newPizzaData;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getPizzaIngredients(name) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzas/ingredients/${name}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getPizzaCosts({ type }) {
+    const response = await fetch(`${PATH_BACK}/pizzaCosts`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    const pizzaCostsList = data.map((pizzaCost) => {
+        const {
+            id,
+            cost,
+            costIVA,
+            costIVAStripe,
+            pizza,
+            pizzaCharacteristics,
+        } = pizzaCost;
+        const newPizzaCost = {
+            id,
+            cost,
+            costIVA: twoDecimals(costIVA),
+            costIVAStripe,
+            pizza,
+            pizzaCharacteristics,
+        };
+        return newPizzaCost;
+    });
+    if (type === "object") {
+        const listCostsObject = {};
+        pizzaCostsList.forEach((pizzaCost_3) => {
+            const {
+                costIVAStripe: costIVAStripe_1,
+                pizza: pizza_1,
+                pizzaCharacteristics: pizzaCharacteristics_2,
+            } = pizzaCost_3;
+            const { mass, size } = pizzaCharacteristics_2;
+
+            if (listCostsObject[pizza_1]) {
+                // cost per mass
+                const costPerMass = {
+                    ...listCostsObject[pizza_1][size],
+                    [mass]: costIVAStripe_1,
+                };
+                // mass per size
+                const massPerSize = {
+                    ...listCostsObject[pizza_1],
+                    [size]: costPerMass,
+                };
+
+                listCostsObject[pizza_1] = massPerSize;
+            } else {
+                // cost per mass
+                const costPerMass_1 = {
+                    [mass]: costIVAStripe_1,
+                };
+                // mass per size
+                const massPerSize_1 = {
+                    [size]: costPerMass_1,
+                };
+
+                listCostsObject[pizza_1] = massPerSize_1;
+            }
+        });
+        return listCostsObject;
+    }
+    return pizzaCostsList;
 }
 
 export async function getExtraIngredients() {
@@ -266,91 +278,53 @@ export async function updateCharacteristicsPizza(id, body) {
         .catch((error) => ({ message: error.message }));
 }
 
-export function updateExtraIngredient(id, properties) {
-    return fetch(`${PATH_BACK}/ingredients/${id}`, {
-        ...requestSettings("PUT"),
-        body: JSON.stringify(properties),
-    })
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            return data;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function updateExtraIngredient(id, properties) {
+    try {
+        const response = await fetch(`${PATH_BACK}/ingredients/${id}`, {
+            ...requestSettings("PUT"),
+            body: JSON.stringify(properties),
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function makeExtraIngredient(properties) {
-    return fetch(`${PATH_BACK}/ingredients`, {
-        ...requestSettings("POST"),
-        body: JSON.stringify(properties),
-    })
-        .then((response) => {
-            return response.json();
-        })
-        .then((response) => {
-            if (response.message) throw new Error(response.message);
-            return response;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function makeExtraIngredient(properties) {
+    try {
+        const response = await fetch(`${PATH_BACK}/ingredients`, {
+            ...requestSettings("POST"),
+            body: JSON.stringify(properties),
+        });
+        const response_1 = await response.json();
+        if (response_1.message) throw new Error(response_1.message);
+        return response_1;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function removeExtraIngredient(id) {
-    return fetch(`${PATH_BACK}/ingredients/${id}`, {
-        ...requestSettings("DELETE"),
-    })
-        .then((response) => {
-            return response.json();
-        })
-        .then((response) => {
-            if (response.message) throw new Error(response.message);
-            return response;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function removeExtraIngredient(id) {
+    try {
+        const response = await fetch(`${PATH_BACK}/ingredients/${id}`, {
+            ...requestSettings("DELETE"),
+        });
+        const response_1 = await response.json();
+        if (response_1.message) throw new Error(response_1.message);
+        return response_1;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function getSalads() {
-    return fetch(`${PATH_BACK}/salads`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const saladList = data.map((salad) => {
-                const {
-                    id,
-                    name,
-                    text,
-                    image,
-                    ingredients,
-                    status,
-                    type,
-                    cost,
-                    costIVAStripe,
-                } = salad;
-                const newSaladData = {
-                    id,
-                    name,
-                    text,
-                    image,
-                    ingredients,
-                    status,
-                    type,
-                    price: cost,
-                    totalPriceByUnity: costIVAStripe,
-                    productType: "salad",
-                };
-                return newSaladData;
-            });
-            return saladList;
-        })
-        .catch((error) => ({ message: error.message }));
-}
-
-export function getOneSaladById(id) {
-    return fetch(`${PATH_BACK}/salads/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
+export async function getSalads() {
+    try {
+        const response = await fetch(`${PATH_BACK}/salads`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const saladList = data.map((salad) => {
             const {
                 id,
                 name,
@@ -361,7 +335,7 @@ export function getOneSaladById(id) {
                 type,
                 cost,
                 costIVAStripe,
-            } = data;
+            } = salad;
             const newSaladData = {
                 id,
                 name,
@@ -375,41 +349,79 @@ export function getOneSaladById(id) {
                 productType: "salad",
             };
             return newSaladData;
-        })
-        .catch((error) => ({ message: error.message }));
+        });
+        return saladList;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function getOneSaladByName(name) {
-    return fetch(`${PATH_BACK}/salads/name/${name}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const {
-                id,
-                name,
-                text,
-                image,
-                ingredients,
-                status,
-                type,
-                cost,
-                costIVAStripe,
-            } = data;
-            const newSaladData = {
-                id,
-                name,
-                text,
-                image,
-                ingredients,
-                status,
-                type,
-                price: cost,
-                totalPriceByUnity: costIVAStripe,
-                productType: "salad",
-            };
-            return newSaladData;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function getOneSaladById(id) {
+    try {
+        const response = await fetch(`${PATH_BACK}/salads/${id}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const {
+            id: id_1,
+            name,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+            cost,
+            costIVAStripe,
+        } = data;
+        const newSaladData = {
+            id,
+            name,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+            price: cost,
+            totalPriceByUnity: costIVAStripe,
+            productType: "salad",
+        };
+        return newSaladData;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getOneSaladByName(name) {
+    try {
+        const response = await fetch(`${PATH_BACK}/salads/name/${name}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const {
+            id,
+            name: name_1,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+            cost,
+            costIVAStripe,
+        } = data;
+        const newSaladData = {
+            id,
+            name,
+            text,
+            image,
+            ingredients,
+            status,
+            type,
+            price: cost,
+            totalPriceByUnity: costIVAStripe,
+            productType: "salad",
+        };
+        return newSaladData;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
 export async function addNewSalad(salad) {

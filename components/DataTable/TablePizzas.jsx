@@ -35,6 +35,8 @@ import { updateOrder, getAllOrders, sendImage } from '@/services/orderApi'
 import { getPizzas, getPizzaCosts, removePizza, updatePizza } from '@/services/productApi'
 import { howMuchLeft } from '@/utils/hours'
 
+import { useSelector } from 'react-redux';
+
 import styles from './DataTable.module.css'
 
 const tableHeaders = {
@@ -53,8 +55,7 @@ function TablePizzas() {
     const [currentPizza, setCurrentPizza] = useState(null)
     const [openPizzaDetail, setOpenPizzaDetail] = useState(false)
     const open = Boolean(anchorEl)
-    const { products, handleAddProductsList, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'pizzas'})
-    const [pizzas, setPizzas] = useState( products ? products : [])
+    const { products, handleUpdateProduct, handleDeleteProduct } = useGetProducts({type:'pizzas'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const pizzaNew = useRef(false)
     const theme = useTheme()
@@ -62,10 +63,9 @@ function TablePizzas() {
     const [totalMatches, setTotalMatches] = useState(false)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
-
-    useEffect(() => {
-        if (products) setPizzas(products)
-    }, [products])
+    const { pizzas, status, error } = useSelector(
+        (state) => state.products
+    );
 
     useEffect(() => {
         if (!pizzaNew.current) return
