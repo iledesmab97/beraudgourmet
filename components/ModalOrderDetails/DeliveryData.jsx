@@ -13,21 +13,7 @@ const address = [
     { title: 'Nota', name:'note' }
 ]
 
-function DeliveryData({ currentOrder }) {
-
-    const [delivery, setDelivery] = useState(null)
-    const [loading, setLoadig] = useState(true)
-    const [error, setError] = useState('')
-
-    useEffect(() => {
-        async function getDeliveryInformation() {
-            const response = await getDeliveryInformationOfOrder(currentOrder.id)
-            if (response.message) setError(response.message)
-            else setDelivery(response)
-            setLoadig(false)
-        }
-        getDeliveryInformation()
-    }, [])
+function DeliveryData({ delivery, loading, error }) {
 
     return (
         <>
