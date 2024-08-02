@@ -6,7 +6,60 @@ import StoreData from './StoreData'
 import DatesData from './DatesData'
 import DeliveryData from './DeliveryData'
 
-function OtherData({ currentOrder, user, store, dateEmited, dateToRecive, deliveryInformation, handleUpdateOrderProperty }) {
+import { useState, useEffect } from 'react'
+
+import { getOneUserById } from '@/services/userApi'
+import { getOneStoreById } from '@/services/storeApi'
+import { getDeliveryInformationOfOrder } from '@/services/orderApi'
+
+function OtherData({ currentOrder, handleUpdateOrderProperty }) {
+
+    const [userSelected, setUserSelected] = useState(null)
+    const [loadingUser, setLoadingUser] = useState(true)
+    const [errorUser, setErrorUser] = useState('')
+
+    const [storeSelected, setStoreSelected] = useState(null)
+    const [loadingStore, setLoadingStore] = useState(true)
+    const [errorStore, setErrorStore] = useState('')
+
+    const [delivery, setDelivery] = useState(null)
+    const [loadingDelivery, setLoadigDelivery] = useState(true)
+    const [errorDelivery, setErrorDelivery] = useState('')
+
+    useEffect(() => {
+        async function getData() {
+            if (!userSelected) {
+                const user = await getOneUserById(currentOrder.UserId)
+                if (user.message) {
+                    setErrorUser(user.message)
+                } else {
+                    setUserSelected(user)
+                }
+                setLoadingUser(false)
+            }
+            if (!storeSelected) {
+                const store = await getOneStoreById(currentOrder.StoreId)
+                if (store.message) {
+                    setErrorStore(store.message)
+                } else {
+                    setStoreSelected(store)
+                }
+                setLoadingStore(false)
+            }
+            if (!delivery) {
+                const deliveryInformation = await getDeliveryInformationOfOrder(currentOrder.id)
+                if (deliveryInformation.message) {
+                    setErrorDelivery(deliveryInformation.message)
+                }
+                else {
+                    setDelivery(deliveryInformation)
+                }
+                setLoadigDelivery(false)
+            }
+        }
+        getData()
+    }, [])
+
     return (
         <Box
             sx={{
@@ -17,21 +70,16 @@ function OtherData({ currentOrder, user, store, dateEmited, dateToRecive, delive
                 gap: '8px'
             }}
         >
-            <UserData user={user} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
+            <UserData userSelected={userSelected} loading={loadingUser} error={errorUser} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
             <Divider sx={{ width: '100%'}} />
 
-            <StoreData store={store} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
+            <StoreData storeSelected={storeSelected} loading={loadingStore} error={errorStore} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
             <Divider sx={{ width: '100%'}} />
 
-            <DatesData dates={{dateEmited, dateToRecive}} currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty}/>
+            <DatesData currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty}/>
 
-            {
-                deliveryInformation ?
-                    <>
-                        <Divider sx={{ width: '100%'}} />
-                        <DeliveryData deliveryInformation={deliveryInformation} />
-                    </> : null
-            }
+            <Divider sx={{ width: '100%'}} />
+            <DeliveryData delivery={delivery} loading={loadingDelivery} error={errorDelivery} currentOrder={currentOrder} />
         </Box>
     )
 }
