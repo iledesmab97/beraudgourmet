@@ -24,7 +24,7 @@ export async function getPizzas() {
         });
         return pizzaList;
     } catch (error) {
-        return { message: error.message };
+        throw new Error(error.message);
     }
 }
 
@@ -352,7 +352,7 @@ export async function getSalads() {
         });
         return saladList;
     } catch (error) {
-        return { message: error.message };
+        throw new Error(error.message);
     }
 }
 

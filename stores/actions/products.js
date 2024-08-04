@@ -2,8 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
     getPizzasWithCosts,
     getSalads,
-    updateProductListApi,
+    updatePizza,
+    updateSalad,
 } from "../../services/productApi";
+import { delay } from "@/utils/wait";
 
 export const addProductsListThunk = createAsyncThunk(
     "products/addProductsList",
@@ -15,6 +17,7 @@ export const addProductsListThunk = createAsyncThunk(
                 pizzas,
                 salads,
             };
+            await delay(1000);
             return products;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -26,8 +29,23 @@ export const updateProductsListThunk = createAsyncThunk(
     "products/updateProductsList",
     async ({ type, newProductList }, { rejectWithValue }) => {
         try {
-            // Simulate an API call
-            const response = await updateProductListApi(type, newProductList); // Replace with actual API call
+            let response;
+            switch (type) {
+                case "pizzas":
+                    response = await updatePizza(
+                        newProductList.id,
+                        newProductList
+                    );
+                    break;
+                case "salads":
+                    response = await updateSalad(
+                        newProductList.id,
+                        newProductList
+                    );
+                    break;
+                default:
+                    throw new Error("Unsupported product type");
+            }
             return { type, newProductList: response };
         } catch (error) {
             return rejectWithValue(error.message);

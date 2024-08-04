@@ -1,17 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import useGetPlace from "@/hooks/useGetPlace";
 import useGetOrders from "@/hooks/useGetOrders";
-import useGetStoreList from "@/hooks/useGetStoreList";
-import useGetProducts from "@/hooks/useGetProducts";
 
-import { deepEqual, listStores, validPlaceLocal } from "@/utils/preparingData";
+import { deepEqual, validPlaceLocal } from "@/utils/preparingData";
 import { useSelector } from "react-redux";
 
 function useLocalData() {
     const { place, handleAddPlace } = useGetPlace();
     const { orders, handleUpdateTotalOrders } = useGetOrders();
-    const { totalProducts } = useGetProducts({ type: "pizzas" });
-    const { storeList } = useGetStoreList();
+    const {
+        pizzas,
+        salads,
+        status: productsStatus,
+        error: productsError,
+    } = useSelector((state) => state.storeList);
 
     const {
         stores: storeListArray,
@@ -23,7 +25,7 @@ function useLocalData() {
     const firstTimeOrders = useRef(true);
 
     useEffect(() => {
-        if (!storeListArray.length) return;
+        if (status !== "succeeded") return;
         const placeLocal = getLocalData("place");
         if (firstTime.current && placeLocal) {
             const isPlaceValid = validPlaceLocal(placeLocal);
@@ -50,17 +52,15 @@ function useLocalData() {
                 saveLocalData("place", placeToCompare);
             }
         }
-    }, [place, storeListArray]);
+    }, [status, place, storeListArray]);
 
     // Actualizar las ordenes en función del localStorage en la primera carga y en el resto actualizar el local storage
     useEffect(() => {
-        if (!totalProducts || !totalProducts.pizzas || !totalProducts.salads)
-            return;
+        if (productsStatus !== "succeeded") return;
         const ordersLocal = getLocalData("orders");
         if (firstTimeOrders.current) {
             firstTimeOrders.current = false;
             if (!orders.length && ordersLocal?.length) {
-                const { pizzas, salads } = totalProducts;
                 handleUpdateTotalOrders(
                     ordersLocal.map((item) => {
                         const { productType } = item;
@@ -119,7 +119,7 @@ function useLocalData() {
                 saveLocalData("orders", orderToCompare);
             }
         }
-    }, [orders, totalProducts]);
+    }, [productsStatus, orders, productsStatus]);
 
     const getLocalData = useCallback((key) => {
         const dataFromLocal = localStorage.getItem(key);

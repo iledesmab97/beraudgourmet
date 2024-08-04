@@ -21,6 +21,7 @@ import AlertPhoneMissing from "@/components/AlertPhoneMissing/AlertPhoneMissing"
 import ShoppingCartButton from "@/components/ShoppingCartButton/ShoppingCartButton";
 import AlertRecoverPassword from "@/components/AlertRecorverPassword/AlertRecorverPassword";
 import PizzaCustomizable from "@/components/PizzaCustomizable/PizzaCustomizable";
+import CenteredSpinner from "@/components/LoadingSpinner/CenteredSpinner";
 import useHandleSteps from "@/hooks/useHandleSteps";
 
 import { useState, useEffect } from "react";
@@ -92,23 +93,29 @@ function Menu() {
                     // mt: matches ? '16px' : '0px'
                 }}
             >
-                <PizzaCustomizable />
-                <Grid container item xs={12} md={8} spacing={3}>
-                    {pizzas && salads ? (
-                        <>
+                {status === undefined || status === "pending" ? (
+                    <Grid container item xs={12} md={8} spacing={3}>
+                        <CenteredSpinner />
+                    </Grid>
+                ) : status === "failed" ? (
+                    <p>{error}</p>
+                ) : (
+                    <>
+                        <PizzaCustomizable />
+                        <Grid container item xs={12} md={8} spacing={3}>
                             <ContainerItems
                                 itemList={pizzas}
                                 title={"Nuestra selección de Pizzas"}
-                                sectionId={"pizzasSection"}
+                                products={"pizzas"}
                             />
                             <ContainerItems
                                 itemList={salads}
                                 title={"Nuestra selección de Ensaladas"}
-                                sectionId={"saladsSection"}
+                                products={"salads"}
                             />
-                        </>
-                    ) : null}
-                </Grid>
+                        </Grid>
+                    </>
+                )}
                 {totalMatches === "true" ? (
                     <>
                         <Drawer
