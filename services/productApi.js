@@ -91,6 +91,17 @@ export async function getPizzaIngredients(name) {
     }
 }
 
+export async function getSaladIngredients(name) {
+    try {
+        const response = await fetch(`${PATH_BACK}/salads/ingredients/${name}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
 export async function getPizzaCosts({ type }) {
     const response = await fetch(`${PATH_BACK}/pizzaCosts`);
     const data = await response.json();
