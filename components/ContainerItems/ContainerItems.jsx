@@ -57,7 +57,6 @@ const PrevArrow = (props) => {
 function ContainerItems({ itemList, title, sectionId }) {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-    console.log(itemList);
 
     const settings = {
         infinite: true,

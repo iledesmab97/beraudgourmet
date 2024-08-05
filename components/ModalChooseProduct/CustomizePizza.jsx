@@ -36,15 +36,17 @@ import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 import { scrollToSection, showScrollPosition } from '@/utils/modal'
+import { getPizzaIngredients, getSaladIngredients } from '@/services/productApi'
 
 import menuStore from '@/menuStore.json'
 import masses from '@/masses.json'
 
 
 
-export default function CustomizePizza ({ name, ingredientsProduct, customizePizza, currentProduct }) {
+export default function CustomizePizza ({ customizePizza, currentProduct }) {
 
     const { extraIngredients } = useGetExtraIngredients()
+    const [productIngredients, setProductIngredients] = useState([])
     const theme = useTheme()
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
@@ -58,6 +60,27 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
         extra,
         handleExtra
     } = customizePizza
+
+    useEffect(() => {
+        async function getIngredients() {
+            let ingredients
+            switch (currentProduct.productType) {
+                case 'pizza': {
+                    ingredients = await getPizzaIngredients(currentProduct.name)
+                    break
+                }
+                case 'salad': {
+                    ingredients = await getSaladIngredients(currentProduct.name)
+                    break
+                }
+            }
+            if (ingredients.message) alert (ingredients.message)
+            else {
+                setProductIngredients(ingredients.map(ingredient => ingredient.name))
+            }
+        }
+        getIngredients()
+    }, [])
 
     return (
         <Grid
@@ -130,43 +153,39 @@ export default function CustomizePizza ({ name, ingredientsProduct, customizePiz
                 ) : null
             }
 
-            {
-                ingredientsProduct.length > 0 ? (
-                    <Grid
-                        item
-                        container
-                        direction={'column'}
-                        spacing={1}
+            <Grid
+                item
+                container
+                direction={'column'}
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography
+                        id="modal-modal-description"
+                        variant='title'
                     >
-                        <Grid item>
-                            <Typography
-                                id="modal-modal-description"
-                                variant='title'
-                            >
-                                QUITAR INGREDIENTES
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <FormGroup onChange={handleIngredientsModal}>
-                                {
-                                    ingredientsProduct.map((ingredient, index) => (
-                                        <FormControlLabel
-                                            key={ingredient + index}
-                                            control={
-                                                <Checkbox
-                                                    checked={ ingredientsModal.includes(ingredient) ? false : true} 
-                                                />
-                                            }
-                                            label={ingredient}
-                                            sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
-                                        />        
-                                    ))
-                                }
-                            </FormGroup>
-                        </Grid>
-                    </Grid>
-                ) : null
-            }
+                        QUITAR INGREDIENTES
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <FormGroup onChange={handleIngredientsModal}>
+                        {
+                            productIngredients.map((ingredient, index) => (
+                                <FormControlLabel
+                                    key={ingredient.name + ingredient.id}
+                                    control={
+                                        <Checkbox
+                                            checked={ ingredientsModal.includes(ingredient) ? false : true} 
+                                        />
+                                    }
+                                    label={ingredient}
+                                    sx={ingredientsModal.includes(ingredient) ? {textDecoration: 'line-through'} : {}}
+                                />        
+                            ))
+                        }
+                    </FormGroup>
+                </Grid>
+            </Grid>
 
             <Grid
                 item
