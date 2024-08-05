@@ -25,6 +25,7 @@ import Link from '@mui/material/Link'
 import ButtonGroupPizza from '@/components/ButtonGroupPizza/ButtonGroupPizza'
 import MasaTypesPizza from '@/components/MasaTypesPizza/MasaTypesPizza'
 import MoveDown from '@/components/MoveDown/MoveDown'
+import CenteredSpinner from '@/components/LoadingSpinner/CenteredSpinner'
 
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle'
 import AddIcon from '@mui/icons-material/Add';
@@ -46,7 +47,7 @@ import masses from '@/masses.json'
 export default function CustomizePizza ({ customizePizza, currentProduct }) {
 
     const { extraIngredients } = useGetExtraIngredients()
-    const [productIngredients, setProductIngredients] = useState([])
+    const [productIngredients, setProductIngredients] = useState({})
     const theme = useTheme()
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
@@ -63,6 +64,7 @@ export default function CustomizePizza ({ customizePizza, currentProduct }) {
 
     useEffect(() => {
         async function getIngredients() {
+            setProductIngredients({ status: 'pending' })
             let ingredients
             switch (currentProduct.productType) {
                 case 'pizza': {
@@ -74,9 +76,11 @@ export default function CustomizePizza ({ customizePizza, currentProduct }) {
                     break
                 }
             }
-            if (ingredients.message) alert (ingredients.message)
+            if (ingredients.message) {
+                setProductIngredients({ status: 'failed', error: ingredients.message})
+            }
             else {
-                setProductIngredients(ingredients.map(ingredient => ingredient.name))
+                setProductIngredients({ list: ingredients.map(ingredient => ingredient.name), status: "succeeded" })
             }
         }
         getIngredients()
@@ -154,7 +158,13 @@ export default function CustomizePizza ({ customizePizza, currentProduct }) {
             }
 
             {
-                productIngredients.length ? (
+                productIngredients.status === 'pending' ? (
+                    <Grid container item xs={12} md={8} spacing={3}>
+                        <CenteredSpinner height={"200px"} width={"100%"} />
+                    </Grid>
+                ) : productIngredients.status === 'failed' ? (
+                    <h1>Error: {productIngredients.error}</h1>
+                ) : productIngredients.status === 'succeeded' && productIngredients.list.length ? (
                     <Grid
                         item
                         container
@@ -172,7 +182,7 @@ export default function CustomizePizza ({ customizePizza, currentProduct }) {
                         <Grid item>
                             <FormGroup onChange={handleIngredientsModal}>
                                 {
-                                    productIngredients.map((ingredient, index) => (
+                                    productIngredients.list.map((ingredient, index) => (
                                         <FormControlLabel
                                             key={ingredient.name + ingredient.id}
                                             control={
