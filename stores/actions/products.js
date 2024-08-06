@@ -25,28 +25,25 @@ export const addProductsListThunk = createAsyncThunk(
     }
 );
 
-export const updateProductsListThunk = createAsyncThunk(
-    "products/updateProductsList",
-    async ({ type, newProductList }, { rejectWithValue }) => {
+export const updateProductThunk = createAsyncThunk(
+    "products/updateProduct",
+    async ({ type, newProduct }, { rejectWithValue }) => {
         try {
+            const { id } = newProduct;
+            delete newProduct.id;
             let response;
             switch (type) {
                 case "pizzas":
-                    response = await updatePizza(
-                        newProductList.id,
-                        newProductList
-                    );
+                    response = await updatePizza(id, newProduct);
                     break;
                 case "salads":
-                    response = await updateSalad(
-                        newProductList.id,
-                        newProductList
-                    );
+                    response = await updateSalad(id, newProduct);
                     break;
                 default:
                     throw new Error("Unsupported product type");
             }
-            return { type, newProductList: response };
+
+            return { type, newProduct: response };
         } catch (error) {
             return rejectWithValue(error.message);
         }
