@@ -24,13 +24,15 @@ import ModalSaladDetails from "@/components/ModalSaladDetails/ModalSaladDetails"
 import TablePaginationActions from "@/components/TablePaginationActions/TablePaginationActions";
 
 import { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useGetAlertMessage from "@/hooks/useGetAlertMessage";
 import useGetProducts from "@/hooks/useGetProducts";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import { updateSalad } from "@/services/productApi";
-import { useSelector } from "react-redux";
+
+import { updateProductThunk } from "@/stores/actions/products";
 
 import styles from "./DataTable.module.css";
 
@@ -39,11 +41,13 @@ const tableHeaders = {
 };
 
 function TableSalads() {
+
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
     const [saladSelected, setSaladSelected] = useState(null);
     const [openSaladDetail, setOpenSaladDetail] = useState(false);
     const open = Boolean(anchorEl);
-    const { products, handleUpdateProduct } = useGetProducts({
+    const { products } = useGetProducts({
         type: "salads",
     });
     const { handleUpdateAlertMessage } = useGetAlertMessage();
@@ -53,8 +57,8 @@ function TableSalads() {
     const [totalMatches, setTotalMatches] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(false);
     const { salads, status, error } = useSelector((state) => state.products);
+    const alertText = useRef('')
 
     useEffect(() => {
         if (!saladNew.current) return;
@@ -64,6 +68,19 @@ function TableSalads() {
     useEffect(() => {
         setTotalMatches(matches);
     }, [matches]);
+
+    useEffect(() => {
+        if (!alertText.current || status !== 'succeeded') return
+        handleUpdateAlertMessage({
+            checked: true,
+            text:
+                status === "failed"
+                    ? error
+                    : alertText.current,
+            status: status === "succeeded" ? "success" : "error",
+        });
+        alertText.current = ''
+    }, [status, error]);
 
     function handleOpenSaladDetail(value) {
         setOpenSaladDetail(value);
@@ -119,34 +136,13 @@ function TableSalads() {
         });
     }
 
-    async function handleStatusPizza() {
-        setLoading(true);
-        const properties = {
-            property: "status",
-            value: saladSelected.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE",
+    async function handleStatusSalad() {
+        const newProduct = {
+            id: saladSelected.id,
+            status: saladSelected.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE"
         };
-        const response = await updateSalad(saladSelected.id, properties);
-        let text, status;
-        if (response.message) {
-            text = response.message;
-            status = "error";
-        } else {
-            text = response;
-            status = "success";
-        }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status,
-        });
-        if (!response.message) {
-            handleUpdateProduct({
-                ...properties,
-                type: "salads",
-                id: saladSelected.id,
-            });
-        }
-        setLoading(false);
+        dispatch(updateProductThunk({ type: "salads", newProduct}));
+        alertText.current = 'Se ha actualizado el estado exitosamente'
         handleCloseMenu();
     }
 
@@ -194,53 +190,55 @@ function TableSalads() {
                         </TableRow>
                     </TableHead>
                     <TableBody className={styles.DataTableBody}>
-                        {status === "loading" && <h1>{status}...</h1>}
-                        {error && <h1>{error}</h1>}
-                        {salads
-                            ? salads.map((salad) => (
-                                  <TableRow key={salad.id}>
-                                      <TableCell align="center">
-                                          {salad.status === "ACTIVE" ? (
-                                              <CheckCircleIcon
-                                                  sx={{ color: "#4caf50" }}
-                                              />
-                                          ) : (
-                                              <CancelIcon
-                                                  sx={{ color: "#f6685e" }}
-                                              />
-                                          )}
-                                      </TableCell>
-                                      <TableCell align="center">
-                                          {salad.name}
-                                      </TableCell>
-                                      <TableCell align="center">
-                                          {salad.image ? (
-                                              <Image
-                                                  src={salad.image}
-                                                  alt={salad.name}
-                                                  width={130}
-                                                  height={100}
-                                                  style={{
-                                                      objectFit: "contain",
-                                                  }}
-                                              />
-                                          ) : null}
-                                      </TableCell>
-                                      <TableCell align="center">
-                                          <IconButton
-                                              onClick={(event) => {
-                                                  handleClickButtonAction(
-                                                      event,
-                                                      salad
-                                                  );
-                                              }}
-                                          >
-                                              <MoreHorizIcon />
-                                          </IconButton>
-                                      </TableCell>
-                                  </TableRow>
-                              ))
-                            : null}
+                        {
+                            status === "pending" ?
+                                <h1>Loading...</h1>
+                            : error ? <h1>{error}</h1>
+                            : salads.map((salad) => (
+                                    <TableRow key={salad.id}>
+                                        <TableCell align="center">
+                                            {salad.status === "ACTIVE" ? (
+                                                <CheckCircleIcon
+                                                    sx={{ color: "#4caf50" }}
+                                                />
+                                            ) : (
+                                                <CancelIcon
+                                                    sx={{ color: "#f6685e" }}
+                                                />
+                                            )}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {salad.name}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {salad.image ? (
+                                                <Image
+                                                    src={salad.image}
+                                                    alt={salad.name}
+                                                    width={130}
+                                                    height={100}
+                                                    style={{
+                                                        objectFit: "contain",
+                                                    }}
+                                                />
+                                            ) : null}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <IconButton
+                                                onClick={(event) => {
+                                                    handleClickButtonAction(
+                                                        event,
+                                                        salad
+                                                    );
+                                                }}
+                                            >
+                                                <MoreHorizIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                )       
+                            )
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -259,7 +257,7 @@ function TableSalads() {
             />
             {saladSelected ? (
                 <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-                    <MenuItem disabled={loading} onClick={handleStatusPizza}>
+                    <MenuItem onClick={handleStatusSalad}>
                         {saladSelected.status === "ACTIVE"
                             ? "Desactivar"
                             : "Activar"}
