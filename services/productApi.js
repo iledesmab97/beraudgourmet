@@ -471,7 +471,20 @@ export async function updateSalad(id, body) {
         })
         .then((response) => {
             if (response.message) throw new Error(response.message);
-            return response;
+            const { id, name, text, image, status, type, cost, costIVAStripe } =
+                response;
+            const salad = {
+                id,
+                name,
+                text,
+                image,
+                status,
+                type,
+                price: cost,
+                totalPriceByUnity: costIVAStripe,
+                productType: "salad",
+            };
+            return salad;
         })
         .catch((error) => ({ message: error.message }));
 }
