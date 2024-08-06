@@ -30,7 +30,7 @@ import { useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./DataTable.module.css";
-import { updateProductsListThunk } from "@/stores/actions/products";
+import { updateProductThunk } from "@/stores/actions/products";
 
 const tableHeaders = {
     pizzas: ["Estatus", "Nombre", "Imagen", "Acción"],
@@ -110,12 +110,11 @@ function TablePizzas() {
     }
 
     async function handleStatusPizza() {
-        const properties = {
+        const newProduct = {
             id: currentPizza.id,
-            property: "status",
-            value: currentPizza.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE",
+            status: currentPizza.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE"
         };
-        dispatch(updateProductsListThunk("pizzas", properties));
+        dispatch(updateProductThunk({ type: "pizzas", newProduct}));
         handleCloseMenu();
     }
 
@@ -228,7 +227,7 @@ function TablePizzas() {
             />
             <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
                 <MenuItem onClick={handleStatusPizza}>
-                    {currentPizza?.status ? "Desactivar" : "Activar"}
+                    {currentPizza?.status === 'ACTIVE' ? "Desactivar" : "Activar"}
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
