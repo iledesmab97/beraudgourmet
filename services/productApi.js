@@ -202,17 +202,28 @@ export async function getPizzasWithCosts() {
     }
 }
 
-export async function updatePizza(id, body) {
+export async function updatePizza(id, properties) {
     return fetch(`${PATH_BACK}/pizzas/${id}`, {
         ...requestSettings("PUT"),
-        body: JSON.stringify(body),
+        body: JSON.stringify(properties),
     })
         .then((response) => {
             return response.json();
         })
         .then((response) => {
             if (response.message) throw new Error(response.message);
-            return response;
+
+            const { id, name, text, image, status, type } = response;
+            const pizza = {
+                id,
+                name,
+                text,
+                image,
+                status,
+                type,
+                productType: "pizza",
+            };
+            return pizza;
         })
         .catch((error) => ({ message: error.message }));
 }
