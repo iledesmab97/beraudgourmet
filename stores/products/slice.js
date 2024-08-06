@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
     addProductsListThunk,
-    updateProductsListThunk,
+    updateProductThunk,
 } from "@/stores/actions/products";
 
 const initialState = {
@@ -29,16 +29,25 @@ export const productsSlice = createSlice({
                 state.status = "failed";
                 state.error = action.payload;
             })
-            .addCase(updateProductsListThunk.pending, (state) => {
+            .addCase(updateProductThunk.pending, (state) => {
                 state.status = "pending";
             })
-            .addCase(updateProductsListThunk.fulfilled, (state, action) => {
-                const { pizzas, salads } = action.payload;
-                state.pizzas = pizzas;
-                state.salads = salads;
+            .addCase(updateProductThunk.fulfilled, (state, action) => {
+                const { type, newProduct } = action.payload;
+
+                const newList = JSON.parse(JSON.stringify(state[type]));
+                let index;
+                const currentItem = newList.find((item, i) => {
+                    index = i;
+                    return item.id === newProduct.id;
+                });
+
+                newList[index] = newProduct;
+                state[type] = newList;
+
                 state.status = "succeeded";
             })
-            .addCase(updateProductsListThunk.rejected, (state, action) => {
+            .addCase(updateProductThunk.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });
