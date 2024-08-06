@@ -52,6 +52,7 @@ function TablePizzas() {
     const { status: updateStatus, error: updateError } = useSelector(
         (state) => state.products
     );
+    const alertText = useRef('')
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -64,14 +65,16 @@ function TablePizzas() {
     }, [matches]);
 
     useEffect(() => {
+        if (!alertText.current || updateStatus !== 'succeeded') return
         handleUpdateAlertMessage({
             checked: true,
             text:
                 updateStatus === "failed"
                     ? updateError
-                    : "La acción termino con exito.",
+                    : alertText.current,
             updateStatus,
         });
+        alertText.current = ''
     }, [updateStatus, updateError]);
 
     function handleOpenPizzaDetail(value) {
@@ -115,6 +118,7 @@ function TablePizzas() {
             status: currentPizza.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE"
         };
         dispatch(updateProductThunk({ type: "pizzas", newProduct}));
+        alertText.current = 'Se ha actualizado exitosamente'
         handleCloseMenu();
     }
 
