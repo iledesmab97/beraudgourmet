@@ -67,8 +67,7 @@ function errorStyles(error) {
 
 function PizzaCharacteristics({ pizza, handleChangeInput, pizzaNew, property, errors, pizzaId, handleInputsChecked }) {
 
-    const [sizes, setSizes] = useState({}) 
-    const [currentSizesList, setCurrentSizesList] = useState([])
+    const [currentSizesList, setCurrentSizesList] = useState(Object.entries(pizza.price))
     const [arrayOpenColapse, setArrayOpencopase] = useState(currentSizesList.map(() => pizzaNew || false ))
     const [edit, setEdit] = useState(pizzaNew || false)
     const [massesList, setMassesList] = useState([])
@@ -84,19 +83,11 @@ function PizzaCharacteristics({ pizza, handleChangeInput, pizzaNew, property, er
     const selectSize = useRef()
 
     useEffect(() => {
-        async function getPrices() {
-            const newSizes = await getCostOfPizza(pizza.id)
-            setSizes(newSizes)
-            const newCurrentSizesList = Object.entries(newSizes)
-            setCurrentSizesList(newCurrentSizesList)
-            setArrayOpencopase(newCurrentSizesList.map(() => pizzaNew || false ))
+        async function getCharacteristics() {
+            await getMassesList()
+            await getSizesList()
         }
-        getPrices()
-    }, [])
-
-    useEffect(() => {
-        getMassesList()
-        getSizesList()
+        getCharacteristics()
     }, [])
 
     async function getMassesList() {
@@ -129,7 +120,7 @@ function PizzaCharacteristics({ pizza, handleChangeInput, pizzaNew, property, er
                 handleChangeInput({value: Object.fromEntries(currentSizesList), property})
                 handleInputsChecked(property, true)
             } else {
-                if (!deepEqual(sizes, Object.fromEntries(currentSizesList))) {
+                if (!deepEqual(pizza.price, Object.fromEntries(currentSizesList))) {
                     const listNewCharacteristicsOfPizza = []
                     const currentSizesListObject = Object.fromEntries(currentSizesList)
                     for (let size in currentSizesListObject) {
@@ -348,7 +339,7 @@ function PizzaCharacteristics({ pizza, handleChangeInput, pizzaNew, property, er
             status
         })
 
-        handleChangeSize(Object.entries(sizes)[indexSize][0], indexSize)
+        handleChangeSize(Object.entries(pizza.price)[indexSize][0], indexSize)
         
         const newSizesList = [...sizesList].filter(sizeOfList => sizeOfList !== size)
         setSizesList(newSizesList)
@@ -370,7 +361,7 @@ function PizzaCharacteristics({ pizza, handleChangeInput, pizzaNew, property, er
             status
         })
 
-        handleChangeMass(Object.keys(Object.entries(sizes)[indexSize][1])[indexMass], indexSize, indexMass)
+        handleChangeMass(Object.keys(Object.entries(pizza.price)[indexSize][1])[indexMass], indexSize, indexMass)
         
         const newMassesList = [...massesList].filter(massOfList => massOfList !== mass)
         setMassesList(newMassesList)

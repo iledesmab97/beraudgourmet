@@ -20,20 +20,14 @@ import CenteredSpinner from "@/components/LoadingSpinner/CenteredSpinner";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-import { useState, useEffect } from "react";
 import useGetExtraIngredients from "@/hooks/useGetExtraIngredients";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-import {
-    getPizzaIngredients,
-    getSaladIngredients,
-} from "@/services/productApi";
 import { delay } from "@/utils/wait";
 
 export default function CustomizePizza({ customizePizza, currentProduct }) {
     const { extraIngredients } = useGetExtraIngredients();
-    const [productIngredients, setProductIngredients] = useState({});
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
@@ -47,41 +41,6 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
         extra,
         handleExtra,
     } = customizePizza;
-
-    useEffect(() => {
-        async function getIngredients() {
-            setProductIngredients({ status: "pending" });
-            delay(2000);
-            let ingredients;
-            switch (currentProduct.productType) {
-                case "pizza": {
-                    ingredients = await getPizzaIngredients(
-                        currentProduct.name
-                    );
-                    break;
-                }
-                case "salad": {
-                    ingredients = await getSaladIngredients(
-                        currentProduct.name
-                    );
-                    break;
-                }
-            }
-            if (ingredients.message) {
-                setProductIngredients({
-                    status: "failed",
-                    error: ingredients.message,
-                });
-            } else {
-                await delay(1200);
-                setProductIngredients({
-                    list: ingredients.map((ingredient) => ingredient.name),
-                    status: "succeeded",
-                });
-            }
-        }
-        getIngredients();
-    }, []);
 
     return (
         <Grid
@@ -160,50 +119,42 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
                     QUITAR INGREDIENTES
                 </Typography>
             </Grid>
-            {productIngredients.status === "pending" ? (
-                <Grid container item xs={12} md={8} spacing={3}>
-                    <CenteredSpinner height={"40px"} width={"40px"} />
-                </Grid>
-            ) : productIngredients.status === "failed" ? (
-                <h1>Error: {productIngredients.error}</h1>
-            ) : productIngredients.status === "succeeded" &&
-              productIngredients.list.length ? (
-                <Grid item container direction={"column"} spacing={1}>
-                    <Grid item>
-                        <FormGroup onChange={handleIngredientsModal}>
-                            {productIngredients.list.map(
-                                (ingredient, index) => (
-                                    <FormControlLabel
-                                        key={ingredient.name + ingredient.id}
-                                        control={
-                                            <Checkbox
-                                                checked={
-                                                    ingredientsModal.includes(
-                                                        ingredient
-                                                    )
-                                                        ? false
-                                                        : true
+
+            <Grid item container direction={"column"} spacing={1}>
+                <Grid item>
+                    <FormGroup onChange={handleIngredientsModal}>
+                        {currentProduct.ingredients.map(
+                            (ingredient, index) => (
+                                <FormControlLabel
+                                    key={ingredient + index}
+                                    control={
+                                        <Checkbox
+                                            checked={
+                                                ingredientsModal.includes(
+                                                    ingredient
+                                                )
+                                                    ? false
+                                                    : true
+                                            }
+                                        />
+                                    }
+                                    label={ingredient}
+                                    sx={
+                                        ingredientsModal.includes(
+                                            ingredient
+                                        )
+                                            ? {
+                                                    textDecoration:
+                                                        "line-through",
                                                 }
-                                            />
-                                        }
-                                        label={ingredient}
-                                        sx={
-                                            ingredientsModal.includes(
-                                                ingredient
-                                            )
-                                                ? {
-                                                      textDecoration:
-                                                          "line-through",
-                                                  }
-                                                : {}
-                                        }
-                                    />
-                                )
-                            )}
-                        </FormGroup>
-                    </Grid>
+                                            : {}
+                                    }
+                                />
+                            )
+                        )}
+                    </FormGroup>
                 </Grid>
-            ) : null}
+            </Grid>
 
             <Grid
                 item

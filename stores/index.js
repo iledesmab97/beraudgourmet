@@ -13,6 +13,7 @@ import alertDialogMessageReducer from "./alertDialogMessage/slice";
 import orderListReducer from "./orderList/slice";
 import stepsReducer from "./steps/slice";
 import drawerReducer from "./drawer/slice";
+import productDetailsReducer from "./productDetails/slice";
 
 export const store = configureStore({
     reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
         orderList: orderListReducer,
         steps: stepsReducer,
         drawer: drawerReducer,
+        productDetails: productDetailsReducer,
     },
     middleware: [thunk],
 });

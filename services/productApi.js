@@ -9,13 +9,12 @@ export async function getPizzas() {
         const data = await response.json();
         if (data.message) throw new Error(data.message);
         const pizzaList = data.map((pizza) => {
-            const { id, name, text, image, ingredients, status, type } = pizza;
+            const { id, name, text, image, status, type } = pizza;
             const newPizzaData = {
                 id,
                 name,
                 text,
                 image,
-                ingredients,
                 status,
                 type,
                 productType: "pizza",
@@ -33,16 +32,17 @@ export async function getOnePizzaById(id) {
         const response = await fetch(`${PATH_BACK}/pizzas/${id}`);
         const data = await response.json();
         if (data.message) throw new Error(data.message);
-        const { id: id_1, name, text, image, ingredients, status, type } = data;
+        const { name, text, image, status, type, ingredients, price } = data;
         const newPizzaData = {
             id,
             name,
             text,
             image,
-            ingredients,
             status,
             type,
             productType: "pizza",
+            ingredients,
+            price,
         };
         return newPizzaData;
     } catch (error) {
@@ -196,12 +196,12 @@ export async function getExtraIngredients() {
 export async function getPizzasWithCosts() {
     try {
         const pizzasList = await getPizzas();
-        const pizzaCharacteristicsList = await getPizzaCosts({
-            type: "object",
-        });
+        // const pizzaCharacteristicsList = await getPizzaCosts({
+        //     type: "object",
+        // });
         const totalPizzasList = pizzasList.map((pizza) => ({
             ...pizza,
-            price: pizzaCharacteristicsList[pizza.name],
+            // price: pizzaCharacteristicsList[pizza.name],
         }));
         return totalPizzasList;
     } catch (error) {
@@ -391,7 +391,6 @@ export async function getOneSaladById(id) {
         const data = await response.json();
         if (data.message) throw new Error(data.message);
         const {
-            id: id_1,
             name,
             text,
             image,
