@@ -166,6 +166,13 @@ export async function getPizzaCosts({ type }) {
     return pizzaCostsList;
 }
 
+export async function getCostOfPizza(id) {
+    const response = await fetch(`${PATH_BACK}/pizzaCosts/${id}`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
+}
+
 export async function getExtraIngredients() {
     return fetch(`${PATH_BACK}/ingredients`)
         .then((response) => response.json())
