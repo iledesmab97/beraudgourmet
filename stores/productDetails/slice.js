@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addProductDetailsThunk } from "@/stores/actions/productDetails";
+import {
+    addProductDetailsThunk,
+    removeProductDetailsThunk,
+} from "@/stores/actions/productDetails";
 
 const initialState = {};
 export const productDetailsSlice = createSlice({
@@ -16,6 +19,18 @@ export const productDetailsSlice = createSlice({
                 state.status = "succeeded";
             })
             .addCase(addProductDetailsThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(removeProductDetailsThunk.pending, (state) => {
+                state.status = "pending";
+            })
+            .addCase(removeProductDetailsThunk.fulfilled, (state, action) => {
+                delete state.data;
+                delete state.status;
+                delete state.error;
+            })
+            .addCase(removeProductDetailsThunk.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });
