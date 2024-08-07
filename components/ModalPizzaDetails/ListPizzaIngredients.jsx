@@ -20,7 +20,6 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import { useDispatch, useSelector } from "react-redux";
 
 import { updateProductThunk } from "@/stores/actions/products";
-import { updatePizza, getPizzaIngredients } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
 function validation(listIngredients) {
@@ -45,26 +44,12 @@ function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew
     const { status, error } = useSelector((state) => state.products);
     const dispatch = useDispatch();
     const [allIngredients, setAllIngredients] = useState([])
-    const [ingredientsList, setIngredientsList] = useState([])
-    const [currentIngredientList, setCurrentIngredientList] = useState([])
+    const [currentIngredientList, setCurrentIngredientList] = useState(pizza.ingredients)
     const [edit, setEdit] = useState(pizzaNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
     const alertText = useRef('')
-
-    useEffect(() => {
-        async function getIngredients() {
-            const ingredients = await getPizzaIngredients(pizza.name)
-            if (ingredients.message) alert(ingredients.message)
-            else {
-                const ingredientsName = ingredients.map(ingredient => ingredient.name)
-                setIngredientsList(ingredientsName)
-                setCurrentIngredientList(ingredientsName)
-            }
-        }
-        getIngredients()
-    }, [])
 
     useEffect(() => {
         const list = []
@@ -117,7 +102,7 @@ function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew
             setErrors(newErrors)
             return setLoading(false)    
         }
-        if (!isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
+        if (!isSameArray(currentIngredientList, pizza.ingredients) && !currentIngredientList.includes('')) {
             if (!pizzaNew) await saveIngredients()    
             handleChangeInput({value: currentIngredientList, property})
             handleInputsChecked(property, true)
