@@ -35,7 +35,7 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
 
 import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
-import { updateCharacteristicsPizza } from '@/services/productApi'
+import { updateCharacteristicsPizza, getCostOfPizza } from '@/services/productApi'
 import { deepEqual } from '@/utils/preparingData'
 
 function validation(input) {
@@ -65,9 +65,10 @@ function errorStyles(error) {
     }
 }
 
-function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId, handleInputsChecked }) {
+function PizzaCharacteristics({ pizza, handleChangeInput, pizzaNew, property, errors, pizzaId, handleInputsChecked }) {
 
-    const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
+    const [sizes, setSizes] = useState({}) 
+    const [currentSizesList, setCurrentSizesList] = useState([])
     const [arrayOpenColapse, setArrayOpencopase] = useState(currentSizesList.map(() => pizzaNew || false ))
     const [edit, setEdit] = useState(pizzaNew || false)
     const [massesList, setMassesList] = useState([])
@@ -81,6 +82,17 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const selectSize = useRef()
+
+    useEffect(() => {
+        async function getPrices() {
+            const newSizes = await getCostOfPizza(pizza.id)
+            setSizes(newSizes)
+            const newCurrentSizesList = Object.entries(newSizes)
+            setCurrentSizesList(newCurrentSizesList)
+            setArrayOpencopase(newCurrentSizesList.map(() => pizzaNew || false ))
+        }
+        getPrices()
+    }, [])
 
     useEffect(() => {
         getMassesList()

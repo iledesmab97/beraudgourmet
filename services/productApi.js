@@ -166,6 +166,13 @@ export async function getPizzaCosts({ type }) {
     return pizzaCostsList;
 }
 
+export async function getCostOfPizza(id) {
+    const response = await fetch(`${PATH_BACK}/pizzaCosts/${id}`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
+}
+
 export async function getExtraIngredients() {
     return fetch(`${PATH_BACK}/ingredients`)
         .then((response) => response.json())
@@ -202,17 +209,28 @@ export async function getPizzasWithCosts() {
     }
 }
 
-export async function updatePizza(id, body) {
+export async function updatePizza(id, properties) {
     return fetch(`${PATH_BACK}/pizzas/${id}`, {
         ...requestSettings("PUT"),
-        body: JSON.stringify(body),
+        body: JSON.stringify(properties),
     })
         .then((response) => {
             return response.json();
         })
         .then((response) => {
             if (response.message) throw new Error(response.message);
-            return response;
+
+            const { id, name, text, image, status, type } = response;
+            const pizza = {
+                id,
+                name,
+                text,
+                image,
+                status,
+                type,
+                productType: "pizza",
+            };
+            return pizza;
         })
         .catch((error) => ({ message: error.message }));
 }
@@ -460,7 +478,20 @@ export async function updateSalad(id, body) {
         })
         .then((response) => {
             if (response.message) throw new Error(response.message);
-            return response;
+            const { id, name, text, image, status, type, cost, costIVAStripe } =
+                response;
+            const salad = {
+                id,
+                name,
+                text,
+                image,
+                status,
+                type,
+                price: cost,
+                totalPriceByUnity: costIVAStripe,
+                productType: "salad",
+            };
+            return salad;
         })
         .catch((error) => ({ message: error.message }));
 }

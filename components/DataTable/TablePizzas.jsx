@@ -30,7 +30,7 @@ import { useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./DataTable.module.css";
-import { updateProductsListThunk } from "@/stores/actions/products";
+import { updateProductThunk } from "@/stores/actions/products";
 
 const tableHeaders = {
     pizzas: ["Estatus", "Nombre", "Imagen", "Acción"],
@@ -48,10 +48,10 @@ function TablePizzas() {
     const [totalMatches, setTotalMatches] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const { pizzas, status, error } = useSelector((state) => state.products);
-    const { status: updateStatus, error: updateError } = useSelector(
+    const { pizzas, status , error } = useSelector(
         (state) => state.products
     );
+    const alertText = useRef('')
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -64,15 +64,17 @@ function TablePizzas() {
     }, [matches]);
 
     useEffect(() => {
+        if (!alertText.current || status !== 'succeeded') return
         handleUpdateAlertMessage({
             checked: true,
             text:
-                updateStatus === "failed"
-                    ? updateError
-                    : "La acción termino con exito.",
-            updateStatus,
+                status === "failed"
+                    ? error
+                    : alertText.current,
+            status: status === "succeeded" ? "success" : "error",
         });
-    }, [updateStatus, updateError]);
+        alertText.current = ''
+    }, [status, error]);
 
     function handleOpenPizzaDetail(value) {
         setOpenPizzaDetail(value);
@@ -110,12 +112,12 @@ function TablePizzas() {
     }
 
     async function handleStatusPizza() {
-        const properties = {
+        const newProduct = {
             id: currentPizza.id,
-            property: "status",
-            value: currentPizza.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE",
+            status: currentPizza.status === "ACTIVE" ? "DESACTIVE" : "ACTIVE"
         };
-        dispatch(updateProductsListThunk("pizzas", properties));
+        dispatch(updateProductThunk({ type: "pizzas", newProduct}));
+        alertText.current = 'Se ha actualizado el estado exitosamente'
         handleCloseMenu();
     }
 
@@ -228,7 +230,7 @@ function TablePizzas() {
             />
             <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
                 <MenuItem onClick={handleStatusPizza}>
-                    {currentPizza?.status ? "Desactivar" : "Activar"}
+                    {currentPizza?.status === 'ACTIVE' ? "Desactivar" : "Activar"}
                 </MenuItem>
                 <MenuItem
                     onClick={() => {

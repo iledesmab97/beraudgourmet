@@ -13,7 +13,7 @@ function useLocalData() {
         salads,
         status: productsStatus,
         error: productsError,
-    } = useSelector((state) => state.storeList);
+    } = useSelector((state) => state.products);
 
     const {
         stores: storeListArray,

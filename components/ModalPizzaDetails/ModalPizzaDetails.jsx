@@ -360,6 +360,7 @@ function ModalPizzaDetails({
 
                     {pizzaType !== "customizable" ? (
                         <PizzaIngredients
+                            pizza={pizza}
                             ingredients={pizza.ingredients}
                             id={pizza.id}
                             handleChangeInput={handleChangeInput}
@@ -373,6 +374,7 @@ function ModalPizzaDetails({
                     <Divider sx={{ width: "100%" }} />
 
                     <PizzaCharacteristics
+                        pizza={pizza}
                         pizzaId={pizza.id}
                         sizes={pizza.price}
                         handleChangeInput={handleChangeInput}
