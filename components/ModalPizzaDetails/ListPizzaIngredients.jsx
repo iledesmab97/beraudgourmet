@@ -15,11 +15,12 @@ import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import Typography from '@mui/material/Typography'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
+import { updateProductThunk } from "@/stores/actions/products";
 import { updatePizza, getPizzaIngredients } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
@@ -42,6 +43,8 @@ function errorStyles(error) {
 function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew, errorsIngredients, handleInputsChecked, ...props }) {
 
     const allIngredientsObject = useSelector((state) => state.extraIngredients);
+    const { status, error } = useSelector((state) => state.products);
+    const dispatch = useDispatch();
     const [allIngredients, setAllIngredients] = useState([])
     const [ingredientsList, setIngredientsList] = useState([])
     const [currentIngredientList, setCurrentIngredientList] = useState([])
@@ -50,6 +53,7 @@ function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew
     const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
+    const alertText = useRef('')
 
     useEffect(() => {
         async function getIngredients() {
@@ -78,6 +82,19 @@ function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew
         }
         setAllIngredients(list)
     }, [allIngredientsObject])
+
+    useEffect(() => {
+        if (!alertText.current || status === 'pending') return
+        handleUpdateAlertMessage({
+            checked: true,
+            text:
+                status === "failed"
+                    ? error
+                    : alertText.current,
+            status: status === "succeeded" ? "success" : "error",
+        });
+        alertText.current = ''
+    }, [status, error]);
 
     function handleChange(event) {
         const {name, value} = event.target
@@ -118,34 +135,12 @@ function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew
     }
 
     async function saveIngredients() {
-        console.log('Guardando información...')  
-        const response = await updatePizza( id, {
-            property: 'ingredients',
-            value: currentIngredientList
-        })
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
-        } else {
-            text = response
-            status = 'success'
-        }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
-        })
-        if (!response.message) {
-            setIngredientsList(currentIngredientList)
-            handleUpdateProduct({
-                type: 'pizzas',
-                id: id,
-                property: 'ingredients',
-                value: currentIngredientList
-            })
-            console.log('Datos guardados exitosamente')
-        }
+        const newProduct = {
+            id: id,
+            ingredients: currentIngredientList
+        };
+        dispatch(updateProductThunk({ type: "pizzas", newProduct}));
+        alertText.current = 'Se han actualizado los ingredientes exitosamente'
     }
 
     return (
