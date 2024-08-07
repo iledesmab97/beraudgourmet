@@ -18,7 +18,7 @@ import useGetOrder from '@/hooks/useGetOrders'
 import useHandleOrder from '@/hooks/useHandleOrder'
 import useHandleShoppingGuide from '@/hooks/useHandleShoppingGuide'
 
-import { addProductDetailsThunk } from '@/stores/actions/productDetails'
+import { addProductDetailsThunk, removeProductDetailsThunk } from '@/stores/actions/productDetails'
 
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
@@ -47,6 +47,9 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
     
     useEffect(() => {
         dispatch(addProductDetailsThunk({id: product.id, type: product.productType}))
+        return () => {
+            dispatch(removeProductDetailsThunk())
+        }
     }, [])
 
     let width = ''
