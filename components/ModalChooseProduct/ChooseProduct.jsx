@@ -11,17 +11,24 @@ import AboutPizza from './AboutPizza'
 import CustomizePizza from './CustomizePizza'
 import FooterModalChooseProduct from './FooterModalChooseProduct'
 
-import { forwardRef } from 'react'
+import { forwardRef, useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import useGetModal from '@/hooks/useGetModal'
 import useGetOrder from '@/hooks/useGetOrders'
 import useHandleOrder from '@/hooks/useHandleOrder'
 import useHandleShoppingGuide from '@/hooks/useHandleShoppingGuide'
 
+import { addProductDetailsThunk } from '@/stores/actions/productDetails'
+
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
     const { product, edit, handleCloseModalOrder } = useGetModal({modalType:'order' })
+    const { data: productDetails, status, error } = useSelector(
+        (state) => state.productDetails
+    );
     const { handleAddOrder, handleUpdateOrder } = useGetOrder()
     const { nextStepGuide } = useHandleShoppingGuide()
+    const dispatch = useDispatch();
 
     const {
         currentProduct,
@@ -32,12 +39,16 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
         handleMass,
         handleIngredientsModal,
         handleExtra,
-    } = useHandleOrder({ product })
+    } = useHandleOrder({ productDetails })
 
     const theme = useTheme()
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
     
+    useEffect(() => {
+        dispatch(addProductDetailsThunk({id: product.id, type: product.productType}))
+    }, [])
+
     let width = ''
 
     if (isSmallScreen) {
@@ -117,34 +128,42 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
                 <AboutPizza product={product} />
 
-                <CustomizePizza
-                    currentProduct={currentProduct}
-                    name={product?.information?.name}
-                    ingredientsProduct={product?.ingredients}
-                    customizePizza = {{
-                        size: inputs.size,
-                        handleSize,
-                        mass: inputs.mass,
-                        handleMass,
-                        ingredientsModal: inputs.ingredientsModal,
-                        handleIngredientsModal,
-                        extra: inputs.extra,
-                        handleExtra
-                    }}
-                />
+                {
+                    currentProduct ? (
+                        <CustomizePizza
+                            currentProduct={currentProduct}
+                            name={productDetails?.information?.name}
+                            ingredientsProduct={productDetails?.ingredients}
+                            customizePizza = {{
+                                size: inputs.size,
+                                handleSize,
+                                mass: inputs.mass,
+                                handleMass,
+                                ingredientsModal: inputs.ingredientsModal,
+                                handleIngredientsModal,
+                                extra: inputs.extra,
+                                handleExtra
+                            }}
+                        />
+                    ) : null
+                }
             </Grid>
 
-            <FooterModalChooseProduct
-                handleQuantity={handleQuantity}
-                quantity={inputs.quantity}
-                totalPrice={totalPrice}
-                edit={edit}
-                handleAddOrder={handleAddOrder}
-                currentProduct={currentProduct}
-                handleCloseModalOrder={handleCloseModalOrder}
-                handleUpdateOrder={handleUpdateOrder}
-                nextStep={nextStepGuide}
-            />
+            {
+                currentProduct ? (
+                    <FooterModalChooseProduct
+                        handleQuantity={handleQuantity}
+                        quantity={inputs.quantity}
+                        totalPrice={totalPrice}
+                        edit={edit}
+                        handleAddOrder={handleAddOrder}
+                        currentProduct={currentProduct}
+                        handleCloseModalOrder={handleCloseModalOrder}
+                        handleUpdateOrder={handleUpdateOrder}
+                        nextStep={nextStepGuide}
+                    />
+                ) : null
+            }
 
         </Grid>
     )
