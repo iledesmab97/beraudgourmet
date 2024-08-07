@@ -1,50 +1,57 @@
-import { useMemo } from 'react'
-import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { openModal, closeModal, closeModalPlace, openModalOrder, closeModalOrder, updateModalOrder, updateModalToInitialState } from '@/stores/modal/slice'
+import { useMemo } from "react";
+import { useAppSelector, useAppDispatch } from "@/hooks/store";
+import {
+    openModal,
+    closeModal,
+    closeModalPlace,
+    openModalOrder,
+    closeModalOrder,
+    updateModalOrder,
+    updateModalToInitialState,
+} from "@/stores/modal/slice";
 
-export default function useGetModal({modalType}) {
-
-    const modal = useAppSelector(state => state.modal[modalType])
-    const dispatch = useAppDispatch()
+export default function useGetModal({ modalType }) {
+    const modal = useAppSelector((state) => state.modal[modalType]);
+    const dispatch = useAppDispatch();
 
     const product = useMemo(() => {
         if (modal.edit) {
-            return modal.edit.item
+            return modal.edit.item;
         }
-        return modal[modal.currentProduct]
-    }, [modal])
+        return modal[modal.currentProduct];
+    }, [modal]);
 
     function handleOpenModal(modal) {
-        dispatch(openModal(modal))
+        dispatch(openModal(modal));
     }
 
     function handleCloseModal(modal) {
-        dispatch(closeModal(modal))
+        dispatch(closeModal(modal));
     }
 
     function handleChangeModal(modalClose, modalOpen) {
-        handleCloseModal(modalClose)
-        handleOpenModal(modalOpen)
+        handleCloseModal(modalClose);
+        handleOpenModal(modalOpen);
     }
 
     function handleCloseModalPlace() {
-        dispatch(closeModalPlace())
+        dispatch(closeModalPlace());
     }
 
-    function handleOpenModalOrder({item, index}) {
-        dispatch(openModalOrder({item, index}))
+    function handleOpenModalOrder({ item, index }) {
+        dispatch(openModalOrder({ item, index }));
     }
 
     function handleCloseModalOrder() {
-        dispatch(closeModalOrder())
+        dispatch(closeModalOrder());
     }
 
     function handleUpdateModalOrder(newProduct) {
-        dispatch(updateModalOrder(newProduct))
+        dispatch(updateModalOrder(newProduct));
     }
 
     function handleUpdateModalToInitialState() {
-        dispatch(updateModalToInitialState())
+        dispatch(updateModalToInitialState());
     }
 
     return {
@@ -58,6 +65,6 @@ export default function useGetModal({modalType}) {
         handleOpenModalOrder,
         handleCloseModalOrder,
         handleUpdateModalOrder,
-        handleUpdateModalToInitialState
-    }
-} 
+        handleUpdateModalToInitialState,
+    };
+}
