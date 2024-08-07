@@ -391,7 +391,6 @@ export async function getOneSaladById(id) {
         const data = await response.json();
         if (data.message) throw new Error(data.message);
         const {
-            id: id_1,
             name,
             text,
             image,
