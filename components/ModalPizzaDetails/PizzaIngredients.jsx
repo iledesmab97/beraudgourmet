@@ -11,7 +11,7 @@ import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
 
 import { getAllIngredients, getAllExtraIngredients } from '@/services/productApi'
 
-function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, property, handleInputsChecked, errors, ...props }) {
+function PizzaIngredients({ pizza, ingredients, id, handleChangeInput, pizzaNew, property, handleInputsChecked, errors, ...props }) {
 
     const [allIngredients, setAllIngredients] = useState([])
     const [allExtraIngredients, setAllExtraIngredients] = useState([])
@@ -116,9 +116,8 @@ function PizzaIngredients({ ingredients, id, handleChangeInput, pizzaNew, proper
                 spacing={2}
             >
                 <ListPizzaIngredients
-                    ingredients={ingredients}
+                    pizza={pizza}
                     id={id}
-                    allIngredients={allIngredients}
                     handleChangeInput={handleChangeInput}
                     pizzaNew={pizzaNew}
                     property={property}
