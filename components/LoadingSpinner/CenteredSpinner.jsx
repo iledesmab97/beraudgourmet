@@ -2,18 +2,18 @@ import { Grid } from "@mui/material";
 import React from "react";
 import { Oval } from "react-loader-spinner";
 
-const CenteredSpinner = ({ height = "100vh", width = "100vw" }) => {
+const CenteredSpinner = ({ height = "80px", width = "80px" }) => {
     return (
         <Grid
             container
             direction="column"
             justifyContent="center"
             alignItems="center"
-            style={{ height, width }}
+            style={{ height: "100%", width: "100%" }}
         >
             <Oval
-                height={80}
-                width={80}
+                height={height}
+                width={width}
                 color="#295386"
                 visible={true}
                 ariaLabel="oval-loading"
