@@ -17,7 +17,6 @@ import Typography from '@mui/material/Typography'
 
 import { useState, useEffect, useRef } from 'react'
 import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import useGetProducts from '@/hooks/useGetProducts'
 import { useDispatch, useSelector } from "react-redux";
 
 import { updateProductThunk } from "@/stores/actions/products";
@@ -50,7 +49,6 @@ function ListPizzaIngredients({ pizza, id, handleChangeInput, property, pizzaNew
     const [currentIngredientList, setCurrentIngredientList] = useState([])
     const [edit, setEdit] = useState(pizzaNew || false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
     const alertText = useRef('')
