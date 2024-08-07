@@ -20,15 +20,10 @@ import CenteredSpinner from "@/components/LoadingSpinner/CenteredSpinner";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-import { useState, useEffect } from "react";
 import useGetExtraIngredients from "@/hooks/useGetExtraIngredients";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-import {
-    getPizzaIngredients,
-    getSaladIngredients,
-} from "@/services/productApi";
 import { delay } from "@/utils/wait";
 
 export default function CustomizePizza({ customizePizza, currentProduct }) {
