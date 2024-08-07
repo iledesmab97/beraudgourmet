@@ -21,8 +21,9 @@ import useGetAlertMessage from "@/hooks/useGetAlertMessage";
 import { updatePizza, addNewPizza } from "@/services/productApi";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addProductsListThunk } from "@/stores/actions/products";
+import { addProductDetailsThunk, removeProductDetailsThunk } from "@/stores/actions/productDetails"
 
 const style = {
     position: "absolute",
@@ -123,30 +124,31 @@ function ModalPizzaDetails({
     currentPizza,
     pizzaNew,
 }) {
-    const { products, handleUpdateProduct } = useGetProducts({
+    const { data: pizzaDetails, status, error } = useSelector(
+        (state) => state.productDetails
+    );
+    const { handleUpdateProduct } = useGetProducts({
         type: "pizzas",
     });
-    const [pizza, setPizza] = useState(currentPizza);
     const { handleUpdateAlertMessage } = useGetAlertMessage();
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
     const [inputsChecked, setInputsChecked] = useState({});
-    const [pizzaType, setPizzaType] = useState(pizzaNew ? "" : pizza.type);
+    const [pizzaType, setPizzaType] = useState(pizzaNew ? "" : currentPizza.type);
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down("md"));
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!openPizzaDetail || pizzaNew) return;
-        const [newPizza] = products.filter(
-            (element) => element.id === pizza.id
-        );
-        setPizza(newPizza);
-    }, [products]);
+        dispatch(addProductDetailsThunk({ id: currentPizza.id, type: currentPizza.productType}))
+        return () => {
+            dispatch(removeProductDetailsThunk())
+        }
+    }, [])
 
     useEffect(() => {
         if (pizzaType === "customizable") {
-            const newPizza = { ...pizza };
+            const newPizza = { ...pizzaDetails };
             newPizza.ingredients = [""];
             setPizza(newPizza);
         } else {
@@ -193,19 +195,19 @@ function ModalPizzaDetails({
             return setErrors(newErrors);
         }
 
-        const ingredients = pizza.ingredients.filter((i) => i);
+        const ingredients = pizzaDetails.ingredients.filter((i) => i);
 
         // Peparando los datos
         const pizzaToCreate = {
-            ...pizza,
+            ...pizzaDetails,
             ingredients,
             type: pizzaType,
         };
         delete pizzaToCreate.price;
         const costs = [];
-        Object.keys(pizza.price).forEach((size) => {
-            Object.keys(pizza.price[size]).forEach((mass) => {
-                const cost = pizza.price[size][mass];
+        Object.keys(pizzaDetails.price).forEach((size) => {
+            Object.keys(pizzaDetails.price[size]).forEach((mass) => {
+                const cost = pizzaDetails.price[size][mass];
                 costs.push({ size, mass, cost });
             });
         });
@@ -270,10 +272,10 @@ function ModalPizzaDetails({
                     }}
                 >
                     <InputUpdate
-                        value={pizza.name}
+                        value={currentPizza.name}
                         updateProperty={updatePizza}
                         updateState={updatePizzaState}
-                        properties={{ property: "name", id: pizza.id }}
+                        properties={{ property: "name", id: currentPizza.id }}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
                         placeholder={"Nombre"}
@@ -332,7 +334,7 @@ function ModalPizzaDetails({
                     }}
                 >
                     <PizzaImage
-                        pizza={pizza}
+                        pizza={currentPizza}
                         property={"image"}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
@@ -344,10 +346,10 @@ function ModalPizzaDetails({
                     <Divider sx={{ width: "100%" }} />
 
                     <InputUpdate
-                        value={pizza.text}
+                        value={currentPizza.text}
                         updateProperty={updatePizza}
                         updateState={updatePizzaState}
-                        properties={{ property: "text", id: pizza.id }}
+                        properties={{ property: "text", id: currentPizza.id }}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
@@ -358,11 +360,9 @@ function ModalPizzaDetails({
 
                     <Divider sx={{ width: "100%" }} />
 
-                    {pizzaType !== "customizable" ? (
+                    {pizzaType !== "customizable" && pizzaDetails ? (
                         <PizzaIngredients
-                            pizza={pizza}
-                            ingredients={pizza.ingredients}
-                            id={pizza.id}
+                            pizza={pizzaDetails}
                             handleChangeInput={handleChangeInput}
                             pizzaNew={pizzaNew}
                             property={"ingredients"}
@@ -373,16 +373,21 @@ function ModalPizzaDetails({
 
                     <Divider sx={{ width: "100%" }} />
 
-                    <PizzaCharacteristics
-                        pizza={pizza}
-                        pizzaId={pizza.id}
-                        sizes={pizza.price}
-                        handleChangeInput={handleChangeInput}
-                        pizzaNew={pizzaNew}
-                        property={"price"}
-                        errors={errors?.price}
-                        handleInputsChecked={handleInputsChecked}
-                    />
+                    {
+                        pizzaDetails ? (
+                            <PizzaCharacteristics
+                                pizza={pizzaDetails}
+                                pizzaId={pizzaDetails.id}
+                                sizes={pizzaDetails.price}
+                                handleChangeInput={handleChangeInput}
+                                pizzaNew={pizzaNew}
+                                property={"price"}
+                                errors={errors?.price}
+                                handleInputsChecked={handleInputsChecked}
+                            />
+                        ) : null
+                    }
+
                 </Box>
                 {pizzaNew ? (
                     <Box
