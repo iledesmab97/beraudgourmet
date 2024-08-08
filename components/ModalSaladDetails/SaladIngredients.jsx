@@ -5,18 +5,21 @@ import Typography from '@mui/material/Typography'
 import ListSaladIngredients from './ListSaladIngredients'
 import IngredientsManager from '@/components/ModalPizzaDetails/IngredientsManager'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useSelector } from "react-redux";
 
-import { getAllIngredients } from '@/services/productApi'
+function SaladIngredients({ ingredients, updateSaladProperty, id, handleChangeInput, saladNew, property, handleInputsChecked, errors, ...props }) {
 
-function SaladIngredients({ ingredients, id, handleChangeInput, saladNew, property, handleInputsChecked, errors, ...props }) {
-
-    const [allIngredients, setAllIngredients] = useState([])
-
-    useEffect(() => {
-        getAllIngredients()
-            .then(totalListIngredients => setAllIngredients(totalListIngredients.map(ingredient => ingredient.name)))
-    }, [])
+    const { extraIngredients } = useSelector(
+        (state) => state
+    );
+    const [allIngredients, setAllIngredients] = useState(() => {
+        const ingredientsList = []
+        for (let ingredient in extraIngredients) {
+            ingredientsList.push(ingredient)
+        }
+        return ingredientsList
+    })
 
     function handleIngredients(value) {
         setAllIngredients(value)
@@ -46,6 +49,7 @@ function SaladIngredients({ ingredients, id, handleChangeInput, saladNew, proper
             >
                 <ListSaladIngredients
                     ingredients={ingredients}
+                    updateSaladProperty={updateSaladProperty}
                     id={id}
                     allIngredients={allIngredients}
                     handleChangeInput={handleChangeInput}
