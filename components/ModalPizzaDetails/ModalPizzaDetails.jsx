@@ -156,7 +156,7 @@ function ModalPizzaDetails({
         if (pizzaType === "customizable") {
             const newPizza = { ...pizzaDetails };
             newPizza.ingredients = [""];
-            setPizza(newPizza);
+            // setPizza(newPizza);
         } else {
             const newInputChecked = { ...inputsChecked };
             newInputChecked.ingredients = false;
@@ -168,10 +168,10 @@ function ModalPizzaDetails({
     }, [pizzaType]);
 
     function handleChangeInput({ value, property }) {
-        setPizza((prevState) => ({
-            ...prevState,
-            [property]: value,
-        }));
+        // setPizza((prevState) => ({
+        //     ...prevState,
+        //     [property]: value,
+        // }));
     }
 
     function handleInputsChecked(property, value) {
@@ -248,7 +248,20 @@ function ModalPizzaDetails({
             id,
             [property]: value
         }
-        alertText.current = property === 'name' ? 'Se ha actualizado el nombre exitosamente': 'Se ha actualizado el texto exitosamente'
+        switch (property) {
+            case 'name': {
+                alertText.current = 'Se ha actualizado el nombre exitosamente'
+                break
+            }
+            case 'text': {
+                alertText.current = 'Se ha actualizado el texto exitosamente'
+                break
+            }
+            case 'ingredients': {
+                alertText.current = 'Se han actualizado los ingredientes exitosamente'
+                break
+            }
+        }
         dispatch(updateProductThunk({ type: 'pizzas', newProduct }))
     }
 
@@ -376,6 +389,7 @@ function ModalPizzaDetails({
                         <>
                             <PizzaIngredients
                                 pizza={pizzaDetails}
+                                updatePizzaProperty={updatePizzaProperty}
                                 handleChangeInput={handleChangeInput}
                                 pizzaNew={pizzaNew}
                                 property={"ingredients"}
