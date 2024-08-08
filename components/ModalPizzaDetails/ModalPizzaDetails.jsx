@@ -15,15 +15,14 @@ import InputLabel from "@mui/material/InputLabel";
 
 import InputUpdate from "@/components/InputUpdate/InputUpdate";
 
-import { useEffect, useState } from "react";
-import useGetProducts from "@/hooks/useGetProducts";
+import { useEffect, useState, useRef } from "react";
 import useGetAlertMessage from "@/hooks/useGetAlertMessage";
 import { updatePizza, addNewPizza } from "@/services/productApi";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductsListThunk } from "@/stores/actions/products";
-import { addProductDetailsThunk, removeProductDetailsThunk } from "@/stores/actions/productDetails"
+import { addProductsListThunk, updateProductThunk } from "@/stores/actions/products";
+import { addProductDetailsThunk } from "@/stores/actions/productDetails"
 
 const style = {
     position: "absolute",
@@ -124,12 +123,10 @@ function ModalPizzaDetails({
     currentPizza,
     pizzaNew,
 }) {
-    const { data: pizzaDetails, status, error } = useSelector(
+    const { data: pizzaDetails, status: statusDetails, error: errorDetails } = useSelector(
         (state) => state.productDetails
     );
-    const { handleUpdateProduct } = useGetProducts({
-        type: "pizzas",
-    });
+    const { status: statusProducts, error: errorProducts} = useSelector(state => state.products)
     const { handleUpdateAlertMessage } = useGetAlertMessage();
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
@@ -138,13 +135,21 @@ function ModalPizzaDetails({
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down("md"));
     const dispatch = useDispatch();
+    const alertText = useRef('')
 
     useEffect(() => {
+        if (statusProducts === 'pending') return
         dispatch(addProductDetailsThunk({ id: currentPizza.id, type: currentPizza.productType}))
-        return () => {
-            dispatch(removeProductDetailsThunk())
-        }
-    }, [])
+    }, [statusProducts, errorProducts])
+
+    useEffect(() => {
+        if (!alertText.current || !statusDetails || statusDetails === 'pending' ) return
+        handleUpdateAlertMessage({
+            checked: true,
+            text: statusDetails === 'failed' ? errorDetails : alertText.current,
+            status: statusDetails === 'succeeded' ? "success" : "error" 
+        })
+    }, [statusDetails, errorDetails])
 
     useEffect(() => {
         if (pizzaType === "customizable") {
@@ -236,12 +241,14 @@ function ModalPizzaDetails({
         setProcessing(false);
     }
 
-    function updatePizzaState(product) {
+    function updatePizzaProperty(product) {
+        const { id, property, value } = product
         const newProduct = {
-            ...product,
-            type: "pizzas",
-        };
-        handleUpdateProduct(newProduct);
+            id,
+            [property]: value
+        }
+        alertText.current = property === 'name' ? 'Se ha actualizado el nombre exitosamente': 'Se ha actualizado el texto exitosamente'
+        dispatch(updateProductThunk({ type: 'pizzas', newProduct }))
     }
 
     function handleChangeTypePizza(value) {
@@ -274,7 +281,7 @@ function ModalPizzaDetails({
                     <InputUpdate
                         value={currentPizza.name}
                         updateProperty={updatePizza}
-                        updateState={updatePizzaState}
+                        updateState={updatePizzaProperty}
                         properties={{ property: "name", id: currentPizza.id }}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
@@ -348,7 +355,7 @@ function ModalPizzaDetails({
                     <InputUpdate
                         value={currentPizza.text}
                         updateProperty={updatePizza}
-                        updateState={updatePizzaState}
+                        updateState={updatePizzaProperty}
                         properties={{ property: "text", id: currentPizza.id }}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
