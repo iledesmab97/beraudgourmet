@@ -204,6 +204,10 @@ function ModalSaladDetails({
                 alertText.current = 'Se ha actualizado el texto exitosamente'
                 break
             }
+            case 'image': {
+                alertText.current = 'Se ha actualizado la imagen exitosamente'
+                break
+            }
             case 'ingredients': {
                 alertText.current = 'Se han actualizado los ingredientes exitosamente'
                 break
@@ -248,7 +252,7 @@ function ModalSaladDetails({
                     <InputUpdate
                         value={salad.name}
                         updateProperty={updateSalad}
-                        updateState={updateSaladProperty}
+                        updateSaladProperty={updateSaladProperty}
                         properties={{ property: "name", id: salad.id }}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
@@ -276,7 +280,7 @@ function ModalSaladDetails({
                         salad={salad}
                         property={"image"}
                         updateProperty={updateSalad}
-                        updateState={updateSaladProperty}
+                        updateSaladProperty={updateSaladProperty}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         saladNew={saladNew}
@@ -289,7 +293,7 @@ function ModalSaladDetails({
                     <InputUpdate
                         value={salad.text}
                         updateProperty={updateSalad}
-                        updateState={updateSaladProperty}
+                        updateSaladProperty={updateSaladProperty}
                         properties={{ property: "text", id: salad.id }}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
@@ -327,7 +331,7 @@ function ModalSaladDetails({
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         updateProperty={updateSalad}
-                        updateState={updateSaladStateCost}
+                        updateSaladProperty={updateSaladStateCost}
                     />
                 </Box>
                 {saladNew ? (
