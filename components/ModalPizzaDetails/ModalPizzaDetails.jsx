@@ -136,6 +136,7 @@ function ModalPizzaDetails({
     const matches = useMediaQuery(theme.breakpoints.down("md"));
     const dispatch = useDispatch();
     const alertText = useRef('')
+    const loading = statusDetails === 'pending' || statusProducts === 'pending' ? true : false
 
     useEffect(() => {
         if (statusProducts === 'pending') return
@@ -282,6 +283,7 @@ function ModalPizzaDetails({
                         value={currentPizza.name}
                         updateProperty={updatePizza}
                         updateState={updatePizzaProperty}
+                        loading={loading}
                         properties={{ property: "name", id: currentPizza.id }}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
@@ -342,6 +344,8 @@ function ModalPizzaDetails({
                 >
                     <PizzaImage
                         pizza={currentPizza}
+                        updatePizzaProperty={updatePizzaProperty}
+                        loading={loading}
                         property={"image"}
                         handleChangeInput={handleChangeInput}
                         pizzaNew={pizzaNew}
@@ -356,6 +360,7 @@ function ModalPizzaDetails({
                         value={currentPizza.text}
                         updateProperty={updatePizza}
                         updateState={updatePizzaProperty}
+                        loading={loading}
                         properties={{ property: "text", id: currentPizza.id }}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
