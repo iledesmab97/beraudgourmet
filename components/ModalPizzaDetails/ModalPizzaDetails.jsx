@@ -373,17 +373,18 @@ function ModalPizzaDetails({
                     <Divider sx={{ width: "100%" }} />
 
                     {pizzaType !== "customizable" && pizzaDetails ? (
-                        <PizzaIngredients
-                            pizza={pizzaDetails}
-                            handleChangeInput={handleChangeInput}
-                            pizzaNew={pizzaNew}
-                            property={"ingredients"}
-                            errors={errors?.ingredients}
-                            handleInputsChecked={handleInputsChecked}
-                        />
+                        <>
+                            <PizzaIngredients
+                                pizza={pizzaDetails}
+                                handleChangeInput={handleChangeInput}
+                                pizzaNew={pizzaNew}
+                                property={"ingredients"}
+                                errors={errors?.ingredients}
+                                handleInputsChecked={handleInputsChecked}
+                            />
+                            <Divider sx={{ width: "100%" }} />
+                        </>
                     ) : null}
-
-                    <Divider sx={{ width: "100%" }} />
 
                     {
                         pizzaDetails ? (
