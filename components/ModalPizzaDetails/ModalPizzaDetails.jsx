@@ -257,6 +257,10 @@ function ModalPizzaDetails({
                 alertText.current = 'Se ha actualizado el texto exitosamente'
                 break
             }
+            case 'image': {
+                alertText.current = 'Se ha actualizado la imagen exitosamente'
+                break
+            }
             case 'ingredients': {
                 alertText.current = 'Se han actualizado los ingredientes exitosamente'
                 break
