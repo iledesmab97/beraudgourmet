@@ -56,35 +56,41 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
 
         if (edit && myValue !== value) {
             console.log('Guardando información...')
-            setLoading(true)
             const { property, id } = properties
-            const response = await updateProperty( id, {property, value: myValue})
-            let text, status
-            if (response.message) {
-                text = response.message
-                status = 'error'
-            } else {
-                text = response
-                status = 'success'
-            }
-            handleUpdateAlertMessage({
-                checked: true,
-                text,
-                status
+            updateState({
+                id,
+                property,
+                value: myValue
             })
-            if (!response.message) {
-                updateState({
-                    id,
-                    property,
-                    value: myValue
-                })
-                console.log('Información guardada con exito')
-            } else {
-                return console.log('No se ha guardado la información exitosamente')
-            }
+            // setLoading(true)
+            // const { property, id } = properties
+            // const response = await updateProperty( id, {property, value: myValue})
+            // let text, status
+            // if (response.message) {
+            //     text = response.message
+            //     status = 'error'
+            // } else {
+            //     text = response
+            //     status = 'success'
+            // }
+            // handleUpdateAlertMessage({
+            //     checked: true,
+            //     text,
+            //     status
+            // })
+            // if (!response.message) {
+                // updateState({
+                //     id,
+                //     property,
+                //     value: myValue
+                // })
+            //     console.log('Información guardada con exito')
+            // } else {
+            //     return console.log('No se ha guardado la información exitosamente')
+            // }
         }
         setEdit(false)
-        setLoading(false)
+        // setLoading(false)
     }
 
     return (
