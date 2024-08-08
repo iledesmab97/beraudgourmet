@@ -38,15 +38,13 @@ function errorStyles(error) {
     }
 }
 
-function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, handleInputsChecked, ...props }) {
+function PizzaImage({ pizza, updatePizzaProperty, loading, property, handleChangeInput, pizzaNew, errors, handleInputsChecked, ...props }) {
 
     const [edit, setEdit] = useState( pizzaNew || false)
-    const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
     const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(pizza.image ? pizza.image : pizza.image + " ")
-    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const fileInput = useRef()
 
@@ -82,32 +80,7 @@ function PizzaImage({ pizza, property, handleChangeInput, pizzaNew, errors, hand
             return handleChangeInput({value: url, property})
         }
         console.log('Guardando los datos...')
-        setLoading(true)
-        const response = await updatePizza( pizza.id, {property: 'image', value: url})
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
-        } else {
-            text = response
-            status = 'success'
-        }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
-        })
-        if (!response.message) {
-            handleUpdateProduct({
-                type: 'pizzas',
-                id: pizza.id,
-                property: 'image',
-                value: url
-            })
-            setUrlCurrentPiza(url)
-            console.log('Datos guardados')
-        }
-        setLoading(false)
+        updatePizzaProperty({id: pizza.id, property: 'image', value: url})
     }
 
     function uploadImage() {
