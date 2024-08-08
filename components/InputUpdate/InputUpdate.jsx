@@ -4,7 +4,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check'
 
 import { useState } from 'react'
-import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 
 function validation(input) {
     let error = ''
@@ -20,13 +19,11 @@ function errorStyles(error) {
     }
 }
 
-function InputUpdate({value, updateProperty, properties, updateState, handleChangeInput, pizzaNew, errors, validateError, handleInputsChecked, startAdornment, ...props}) {
+function InputUpdate({value, updateProperty, properties, updateState, loading, handleChangeInput, pizzaNew, errors, validateError, handleInputsChecked, startAdornment, ...props}) {
     
     const [myValue, setMyValue] = useState(value)
     const [edit, setEdit] = useState(pizzaNew || false)
-    const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
 
     function handleChange(event) {
         setError('')
@@ -62,35 +59,8 @@ function InputUpdate({value, updateProperty, properties, updateState, handleChan
                 property,
                 value: myValue
             })
-            // setLoading(true)
-            // const { property, id } = properties
-            // const response = await updateProperty( id, {property, value: myValue})
-            // let text, status
-            // if (response.message) {
-            //     text = response.message
-            //     status = 'error'
-            // } else {
-            //     text = response
-            //     status = 'success'
-            // }
-            // handleUpdateAlertMessage({
-            //     checked: true,
-            //     text,
-            //     status
-            // })
-            // if (!response.message) {
-                // updateState({
-                //     id,
-                //     property,
-                //     value: myValue
-                // })
-            //     console.log('Información guardada con exito')
-            // } else {
-            //     return console.log('No se ha guardado la información exitosamente')
-            // }
         }
         setEdit(false)
-        // setLoading(false)
     }
 
     return (
