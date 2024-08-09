@@ -123,7 +123,7 @@ function MasaTypesPizza({ listMass, mass, handleMass }) {
                                         paddingRight: 1
                                     }}
                                 >
-                                    ${listMass[typeMass]}
+                                    ${listMass[typeMass].totalPriceByUnity}
                                 </Typography>
                             </Grid>
                         ))    
