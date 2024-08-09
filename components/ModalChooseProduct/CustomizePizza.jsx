@@ -83,37 +83,41 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
                     <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
                 </Grid>
             </Grid> */}
-            {currentProduct.productType === "pizza" ? (
-                <Grid
-                    item
-                    container
-                    direction={"column"}
-                    alignItems={"flex-start"}
-                    wrap="nowrap"
-                    spacing={1}
-                >
-                    <Grid item>
-                        <Typography
-                            id="modal-subtitle-ELIGE_LA_MASA"
-                            variant="title"
-                        >
-                            ELIGE LA MASA
-                        </Typography>
-                    </Grid>
+            {
+                currentProduct.productType === "pizza" ? (
                     <Grid
                         item
-                        sx={{
-                            width: "95%",
-                        }}
+                        container
+                        direction={"column"}
+                        alignItems={"flex-start"}
+                        wrap="nowrap"
+                        spacing={1}
                     >
-                        <MasaTypesPizza
-                            listMass={currentProduct.price[size]}
-                            mass={mass}
-                            handleMass={handleMass}
-                        />
+                        <Grid item>
+                            <Typography
+                                id="modal-subtitle-ELIGE_LA_MASA"
+                                variant="title"
+                            >
+                                ELIGE LA MASA
+                            </Typography>
+                        </Grid>
+                        {
+                                
+                        }
+                        <Grid
+                            item
+                            sx={{
+                                width: "95%",
+                            }}
+                        >
+                            <MasaTypesPizza
+                                listMass={currentProduct.price[size]}
+                                mass={mass}
+                                handleMass={handleMass}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-            ) : null}
+                ) : null}
             <Grid item>
                 <Typography id="modal-modal-description" variant="title">
                     QUITAR INGREDIENTES

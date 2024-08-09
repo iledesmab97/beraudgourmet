@@ -38,7 +38,7 @@ function errorStyles(error) {
     }
 }
 
-function SaladImage({ salad, property, handleChangeInput, saladNew, errors, handleInputsChecked, ...props }) {
+function SaladImage({ salad, property, updateSaladProperty,  handleChangeInput, saladNew, errors, handleInputsChecked, ...props }) {
 
     const [edit, setEdit] = useState( saladNew || false)
     const [loading, setLoading] = useState(false)
@@ -46,7 +46,6 @@ function SaladImage({ salad, property, handleChangeInput, saladNew, errors, hand
     const [url, setUrl] = useState('')
     const [urlFallback, setUrlFallback] = useState('')
     const [ urlCurrentPizza, setUrlCurrentPiza ] = useState(salad.image ? salad.image : salad.image + " ")
-    const { handleUpdateProduct } = useGetProducts({type:'salads'})
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const fileInput = useRef()
 
@@ -82,32 +81,12 @@ function SaladImage({ salad, property, handleChangeInput, saladNew, errors, hand
             return handleChangeInput({value: url, property})
         }
         console.log('Guardando los datos...')
-        setLoading(true)
-        const response = await updateSalad( salad.id, {property: 'image', value: url})
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
-        } else {
-            text = response
-            status = 'success'
-        }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
+
+        updateSaladProperty({
+            id: salad.id,
+            property: 'image',
+            value: url
         })
-        if (!response.message) {
-            handleUpdateProduct({
-                type: 'salads',
-                id: salad.id,
-                property: 'image',
-                value: url
-            })
-            setUrlCurrentPiza(url)
-            console.log('Datos guardados')
-        }
-        setLoading(false)
     }
 
     function uploadImage() {

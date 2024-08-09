@@ -4,6 +4,7 @@ import {
     getSalads,
     updatePizza,
     updateSalad,
+    updateCharacteristicsPizza,
 } from "../../services/productApi";
 import { delay } from "@/utils/wait";
 
@@ -34,7 +35,14 @@ export const updateProductThunk = createAsyncThunk(
             let response;
             switch (type) {
                 case "pizzas":
-                    response = await updatePizza(id, newProduct);
+                    if ("characteristics" in newProduct) {
+                        response = await updateCharacteristicsPizza(
+                            id,
+                            newProduct["characteristics"]
+                        );
+                    } else {
+                        response = await updatePizza(id, newProduct);
+                    }
                     break;
                 case "salads":
                     response = await updateSalad(id, newProduct);

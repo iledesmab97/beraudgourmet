@@ -467,10 +467,10 @@ export async function addNewSalad(salad) {
         .catch((error) => ({ message: error.message }));
 }
 
-export async function updateSalad(id, body) {
+export async function updateSalad(id, properties) {
     return fetch(`${PATH_BACK}/salads/${id}`, {
         ...requestSettings("PUT"),
-        body: JSON.stringify(body),
+        body: JSON.stringify(properties),
     })
         .then((response) => {
             return response.json();

@@ -38,7 +38,9 @@ export default function useHandleOrder({ productDetails }) {
         if (productDetails.productType === "salad") {
             price = productDetails.totalPriceByUnity;
         } else {
-            price = productDetails.price[inputs.size][inputs.mass];
+            price =
+                productDetails.price[inputs.size][inputs.mass]
+                    .totalPriceByUnity;
         }
         const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
             const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0;

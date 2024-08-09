@@ -16,10 +16,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import Typography from '@mui/material/Typography'
 
 import { useState } from 'react'
-import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import useGetProducts from '@/hooks/useGetProducts'
 
-import { updateSalad } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
 function validation(listIngredients) {
@@ -38,13 +35,10 @@ function errorStyles(error) {
     }
 }
 
-function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInput, property, saladNew, errorsIngredients, handleInputsChecked, ...props }) {
+function ListSaladIngredients({ ingredients, updateSaladProperty, id, allIngredients, handleChangeInput, property, saladNew, errorsIngredients, handleInputsChecked, ...props }) {
 
-    const [ingredientsList, setIngredientsList] = useState(ingredients)
-    const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
+    const [currentIngredientList, setCurrentIngredientList] = useState(ingredients)
     const [edit, setEdit] = useState(saladNew || false)
-    const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleUpdateProduct } = useGetProducts({type:'salads'})
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
 
@@ -71,7 +65,7 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
             setErrors(newErrors)
             return setLoading(false)    
         }
-        if (!isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
+        if (!isSameArray(currentIngredientList, ingredients) && !currentIngredientList.includes('')) {
             if (!saladNew) await saveIngredients()    
             handleChangeInput({value: currentIngredientList, property})
             handleInputsChecked(property, true)
@@ -87,34 +81,13 @@ function ListSaladIngredients({ ingredients, id, allIngredients, handleChangeInp
     }
 
     async function saveIngredients() {
-        console.log('Guardando información...')  
-        const response = await updateSalad( id, {
+        console.log('Guardando información...')
+        const newProduct = {
+            id,
             property: 'ingredients',
             value: currentIngredientList
-        })
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
-        } else {
-            text = response
-            status = 'success'
         }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
-        })
-        if (!response.message) {
-            setIngredientsList(currentIngredientList)
-            handleUpdateProduct({
-                type: 'salads',
-                id: id,
-                property: 'ingredients',
-                value: currentIngredientList
-            })
-            console.log('Datos guardados exitosamente')
-        }
+        updateSaladProperty(newProduct)
     }
 
     return (

@@ -1,15 +1,13 @@
-import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 
 import ListPizzaIngredients from './ListPizzaIngredients'
 import IngredientsManager from './IngredientsManager'
-import ExtraIngredientsManager from './ExtraIngredientsManager'
 
 import { useState, useEffect } from 'react'
 import { useSelector } from "react-redux";
 
-function PizzaIngredients({ pizza, handleChangeInput, pizzaNew, property, handleInputsChecked, errors, ...props }) {
+function PizzaIngredients({ pizza, updatePizzaProperty, handleChangeInput, pizzaNew, property, handleInputsChecked, errors, ...props }) {
 
     const extraIngredients = useSelector(
         (state) => state.extraIngredients
@@ -55,6 +53,7 @@ function PizzaIngredients({ pizza, handleChangeInput, pizzaNew, property, handle
             >
                 <ListPizzaIngredients
                     pizza={pizza}
+                    updatePizzaProperty={updatePizzaProperty}
                     id={pizza.id}
                     handleChangeInput={handleChangeInput}
                     pizzaNew={pizzaNew}

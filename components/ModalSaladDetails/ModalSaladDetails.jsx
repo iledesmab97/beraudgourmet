@@ -11,14 +11,16 @@ import SaladIngredients from "./SaladIngredients";
 import InputUpdate from "@/components/InputUpdate/InputUpdate";
 import CostSection from "@/components/ModalSaladDetails/CostSection";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useGetProducts from "@/hooks/useGetProducts";
 import useGetAlertMessage from "@/hooks/useGetAlertMessage";
 import { updateSalad, addNewSalad } from "@/services/productApi";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { addProductsListThunk } from "@/stores/actions/products";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addProductDetailsThunk } from "@/stores/actions/productDetails"
+import { updateProductThunk } from "@/stores/actions/products";
 
 const style = {
     position: "absolute",
@@ -71,17 +73,41 @@ function ModalSaladDetails({
     saladSelected,
     saladNew,
 }) {
-    const { products, handleUpdateProduct, handleUpdateManyPropertiesProduct } =
+    const { products, handleUpdateManyPropertiesProduct } =
         useGetProducts({ type: "salads" });
+    const { status: statusProducts, error: errorProducts } = useSelector(
+        (state) => state.products
+    );
+    const { data: saladDetails, status: statusDetails, error: errorDetails } = useSelector(
+        (state) => state.productDetails
+    );
     const [salad, setSalad] = useState(saladSelected);
     const { handleUpdateAlertMessage } = useGetAlertMessage();
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
     const [inputsChecked, setInputsChecked] = useState({});
-    // const [saladType, setSaladType] = useState( saladNew ? '' : salad.type)
     const theme = useTheme();
     const dispatch = useDispatch();
     const matches = useMediaQuery(theme.breakpoints.down("md"));
+    const alertText = useRef('')
+
+    useEffect(() => {
+        if (statusProducts === 'pending') return
+        dispatch(addProductDetailsThunk({ id: saladSelected.id, type: 'salad'}))
+    }, [statusProducts, errorProducts])
+
+    useEffect(() => {
+        if (!alertText.current || !statusDetails || statusDetails === 'pending' ) return
+        handleUpdateAlertMessage({
+            checked: true,
+            text:
+                statusDetails === "failed"
+                    ? errorDetails
+                    : alertText.current,
+            status: statusDetails === "succeeded" ? "success" : "error",
+        });
+        alertText.current = ''
+    }, [statusDetails, errorDetails])
 
     useEffect(() => {
         if (!openSaladDetail || saladNew) return;
@@ -163,12 +189,31 @@ function ModalSaladDetails({
         setProcessing(false);
     }
 
-    function updateSaladState(product) {
+    function updateSaladProperty(product) {
+        const { id, property, value } = product
         const newProduct = {
-            ...product,
-            type: "salads",
-        };
-        handleUpdateProduct(newProduct);
+            id,
+            [property]: value
+        }
+        switch (property) {
+            case 'name': {
+                alertText.current = 'Se ha actualizado el nombre exitosamente'
+                break   
+            }
+            case 'text': {
+                alertText.current = 'Se ha actualizado el texto exitosamente'
+                break
+            }
+            case 'image': {
+                alertText.current = 'Se ha actualizado la imagen exitosamente'
+                break
+            }
+            case 'ingredients': {
+                alertText.current = 'Se han actualizado los ingredientes exitosamente'
+                break
+            }
+        }
+        dispatch(updateProductThunk({ type: 'salads', newProduct }))
     }
 
     function updateSaladStateCost(product) {
@@ -207,7 +252,7 @@ function ModalSaladDetails({
                     <InputUpdate
                         value={salad.name}
                         updateProperty={updateSalad}
-                        updateState={updateSaladState}
+                        updateSaladProperty={updateSaladProperty}
                         properties={{ property: "name", id: salad.id }}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
@@ -235,7 +280,7 @@ function ModalSaladDetails({
                         salad={salad}
                         property={"image"}
                         updateProperty={updateSalad}
-                        updateState={updateSaladState}
+                        updateSaladProperty={updateSaladProperty}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         saladNew={saladNew}
@@ -248,7 +293,7 @@ function ModalSaladDetails({
                     <InputUpdate
                         value={salad.text}
                         updateProperty={updateSalad}
-                        updateState={updateSaladState}
+                        updateSaladProperty={updateSaladProperty}
                         properties={{ property: "text", id: salad.id }}
                         fullWidth={true}
                         handleChangeInput={handleChangeInput}
@@ -260,26 +305,33 @@ function ModalSaladDetails({
 
                     <Divider sx={{ width: "100%" }} />
 
-                    <SaladIngredients
-                        ingredients={salad.ingredients}
-                        id={salad.id}
-                        handleChangeInput={handleChangeInput}
-                        handleInputsChecked={handleInputsChecked}
-                        saladNew={saladNew}
-                        property={"ingredients"}
-                        errors={errors?.ingredients}
-                    />
+                    {
+                        saladDetails && saladSelected.type !== "customizable" ? (
+                            <>
+                                <SaladIngredients
+                                    ingredients={saladDetails.ingredients}
+                                    updateSaladProperty={updateSaladProperty}
+                                    id={saladDetails.id}
+                                    handleChangeInput={handleChangeInput}
+                                    handleInputsChecked={handleInputsChecked}
+                                    saladNew={saladNew}
+                                    property={"ingredients"}
+                                    errors={errors?.ingredients}
+                                />
 
-                    <Divider sx={{ width: "100%" }} />
+                                <Divider sx={{ width: "100%" }} />
+                            </>
+                        ) : null
+                    }
 
                     <CostSection
-                        salad={salad}
+                        salad={saladSelected}
                         saladNew={saladNew}
                         errors={errors}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         updateProperty={updateSalad}
-                        updateState={updateSaladStateCost}
+                        updateSaladProperty={updateSaladStateCost}
                     />
                 </Box>
                 {saladNew ? (
