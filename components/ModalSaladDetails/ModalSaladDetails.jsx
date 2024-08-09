@@ -73,7 +73,7 @@ function ModalSaladDetails({
     saladSelected,
     saladNew,
 }) {
-    const { products, handleUpdateManyPropertiesProduct } =
+    const { products } =
         useGetProducts({ type: "salads" });
     const { status: statusProducts, error: errorProducts } = useSelector(
         (state) => state.products
@@ -212,20 +212,12 @@ function ModalSaladDetails({
                 alertText.current = 'Se han actualizado los ingredientes exitosamente'
                 break
             }
+            case 'cost': {
+                alertText.current = 'Se han actualizado el costo exitosamente'
+                break
+            }
         }
         dispatch(updateProductThunk({ type: 'salads', newProduct }))
-    }
-
-    function updateSaladStateCost(product) {
-        const newProduct = {
-            ...product,
-            type: "salads",
-        };
-        handleUpdateManyPropertiesProduct(newProduct);
-        setSalad((prevState) => ({
-            ...prevState,
-            ...product.properties,
-        }));
     }
 
     return (
@@ -325,13 +317,13 @@ function ModalSaladDetails({
                     }
 
                     <CostSection
-                        salad={saladSelected}
+                        salad={salad}
                         saladNew={saladNew}
                         errors={errors}
                         handleChangeInput={handleChangeInput}
                         handleInputsChecked={handleInputsChecked}
                         updateProperty={updateSalad}
-                        updateSaladProperty={updateSaladStateCost}
+                        updateSaladProperty={updateSaladProperty}
                     />
                 </Box>
                 {saladNew ? (

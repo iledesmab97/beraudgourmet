@@ -100,30 +100,6 @@ function TableSalads() {
         setAnchorEl(null);
     }
 
-    // async function handleRemovePizza() {
-    //     const response = await removePizza(saladSelected.id)
-    //     let text, status
-    //     if (response.message) {
-    //         text = response.message
-    //         status = 'error'
-    //     } else {
-    //         text = response
-    //         status = 'success'
-    //     }
-    //     handleUpdateAlertMessage({
-    //         checked: true,
-    //         text,
-    //         status
-    //     })
-    //     if (!response.message) {
-    //         handleDeleteProduct({
-    //             type: 'salads',
-    //             id: saladSelected.id
-    //         })
-    //     }
-    //     handleCloseMenu()
-    // }
-
     function addNewSalad() {
         saladNew.current = true;
         setSaladSelected({
@@ -269,11 +245,6 @@ function TableSalads() {
                     >
                         Ver Detalles
                     </MenuItem>
-                    {/* <MenuItem
-                            // onClick={handleRemovePizza}
-                        >
-                            Eliminar
-                        </MenuItem> */}
                 </Menu>
             ) : null}
             {saladSelected ? (
