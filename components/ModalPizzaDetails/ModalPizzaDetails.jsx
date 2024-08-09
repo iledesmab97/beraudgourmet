@@ -265,6 +265,10 @@ function ModalPizzaDetails({
                 alertText.current = 'Se han actualizado los ingredientes exitosamente'
                 break
             }
+            case 'characteristics': {
+                alertText.current = 'Se han actualizado las caracteristicas exitosamente'
+                break
+            }
         }
         dispatch(updateProductThunk({ type: 'pizzas', newProduct }))
     }
@@ -410,6 +414,7 @@ function ModalPizzaDetails({
                                 pizza={pizzaDetails}
                                 pizzaId={pizzaDetails.id}
                                 sizes={pizzaDetails.price}
+                                updatePizzaProperty={updatePizzaProperty}
                                 handleChangeInput={handleChangeInput}
                                 pizzaNew={pizzaNew}
                                 property={"price"}
