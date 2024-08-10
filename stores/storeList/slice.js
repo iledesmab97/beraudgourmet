@@ -17,6 +17,7 @@ export const storeListSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(fetchStoreListThunk.fulfilled, (state, action) => {
+                console.log(action.payload);
                 state.stores = action.payload;
                 state.status = "succeeded";
             })

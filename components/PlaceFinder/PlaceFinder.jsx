@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import usePlacesAutocomplete from "use-places-autocomplete";
 import usePlaceFinder from "@/hooks/usePlaceFinder";
 
 import Autocomplete from "@mui/material/Autocomplete";
@@ -9,6 +8,7 @@ import TextField from "@mui/material/TextField";
 // import { GoogleMap } from '@react-google-maps/api'
 import ItemPlace from "./ItemPlace";
 import { useSelector } from "react-redux";
+import { Box, CircularProgress, Paper } from "@mui/material";
 
 function PlaceFinder({
     changeWithinLimitSaved,
@@ -24,7 +24,9 @@ function PlaceFinder({
     const {
         address,
         data,
+        status,
         selectedSuggestion,
+        formattedAddress,
         distance,
         withinLimit,
         storeMoreClose,
@@ -34,7 +36,7 @@ function PlaceFinder({
 
     useEffect(() => {
         if (address === inputAddress) return;
-        handleInputsAddress(address);
+        handleInputsAddress(address, formattedAddress);
     }, [address, selectedSuggestion]);
 
     useEffect(() => {
@@ -87,6 +89,21 @@ function PlaceFinder({
                                 : `Maxima destancia 5 km. Distancia actual: ${distance} km`
                         }
                     />
+                )}
+                noOptionsText={
+                    address === "" ? (
+                        "Comienza a escribir..."
+                    ) : status !== "OK" ? (
+                        <Box display="flex" justifyContent="center" p={2}>
+                            <CircularProgress size={24} />
+                        </Box>
+                    ) : (
+                        "No se encuentra el lugar"
+                    )
+                }
+                // Ensure dropdown always opens below the input field
+                PaperComponent={(props) => (
+                    <Paper {...props} style={{ marginTop: 4 }} />
                 )}
             />
             {/* <GoogleMap center={center} zoom={15} mapContainerStyle={{width: '100%', height: '500px'}}/> */}

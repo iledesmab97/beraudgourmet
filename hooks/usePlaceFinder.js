@@ -8,10 +8,11 @@ export default function usePlaceFinder({
     closerStore,
     stores,
 }) {
-    const [address, setAddress] = useState(() =>
+    const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+    const [formattedAddress, setFormattedAddress] = useState(null);
+    const [address, setAddress] = useState((prev) =>
         inputAddress ? inputAddress : ""
     );
-    const [selectedSuggestion, setSelectedSuggestion] = useState(null);
     const [distance, setDistance] = useState(() =>
         distanceSaved ? distanceSaved : null
     );
@@ -22,7 +23,10 @@ export default function usePlaceFinder({
         return null;
     }, [distance]);
     const [storeMoreClose, setStoreMoreClose] = useState(closerStore);
+    const sw = new google.maps.LatLng(19.0, -99.4);
+    const ne = new google.maps.LatLng(19.8, -98.8);
 
+    const bounds = new google.maps.LatLngBounds(sw, ne);
     const {
         ready,
         value,
@@ -31,7 +35,10 @@ export default function usePlaceFinder({
         clearSuggestions,
     } = usePlacesAutocomplete({
         requestOptions: {
-            componentRestrictions: { country: "MX" },
+            bounds: bounds,
+            componentRestrictions: {
+                country: "MX",
+            },
         },
     });
 
@@ -54,6 +61,32 @@ export default function usePlaceFinder({
         setValue(suggestion, false); // false para no borrar el valor del campo
         clearSuggestions();
         calculateRoute(suggestion);
+        if (value === null) return;
+        const placeId = value.place_id;
+        if (placeId) {
+            const placeService = new window.google.maps.places.PlacesService(
+                document.createElement("div")
+            );
+
+            const request = {
+                placeId: placeId,
+                fields: ["address_components"],
+            };
+
+            placeService.getDetails(request, (place, status) => {
+                if (
+                    status === window.google.maps.places.PlacesServiceStatus.OK
+                ) {
+                    const addressComponents = place.address_components;
+                    const formattedAddress = formatAddress(addressComponents);
+                    setFormattedAddress(formattedAddress);
+                    localStorage.setItem(
+                        "deliveryFormattedAddress",
+                        formattedAddress
+                    );
+                }
+            });
+        }
     }
 
     async function calculateRoute(address) {
@@ -85,9 +118,45 @@ export default function usePlaceFinder({
         setStoreMoreClose(closerStore);
     }
 
+    function formatAddress(components) {
+        const address = {
+            street_address: [],
+            city: "",
+            state: "",
+            zip_code: "",
+            country: "",
+        };
+
+        components.forEach((component) => {
+            const types = component.types;
+            if (types.includes("street_number")) {
+                address.street_address[0] = component.long_name;
+            }
+            if (types.includes("route")) {
+                address.street_address.push(component.long_name);
+            }
+            if (types.includes("locality")) {
+                address.city = component.long_name;
+            }
+            if (types.includes("administrative_area_level_1")) {
+                address.state = component.short_name;
+            }
+            if (types.includes("postal_code")) {
+                address.zip_code = component.long_name;
+            }
+            if (types.includes("country")) {
+                address.country = component.short_name;
+            }
+        });
+
+        return JSON.stringify(address);
+    }
+
     return {
         address,
+        formattedAddress,
         data,
+        status,
         selectedSuggestion,
         distance,
         withinLimit,

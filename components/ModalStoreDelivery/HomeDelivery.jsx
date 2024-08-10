@@ -1,16 +1,17 @@
-'use client'
+"use client";
 
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment'
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
 
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 
-import PlaceFinder from '../PlaceFinder/PlaceFinder';
-import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
+import PlaceFinder from "../PlaceFinder/PlaceFinder";
+import FormModalDeliveryPlace from "../ModalDeliveryPlace/FormModalDeliveryPlace";
 
-import { useState } from 'react';
+import { useState } from "react";
+import QuoteComponent from "../UberComponents/QuoteComponent";
 
 export default function HomeDelivery({
     handleInputsAddress,
@@ -24,33 +25,32 @@ export default function HomeDelivery({
     handleInputsHome,
     handleTypeLocation,
     handleCloserStore,
-    nextStep
+    nextStep,
 }) {
-
     return (
         <>
             <Box
-                id='HomeDelivery-container'
+                id="HomeDelivery-container"
                 sx={{
-                    width: '100%',
+                    width: "100%",
                     maxHeight: {
-                        xs: '335px',
-                        sm: '490px',
-                        md: '430px'
+                        xs: "335px",
+                        sm: "490px",
+                        md: "430px",
                     },
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
                     gap: 2,
-                    overflowY: 'auto',
-                    pr: 1
+                    overflowY: "auto",
+                    pr: 1,
                 }}
-            >    
+            >
                 <Typography
-                    variant='title'
+                    variant="title"
                     sx={{
-                    alignSelf: 'flex-start'
+                        alignSelf: "flex-start",
                     }}
                 >
                     DIRECCIÓN DE ENTREGA
@@ -66,20 +66,20 @@ export default function HomeDelivery({
                     handleDistanceSaved={handleDistanceSaved}
                     handleCloserStore={handleCloserStore}
                 />
-                {
-                    withinLimitSaved
-                        ? <FormModalDeliveryPlace
+                {withinLimitSaved ? (
+                    <>
+                        <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                             typeLocation={typeLocation}
                             closerStore={closerStore}
                             handleInputsHome={handleInputsHome}
                             handleTypeLocation={handleTypeLocation}
-                            currentModal='place'
+                            currentModal="place"
                             nextStep={nextStep}
                         />
-                        : null
-                }
+                    </>
+                ) : null}
             </Box>
         </>
-    )
+    );
 }

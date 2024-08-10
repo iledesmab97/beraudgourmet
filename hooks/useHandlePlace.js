@@ -1,156 +1,166 @@
-import { useState, useEffect } from 'react'
-import useGetPlace from './useGetPlace'
-import useGetStoreList from '@/hooks/useGetStoreList'
-import typeLocations from '@/typePlaces.json'
+import { useState, useEffect } from "react";
+import useGetPlace from "./useGetPlace";
+import useGetStoreList from "@/hooks/useGetStoreList";
+import typeLocations from "@/typePlaces.json";
 
 function useHandlePlace() {
-
-    const { storeList } = useGetStoreList()
-    const {place} = useGetPlace()
-    const [inputsStore, setInputsStore] = useState(() => { return Object.keys(storeList)[0] })
+    const { storeList } = useGetStoreList();
+    const { place } = useGetPlace();
+    const [inputsStore, setInputsStore] = useState(() => {
+        return Object.keys(storeList)[0];
+    });
+    const [formattedAddress, setFormattedAddress] = useState("");
     const [typeLocation, setTypeLocation] = useState(() => {
-        if (place.inputsHome) return typeLocations[place.inputsHome.type.name]
-        return typeLocations.home
-    })
-    const [closerStore, setCloserStore] = useState(null)
+        if (place.inputsHome) return typeLocations[place.inputsHome.type.name];
+        return typeLocations.home;
+    });
+    const [closerStore, setCloserStore] = useState(null);
     const [inputsHome, setInputsHome] = useState(() => {
-        if (place.inputsHome) return place.inputsHome
+        if (place.inputsHome) return place.inputsHome;
         return {
-            inputAddress: '',
+            inputAddress: "",
             street: {
-                ['unity']: '',
-                ['number']: '',
-                ['streetName']: ''
+                ["unity"]: "",
+                ["number"]: "",
+                ["streetName"]: "",
             },
-            city: '',
-            postalCode: '',
-            note: '',
+            city: "",
+            postalCode: "",
+            note: "",
             type: {
                 name: typeLocation.name,
-                totalName: typeLocation.totalName
+                totalName: typeLocation.totalName,
             },
             distanceSaved: null,
-            withinLimitSaved: null
-        }
-    })
+            withinLimitSaved: null,
+        };
+    });
 
     useEffect(() => {
-        setInputsStore(Object.keys(storeList)[0])
-    }, [storeList])
+        setInputsStore(Object.keys(storeList)[0]);
+    }, [storeList]);
 
     useEffect(() => {
-        if (place.inputsHome && (place.inputsHome.inputAddress !== inputsHome?.inputAddress)) setInputsHome(place.inputsHome)
+        if (
+            place.inputsHome &&
+            place.inputsHome.inputAddress !== inputsHome?.inputAddress
+        )
+            setInputsHome(place.inputsHome);
         else if (!place.inputsHome && inputsHome?.inputAddress) {
             setInputsHome({
-                inputAddress: '',
+                inputAddress: "",
                 street: {
-                    ['unity']: '',
-                    ['number']: '',
-                    ['streetName']: ''
+                    ["unity"]: "",
+                    ["number"]: "",
+                    ["streetName"]: "",
                 },
-                city: '',
-                postalCode: '',
-                note: '',
+                city: "",
+                postalCode: "",
+                note: "",
                 type: {
                     name: typeLocation.name,
-                    totalName: typeLocation.totalName
+                    totalName: typeLocation.totalName,
                 },
                 distanceSaved: null,
-                withinLimitSaved: null
-            })
+                withinLimitSaved: null,
+            });
         }
-        if ( place.closerStore && (place.closerStore.name !== closerStore?.name))
-        setCloserStore(place.closerStore)
-    }, [place])
+        if (place.closerStore && place.closerStore.name !== closerStore?.name)
+            setCloserStore(place.closerStore);
+    }, [place]);
 
     function handleCloserStore(newCloserStore) {
-        setCloserStore(newCloserStore)
+        setCloserStore(newCloserStore);
     }
 
     function handleTypeLocation(event) {
-        const { value } = event.target
-        const newTypeLocation = typeLocations[value]
-        setTypeLocation(newTypeLocation)
-        const newStreet = {}
-        let newOther = {}
-        newTypeLocation.street.forEach(item => {
+        const { value } = event.target;
+        const newTypeLocation = typeLocations[value];
+        setTypeLocation(newTypeLocation);
+        const newStreet = {};
+        let newOther = {};
+        newTypeLocation.street.forEach((item) => {
             if (inputsHome.street[item.name]) {
-                newStreet[item.name] = inputsHome.street[item.name]
+                newStreet[item.name] = inputsHome.street[item.name];
             } else {
-                newStreet[item.name] = ''
+                newStreet[item.name] = "";
             }
-        })
+        });
         if (newTypeLocation.other) {
-            newTypeLocation.other.inputs.forEach(item => {
-                newOther[item.name] = ''
-            })
+            newTypeLocation.other.inputs.forEach((item) => {
+                newOther[item.name] = "";
+            });
         } else {
-            newOther = undefined
+            newOther = undefined;
         }
-        setInputsHome(prevInputsHome => ({
+        setInputsHome((prevInputsHome) => ({
             ...prevInputsHome,
             street: newStreet,
             other: newOther,
             type: {
                 name: newTypeLocation.name,
-                totalName: newTypeLocation.totalName
-            }
-        }))
+                totalName: newTypeLocation.totalName,
+            },
+        }));
     }
 
     function changeWithinLimitSaved(value) {
         setInputsHome((prevInputsHome) => ({
             ...prevInputsHome,
-            withinLimitSaved: value
-        }))
+            withinLimitSaved: value,
+        }));
     }
 
     function handleDistanceSaved(value) {
         setInputsHome((prevInputsHome) => ({
             ...prevInputsHome,
-            distanceSaved: value
-        }))
+            distanceSaved: value,
+        }));
     }
 
     function handleInputsStore(event) {
-        const newValue = event.target.textContent
-        if (!newValue) return
-        setInputsStore(newValue)
+        const newValue = event.target.textContent;
+        if (!newValue) return;
+        setInputsStore(newValue);
     }
 
-    function handleInputsAddress(value) {
-        setInputsHome(prevInputsHome => ({
+    function handleInputsAddress(value, formattedAddress) {
+        setInputsHome((prevInputsHome) => ({
             ...prevInputsHome,
-            inputAddress: value
-        }))
+            inputAddress: value,
+        }));
     }
 
     function handleInputsHome(event) {
-        const {value, name } = event.target
-        if (name === 'streetName' || name === 'number' || name === 'unity') {
+        const { value, name } = event.target;
+        if (name === "streetName" || name === "number" || name === "unity") {
             const newInputs = {
                 ...inputsHome,
                 street: {
                     ...inputsHome.street,
-                    [name]: value
-                }
-            }
-            setInputsHome(newInputs)
-        } else if (name === 'city' || name === 'postalCode' || name === 'note') {
+                    [name]: value,
+                },
+            };
+            setInputsHome(newInputs);
+        } else if (
+            name === "city" ||
+            name === "postalCode" ||
+            name === "note"
+        ) {
             const newInputs = {
                 ...inputsHome,
-                [name]: value
-            }
-            setInputsHome(newInputs)
+                [name]: value,
+            };
+            setInputsHome(newInputs);
         } else {
             const newInputs = {
                 ...inputsHome,
                 other: {
                     ...inputsHome.other,
-                    [name]: value
-                }
-            }
-            setInputsHome(newInputs)
+                    [name]: value,
+                },
+            };
+            setInputsHome(newInputs);
         }
     }
 
@@ -159,14 +169,15 @@ function useHandlePlace() {
         inputsHome,
         typeLocation,
         closerStore,
+        formattedAddress,
         changeWithinLimitSaved,
         handleInputsStore,
         handleInputsAddress,
         handleDistanceSaved,
         handleInputsHome,
         handleTypeLocation,
-        handleCloserStore
-    }
+        handleCloserStore,
+    };
 }
 
-export default useHandlePlace
+export default useHandlePlace;

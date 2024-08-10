@@ -1,20 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import useGetModal from "@/hooks/useGetModal";
 import FormModalDeliveryPlace from "./FormModalDeliveryPlace";
 import PlaceFinder from "../PlaceFinder/PlaceFinder";
 import useHandlePlace from "@/hooks/useHandlePlace";
-import typeLocations from "@/typePlaces.json";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
 
 const style = {
     position: "absolute",
@@ -92,14 +85,16 @@ export default function ModalDeliveryPlace() {
                     />
 
                     {inputsHome.withinLimitSaved ? (
-                        <FormModalDeliveryPlace
-                            inputsHome={inputsHome}
-                            typeLocation={typeLocation}
-                            closerStore={closerStore}
-                            handleInputsHome={handleInputsHome}
-                            handleTypeLocation={handleTypeLocation}
-                            currentModal="deliveryPlace"
-                        />
+                        <>
+                            <FormModalDeliveryPlace
+                                inputsHome={inputsHome}
+                                typeLocation={typeLocation}
+                                closerStore={closerStore}
+                                handleInputsHome={handleInputsHome}
+                                handleTypeLocation={handleTypeLocation}
+                                currentModal="deliveryPlace"
+                            />
+                        </>
                     ) : null}
                 </Box>
             </Box>

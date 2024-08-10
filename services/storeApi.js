@@ -1,45 +1,54 @@
-import dayjs from "dayjs";
 import { getAllSchedules } from "@/services/scheduleApi";
 import { isOpen, todaysScheduleIs } from "@/utils/hours";
 import { requestSettings } from "@/utils/preparingData";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-export function getAllStores() {
-    return fetch(`${PATH_BACK}/stores`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const newData = data.map((store) => ({
-                id: store.id,
-                name: store.name,
-                place: store.address,
-                city: store.city,
-                phone: store.phoneNumber,
-                coordinates: store.coordinates,
-            }));
-            return newData;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function getAllStores() {
+    try {
+        const response = await fetch(`${PATH_BACK}/stores`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const newData = data.map((store) => ({
+            id: store.id,
+            name: store.name,
+            place: store.address,
+            city: store.city,
+            phone: store.phoneNumber,
+            coordinates: store.coordinates,
+            formattedAddress: store.formattedAddress,
+        }));
+        return newData;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function getOneStoreById(id) {
-    return fetch(`${PATH_BACK}/stores/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            const { id, name, address, city, phoneNumber, coordinates } = data;
-            const store = {
-                id,
-                name,
-                place: address,
-                city,
-                phone: phoneNumber,
-                coordinates,
-            };
-            return store;
-        })
-        .catch((error) => ({ message: error.message }));
+export async function getOneStoreById(id) {
+    try {
+        const response = await fetch(`${PATH_BACK}/stores/${id}`);
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        const {
+            id: id_1,
+            name,
+            address,
+            city,
+            phoneNumber,
+            coordinates,
+        } = data;
+        const store = {
+            id,
+            name,
+            place: address,
+            city,
+            phone: phoneNumber,
+            coordinates,
+        };
+        return store;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
 export async function getAllStoresWithSchedules() {
