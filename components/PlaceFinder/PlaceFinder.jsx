@@ -26,7 +26,6 @@ function PlaceFinder({
         data,
         status,
         selectedSuggestion,
-        formattedAddress,
         distance,
         withinLimit,
         storeMoreClose,
@@ -36,7 +35,7 @@ function PlaceFinder({
 
     useEffect(() => {
         if (address === inputAddress) return;
-        handleInputsAddress(address, formattedAddress);
+        handleInputsAddress(address);
     }, [address, selectedSuggestion]);
 
     useEffect(() => {

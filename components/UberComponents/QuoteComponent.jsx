@@ -6,18 +6,19 @@ import {
     fetchDeliveryTracking,
     cancelExistingDelivery,
 } from "@/stores/actions/uberDirect";
-import { Container, Typography, Box, CircularProgress } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
+import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
 
-const QuoteComponent = () => {
+const QuoteComponent = ({ closerStore }) => {
+    const { quote, loading, error } = useSelector((state) => state.uberQuote);
     const dispatch = useDispatch();
-    const {
-        inputsHome: { inputAddress },
-        closerStore: { place },
-    } = useSelector((state) => state.place);
-    const { quote, loading, error } = useSelector((state) => state.place);
     useEffect(() => {
-        console.log(inputAddress, place);
-        dispatch(fetchDeliveryQuote({ place, inputAddress }));
+        dispatch(
+            fetchDeliveryQuote({
+                pickup_address: closerStore.place,
+                dropoff_address: localStorage.getItem("dropoff_address"),
+            })
+        );
     }, [dispatch]);
 
     return (
@@ -25,11 +26,23 @@ const QuoteComponent = () => {
             {loading && (
                 <Box
                     display="flex"
-                    justifyContent="center"
+                    justifyContent="space-between"
                     alignItems="center"
                     mt={4}
                 >
-                    <CircularProgress />
+                    <Typography
+                        style={{ width: "50%" }}
+                        variant="body1"
+                        fontWeight="bold"
+                    >
+                        Precio de envío estimado (15min):
+                    </Typography>
+                    <CenteredSpinner
+                        width={20}
+                        height={20}
+                        large={"50%"}
+                        justifyContent="flex-end"
+                    />
                 </Box>
             )}
             {error && (
@@ -37,7 +50,7 @@ const QuoteComponent = () => {
                     Error: {error}
                 </Typography>
             )}
-            {quote && (
+            {quote && loading === false && (
                 <Box
                     display="flex"
                     justifyContent="space-between"
@@ -45,10 +58,10 @@ const QuoteComponent = () => {
                     mt={4}
                 >
                     <Typography variant="body1" fontWeight="bold">
-                        Precio de envío:
+                        Precio de envío estimado (15min):
                     </Typography>
                     <Typography variant="body1" color="primary">
-                        {quote.price} MXN
+                        {quote.fee / 100} MXN
                     </Typography>
                 </Box>
             )}

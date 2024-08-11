@@ -1,7 +1,7 @@
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
 // Get a delivery quote
-export const getDeliveryQuote = async (origin, destination) => {
+export const getDeliveryQuote = async (pickup_address, dropoff_address) => {
     const quoteUrl = `${PATH_BACK}/uber-direct/quote`;
 
     try {
@@ -11,11 +11,10 @@ export const getDeliveryQuote = async (origin, destination) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                origin,
-                destination,
+                pickup_address,
+                dropoff_address,
             }),
         });
-
         if (!response.ok) {
             throw new Error(
                 `Error fetching delivery quote: ${response.statusText}`

@@ -68,6 +68,7 @@ export default function HomeDelivery({
                 />
                 {withinLimitSaved ? (
                     <>
+                        <QuoteComponent closerStore={closerStore} />
                         <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                             typeLocation={typeLocation}

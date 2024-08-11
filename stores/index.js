@@ -14,6 +14,7 @@ import orderListReducer from "./orderList/slice";
 import stepsReducer from "./steps/slice";
 import drawerReducer from "./drawer/slice";
 import productDetailsReducer from "./productDetails/slice";
+import uberQuoteReducer from "./uber/slice";
 
 export const store = configureStore({
     reducer: {
@@ -31,6 +32,7 @@ export const store = configureStore({
         steps: stepsReducer,
         drawer: drawerReducer,
         productDetails: productDetailsReducer,
+        uberQuote: uberQuoteReducer,
     },
     middleware: [thunk],
 });

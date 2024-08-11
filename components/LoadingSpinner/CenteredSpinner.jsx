@@ -2,14 +2,19 @@ import { Grid } from "@mui/material";
 import React from "react";
 import { Oval } from "react-loader-spinner";
 
-const CenteredSpinner = ({ height = "80px", width = "80px" }) => {
+const CenteredSpinner = ({
+    height = "80px",
+    width = "80px",
+    justifyContent = "center",
+    large = "100%",
+}) => {
     return (
         <Grid
             container
             direction="column"
-            justifyContent="center"
+            justifyContent={justifyContent}
             alignItems="center"
-            style={{ height: "100%", width: "100%" }}
+            style={{ height: "100%", width: large }}
         >
             <Oval
                 height={height}

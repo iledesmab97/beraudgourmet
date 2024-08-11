@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
     fetchDeliveryQuote,
-    createNewDeliveryOrder,
-    fetchDeliveryTracking,
-    cancelExistingDelivery,
-} from "./uberDirectThunks";
+    // createNewDeliveryOrder,
+    // fetchDeliveryTracking,
+    // cancelExistingDelivery,
+} from "../actions/uberDirect";
 
 const initialState = {
     quote: null,
@@ -31,47 +31,47 @@ const uberDirectSlice = createSlice({
             .addCase(fetchDeliveryQuote.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            })
-
-            .addCase(createNewDeliveryOrder.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(createNewDeliveryOrder.fulfilled, (state, action) => {
-                state.loading = false;
-                state.order = action.payload;
-            })
-            .addCase(createNewDeliveryOrder.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            .addCase(fetchDeliveryTracking.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchDeliveryTracking.fulfilled, (state, action) => {
-                state.loading = false;
-                state.tracking = action.payload;
-            })
-            .addCase(fetchDeliveryTracking.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            .addCase(cancelExistingDelivery.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(cancelExistingDelivery.fulfilled, (state, action) => {
-                state.loading = false;
-                state.order = null; // Assuming you want to clear the order state
-            })
-            .addCase(cancelExistingDelivery.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
             });
+
+        // .addCase(createNewDeliveryOrder.pending, (state) => {
+        //     state.loading = true;
+        //     state.error = null;
+        // })
+        // .addCase(createNewDeliveryOrder.fulfilled, (state, action) => {
+        //     state.loading = false;
+        //     state.order = action.payload;
+        // })
+        // .addCase(createNewDeliveryOrder.rejected, (state, action) => {
+        //     state.loading = false;
+        //     state.error = action.payload;
+        // })
+
+        // .addCase(fetchDeliveryTracking.pending, (state) => {
+        //     state.loading = true;
+        //     state.error = null;
+        // })
+        // .addCase(fetchDeliveryTracking.fulfilled, (state, action) => {
+        //     state.loading = false;
+        //     state.tracking = action.payload;
+        // })
+        // .addCase(fetchDeliveryTracking.rejected, (state, action) => {
+        //     state.loading = false;
+        //     state.error = action.payload;
+        // })
+
+        // .addCase(cancelExistingDelivery.pending, (state) => {
+        //     state.loading = true;
+        //     state.error = null;
+        // })
+        // .addCase(cancelExistingDelivery.fulfilled, (state, action) => {
+        //     state.loading = false;
+        //     state.order = null; // Assuming you want to clear the order state
+        // })
+        // .addCase(cancelExistingDelivery.rejected, (state, action) => {
+        //     state.loading = false;
+        //     state.error = action.payload;
+        // });
     },
 });
 
-export const uberDirectReducer = uberDirectSlice.reducer;
+export default uberDirectSlice.reducer;

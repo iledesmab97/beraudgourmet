@@ -31,7 +31,6 @@ export default function FormModalDeliveryPlace({
 
     return (
         <>
-            <QuoteComponent />
             <Grid container spacing={2}>
                 <Grid
                     item

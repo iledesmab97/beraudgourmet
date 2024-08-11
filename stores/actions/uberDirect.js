@@ -10,9 +10,13 @@ import { delay } from "@/utils/wait";
 // Async thunk to get delivery quote
 export const fetchDeliveryQuote = createAsyncThunk(
     "uberDirect/fetchDeliveryQuote",
-    async ({ origin, destination }, { rejectWithValue }) => {
+    async ({ pickup_address, dropoff_address }, { rejectWithValue }) => {
         try {
-            const quote = await getDeliveryQuote(origin, destination);
+            const quote = await getDeliveryQuote(
+                pickup_address,
+                dropoff_address
+            );
+            delay(2000);
             return quote;
         } catch (error) {
             return rejectWithValue(error.message);

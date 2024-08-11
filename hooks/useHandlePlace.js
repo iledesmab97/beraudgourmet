@@ -9,7 +9,6 @@ function useHandlePlace() {
     const [inputsStore, setInputsStore] = useState(() => {
         return Object.keys(storeList)[0];
     });
-    const [formattedAddress, setFormattedAddress] = useState("");
     const [typeLocation, setTypeLocation] = useState(() => {
         if (place.inputsHome) return typeLocations[place.inputsHome.type.name];
         return typeLocations.home;
@@ -124,7 +123,7 @@ function useHandlePlace() {
         setInputsStore(newValue);
     }
 
-    function handleInputsAddress(value, formattedAddress) {
+    function handleInputsAddress(value) {
         setInputsHome((prevInputsHome) => ({
             ...prevInputsHome,
             inputAddress: value,
@@ -169,7 +168,6 @@ function useHandlePlace() {
         inputsHome,
         typeLocation,
         closerStore,
-        formattedAddress,
         changeWithinLimitSaved,
         handleInputsStore,
         handleInputsAddress,

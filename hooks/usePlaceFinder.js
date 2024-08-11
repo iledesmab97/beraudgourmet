@@ -9,7 +9,6 @@ export default function usePlaceFinder({
     stores,
 }) {
     const [selectedSuggestion, setSelectedSuggestion] = useState(null);
-    const [formattedAddress, setFormattedAddress] = useState(null);
     const [address, setAddress] = useState((prev) =>
         inputAddress ? inputAddress : ""
     );
@@ -45,6 +44,7 @@ export default function usePlaceFinder({
     const { debounceSetValue } = useDebounce();
 
     function handleSetAddress(value) {
+        localStorage.setItem("dropoff_address", value);
         setAddress(value);
     }
 
@@ -61,32 +61,6 @@ export default function usePlaceFinder({
         setValue(suggestion, false); // false para no borrar el valor del campo
         clearSuggestions();
         calculateRoute(suggestion);
-        if (value === null) return;
-        const placeId = value.place_id;
-        if (placeId) {
-            const placeService = new window.google.maps.places.PlacesService(
-                document.createElement("div")
-            );
-
-            const request = {
-                placeId: placeId,
-                fields: ["address_components"],
-            };
-
-            placeService.getDetails(request, (place, status) => {
-                if (
-                    status === window.google.maps.places.PlacesServiceStatus.OK
-                ) {
-                    const addressComponents = place.address_components;
-                    const formattedAddress = formatAddress(addressComponents);
-                    setFormattedAddress(formattedAddress);
-                    localStorage.setItem(
-                        "deliveryFormattedAddress",
-                        formattedAddress
-                    );
-                }
-            });
-        }
     }
 
     async function calculateRoute(address) {
@@ -97,7 +71,6 @@ export default function usePlaceFinder({
 
         for (const store of stores) {
             const { coordinates } = store;
-
             const results = await directionService.route({
                 origin: { lat: coordinates.lat, lng: coordinates.lng },
                 destination: address,
@@ -118,43 +91,8 @@ export default function usePlaceFinder({
         setStoreMoreClose(closerStore);
     }
 
-    function formatAddress(components) {
-        const address = {
-            street_address: [],
-            city: "",
-            state: "",
-            zip_code: "",
-            country: "",
-        };
-
-        components.forEach((component) => {
-            const types = component.types;
-            if (types.includes("street_number")) {
-                address.street_address[0] = component.long_name;
-            }
-            if (types.includes("route")) {
-                address.street_address.push(component.long_name);
-            }
-            if (types.includes("locality")) {
-                address.city = component.long_name;
-            }
-            if (types.includes("administrative_area_level_1")) {
-                address.state = component.short_name;
-            }
-            if (types.includes("postal_code")) {
-                address.zip_code = component.long_name;
-            }
-            if (types.includes("country")) {
-                address.country = component.short_name;
-            }
-        });
-
-        return JSON.stringify(address);
-    }
-
     return {
         address,
-        formattedAddress,
         data,
         status,
         selectedSuggestion,

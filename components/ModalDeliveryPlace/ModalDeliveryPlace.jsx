@@ -8,6 +8,7 @@ import useHandlePlace from "@/hooks/useHandlePlace";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
+import QuoteComponent from "../UberComponents/QuoteComponent";
 
 const style = {
     position: "absolute",
@@ -86,6 +87,7 @@ export default function ModalDeliveryPlace() {
 
                     {inputsHome.withinLimitSaved ? (
                         <>
+                            <QuoteComponent closerStore={closerStore} />
                             <FormModalDeliveryPlace
                                 inputsHome={inputsHome}
                                 typeLocation={typeLocation}
