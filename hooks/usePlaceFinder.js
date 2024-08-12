@@ -45,7 +45,6 @@ export default function usePlaceFinder({
     const { debounceSetValue } = useDebounce();
 
     function handleSetAddress(value) {
-        localStorage.setItem("dropoff_address", value);
         setAddress(value);
     }
 
