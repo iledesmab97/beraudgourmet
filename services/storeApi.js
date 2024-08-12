@@ -16,7 +16,6 @@ export async function getAllStores() {
             city: store.city,
             phone: store.phoneNumber,
             coordinates: store.coordinates,
-            formattedAddress: store.formattedAddress,
         }));
         return newData;
     } catch (error) {

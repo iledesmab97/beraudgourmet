@@ -11,6 +11,7 @@ import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
 
 const QuoteComponent = ({ closerStore }) => {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
+
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(

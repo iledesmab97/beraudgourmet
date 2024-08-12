@@ -56,6 +56,27 @@ function Menu() {
         (state) => state.products
     );
 
+    const {
+        quote,
+        loading,
+        error: errorQuote,
+    } = useSelector((state) => state.uberQuote);
+
+
+    // Resolver Quote interval
+    useEffect(() => {
+        let QuoteInterfval = QuoteInterfval() = setInterval(() => {
+            dispatch();
+        }, 15000);
+        if (quote) {
+            QuoteInterfval
+        }
+        if (loading) {
+            clearInterval(QuoteInterfval);
+        }
+        return () => clearInterval(QuoteInterfval);
+    }, [loading, errorQuote]);
+
     useEffect(() => {
         dispatch(addProductsListThunk());
     }, [dispatch]);

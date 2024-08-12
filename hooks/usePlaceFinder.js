@@ -34,6 +34,7 @@ export default function usePlaceFinder({
         clearSuggestions,
     } = usePlacesAutocomplete({
         requestOptions: {
+            // Change for locationBias and locationRestriction refer to google maps API docs
             bounds: bounds,
             componentRestrictions: {
                 country: "MX",
