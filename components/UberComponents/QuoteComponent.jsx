@@ -9,18 +9,20 @@ import {
 import { Container, Typography, Box } from "@mui/material";
 import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
 
-const QuoteComponent = ({ closerStore }) => {
+const QuoteComponent = () => {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
-
+    const { inputsHome, closerStore } = useSelector(state => state.place)
     const dispatch = useDispatch();
+    
     useEffect(() => {
+        if (!closerStore) return
         dispatch(
             fetchDeliveryQuote({
                 pickup_address: closerStore.place,
-                dropoff_address: localStorage.getItem("dropoff_address"),
+                dropoff_address: inputsHome.inputAddress,
             })
         );
-    }, [dispatch]);
+    }, [closerStore]);
 
     return (
         <Container maxWidth="sm">
