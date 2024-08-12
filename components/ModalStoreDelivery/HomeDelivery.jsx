@@ -62,13 +62,14 @@ export default function HomeDelivery({
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
                     distanceSaved={distanceSaved}
+                    inputsHome={inputsHome}
                     closerStore={closerStore}
                     handleDistanceSaved={handleDistanceSaved}
                     handleCloserStore={handleCloserStore}
                 />
                 {withinLimitSaved ? (
                     <>
-                        <QuoteComponent closerStore={closerStore} />
+                        <QuoteComponent />
                         <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                             typeLocation={typeLocation}
