@@ -300,11 +300,7 @@ export default function FormModalDeliveryPlace({
                     <Button
                         variant="contained"
                         onClick={() => {
-                            handleAddPlace({ inputsHome, closerStore });
-                            handleTypeDelivery({
-                                name: "home",
-                                totalName: "Entrega a domicilio",
-                            });
+                            handleAddPlace({ inputsHome });
                             handleCloseModal("place");
                             nextStep("store");
                         }}
