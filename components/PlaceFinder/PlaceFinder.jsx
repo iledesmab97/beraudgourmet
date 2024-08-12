@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import usePlaceFinder from "@/hooks/usePlaceFinder";
-
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 // import { GoogleMap } from '@react-google-maps/api'
 import ItemPlace from "./ItemPlace";
-import { useSelector } from "react-redux";
+
 import { Box, CircularProgress, Paper } from "@mui/material";
+
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import usePlaceFinder from "@/hooks/usePlaceFinder";
+import useGetPlace from "@/hooks/useGetPlace";
 
 function PlaceFinder({
     changeWithinLimitSaved,
@@ -16,11 +18,13 @@ function PlaceFinder({
     handleInputsAddress,
     inputAddress,
     distanceSaved,
+    inputsHome,
     closerStore,
     handleDistanceSaved,
     handleCloserStore,
 }) {
     const stores = useSelector((state) => state.storeList.stores);
+    const { handleAddPlace, handleTypeDelivery } = useGetPlace();
     const {
         address,
         data,
@@ -47,6 +51,15 @@ function PlaceFinder({
     useEffect(() => {
         handleCloserStore(storeMoreClose);
     }, [storeMoreClose]);
+
+    useEffect(() => {
+        if (!withinLimit || !closerStore) return
+        handleAddPlace({ inputsHome, closerStore });
+        handleTypeDelivery({
+            name: "home",
+            totalName: "Entrega a domicilio",
+        });
+    }, [closerStore])
 
     return (
         <>
