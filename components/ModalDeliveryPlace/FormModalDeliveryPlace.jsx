@@ -3,7 +3,6 @@
 import useGetPlace from "@/hooks/useGetPlace";
 import useGetModal from "@/hooks/useGetModal";
 import places from "@/typePlaces.json";
-import QuoteComponent from "@/components/UberComponents/QuoteComponent";
 
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -14,20 +13,17 @@ import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import TextArea from "../TextArea/TextArea";
-import { useEffect } from "react";
 
 export default function FormModalDeliveryPlace({
     inputsHome,
     handleInputsHome,
     typeLocation,
     handleTypeLocation,
-    closerStore,
-    currentModal,
     outModal,
     nextStep,
 }) {
     const { handleCloseModal } = useGetModal({ modalType: "place" });
-    const { handleAddPlace, handleTypeDelivery } = useGetPlace();
+    const { handleAddPlace } = useGetPlace();
 
     return (
         <>
