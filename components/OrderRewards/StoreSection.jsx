@@ -30,7 +30,11 @@ export default function StoreSection () {
       return handleOpenModal('deliveryPlace')
     }
     const totalName = name === 'home' ? 'Entrega a domicilio' : 'Recoger en tienda'
-    handleRemovePlace({place: 'inputsHome'})
+    const newPlace = {
+      inputsHome: null,
+      closerStore: null
+    }
+    handleRemovePlace(newPlace)
     handleTypeDelivery({name, totalName})
   }
 
@@ -113,6 +117,7 @@ export default function StoreSection () {
                     size='small'
                     // label="Age"
                     onChange={handleChange}
+                    disabled={true}
                   >
                     <MenuItem value={'home'}>Entrega a domicilio</MenuItem>
                     <MenuItem value={'store'}>Recoger en tienda</MenuItem>
