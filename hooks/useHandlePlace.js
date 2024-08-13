@@ -15,7 +15,6 @@ function useHandlePlace() {
     });
     const [closerStore, setCloserStore] = useState(null);
     const [inputsHome, setInputsHome] = useState(() => {
-        if (place.inputsHome) return place.inputsHome;
         return {
             inputAddress: "",
             street: {
