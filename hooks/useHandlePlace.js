@@ -64,8 +64,6 @@ function useHandlePlace() {
                 withinLimitSaved: null,
             });
         }
-        if (place.closerStore && place.closerStore.name !== closerStore?.name)
-            setCloserStore(place.closerStore);
     }, [place]);
 
     function handleCloserStore(newCloserStore) {
