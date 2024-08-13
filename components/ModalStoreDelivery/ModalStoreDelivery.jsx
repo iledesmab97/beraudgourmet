@@ -49,19 +49,10 @@ export default function ModalStoreDelivery() {
 
     const {
         inputsStore,
-        inputsHome,
-        typeLocation,
-        closerStore,
-        changeWithinLimitSaved,
         handleInputsStore,
-        handleInputsAddress,
-        handleDistanceSaved,
-        handleInputsHome,
-        handleTypeLocation,
-        handleCloserStore,
     } = useHandlePlace();
 
-    const { stores, status, error } = useSelector((state) => state.storeList);
+    const { stores } = useSelector((state) => state.storeList);
 
     function handlePlace(place) {
         setDelivery(place);
@@ -152,20 +143,7 @@ export default function ModalStoreDelivery() {
                                 nextStep={nextStepGuide}
                             />
                         ) : (
-                            <HomeDelivery
-                                handleInputsAddress={handleInputsAddress}
-                                inputsHome={inputsHome}
-                                typeLocation={typeLocation}
-                                withinLimitSaved={inputsHome.withinLimitSaved}
-                                distanceSaved={inputsHome.distanceSaved}
-                                closerStore={closerStore}
-                                changeWithinLimitSaved={changeWithinLimitSaved}
-                                handleDistanceSaved={handleDistanceSaved}
-                                handleInputsHome={handleInputsHome}
-                                handleTypeLocation={handleTypeLocation}
-                                handleCloserStore={handleCloserStore}
-                                nextStep={nextStepGuide}
-                            />
+                            <HomeDelivery />
                         )}
                         <MoveDown
                             sectionToGo={
