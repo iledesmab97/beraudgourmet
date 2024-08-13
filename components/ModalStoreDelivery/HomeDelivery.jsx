@@ -1,32 +1,31 @@
 "use client";
 
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import InputAdornment from "@mui/material/InputAdornment";
-
-import SearchIcon from "@mui/icons-material/Search";
 
 import PlaceFinder from "../PlaceFinder/PlaceFinder";
 import FormModalDeliveryPlace from "../ModalDeliveryPlace/FormModalDeliveryPlace";
 
-import { useState } from "react";
+import useHandlePlace from "@/hooks/useHandlePlace";
+import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
+
 import QuoteComponent from "../UberComponents/QuoteComponent";
 
-export default function HomeDelivery({
-    handleInputsAddress,
-    inputsHome,
-    typeLocation,
-    withinLimitSaved,
-    changeWithinLimitSaved,
-    distanceSaved,
-    closerStore,
-    handleDistanceSaved,
-    handleInputsHome,
-    handleTypeLocation,
-    handleCloserStore,
-    nextStep,
-}) {
+export default function HomeDelivery() {
+
+    const {
+        inputsHome,
+        typeLocation,
+        closerStore,
+        changeWithinLimitSaved,
+        handleInputsAddress,
+        handleDistanceSaved,
+        handleInputsHome,
+        handleTypeLocation,
+        handleCloserStore,
+    } = useHandlePlace();
+    const { nextStepGuide } = useHandleShoppingGuide();
+
     return (
         <>
             <Box
@@ -58,16 +57,17 @@ export default function HomeDelivery({
 
                 <PlaceFinder
                     changeWithinLimitSaved={changeWithinLimitSaved}
-                    withinLimitSaved={withinLimitSaved}
+                    withinLimitSaved={inputsHome.withinLimitSaved}
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
-                    distanceSaved={distanceSaved}
+                    distanceSaved={inputsHome.distanceSaved}
                     inputsHome={inputsHome}
                     closerStore={closerStore}
                     handleDistanceSaved={handleDistanceSaved}
                     handleCloserStore={handleCloserStore}
                 />
-                {withinLimitSaved ? (
+
+                {closerStore ? (
                     <>
                         <QuoteComponent />
                         <FormModalDeliveryPlace
@@ -77,7 +77,7 @@ export default function HomeDelivery({
                             handleInputsHome={handleInputsHome}
                             handleTypeLocation={handleTypeLocation}
                             currentModal="place"
-                            nextStep={nextStep}
+                            nextStep={nextStepGuide}
                         />
                     </>
                 ) : null}
