@@ -6,6 +6,9 @@ export const placeSlice = createSlice({
     name: "place",
     initialState,
     reducers: {
+        makePlace: (state, action) => {
+            return action.payload;
+        },
         addPlace: (state, action) => {
             const newProps = Object.keys(action.payload);
             const newPlace = { ...state };
@@ -15,10 +18,10 @@ export const placeSlice = createSlice({
             return newPlace;
         },
         removePlace: (state, action) => {
-            const place = action.payload.place;
+            const newPlaceProperties = action.payload;
             return {
                 ...state,
-                [place]: null,
+                ...newPlaceProperties,
             };
         },
         addDeadLine: (state, action) => {
@@ -54,6 +57,7 @@ export const placeSlice = createSlice({
 export default placeSlice.reducer;
 
 export const {
+    makePlace,
     addPlace,
     removePlace,
     addDeadLine,
