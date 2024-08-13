@@ -67,7 +67,7 @@ export default function HomeDelivery() {
                     handleCloserStore={handleCloserStore}
                 />
 
-                {closerStore ? (
+                {  inputsHome.withinLimitSaved && closerStore ? (
                     <>
                         <QuoteComponent />
                         <FormModalDeliveryPlace
