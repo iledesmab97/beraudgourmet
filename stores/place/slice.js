@@ -7,7 +7,14 @@ export const placeSlice = createSlice({
     initialState,
     reducers: {
         makePlace: (state, action) => {
-            return action.payload;
+            if (state.deadLine) {
+                return {
+                    ...action.payload,
+                    deadLine: { ...state.deadLine },
+                };
+            } else {
+                return action.payload;
+            }
         },
         addPlace: (state, action) => {
             const newProps = Object.keys(action.payload);
