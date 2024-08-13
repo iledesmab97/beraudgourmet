@@ -24,7 +24,9 @@ function PlaceFinder({
     handleCloserStore,
 }) {
     const stores = useSelector((state) => state.storeList.stores);
-    const { handleAddPlace, handleTypeDelivery } = useGetPlace();
+    const { place } = useSelector(state => state)
+    const { handleMakePlace } = useGetPlace();
+    
     const {
         address,
         data,
@@ -49,17 +51,20 @@ function PlaceFinder({
     }, [distance]);
 
     useEffect(() => {
-        handleCloserStore(storeMoreClose);
+        if (!storeMoreClose) return
+        handleMakePlace({
+            inputsHome,
+            closerStore: storeMoreClose,
+            typeDelivery: {
+                name: "home",
+                totalName: "Entrega a domicilio",
+            }
+        })
     }, [storeMoreClose]);
 
     useEffect(() => {
-        if (!withinLimit || !closerStore) return
-        handleAddPlace({ inputsHome, closerStore });
-        handleTypeDelivery({
-            name: "home",
-            totalName: "Entrega a domicilio",
-        });
-    }, [closerStore])
+        handleCloserStore(storeMoreClose)
+    }, [place])
 
     return (
         <>
