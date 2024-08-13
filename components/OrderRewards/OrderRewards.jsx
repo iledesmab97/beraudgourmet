@@ -12,11 +12,16 @@ import StoreSection from './StoreSection'
 import TotalPriceSection from './TotalPriceSection'
 import ButtonPay from '@/components/ButtonPay/ButtonPay'
 import SliceProgressBar from '@/components/SliceProgressBar/SliceProgressBar'
+import QuoteComponent from '@/components/UberComponents/QuoteComponent'
+
+import { useSelector } from "react-redux";
 
 import style from './OrderRewards.module.css'
 import logoBeraud from '@/public/images/homeimg/homeimgberaud/logoBeraud.png'
 
 function OrderRewards () {
+
+  const { typeDelivery } = useSelector(state => state.place)
 
   return (
     <Grid
@@ -90,6 +95,12 @@ function OrderRewards () {
           >
 
             <StoreSection />
+
+            {
+              typeDelivery && typeDelivery.name === 'home' ? (
+                <QuoteComponent />
+              ) : null
+            }
 
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
               <TextField
