@@ -1,14 +1,15 @@
 "use client";
 
-import useGetModal from "@/hooks/useGetModal";
-import FormModalDeliveryPlace from "./FormModalDeliveryPlace";
-import PlaceFinder from "../PlaceFinder/PlaceFinder";
-import useHandlePlace from "@/hooks/useHandlePlace";
-
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import QuoteComponent from "../UberComponents/QuoteComponent";
+
+import QuoteComponent from "@/components/UberComponents/QuoteComponent";
+import FormModalDeliveryPlace from "./FormModalDeliveryPlace";
+import PlaceFinder from "../PlaceFinder/PlaceFinder";
+
+import useGetModal from "@/hooks/useGetModal";
+import useHandlePlace from "@/hooks/useHandlePlace";
 
 const style = {
     position: "absolute",
@@ -85,9 +86,9 @@ export default function ModalDeliveryPlace() {
                         handleCloserStore={handleCloserStore}
                     />
 
-                    {inputsHome.withinLimitSaved ? (
+                    {closerStore ? (
                         <>
-                            <QuoteComponent closerStore={closerStore} />
+                            <QuoteComponent />
                             <FormModalDeliveryPlace
                                 inputsHome={inputsHome}
                                 typeLocation={typeLocation}
