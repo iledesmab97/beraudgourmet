@@ -25,7 +25,7 @@ export default function StorePickup({
     handleCloseModal,
     nextStep,
 }) {
-    const { handleAddPlace, handleTypeDelivery } = useGetPlace();
+    const { handleMakePlace, handleTypeDelivery } = useGetPlace();
     const { saveLocalData } = useLocalData();
 
     return (
@@ -228,7 +228,7 @@ export default function StorePickup({
                                             variant="contained"
                                             size="small"
                                             onClick={() => {
-                                                handleAddPlace({
+                                                handleMakePlace({
                                                     closerStore: store,
                                                 });
                                                 saveLocalData("place", {
