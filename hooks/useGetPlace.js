@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
 import {
-    makePlace,
     addPlace,
     removePlace,
     addDeadLine,
@@ -11,10 +10,6 @@ import {
 export default function useGetPlace() {
     const place = useSelector((state) => state.place);
     const dispatch = useDispatch();
-
-    function handleMakePlace(newPlace) {
-        dispatch(makePlace(newPlace));
-    }
 
     function handleAddPlace(newPlace) {
         dispatch(addPlace(newPlace));
@@ -38,7 +33,6 @@ export default function useGetPlace() {
 
     return {
         place,
-        handleMakePlace,
         handleAddPlace,
         handleRemovePlace,
         handleDeadLine,
