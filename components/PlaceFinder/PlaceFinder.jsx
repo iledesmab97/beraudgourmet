@@ -51,7 +51,7 @@ function PlaceFinder({
     }, [distance]);
 
     useEffect(() => {
-        if (!storeMoreClose || !withinLimitSaved) return
+        if (!storeMoreClose) return
         handleMakePlace({
             inputsHome,
             closerStore: storeMoreClose,
