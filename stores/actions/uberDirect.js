@@ -62,3 +62,24 @@ export const cancelExistingDelivery = createAsyncThunk(
         }
     }
 );
+
+export const handleTimeExpirationDeliveryQuote = createAsyncThunk(
+    "uberDirect/handleTimeExpirationDeliveryQuote",
+    async ({ timeOut, currentTimer, status }, { rejectWithValue }) => {
+        try {
+            switch (status) {
+                case "init": {
+                    return { timeOut, currentTimer, status };
+                }
+                case "update": {
+                    return { currentTimer, status };
+                }
+                case "remove": {
+                    return { status };
+                }
+            }
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
