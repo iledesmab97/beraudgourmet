@@ -1,4 +1,10 @@
-import { useEffect } from "react";
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+
+import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
+
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     fetchDeliveryQuote,
@@ -6,12 +12,13 @@ import {
     fetchDeliveryTracking,
     cancelExistingDelivery,
 } from "@/stores/actions/uberDirect";
-import { Container, Typography, Box } from "@mui/material";
-import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
+import { timeOutCalculator, howMuchLeftTime } from '@/utils/hours'
 
 const QuoteComponent = () => {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
     const { inputsHome, closerStore } = useSelector(state => state.place)
+    const timeOut = useRef(timeOutCalculator(10))
+    const [currentTimer, setCurrentTimer] = useState(howMuchLeftTime(timeOut.current))
     const dispatch = useDispatch();
     
     useEffect(() => {
@@ -24,21 +31,38 @@ const QuoteComponent = () => {
         );
     }, [closerStore]);
 
+    // turn timeOut on and off
+    useEffect(() => {
+        function activeClock() {
+            const newCurrentTime = howMuchLeftTime(timeOut.current)
+            setCurrentTimer(newCurrentTime)
+        }   
+        const intervalId = setInterval(activeClock, 1000)
+        return () => {
+            clearInterval(intervalId)
+        }
+    }, [])
+
     return (
-        <Container maxWidth="sm">
+        <Box
+            maxWidth="sm"
+            sx={{
+                width: '100%'
+            }}
+        >
             {loading && (
                 <Box
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    mt={4}
+                    mt={2}
                 >
                     <Typography
                         style={{ width: "50%" }}
                         variant="body1"
                         fontWeight="bold"
                     >
-                        Precio de envío estimado (15min):
+                        Precio de envío estimado ({currentTimer}):
                     </Typography>
                     <CenteredSpinner
                         width={20}
@@ -61,14 +85,14 @@ const QuoteComponent = () => {
                     mt={4}
                 >
                     <Typography variant="body1" fontWeight="bold">
-                        Precio de envío estimado (15min):
+                        Precio de envío estimado ({currentTimer}):
                     </Typography>
                     <Typography variant="body1" color="primary">
                         {quote.fee / 100} MXN
                     </Typography>
                 </Box>
             )}
-        </Container>
+        </Box>
     );
 };
 
