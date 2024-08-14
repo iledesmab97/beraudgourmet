@@ -183,5 +183,5 @@ export function howMuchLeftTime(time) {
         sec = "0" + sec;
     }
 
-    return `${min}:${sec}`;
+    return { sec: missing, min: `${min}:${sec}` };
 }
