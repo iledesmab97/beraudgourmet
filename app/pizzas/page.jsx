@@ -23,6 +23,7 @@ import AlertRecoverPassword from "@/components/AlertRecorverPassword/AlertRecorv
 import PizzaCustomizable from "@/components/PizzaCustomizable/PizzaCustomizable";
 import CenteredSpinner from "@/components/LoadingSpinner/CenteredSpinner";
 import useHandleSteps from "@/hooks/useHandleSteps";
+import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote"
 
 import { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
@@ -55,6 +56,7 @@ function Menu() {
     const { pizzas, salads, status, error } = useSelector(
         (state) => state.products
     );
+    useHandleTimerDeliveryQuote()
 
     // const {
     //     quote,
