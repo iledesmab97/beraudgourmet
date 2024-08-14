@@ -17,31 +17,41 @@ import { timeOutCalculator, howMuchLeftTime } from '@/utils/hours'
 const QuoteComponent = () => {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
     const { inputsHome, closerStore } = useSelector(state => state.place)
-    const timeOut = useRef(timeOutCalculator(10))
-    const [currentTimer, setCurrentTimer] = useState(howMuchLeftTime(timeOut.current))
+    const [timeOut, setTimeOut] = useState(timeOutCalculator(0))
+    const [currentTimer, setCurrentTimer] = useState(() => {
+        return howMuchLeftTime(timeOut)
+    })
     const dispatch = useDispatch();
     
+    // Refresh timeOut
     useEffect(() => {
-        if (!closerStore) return
+        if (loading || error) return
+        setTimeOut(timeOutCalculator(15))
+    }, [loading])
+
+    // fetch delivery quote
+    useEffect(() => {
+        if (!closerStore || currentTimer.sec > 0) return
         dispatch(
             fetchDeliveryQuote({
                 pickup_address: closerStore.place,
                 dropoff_address: inputsHome.inputAddress,
             })
         );
-    }, [closerStore]);
+    }, [closerStore, currentTimer]);
 
     // turn timeOut on and off
     useEffect(() => {
         function activeClock() {
-            const newCurrentTime = howMuchLeftTime(timeOut.current)
-            setCurrentTimer(newCurrentTime)
+            const newCurrentTimer = howMuchLeftTime(timeOut)
+            if (newCurrentTimer.sec >= 0) return setCurrentTimer(newCurrentTimer)
+            else clearInterval(intervalId)
         }   
         const intervalId = setInterval(activeClock, 1000)
         return () => {
             clearInterval(intervalId)
         }
-    }, [])
+    }, [timeOut])
 
     return (
         <Box
@@ -62,7 +72,7 @@ const QuoteComponent = () => {
                         variant="body1"
                         fontWeight="bold"
                     >
-                        Precio de envío estimado ({currentTimer}):
+                        Precio de envío estimado ({currentTimer.min}):
                     </Typography>
                     <CenteredSpinner
                         width={20}
@@ -85,7 +95,7 @@ const QuoteComponent = () => {
                     mt={4}
                 >
                     <Typography variant="body1" fontWeight="bold">
-                        Precio de envío estimado ({currentTimer}):
+                        Precio de envío estimado ({currentTimer.min}):
                     </Typography>
                     <Typography variant="body1" color="primary">
                         {quote.fee / 100} MXN
