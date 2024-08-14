@@ -1,118 +1,187 @@
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 
-export const weekDaysEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-export const weekDaysES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+export const weekDaysEN = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+];
+export const weekDaysES = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
+];
 
 const typeDelivery = {
-    store: 'pickupSchedule',
-    home: 'deliverySchedule'
-}
+    store: "pickupSchedule",
+    home: "deliverySchedule",
+};
 
-export function isOpen({openTime, closeTime}) {
-    const now = dayjs()
-    const openTimeDay = dayjs(`${now.format('D')} ${openTime}`, 'D hh:mm a')
-    const closeTimeDay = dayjs(`${now.format('D')} ${closeTime}`, 'D hh:mm a')
-    return now.isAfter(openTimeDay) && now.isBefore(closeTimeDay)
+export function isOpen({ openTime, closeTime }) {
+    const now = dayjs();
+    const openTimeDay = dayjs(`${now.format("D")} ${openTime}`, "D hh:mm a");
+    const closeTimeDay = dayjs(`${now.format("D")} ${closeTime}`, "D hh:mm a");
+    return now.isAfter(openTimeDay) && now.isBefore(closeTimeDay);
 }
 
 export function dateStringToDate(date) {
-    const dateString = date
-    const [dateWithSlash, time] = dateString.split(' - ')
-    const [day, month, year] = dateWithSlash.split('/')
-    const [hour_min, am_pm] = time.split(" ")
-    let [hour, mine] = hour_min.split(':')
-    if (hour === '12') {
-        hour = am_pm === 'am' ? '00' : hour
+    const dateString = date;
+    const [dateWithSlash, time] = dateString.split(" - ");
+    const [day, month, year] = dateWithSlash.split("/");
+    const [hour_min, am_pm] = time.split(" ");
+    let [hour, mine] = hour_min.split(":");
+    if (hour === "12") {
+        hour = am_pm === "am" ? "00" : hour;
     } else {
-        hour = am_pm === 'am' ? hour : String(Number(hour) + 12)
+        hour = am_pm === "am" ? hour : String(Number(hour) + 12);
     }
-    const totalDateString = `${year}-${month}-${day} ${hour}:${mine}:00`
-    const dateA = dayjs(totalDateString, ['YYYY', 'YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss'], true)
-    return dateA
+    const totalDateString = `${year}-${month}-${day} ${hour}:${mine}:00`;
+    const dateA = dayjs(
+        totalDateString,
+        ["YYYY", "YYYY-MM-DD", "YYYY-MM-DD HH:mm:ss"],
+        true
+    );
+    return dateA;
 }
 
 export function timeStringToObject(time) {
-    const [hour_min, am_pm] = time.split(" ")
-    let [hour, mine] = hour_min.split(':')
-    if (hour === '12') {
-        hour = am_pm === 'am' ? '00' : hour
+    const [hour_min, am_pm] = time.split(" ");
+    let [hour, mine] = hour_min.split(":");
+    if (hour === "12") {
+        hour = am_pm === "am" ? "00" : hour;
     } else {
-        hour = am_pm === 'am' ? hour : String(Number(hour) + 12)
+        hour = am_pm === "am" ? hour : String(Number(hour) + 12);
     }
-    const date = dayjs().format('YYYY-MM-DD')
-    return dayjs(`${date} ${hour}:${mine}`)
+    const date = dayjs().format("YYYY-MM-DD");
+    return dayjs(`${date} ${hour}:${mine}`);
 }
 
 export function howMuchLeft(dateString) {
-    const date = dateStringToDate(dateString)
-    const now = dayjs()
-    let comparation = date.isBefore(now)
+    const date = dateStringToDate(dateString);
+    const now = dayjs();
+    let comparation = date.isBefore(now);
     if (!comparation) {
-        return date.isSame(now, 'day') ? 'today' : 'early'
+        return date.isSame(now, "day") ? "today" : "early";
     } else {
-        return 'late'
+        return "late";
     }
 }
 
 export function todaysScheduleIs(scheduleList, orderDay) {
-    const orderDayObject = orderDay ? dayjs(orderDay, 'DD/MM/YYYY') : dayjs()
-    const indexOrderDay = weekDaysEN.indexOf(orderDayObject.format('dddd'))
-    return scheduleList.find(schedule => {
-        const indexStart = weekDaysES.indexOf(schedule.days.split('-')[0])
-        const indexEnd = weekDaysES.indexOf(schedule.days.split('-')[1])
-        return indexOrderDay >= indexStart && indexOrderDay <= indexEnd
-    })
+    const orderDayObject = orderDay ? dayjs(orderDay, "DD/MM/YYYY") : dayjs();
+    const indexOrderDay = weekDaysEN.indexOf(orderDayObject.format("dddd"));
+    return scheduleList.find((schedule) => {
+        const indexStart = weekDaysES.indexOf(schedule.days.split("-")[0]);
+        const indexEnd = weekDaysES.indexOf(schedule.days.split("-")[1]);
+        return indexOrderDay >= indexStart && indexOrderDay <= indexEnd;
+    });
 }
 
 export function getTimeLimitTodaySchedue(place) {
-    if (!place.deadLine) return {
-        minHour: dayjs(),
-        maxHour: dayjs()
-    }
-    const scheduleList = place.closerStore[typeDelivery[place.typeDelivery.name]][typeDelivery[place.typeDelivery.name]]
+    if (!place.deadLine)
+        return {
+            minHour: dayjs(),
+            maxHour: dayjs(),
+        };
+    const scheduleList =
+        place.closerStore[typeDelivery[place.typeDelivery.name]][
+            typeDelivery[place.typeDelivery.name]
+        ];
 
-    const orderDay = place.deadLine.date.realDate
-    const orderDayObject = dayjs(orderDay.replaceAll('/', '-'), 'DD-MM-YYYY')
+    const orderDay = place.deadLine.date.realDate;
+    const orderDayObject = dayjs(orderDay.replaceAll("/", "-"), "DD-MM-YYYY");
 
-    const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay)
+    const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay);
 
-    const minHour = scheduleOfDay.hours.split(' - ')[0]
-    const maxHour = scheduleOfDay.hours.split(' - ')[1]
+    const minHour = scheduleOfDay.hours.split(" - ")[0];
+    const maxHour = scheduleOfDay.hours.split(" - ")[1];
     return {
-        minHour: timeStringToObject(minHour).date(orderDayObject.date()).month(orderDayObject.month()).year(orderDayObject.year()),
-        maxHour: timeStringToObject(maxHour).date(orderDayObject.date()).month(orderDayObject.month()).year(orderDayObject.year())
-    }
+        minHour: timeStringToObject(minHour)
+            .date(orderDayObject.date())
+            .month(orderDayObject.month())
+            .year(orderDayObject.year()),
+        maxHour: timeStringToObject(maxHour)
+            .date(orderDayObject.date())
+            .month(orderDayObject.month())
+            .year(orderDayObject.year()),
+    };
 }
 
-export function dateInRange({minHour, maxHour, daySelected}) {
+export function dateInRange({ minHour, maxHour, daySelected }) {
+    let why = "out of time";
 
-    let why = 'out of time'
+    const selectedDateObject =
+        daySelected === null
+            ? dayjs().subtract(1, "minute")
+            : typeof daySelected === "string"
+            ? dateStringToDate(daySelected)
+            : daySelected;
+    const minTimeObject =
+        typeof minHour === "string" ? timeStringToObject(minDate) : minHour;
+    const maxTimeObject =
+        typeof maxHour === "string" ? timeStringToObject(maxDate) : maxHour;
 
-    const selectedDateObject = daySelected === null ? dayjs().subtract(1, 'minute') : typeof daySelected === 'string' ? dateStringToDate(daySelected) : daySelected
-    const minTimeObject = typeof minHour === 'string' ? timeStringToObject(minDate) : minHour
-    const maxTimeObject = typeof maxHour === 'string' ? timeStringToObject(maxDate) : maxHour
+    const maxDateObject = maxTimeObject
+        .date(selectedDateObject.format("D"))
+        .month(Number(selectedDateObject.format("M")) - 1)
+        .year(selectedDateObject.format("YYYY"));
 
-    const maxDateObject = maxTimeObject.date(selectedDateObject.format('D')).month(Number(selectedDateObject.format('M')) - 1).year(selectedDateObject.format('YYYY'))
-
-    let minDateObject = minTimeObject.date(selectedDateObject.format('D')).month(Number(selectedDateObject.format('M')) - 1).year(selectedDateObject.format('YYYY'))
+    let minDateObject = minTimeObject
+        .date(selectedDateObject.format("D"))
+        .month(Number(selectedDateObject.format("M")) - 1)
+        .year(selectedDateObject.format("YYYY"));
 
     if (selectedDateObject.isBefore(dayjs())) {
-        return {inRange: false, why: 'past hour' }
+        return { inRange: false, why: "past hour" };
     }
 
-    if (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(dayjs().add(29, 'minute'))) {
-        why = 'too soon'
-        minDateObject = dayjs().add(30, 'minute')
+    if (
+        selectedDateObject.isAfter(minDateObject) &&
+        selectedDateObject.isBefore(dayjs().add(29, "minute"))
+    ) {
+        why = "too soon";
+        minDateObject = dayjs().add(30, "minute");
     }
-    
-    const inRange = selectedDateObject.isSame(minDateObject) || (selectedDateObject.isAfter(minDateObject) && selectedDateObject.isBefore(maxDateObject))
 
-    if (inRange) return {inRange}
+    const inRange =
+        selectedDateObject.isSame(minDateObject) ||
+        (selectedDateObject.isAfter(minDateObject) &&
+            selectedDateObject.isBefore(maxDateObject));
 
-    return {inRange, why }
+    if (inRange) return { inRange };
+
+    return { inRange, why };
 }
 
 export function objectDateToString(dateObject) {
-    const dateString = dateObject.format('DD/MM/YYYY - hh:mm a')
-    return dateString
+    const dateString = dateObject.format("DD/MM/YYYY - hh:mm a");
+    return dateString;
+}
+
+export function timeOutCalculator(min) {
+    const timer = dayjs().add(min, "minute");
+    return timer;
+}
+
+export function howMuchLeftTime(time) {
+    const now = dayjs();
+    const missingMS = time.diff(now);
+    const missing = Math.round(missingMS / 1000);
+    let min = String(Math.floor(missing / 60));
+    if (min.length !== 2) {
+        min = "0" + min;
+    }
+    let sec = String(missing - min * 60);
+    if (sec.length !== 2) {
+        sec = "0" + sec;
+    }
+
+    return `${min}:${sec}`;
 }
