@@ -15,8 +15,11 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 
 import ItemPlace from "../PlaceFinder/ItemPlace";
 
+import { useDispatch } from "react-redux";
 import useGetPlace from "@/hooks/useGetPlace";
 import useLocalData from "@/hooks/useLocalData";
+
+import { makePlace } from "@/stores/place/slice";
 
 export default function StorePickup({
     storeList,
@@ -25,8 +28,9 @@ export default function StorePickup({
     handleCloseModal,
     nextStep,
 }) {
-    const { handleMakePlace, handleTypeDelivery } = useGetPlace();
+    const { handleTypeDelivery } = useGetPlace();
     const { saveLocalData } = useLocalData();
+    const dispatch = useDispatch()
 
     return (
         <>
@@ -228,9 +232,9 @@ export default function StorePickup({
                                             variant="contained"
                                             size="small"
                                             onClick={() => {
-                                                handleMakePlace({
-                                                    closerStore: store,
-                                                });
+                                                dispatch(makePlace({
+                                                    closerStore: store
+                                                }))
                                                 saveLocalData("place", {
                                                     closerStore: store.id,
                                                 });
