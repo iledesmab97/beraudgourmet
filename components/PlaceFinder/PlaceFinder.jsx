@@ -7,10 +7,11 @@ import ItemPlace from "./ItemPlace";
 
 import { Box, CircularProgress, Paper } from "@mui/material";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import usePlaceFinder from "@/hooks/usePlaceFinder";
-import useGetPlace from "@/hooks/useGetPlace";
+
+import { makePlace } from "@/stores/place/slice";
 
 function PlaceFinder({
     changeWithinLimitSaved,
@@ -25,7 +26,7 @@ function PlaceFinder({
 }) {
     const stores = useSelector((state) => state.storeList.stores);
     const { place } = useSelector(state => state)
-    const { handleMakePlace } = useGetPlace();
+    const dispatch = useDispatch()
     
     const {
         address,
@@ -52,14 +53,14 @@ function PlaceFinder({
 
     useEffect(() => {
         if (!storeMoreClose) return
-        handleMakePlace({
+        dispatch(makePlace({
             inputsHome,
             closerStore: storeMoreClose,
             typeDelivery: {
                 name: "home",
                 totalName: "Entrega a domicilio",
             }
-        })
+        }))
     }, [storeMoreClose]);
 
     useEffect(() => {
