@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
 import { useSelector } from "react-redux";
 
-const QuoteComponent = ({ helperText }) => {
+const QuoteComponent = ({ text, spinner, helperText }) => {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
     const [timer, setTimer] = useState("10:00");
     const intervalIdRef = useRef(null);
@@ -53,9 +53,12 @@ const QuoteComponent = ({ helperText }) => {
                     mt={1}
                 >
                     <Typography
-                        style={{ width: "50%" }}
                         variant="body1"
                         fontWeight="bold"
+                        style={{
+                            width: "70%",
+                            ...text
+                        }}
                     >
                         Precio de envío:
                     </Typography>
@@ -64,6 +67,7 @@ const QuoteComponent = ({ helperText }) => {
                         height={20}
                         large={"50%"}
                         justifyContent="flex-end"
+                        {...spinner}
                     />
                 </Box>
             )}
