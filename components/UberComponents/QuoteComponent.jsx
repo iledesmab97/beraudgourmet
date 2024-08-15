@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
 import { useSelector } from "react-redux";
 
-const QuoteComponent = () => {
+const QuoteComponent = ({ helperText }) => {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
     const [timer, setTimer] = useState("10:00");
     const intervalIdRef = useRef(null);
@@ -50,7 +50,7 @@ const QuoteComponent = () => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    mt={2}
+                    mt={1}
                 >
                     <Typography
                         style={{ width: "50%" }}
@@ -73,19 +73,43 @@ const QuoteComponent = () => {
                 </Typography>
             )}
             {quote && loading === false && (
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mt={4}
-                >
-                    <Typography variant="body1" fontWeight="bold">
-                        Precio de envío estimado ({timer} min):
-                    </Typography>
-                    <Typography variant="body1" color="primary">
-                        {quote.fee / 100} MXN
-                    </Typography>
-                </Box>
+                <>
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mt={1}
+                    >
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                        >
+                            {/* Precio de envío estimado ({timer} min): */}
+                            {/* Precio de envío estimado: */}
+                            Precio de envío:
+                        </Typography>
+                        <Typography
+                            variant="body1"
+                            color="primary"
+                        >
+                            {/* {quote.fee / 100} MXN */}
+                            ${quote.fee / 100}
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontSize: '0.75rem',
+                                textAlign: 'center',
+                                // color: '#d32f2f',
+                                color: '#295386',
+                                ...helperText
+                            }}
+                        >
+                            Este precio caducará en: <strong>{timer} min</strong>
+                        </Typography>
+                    </Box>
+                </>
             )}
         </Box>
     );
