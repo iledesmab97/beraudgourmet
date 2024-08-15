@@ -28,7 +28,7 @@ const QuoteComponent = () => {
                         variant="body1"
                         fontWeight="bold"
                     >
-                        Precio de envío estimado ({currentTimer ? currentTimer.min.slice(0,2): '00'} min):
+                        Precio de envío estimado ({currentTimer && currentTimer.min > 0? currentTimer.min: 'recalculando...'} min):
                     </Typography>
                     <CenteredSpinner
                         width={20}
@@ -51,7 +51,7 @@ const QuoteComponent = () => {
                     mt={4}
                 >
                     <Typography variant="body1" fontWeight="bold">
-                        Precio de envío estimado ({currentTimer ? currentTimer.min.slice(0,2): '00:00'} min):
+                        Precio de envío estimado ({currentTimer && currentTimer.min > 0? currentTimer.min: 'recalculando...'} min):
                     </Typography>
                     <Typography variant="body1" color="primary">
                         {quote.fee / 100} MXN
