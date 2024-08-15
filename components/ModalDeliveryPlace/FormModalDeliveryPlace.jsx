@@ -20,6 +20,7 @@ export default function FormModalDeliveryPlace({
     typeLocation,
     handleTypeLocation,
     outModal,
+    currentModal,
     nextStep,
 }) {
     const { handleCloseModal } = useGetModal({ modalType: "place" });
@@ -297,7 +298,7 @@ export default function FormModalDeliveryPlace({
                         variant="contained"
                         onClick={() => {
                             handleAddPlace({ inputsHome });
-                            handleCloseModal("place");
+                            handleCloseModal(currentModal);
                             nextStep("store");
                         }}
                         sx={{

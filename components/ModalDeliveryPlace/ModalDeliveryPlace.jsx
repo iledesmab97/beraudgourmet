@@ -3,13 +3,13 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 
-import QuoteComponent from "@/components/UberComponents/QuoteComponent";
 import FormModalDeliveryPlace from "./FormModalDeliveryPlace";
-import PlaceFinder from "../PlaceFinder/PlaceFinder";
 
 import useGetModal from "@/hooks/useGetModal";
 import useHandlePlace from "@/hooks/useHandlePlace";
+import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
 
 const style = {
     position: "absolute",
@@ -30,20 +30,17 @@ const style = {
 };
 
 export default function ModalDeliveryPlace() {
+    
     const { open, handleCloseModal } = useGetModal({
         modalType: "deliveryPlace",
     });
     const {
-        closerStore,
         inputsHome,
         typeLocation,
-        changeWithinLimitSaved,
-        handleInputsAddress,
-        handleDistanceSaved,
-        handleCloserStore,
         handleInputsHome,
         handleTypeLocation,
     } = useHandlePlace();
+    const { nextStepGuide } = useHandleShoppingGuide();
 
     return (
         <Modal
@@ -75,30 +72,24 @@ export default function ModalDeliveryPlace() {
                         Dirección de entrega
                     </Typography>
 
-                    <PlaceFinder
-                        withinLimitSaved={inputsHome.withinLimitSaved}
-                        inputAddress={inputsHome.inputAddress}
-                        distanceSaved={inputsHome.distanceSaved}
-                        closerStore={closerStore}
-                        changeWithinLimitSaved={changeWithinLimitSaved}
-                        handleInputsAddress={handleInputsAddress}
-                        handleDistanceSaved={handleDistanceSaved}
-                        handleCloserStore={handleCloserStore}
+                    <TextField
+                        value={inputsHome.inputAddress}
+                        label={'Place'}
+                        disabled={true}
+                        sx={{
+                            width: '100%',
+                            mb: 3
+                        }}
                     />
 
-                    {closerStore ? (
-                        <>
-                            <QuoteComponent />
-                            <FormModalDeliveryPlace
-                                inputsHome={inputsHome}
-                                typeLocation={typeLocation}
-                                closerStore={closerStore}
-                                handleInputsHome={handleInputsHome}
-                                handleTypeLocation={handleTypeLocation}
-                                currentModal="deliveryPlace"
-                            />
-                        </>
-                    ) : null}
+                    <FormModalDeliveryPlace
+                        inputsHome={inputsHome}
+                        typeLocation={typeLocation}
+                        handleInputsHome={handleInputsHome}
+                        handleTypeLocation={handleTypeLocation}
+                        currentModal="deliveryPlace"
+                        nextStep={nextStepGuide}
+                    />
                 </Box>
             </Box>
         </Modal>
