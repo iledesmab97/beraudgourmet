@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDeliveryQuote } from "@/stores/actions/uberDirect";
 
@@ -6,36 +6,38 @@ export default function useHandleTimerDeliveryQuote() {
     const { inputsHome, closerStore, typeDelivery } = useSelector(
         (state) => state.place
     );
-    const { loading, error } = useSelector((state) => state.uberQuote);
-    const [intervalId, setIntervalID] = useState(null);
+    const { quote, loading, error } = useSelector((state) => state.uberQuote);
+    const intervalId = useRef(null);
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (typeDelivery && typeDelivery.name === "store") {
-            clearInterval(intervalId);
+            clearInterval(intervalId.current);
             localStorage.removeItem("countdownTimer");
-            setIntervalID(null);
+            intervalId.current = null;
             return;
         }
 
         if (error) {
-            clearInterval(intervalId);
-            setIntervalID(null);
+            clearInterval(intervalId.current);
+            intervalId.current = null;
             return;
         }
 
         if (!closerStore || !inputsHome) return;
 
         if (loading) {
-            clearInterval(intervalId);
-            //localStorage.removeItem("countdownTimer");
+            clearInterval(intervalId.current);
             return;
         }
 
         const startCountdownTimer = () => {
             let duration;
 
-            if (localStorage.getItem("countdownTimer")) {
+            if (!quote) {
+                duration = 10 * 60;
+                localStorage.setItem("countdownTimer", "10:00"); // Set the initial timer value
+            } else if (localStorage.getItem("countdownTimer")) {
                 const currentDate = Math.round(Date.now() / 1000);
                 const expirationDate = Number(
                     localStorage.getItem("expirationDate")
@@ -45,16 +47,13 @@ export default function useHandleTimerDeliveryQuote() {
                 } else {
                     duration = 0;
                 }
-            } else {
-                duration = 10 * 60;
-                localStorage.setItem("countdownTimer", "10:00"); // Set the initial timer value
             }
 
             const updateTimerInLocalStorage = () => {
                 if (duration <= 0) {
                     localStorage.removeItem("countdownTimer");
-                    clearInterval(intervalId);
-                    setIntervalID(null);
+                    clearInterval(intervalId.current);
+                    intervalId.current = null;
                     console.log("Time's up! Refreshing the delivery quote...");
                     dispatch(
                         fetchDeliveryQuote({
@@ -89,21 +88,29 @@ export default function useHandleTimerDeliveryQuote() {
                 duration--;
             };
 
-            if (intervalId) {
-                clearInterval(intervalId); // Clear any existing interval
+            if (intervalId.current) {
+                clearInterval(intervalId.current); // Clear any existing interval
             }
 
             const newIntervalId = setInterval(updateTimerInLocalStorage, 1000);
-            setIntervalID(newIntervalId);
+            intervalId.current = newIntervalId;
         };
 
         startCountdownTimer();
 
         return () => {
-            if (intervalId) {
-                clearInterval(intervalId);
-                setIntervalID(null);
+            if (intervalId.current) {
+                clearInterval(intervalId.current);
+                intervalId.current = null;
             }
         };
-    }, [loading, closerStore, dispatch, inputsHome, error, typeDelivery]);
+    }, [
+        quote,
+        loading,
+        closerStore,
+        dispatch,
+        inputsHome,
+        error,
+        typeDelivery,
+    ]);
 }
