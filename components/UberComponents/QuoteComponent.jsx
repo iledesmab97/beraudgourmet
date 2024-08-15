@@ -57,7 +57,7 @@ const QuoteComponent = ({ helperText }) => {
                         variant="body1"
                         fontWeight="bold"
                     >
-                        Precio de envío estimado ({timer} min):
+                        Precio de envío:
                     </Typography>
                     <CenteredSpinner
                         width={20}
@@ -84,15 +84,12 @@ const QuoteComponent = ({ helperText }) => {
                             variant="body1"
                             fontWeight="bold"
                         >
-                            {/* Precio de envío estimado ({timer} min): */}
-                            {/* Precio de envío estimado: */}
                             Precio de envío:
                         </Typography>
                         <Typography
                             variant="body1"
                             color="primary"
                         >
-                            {/* {quote.fee / 100} MXN */}
                             ${quote.fee / 100}
                         </Typography>
                     </Box>
@@ -101,7 +98,6 @@ const QuoteComponent = ({ helperText }) => {
                             sx={{
                                 fontSize: '0.75rem',
                                 textAlign: 'center',
-                                // color: '#d32f2f',
                                 color: '#295386',
                                 ...helperText
                             }}
