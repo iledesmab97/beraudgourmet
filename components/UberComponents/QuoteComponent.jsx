@@ -1,19 +1,48 @@
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-
+import React, { useState, useEffect, useRef } from "react";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
-
 import { useSelector } from "react-redux";
 
 const QuoteComponent = () => {
-    const { quote, loading, error, timeExpiration } = useSelector((state) => state.uberQuote);
-    const { currentTimer } = timeExpiration
+    const { quote, loading, error } = useSelector((state) => state.uberQuote);
+    const [timer, setTimer] = useState("10:00");
+    const intervalIdRef = useRef(null);
+
+    useEffect(() => {
+        if (error || loading) {
+            clearInterval(intervalIdRef.current);
+            intervalIdRef.current = null;
+            return;
+        }
+
+        const updateTimerFromLocalStorage = () => {
+            const storedTime = localStorage.getItem("countdownTimer");
+            if (storedTime) {
+                setTimer(storedTime);
+            }
+        };
+
+        if (intervalIdRef.current) {
+            clearInterval(intervalIdRef.current);
+        }
+
+        updateTimerFromLocalStorage();
+        intervalIdRef.current = setInterval(updateTimerFromLocalStorage, 1000);
+
+        return () => {
+            if (intervalIdRef.current) {
+                clearInterval(intervalIdRef.current);
+                intervalIdRef.current = null;
+            }
+        };
+    }, [error, loading]);
 
     return (
         <Box
             maxWidth="sm"
             sx={{
-                width: '100%'
+                width: "100%",
             }}
         >
             {loading && (
@@ -28,7 +57,7 @@ const QuoteComponent = () => {
                         variant="body1"
                         fontWeight="bold"
                     >
-                        Precio de envío estimado ({currentTimer && currentTimer.min > 0? currentTimer.min: 'recalculando...'} min):
+                        Precio de envío estimado ({timer} min):
                     </Typography>
                     <CenteredSpinner
                         width={20}
@@ -51,7 +80,7 @@ const QuoteComponent = () => {
                     mt={4}
                 >
                     <Typography variant="body1" fontWeight="bold">
-                        Precio de envío estimado ({currentTimer && currentTimer.min > 0? currentTimer.min: 'recalculando...'} min):
+                        Precio de envío estimado ({timer} min):
                     </Typography>
                     <Typography variant="body1" color="primary">
                         {quote.fee / 100} MXN

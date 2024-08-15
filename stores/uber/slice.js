@@ -11,9 +11,8 @@ const initialState = {
     quote: null,
     order: null,
     tracking: null,
-    // error: null,
-    // loading: false,
-    timeExpiration: {},
+    error: null,
+    loading: false,
 };
 
 const uberDirectSlice = createSlice({
@@ -38,42 +37,7 @@ const uberDirectSlice = createSlice({
                 state.timeExpiration = {
                     loading: true,
                 };
-            })
-            .addCase(
-                handleTimeExpirationDeliveryQuote.fulfilled,
-                (state, action) => {
-                    const { timeOut, currentTimer, status } = action.payload;
-                    switch (status) {
-                        case "init": {
-                            state.timeExpiration = {
-                                timeOut,
-                                currentTimer,
-                            };
-                            break;
-                        }
-                        case "update": {
-                            state.timeExpiration = {
-                                ...state.timeExpiration,
-                                currentTimer,
-                            };
-                            break;
-                        }
-                        case "remove": {
-                            state.timeExpiration = {};
-                            break;
-                        }
-                    }
-                }
-            )
-            .addCase(
-                handleTimeExpirationDeliveryQuote.rejected,
-                (state, action) => {
-                    state.timeExpiration = {
-                        loading: false,
-                        error: action.payload,
-                    };
-                }
-            );
+            });
         // .addCase(createNewDeliveryOrder.pending, (state) => {
         //     state.loading = true;
         //     state.error = null;

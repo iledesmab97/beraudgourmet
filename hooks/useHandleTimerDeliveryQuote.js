@@ -1,96 +1,94 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import {
-    fetchDeliveryQuote,
-    handleTimeExpirationDeliveryQuote,
-} from "@/stores/actions/uberDirect";
+import { fetchDeliveryQuote } from "@/stores/actions/uberDirect";
 
 export default function useHandleTimerDeliveryQuote() {
     const { inputsHome, closerStore, typeDelivery } = useSelector(
         (state) => state.place
     );
-    const { quote, loading, error, timeExpiration } = useSelector(
-        (state) => state.uberQuote
-    );
-    const { timeOut, currentTimer } = timeExpiration;
+    const { loading, error } = useSelector((state) => state.uberQuote);
     const [intervalId, setIntervalID] = useState(null);
     const dispatch = useDispatch();
 
-    // fetch delivery quote
     useEffect(() => {
-        if (timeExpiration.loading) return;
+        if (typeDelivery && typeDelivery.name === "store") {
+            clearInterval(intervalId);
+            localStorage.removeItem("countdownTimer");
+            setIntervalID(null);
+            return;
+        }
+
+        if (error) {
+            clearInterval(intervalId);
+            setIntervalID(null);
+            return;
+        }
+
         if (!closerStore || !inputsHome) return;
-        if (currentTimer && currentTimer.min > 0) return;
-        console.log("timeExpiration:", timeExpiration);
-        console.log("entre con currentTimer:", currentTimer);
-        dispatch(
-            fetchDeliveryQuote({
-                pickup_address: closerStore.place,
-                dropoff_address: inputsHome.inputAddress,
-            })
-        );
-    }, [closerStore, currentTimer]);
 
-    // clear timeInterval
-    useEffect(() => {
-        if (typeDelivery && typeDelivery.name === "home") return;
-        clearInterval(intervalId);
-        setIntervalID(null);
-        dispatch(handleTimeExpirationDeliveryQuote({ status: "remove" }));
-    }, [typeDelivery]);
+        if (loading) {
+            clearInterval(intervalId);
+            //localStorage.removeItem("countdownTimer");
+            return;
+        }
 
-    // Refresh timeOut
-    useEffect(() => {
-        if (loading !== false || error) return;
-        console.log("entre en el useEffect que hace init");
-        // const newTimeOut = timeOutCalculator(10);
-        const newTimeOut = 10;
-        // const newCurrentTimer = howMuchLeftTime(newTimeOut);
-        const newCurrentTimer = { sec: 600, min: 10 };
-        dispatch(
-            handleTimeExpirationDeliveryQuote({
-                timeOut: newTimeOut,
-                currentTimer: newCurrentTimer,
-                status: "init",
-            })
-        );
-    }, [loading]);
+        const startCountdownTimer = () => {
+            let duration;
 
-    // turn timeOut on and off
-    useEffect(() => {
-        if (!timeOut) return;
-        function activeClock() {
-            // const newCurrentTimer = howMuchLeftTime(timeOut);
-            console.log("currentTimer:", currentTimer);
-            const newCurrentTimer = {
-                sec: currentTimer.sec - 60,
-                min: currentTimer.min - 1,
-            };
-            console.log("newCurrentTimer:", newCurrentTimer);
-            if (newCurrentTimer.sec >= 0) {
-                dispatch(
-                    handleTimeExpirationDeliveryQuote({
-                        currentTimer: newCurrentTimer,
-                        status: "update",
-                    })
-                );
+            if (localStorage.getItem("countdownTimer")) {
+                const timeParts = localStorage
+                    .getItem("countdownTimer")
+                    .split(":");
+                const minutes = parseInt(timeParts[0], 10);
+                const seconds = parseInt(timeParts[1], 10);
+                duration = minutes * 60 + seconds;
             } else {
+                duration = 10 * 60;
+                localStorage.setItem("countdownTimer", "10:00"); // Set the initial timer value
+            }
+
+            const updateTimerInLocalStorage = () => {
+                if (duration <= 0) {
+                    localStorage.removeItem("countdownTimer");
+                    clearInterval(intervalId);
+                    setIntervalID(null);
+                    console.log("Time's up! Refreshing the delivery quote...");
+                    dispatch(
+                        fetchDeliveryQuote({
+                            pickup_address: closerStore.place,
+                            dropoff_address: inputsHome.inputAddress,
+                        })
+                    );
+                    return;
+                }
+
+                const minutes = Math.floor(duration / 60);
+                const seconds = duration % 60;
+
+                const formattedTime = `${minutes
+                    .toString()
+                    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+                localStorage.setItem("countdownTimer", formattedTime);
+
+                duration--;
+            };
+
+            if (intervalId) {
+                clearInterval(intervalId); // Clear any existing interval
+            }
+
+            const newIntervalId = setInterval(updateTimerInLocalStorage, 1000);
+            setIntervalID(newIntervalId);
+        };
+
+        startCountdownTimer();
+
+        return () => {
+            if (intervalId) {
                 clearInterval(intervalId);
                 setIntervalID(null);
-                dispatch(
-                    handleTimeExpirationDeliveryQuote({ status: "remove" })
-                );
             }
-        }
-        console.log("entre");
-        const newIntervalId = setInterval(activeClock, 60000);
-        setIntervalID(newIntervalId);
-        // return () => {
-        //     console.log("entre en el return");
-        //     clearInterval(newIntervalId);
-        //     setIntervalID(null);
-        //     dispatch(handleTimeExpirationDeliveryQuote({ status: "remove" }));
-        // };
-    }, [timeOut]);
+        };
+    }, [loading, closerStore, inputsHome, dispatch, error, typeDelivery]);
 }
