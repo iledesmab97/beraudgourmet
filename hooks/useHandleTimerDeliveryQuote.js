@@ -36,12 +36,15 @@ export default function useHandleTimerDeliveryQuote() {
             let duration;
 
             if (localStorage.getItem("countdownTimer")) {
-                const timeParts = localStorage
-                    .getItem("countdownTimer")
-                    .split(":");
-                const minutes = parseInt(timeParts[0], 10);
-                const seconds = parseInt(timeParts[1], 10);
-                duration = minutes * 60 + seconds;
+                const currentDate = Math.round(Date.now() / 1000);
+                const expirationDate = Number(
+                    localStorage.getItem("expirationDate")
+                );
+                if (expirationDate > currentDate) {
+                    duration = Math.round(expirationDate - currentDate);
+                } else {
+                    duration = 0;
+                }
             } else {
                 duration = 10 * 60;
                 localStorage.setItem("countdownTimer", "10:00"); // Set the initial timer value
@@ -60,6 +63,18 @@ export default function useHandleTimerDeliveryQuote() {
                         })
                     );
                     return;
+                } else if (duration === 600) {
+                    localStorage.setItem(
+                        "expirationDate",
+                        Math.round(Date.now() / 1000) + duration
+                    );
+                    duration--;
+                    dispatch(
+                        fetchDeliveryQuote({
+                            pickup_address: closerStore.place,
+                            dropoff_address: inputsHome.inputAddress,
+                        })
+                    );
                 }
 
                 const minutes = Math.floor(duration / 60);
@@ -90,5 +105,5 @@ export default function useHandleTimerDeliveryQuote() {
                 setIntervalID(null);
             }
         };
-    }, [loading, closerStore, inputsHome, dispatch, error, typeDelivery]);
+    }, [loading, closerStore, dispatch, inputsHome, error, typeDelivery]);
 }
