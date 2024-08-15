@@ -14,6 +14,7 @@ export default function useHandleTimerDeliveryQuote() {
         if (typeDelivery && typeDelivery.name === "store") {
             clearInterval(intervalId.current);
             localStorage.removeItem("countdownTimer");
+            localStorage.removeItem("expirationDate");
             intervalId.current = null;
             return;
         }
@@ -47,11 +48,15 @@ export default function useHandleTimerDeliveryQuote() {
                 } else {
                     duration = 0;
                 }
+            } else {
+                duration = 10 * 60;
+                localStorage.setItem("countdownTimer", "10:00"); // Set the initial timer value
             }
 
             const updateTimerInLocalStorage = () => {
                 if (duration <= 0) {
                     localStorage.removeItem("countdownTimer");
+                    localStorage.removeItem("expirationDate");
                     clearInterval(intervalId.current);
                     intervalId.current = null;
                     console.log("Time's up! Refreshing the delivery quote...");
