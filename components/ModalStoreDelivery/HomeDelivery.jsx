@@ -70,6 +70,12 @@ export default function HomeDelivery() {
                 {  inputsHome.withinLimitSaved && closerStore ? (
                     <>
                         <QuoteComponent
+                            text={{
+                                width: "70%"
+                            }}
+                            spinner={{
+                                large: '20%'
+                            }}
                             helperText={{
                                 textAlign: 'right',
                                 mt: 0
