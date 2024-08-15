@@ -69,7 +69,12 @@ export default function HomeDelivery() {
 
                 {  inputsHome.withinLimitSaved && closerStore ? (
                     <>
-                        <QuoteComponent />
+                        <QuoteComponent
+                            helperText={{
+                                textAlign: 'right',
+                                mt: 0
+                            }}
+                        />
                         <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                             typeLocation={typeLocation}
