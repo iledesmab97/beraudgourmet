@@ -5,7 +5,6 @@ import {
     fetchDeliveryQuote,
     handleTimeExpirationDeliveryQuote,
 } from "@/stores/actions/uberDirect";
-import { timeOutCalculator, howMuchLeftTime } from "@/utils/hours";
 
 export default function useHandleTimerDeliveryQuote() {
     const { inputsHome, closerStore, typeDelivery } = useSelector(
@@ -20,8 +19,11 @@ export default function useHandleTimerDeliveryQuote() {
 
     // fetch delivery quote
     useEffect(() => {
+        if (timeExpiration.loading) return;
         if (!closerStore || !inputsHome) return;
-        if (currentTimer && currentTimer.sec > 0) return;
+        if (currentTimer && currentTimer.min > 0) return;
+        console.log("timeExpiration:", timeExpiration);
+        console.log("entre con currentTimer:", currentTimer);
         dispatch(
             fetchDeliveryQuote({
                 pickup_address: closerStore.place,
@@ -41,8 +43,11 @@ export default function useHandleTimerDeliveryQuote() {
     // Refresh timeOut
     useEffect(() => {
         if (loading !== false || error) return;
-        const newTimeOut = timeOutCalculator(10);
-        const newCurrentTimer = howMuchLeftTime(newTimeOut);
+        console.log("entre en el useEffect que hace init");
+        // const newTimeOut = timeOutCalculator(10);
+        const newTimeOut = 10;
+        // const newCurrentTimer = howMuchLeftTime(newTimeOut);
+        const newCurrentTimer = { sec: 600, min: 10 };
         dispatch(
             handleTimeExpirationDeliveryQuote({
                 timeOut: newTimeOut,
@@ -56,7 +61,13 @@ export default function useHandleTimerDeliveryQuote() {
     useEffect(() => {
         if (!timeOut) return;
         function activeClock() {
-            const newCurrentTimer = howMuchLeftTime(timeOut);
+            // const newCurrentTimer = howMuchLeftTime(timeOut);
+            console.log("currentTimer:", currentTimer);
+            const newCurrentTimer = {
+                sec: currentTimer.sec - 60,
+                min: currentTimer.min - 1,
+            };
+            console.log("newCurrentTimer:", newCurrentTimer);
             if (newCurrentTimer.sec >= 0) {
                 dispatch(
                     handleTimeExpirationDeliveryQuote({
@@ -72,12 +83,14 @@ export default function useHandleTimerDeliveryQuote() {
                 );
             }
         }
+        console.log("entre");
         const newIntervalId = setInterval(activeClock, 60000);
         setIntervalID(newIntervalId);
-        return () => {
-            clearInterval(newIntervalId);
-            setIntervalID(null);
-            dispatch(handleTimeExpirationDeliveryQuote({ status: "remove" }));
-        };
+        // return () => {
+        //     console.log("entre en el return");
+        //     clearInterval(newIntervalId);
+        //     setIntervalID(null);
+        //     dispatch(handleTimeExpirationDeliveryQuote({ status: "remove" }));
+        // };
     }, [timeOut]);
 }
