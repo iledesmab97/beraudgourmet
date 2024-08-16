@@ -4,10 +4,6 @@ import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
 
 import {Elements} from '@stripe/react-stripe-js'
 
@@ -18,6 +14,7 @@ import MoveDown from '@/components/MoveDown/MoveDown'
 
 import { loadStripe } from '@stripe/stripe-js'
 import { useEffect, useState, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
@@ -74,6 +71,7 @@ function ModalCheckoutForm() {
     const {checkout, handleAddCheckout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
     const [preMessageDelivery, setPreMessageDelivery] = useState('')
+    const { quote } = useSelector(state => state.uberQuote)
 
     const [clientSecret, setClientSecret] = useState('')
     const [dataStripe, setDataStripe] = useState(null)
@@ -99,9 +97,21 @@ function ModalCheckoutForm() {
 
     useEffect(() => {
         if (!orders.length) return
+        let amount
+        const {totalClient} = totalPrice(orders)
+        if (quote) {
+            amount = Number(totalClient) + quote.fee.feeIVAStripe
+        } else {
+            amount = Number(totalClient)
+        }
         if (!dataStripe) {
-            const {totalClient} = totalPrice(orders)
-            createPaymentRequest({userId: user.id, email: user.email, amount: totalClient, description: orderDescription, payInPlace: false})
+            createPaymentRequest({
+                userId: user.id,
+                email: user.email,
+                amount,
+                description: orderDescription,
+                payInPlace: false
+            })
                 .then(data => {
                     if (data.clientSecret) {
                         const { clientSecret, id, status } = data
@@ -111,8 +121,7 @@ function ModalCheckoutForm() {
                     else console.log('Error:', data.message)
                 })
         } else {
-            const {totalClient} = totalPrice(orders)
-            updatePaymentRequest({amount: totalClient, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
+            updatePaymentRequest({amount, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
                 .then(data => {
                     if (data.clientSecret) {
                         const { clientSecret, id, status } = data
@@ -122,7 +131,7 @@ function ModalCheckoutForm() {
                     else console.log('Error:', data.message)
                 })
         }
-    }, [orders])
+    }, [orders, quote])
 
     useEffect(() => {
         if (!orders.length && Object.keys(checkout).length ) return
@@ -198,6 +207,7 @@ function ModalCheckoutForm() {
                         orders={orders}
                         payment_method={payment_method}
                         checkout={checkout}
+                        quote={quote}
                     />
                     <Typography
                         id='title-Pago-CheckoutForm'
@@ -235,6 +245,7 @@ function ModalCheckoutForm() {
                                         place={place}
                                         orders={orders}
                                         checkout={checkout}
+                                        quote={quote}
                                         payment_method={payment_method}
                                         dataStripe={dataStripe}
                                         handlePaymentMethod={handlePaymentMethod}
