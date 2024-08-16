@@ -1,3 +1,4 @@
+import { requestSettings } from "@/utils/preparingData";
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
 // Get a delivery quote
@@ -36,22 +37,15 @@ export const createDeliveryOrder = async (orderDetails) => {
     try {
         const response = await fetch(orderUrl, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            ...requestSettings("POST"),
             body: JSON.stringify(orderDetails),
         });
-
-        if (!response.ok) {
-            throw new Error(
-                `Error creating delivery order: ${response.statusText}`
-            );
-        }
-
         const data = await response.json();
+        if (data.message) {
+            throw new Error(`Error creating delivery order: ${data.message}`);
+        }
         return data;
     } catch (error) {
-        console.error("Error creating delivery order:", error);
         throw error;
     }
 };
