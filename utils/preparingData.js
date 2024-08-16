@@ -5,8 +5,16 @@ const regExpIngredientsOut = /\~(.*?)\~/g;
 const regExpSize = /\((.*?)\)/;
 
 export function userDataFromBackToFront(userBack) {
-    const { id, name, email, phoneNumber, promotion, verified, RoleId } =
-        userBack;
+    const {
+        id,
+        name,
+        email,
+        phoneNumber,
+        promotion,
+        verified,
+        RoleId,
+        permissions,
+    } = userBack;
     const userFront = {
         id,
         name,
@@ -15,6 +23,7 @@ export function userDataFromBackToFront(userBack) {
         promotion,
         verified,
         role: ROLES[RoleId - 1],
+        permissions,
     };
     return userFront;
 }
