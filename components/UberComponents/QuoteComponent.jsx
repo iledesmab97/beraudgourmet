@@ -94,7 +94,7 @@ const QuoteComponent = ({ text, spinner, helperText }) => {
                             variant="body1"
                             color="primary"
                         >
-                            ${quote.fee / 100}
+                            ${quote.fee.feeIVAStripe}
                         </Typography>
                     </Box>
                     <Box>
