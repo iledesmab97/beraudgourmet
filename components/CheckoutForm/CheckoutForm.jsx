@@ -34,6 +34,7 @@ export default function CheckoutForm({
     place,
     orders,
     checkout,
+    quote,
     payment_method,
     dataStripe,
     handlePaymentMethod,
@@ -83,8 +84,8 @@ export default function CheckoutForm({
         userId: user.id,
         storeId: place.closerStore.id,
         totalCostByItems: checkout.totalPriceCar,
-        commissions: Number(checkout.commissionStripe),
-        totalCost: checkout.totalClient,
+        commissions: Number(checkout.commissionStripe) + (quote ? quote.fee.feeIVAStripe : 0),
+        totalCost: Number(checkout.totalClient) + (quote ? quote.fee.feeIVAStripe : 0),
         applicationDate: dayjs().format("DD/MM/YYYY - hh:mm a"),
         deliveryDate:
             place.deadLine.date.realDate + " - " + place.deadLine.time.realTime,
