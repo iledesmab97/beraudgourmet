@@ -24,6 +24,7 @@ import Searcher from "@/components/Searcher/Searcher";
 import HelperMessageToSearch from "@/components/HelperMessageToSearch/HelperMessageToSearch";
 
 import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import useGetAlertMessage from "@/hooks/useGetAlertMessage";
 import useGetOrderList from "@/hooks/useGetOrderList";
 
@@ -35,6 +36,7 @@ import {
 } from "@/services/orderApi";
 import { howMuchLeft } from "@/utils/hours";
 import { captureFundsRequest } from "@/services/checkoutApi";
+import { createNewDeliveryOrder } from "@/stores/actions/uberDirect"
 
 import styles from "./DataTable.module.css";
 
@@ -44,6 +46,7 @@ const tableHeaders = {
         "Método de Pago",
         "Fecha de entrega",
         "Tipo",
+        "Enviar",
         "Estatus",
         "Total ($)",
         "Acción",
@@ -57,7 +60,7 @@ const paymentMethodIndex = {
 };
 
 const colorsCell = {
-    late: "red",
+    late: "#f6685e",
     today: "#D99914",
     early: "green",
 };
@@ -76,6 +79,7 @@ function TableOrders() {
     const [page, setPage] = useState(0);
     const [count, setCount] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const dispatch = useDispatch()
 
     useEffect(() => {
         setOrders(orderList.list);
@@ -265,6 +269,10 @@ function TableOrders() {
         setPage(0);
     }
 
+    async function deliveryProduct(order) {
+        dispatch(createNewDeliveryOrder(order))
+    }
+
     return (
         <Paper
             sx={{
@@ -331,15 +339,24 @@ function TableOrders() {
                                 <TableCell align="center">
                                     {order.delivery ? "Delivery" : "Recoger"}
                                 </TableCell>
+                                <TableCell align="center">
+                                    <Button
+                                        variant="contained"
+                                        disabled={!order.delivery}
+                                        onClick={() => {deliveryProduct(order)}}
+                                    >
+                                        Despachar
+                                    </Button>
+                                </TableCell>
                                 <TableCell
                                     align="center"
                                     sx={
                                         order.closed
                                             ? { color: "green" }
-                                            : { color: "red" }
+                                            : { color: "#f6685e" }
                                     }
                                 >
-                                    {order.closed ? "Entregado" : "Pendiente"}
+                                    <strong>{order.closed ? "Entregado" : "Pendiente"}</strong>
                                 </TableCell>
                                 <TableCell align="center">
                                     {order.totalCost}
