@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
     fetchDeliveryQuote,
     handleTimeExpirationDeliveryQuote,
-    // createNewDeliveryOrder,
+    createNewDeliveryOrder,
     // fetchDeliveryTracking,
     // cancelExistingDelivery,
 } from "../actions/uberDirect";
@@ -37,19 +37,19 @@ const uberDirectSlice = createSlice({
                 state.timeExpiration = {
                     loading: true,
                 };
+            })
+            .addCase(createNewDeliveryOrder.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createNewDeliveryOrder.fulfilled, (state, action) => {
+                state.loading = false;
+                state.order = action.payload;
+            })
+            .addCase(createNewDeliveryOrder.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
-        // .addCase(createNewDeliveryOrder.pending, (state) => {
-        //     state.loading = true;
-        //     state.error = null;
-        // })
-        // .addCase(createNewDeliveryOrder.fulfilled, (state, action) => {
-        //     state.loading = false;
-        //     state.order = action.payload;
-        // })
-        // .addCase(createNewDeliveryOrder.rejected, (state, action) => {
-        //     state.loading = false;
-        //     state.error = action.payload;
-        // })
 
         // .addCase(fetchDeliveryTracking.pending, (state) => {
         //     state.loading = true;
