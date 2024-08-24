@@ -56,7 +56,6 @@ function Menu() {
     const { pizzas, salads, status, error } = useSelector(
         (state) => state.products
     );
-    useHandleTimerDeliveryQuote();
 
     useEffect(() => {
         dispatch(addProductsListThunk());

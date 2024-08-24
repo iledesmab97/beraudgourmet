@@ -23,8 +23,14 @@ export default function useGetPlace() {
         dispatch(addDeadLine(time));
     }
 
-    function handleTypeDelivery(date) {
-        dispatch(addTypeDelivery(date));
+    function handleTypeDelivery(data) {
+        if (data.name === "store") {
+            if (localStorage.getItem("countdownTimer")) {
+                localStorage.removeItem("countdownTimer");
+                localStorage.removeItem("expirationDate");
+            }
+        }
+        dispatch(addTypeDelivery(data));
     }
 
     function handleUpdatePlaceToInitialState() {

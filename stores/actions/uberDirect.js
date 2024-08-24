@@ -16,7 +16,10 @@ export const fetchDeliveryQuote = createAsyncThunk(
                 pickup_address,
                 dropoff_address
             );
-            delay(2000);
+            localStorage.setItem(
+                "quote",
+                quote.fee.feeIVAStripe ? quote.fee.feeIVAStripe : "60"
+            );
             return quote;
         } catch (error) {
             return rejectWithValue(error.message);
