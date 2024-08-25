@@ -15,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 
 import MasaTypesPizza from "@/components/MasaTypesPizza/MasaTypesPizza";
 import MoveDown from "@/components/MoveDown/MoveDown";
-import CenteredSpinner from "@/components/LoadingSpinner/CenteredSpinner";
+import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
 
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -83,41 +83,38 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
                     <ButtonGroupPizza handleClick={handleSize} size={size} listSizes={Object.keys(currentProduct.price)} />
                 </Grid>
             </Grid> */}
-            {
-                currentProduct.productType === "pizza" ? (
+            {currentProduct.productType === "pizza" ? (
+                <Grid
+                    item
+                    container
+                    direction={"column"}
+                    alignItems={"flex-start"}
+                    wrap="nowrap"
+                    spacing={1}
+                >
+                    <Grid item>
+                        <Typography
+                            id="modal-subtitle-ELIGE_LA_MASA"
+                            variant="title"
+                        >
+                            ELIGE LA MASA
+                        </Typography>
+                    </Grid>
+                    {}
                     <Grid
                         item
-                        container
-                        direction={"column"}
-                        alignItems={"flex-start"}
-                        wrap="nowrap"
-                        spacing={1}
+                        sx={{
+                            width: "95%",
+                        }}
                     >
-                        <Grid item>
-                            <Typography
-                                id="modal-subtitle-ELIGE_LA_MASA"
-                                variant="title"
-                            >
-                                ELIGE LA MASA
-                            </Typography>
-                        </Grid>
-                        {
-                                
-                        }
-                        <Grid
-                            item
-                            sx={{
-                                width: "95%",
-                            }}
-                        >
-                            <MasaTypesPizza
-                                listMass={currentProduct.price[size]}
-                                mass={mass}
-                                handleMass={handleMass}
-                            />
-                        </Grid>
+                        <MasaTypesPizza
+                            listMass={currentProduct.price[size]}
+                            mass={mass}
+                            handleMass={handleMass}
+                        />
                     </Grid>
-                ) : null}
+                </Grid>
+            ) : null}
             <Grid item>
                 <Typography id="modal-modal-description" variant="title">
                     QUITAR INGREDIENTES
@@ -127,35 +124,30 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
             <Grid item container direction={"column"} spacing={1}>
                 <Grid item>
                     <FormGroup onChange={handleIngredientsModal}>
-                        {currentProduct.ingredients.map(
-                            (ingredient, index) => (
-                                <FormControlLabel
-                                    key={ingredient + index}
-                                    control={
-                                        <Checkbox
-                                            checked={
-                                                ingredientsModal.includes(
-                                                    ingredient
-                                                )
-                                                    ? false
-                                                    : true
-                                            }
-                                        />
-                                    }
-                                    label={ingredient}
-                                    sx={
-                                        ingredientsModal.includes(
-                                            ingredient
-                                        )
-                                            ? {
-                                                    textDecoration:
-                                                        "line-through",
-                                                }
-                                            : {}
-                                    }
-                                />
-                            )
-                        )}
+                        {currentProduct.ingredients.map((ingredient, index) => (
+                            <FormControlLabel
+                                key={ingredient + index}
+                                control={
+                                    <Checkbox
+                                        checked={
+                                            ingredientsModal.includes(
+                                                ingredient
+                                            )
+                                                ? false
+                                                : true
+                                        }
+                                    />
+                                }
+                                label={ingredient}
+                                sx={
+                                    ingredientsModal.includes(ingredient)
+                                        ? {
+                                              textDecoration: "line-through",
+                                          }
+                                        : {}
+                                }
+                            />
+                        ))}
                     </FormGroup>
                 </Grid>
             </Grid>

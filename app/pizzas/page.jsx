@@ -21,7 +21,7 @@ import AlertPhoneMissing from "@/components/AlertPhoneMissing/AlertPhoneMissing"
 import ShoppingCartButton from "@/components/ShoppingCartButton/ShoppingCartButton";
 import AlertRecoverPassword from "@/components/AlertRecorverPassword/AlertRecorverPassword";
 import PizzaCustomizable from "@/components/PizzaCustomizable/PizzaCustomizable";
-import CenteredSpinner from "@/components/LoadingSpinner/CenteredSpinner";
+import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
 import useHandleSteps from "@/hooks/useHandleSteps";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 

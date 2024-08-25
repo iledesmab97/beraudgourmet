@@ -1,6 +1,6 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import CenteredSpinner from "../LoadingSpinner/CenteredSpinner";
+import CenteredSpinner from "../LoadingComponets/CenteredSpinner";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
 const QuoteComponent = ({ text, spinner, helperText }) => {
