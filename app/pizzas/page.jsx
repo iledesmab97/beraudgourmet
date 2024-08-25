@@ -15,7 +15,7 @@ import ModalChangePassword from "@/components/ModalChangePassword/ModalChangePas
 import ModalChangeEmail from "@/components/ModalChangeEmail/ModalChangeEmail";
 import ModalCheckoutForm from "@/components/ModalCheckoutForm/ModalCheckoutForm";
 import ModalUserOrders from "@/components/ModalUserOrders/ModalUserOrders";
-import ModalPDF from "@/components/ModalPDF/ModalPDF";
+
 import CookieAlert from "@/components/CookiesAlert/CookieAlert";
 import AlertPhoneMissing from "@/components/AlertPhoneMissing/AlertPhoneMissing";
 import ShoppingCartButton from "@/components/ShoppingCartButton/ShoppingCartButton";
@@ -28,21 +28,13 @@ import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 import { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useLoadScript } from "@react-google-maps/api";
 import useGetDrawer from "@/hooks/useGetDrawer";
 import useLoadData from "@/hooks/useLoadData";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductsListThunk } from "@/stores/actions/products";
-import { fetchStoreListThunk } from "@/stores/actions/stores";
-
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 function Menu() {
     const [totalMatches, setTotalMatches] = useState("null");
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
-        libraries: ["places"],
-    });
 
     useHandleSteps();
 
@@ -59,10 +51,6 @@ function Menu() {
 
     useEffect(() => {
         dispatch(addProductsListThunk());
-    }, [dispatch]);
-
-    useEffect(() => {
-        dispatch(fetchStoreListThunk());
     }, [dispatch]);
 
     // Cargar los productos, ingredientes, usuarios y tiendas
@@ -142,7 +130,7 @@ function Menu() {
             <ModalChangeEmail />
             <ModalCheckoutForm />
             <ModalUserOrders />
-            <ModalPDF />
+
             <CookieAlert />
             <AlertPhoneMissing />
             <AlertRecoverPassword />

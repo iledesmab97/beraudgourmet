@@ -12,7 +12,6 @@ import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
 import QuoteComponent from "../UberComponents/QuoteComponent";
 
 export default function HomeDelivery() {
-
     const {
         inputsHome,
         typeLocation,
@@ -67,18 +66,18 @@ export default function HomeDelivery() {
                     handleCloserStore={handleCloserStore}
                 />
 
-                {  inputsHome.withinLimitSaved && closerStore ? (
+                {inputsHome.withinLimitSaved && closerStore ? (
                     <>
                         <QuoteComponent
                             text={{
-                                width: "70%"
+                                width: "70%",
                             }}
                             spinner={{
-                                large: '20%'
+                                large: "20%",
                             }}
                             helperText={{
-                                textAlign: 'right',
-                                mt: 0
+                                textAlign: "right",
+                                mt: 0,
                             }}
                         />
                         <FormModalDeliveryPlace

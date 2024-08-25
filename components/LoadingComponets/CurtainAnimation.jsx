@@ -7,7 +7,7 @@ const colors = {
     default: "#FFFFFF",
 };
 
-export function CurtainAnimation({ onComplete }) {
+export function CurtainAnimation({ onComplete, storesStatus }) {
     const [shouldAnimate, setShouldAnimate] = useState(false);
 
     useEffect(() => {
@@ -53,30 +53,37 @@ export function CurtainAnimation({ onComplete }) {
                 zIndex: 9999,
             }}
         >
-            <motion.div
-                style={{
-                    position: "absolute",
-                    inset: 0,
-                    originX: 0,
-                    backgroundColor: colors.primary,
-                }}
-                variants={curtainVariants}
-                initial="initial"
-                animate="animate"
-                onAnimationComplete={handleAnimationComplete} // Manejar el final de la animación
-            />
-            <motion.div
-                style={{
-                    position: "absolute",
-                    inset: 0,
-                    originX: 1,
-                    backgroundColor: colors.primary,
-                }}
-                variants={curtainVariants}
-                initial="initial"
-                animate="animate"
-                // No se necesita onAnimationComplete aquí
-            />
+            {storesStatus === "succeeded" ? (
+                <>
+                    {" "}
+                    <motion.div
+                        style={{
+                            position: "absolute",
+                            inset: 0,
+                            originX: 0,
+                            backgroundColor: colors.primary,
+                        }}
+                        variants={curtainVariants}
+                        initial="initial"
+                        animate="animate"
+                        onAnimationComplete={handleAnimationComplete} // Manejar el final de la animación
+                    />
+                    <motion.div
+                        style={{
+                            position: "absolute",
+                            inset: 0,
+                            originX: 1,
+                            backgroundColor: colors.primary,
+                        }}
+                        variants={curtainVariants}
+                        initial="initial"
+                        animate="animate"
+                        // No se necesita onAnimationComplete aquí
+                    />
+                </>
+            ) : (
+                <></>
+            )}
             <div
                 style={{
                     position: "absolute",
@@ -86,6 +93,7 @@ export function CurtainAnimation({ onComplete }) {
                     justifyContent: "center",
                 }}
             >
+                {" "}
                 <motion.h1
                     style={{
                         fontSize: "2rem",

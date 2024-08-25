@@ -16,7 +16,6 @@ import QuoteComponent from "@/components/UberComponents/QuoteComponent";
 
 import { useSelector } from "react-redux";
 
-import style from "./OrderRewards.module.css";
 import logoBeraud from "@/public/images/homeimg/homeimgberaud/logoBeraud.png";
 
 function OrderRewards() {

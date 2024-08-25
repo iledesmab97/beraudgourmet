@@ -13,7 +13,6 @@ import MoveDown from "@/components/MoveDown/MoveDown";
 import { useState } from "react";
 import useGetModal from "@/hooks/useGetModal";
 import useHandlePlace from "@/hooks/useHandlePlace";
-import useGetStoreList from "@/hooks/useGetStoreList";
 import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
 import { useSelector } from "react-redux";
 
@@ -47,10 +46,7 @@ export default function ModalStoreDelivery() {
     const [delivery, setDelivery] = useState("store");
     const { nextStepGuide } = useHandleShoppingGuide();
 
-    const {
-        inputsStore,
-        handleInputsStore,
-    } = useHandlePlace();
+    const { inputsStore, handleInputsStore } = useHandlePlace();
 
     const { stores } = useSelector((state) => state.storeList);
 

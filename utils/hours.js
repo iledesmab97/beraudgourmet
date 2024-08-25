@@ -1,22 +1,22 @@
 import dayjs from "dayjs";
 
 export const weekDaysEN = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday",
 ];
 export const weekDaysES = [
+    "Domingo",
     "Lunes",
     "Martes",
     "Miércoles",
     "Jueves",
     "Viernes",
     "Sábado",
-    "Domingo",
 ];
 
 const typeDelivery = {
@@ -74,13 +74,15 @@ export function howMuchLeft(dateString) {
     }
 }
 
-export function todaysScheduleIs(scheduleList, orderDay) {
-    const orderDayObject = orderDay ? dayjs(orderDay, "DD/MM/YYYY") : dayjs();
-    const indexOrderDay = weekDaysEN.indexOf(orderDayObject.format("dddd"));
+export function todaysScheduleIs(scheduleList) {
+    const currentDate = new Date();
+    const dayNumber = currentDate.getDay();
+    const dayName = weekDaysEN[dayNumber];
+    const indexOrderDay = weekDaysEN.indexOf(dayName);
     return scheduleList.find((schedule) => {
         const indexStart = weekDaysES.indexOf(schedule.days.split("-")[0]);
         const indexEnd = weekDaysES.indexOf(schedule.days.split("-")[1]);
-        return indexOrderDay >= indexStart && indexOrderDay <= indexEnd;
+        return indexOrderDay <= indexStart && indexOrderDay >= indexEnd;
     });
 }
 
@@ -95,11 +97,8 @@ export function getTimeLimitTodaySchedue(place) {
             typeDelivery[place.typeDelivery.name]
         ];
 
-    const orderDay = place.deadLine.date.realDate;
-    const orderDayObject = dayjs(orderDay.replaceAll("/", "-"), "DD-MM-YYYY");
-
-    const scheduleOfDay = todaysScheduleIs(scheduleList, orderDay);
-
+    const scheduleOfDay = todaysScheduleIs(scheduleList);
+    const orderDayObject = dayjs();
     const minHour = scheduleOfDay.hours.split(" - ")[0];
     const maxHour = scheduleOfDay.hours.split(" - ")[1];
     return {
