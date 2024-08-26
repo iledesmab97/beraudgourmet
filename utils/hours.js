@@ -80,9 +80,18 @@ export function todaysScheduleIs(scheduleList) {
     const dayName = weekDaysEN[dayNumber];
     const indexOrderDay = weekDaysEN.indexOf(dayName);
     return scheduleList.find((schedule) => {
-        const indexStart = weekDaysES.indexOf(schedule.days.split("-")[0]);
-        const indexEnd = weekDaysES.indexOf(schedule.days.split("-")[1]);
-        return indexOrderDay <= indexStart && indexOrderDay >= indexEnd;
+        const days = schedule.days.split("-");
+        const indexStart = weekDaysES.indexOf(days[0]);
+        const indexEnd = weekDaysES.indexOf(days[1]);
+
+        // Verifica si el día actual está dentro del rango de días
+        if (indexStart <= indexEnd) {
+            // Caso normal: El rango está dentro de la misma semana (e.g., "Lunes-Miércoles")
+            return indexOrderDay >= indexStart && indexOrderDay <= indexEnd;
+        } else {
+            // Caso especial: El rango cruza el final de la semana (e.g., "Viernes-Martes")
+            return indexOrderDay >= indexStart || indexOrderDay <= indexEnd;
+        }
     });
 }
 
@@ -99,6 +108,7 @@ export function getTimeLimitTodaySchedue(place) {
 
     const scheduleOfDay = todaysScheduleIs(scheduleList);
     const orderDayObject = dayjs();
+    console.log(scheduleOfDay);
     const minHour = scheduleOfDay.hours.split(" - ")[0];
     const maxHour = scheduleOfDay.hours.split(" - ")[1];
     return {

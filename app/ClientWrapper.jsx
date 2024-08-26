@@ -1,7 +1,7 @@
 // app/components/ClientWrapper.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { CurtainAnimation } from "@/components/LoadingComponets/CurtainAnimation"; // Ajusta la ruta según sea necesario
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,14 @@ import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+// Crea un contexto para el tema
+const LayoutContext = createContext();
+
+// Hook personalizado para usar el contexto
+export const useLayoutContext = () => {
+    return useContext(LayoutContext);
+};
 
 export default function ClientWrapper({ children }) {
     const { isLoaded, loadError } = useLoadScript({
@@ -24,6 +32,45 @@ export default function ClientWrapper({ children }) {
     const dispatch = useDispatch();
     const { stores, status, error } = useSelector((state) => state.storeList);
 
+    const requestLocationPermission = async () => {
+        // Solicitar permiso de ubicación mientras se muestra la animación
+        if (navigator.geolocation) {
+            try {
+                const result = await navigator.permissions.query({
+                    name: "geolocation",
+                });
+
+                if (result.state === "granted") {
+                    setLocationPermission("granted");
+                } else if (result.state === "prompt") {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            setLocationPermission("granted");
+                            setPosition(position.coords);
+                        },
+                        (error) => {
+                            console.error("Error al obtener ubicación:", error);
+                            setLocationPermission("denied");
+                        }
+                    );
+                } else {
+                    setLocationPermission("denied");
+                }
+            } catch (error) {
+                console.error(
+                    "Error al solicitar permiso de ubicación:",
+                    error
+                );
+                setLocationPermission("denied");
+            }
+        }
+    };
+
+    const handleButtonClick = () => {
+        setLoading(!loading); // Cambia el estado de loading
+        requestLocationPermission();
+    };
+
     //Get Sotres first an then ask for location permissions
 
     useEffect(() => {
@@ -32,42 +79,6 @@ export default function ClientWrapper({ children }) {
 
     useEffect(() => {
         if (!isLoaded) return;
-        const requestLocationPermission = async () => {
-            // Solicitar permiso de ubicación mientras se muestra la animación
-            if (navigator.geolocation) {
-                try {
-                    const result = await navigator.permissions.query({
-                        name: "geolocation",
-                    });
-
-                    if (result.state === "granted") {
-                        setLocationPermission("granted");
-                    } else if (result.state === "prompt") {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                setLocationPermission("granted");
-                                setPosition(position.coords);
-                            },
-                            (error) => {
-                                console.error(
-                                    "Error al obtener ubicación:",
-                                    error
-                                );
-                                setLocationPermission("denied");
-                            }
-                        );
-                    } else {
-                        setLocationPermission("denied");
-                    }
-                } catch (error) {
-                    console.error(
-                        "Error al solicitar permiso de ubicación:",
-                        error
-                    );
-                    setLocationPermission("denied");
-                }
-            }
-        };
 
         requestLocationPermission();
     }, [isLoaded]);
@@ -105,7 +116,7 @@ export default function ClientWrapper({ children }) {
             delivery = await geocoder.geocode({
                 location: { lat: lat, lng: lng },
             });
-            console.log(delivery);
+
             handleAddPlace({
                 inputsHome: {
                     type: {
@@ -157,7 +168,13 @@ export default function ClientWrapper({ children }) {
                     storesStatus={status}
                 />
             )}
-            {!loading && children}
+            {!loading && (
+                <LayoutContext.Provider
+                    value={{ loading, locationPermission, handleButtonClick }}
+                >
+                    {children}
+                </LayoutContext.Provider>
+            )}
             {/* Muestra un mensaje de estado del permiso de ubicación */}
             {locationPermission && <></>}
         </>

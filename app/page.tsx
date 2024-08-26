@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import {
-    AppBar,
-    Toolbar,
     Typography,
     Button,
     Container,
@@ -27,6 +25,7 @@ import { MapPin, PhoneIcon } from "lucide-react";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import ModalStoresDetail from "@/components/ModalStoresDetail/ModalStoresDetail";
 import useGetModal from "@/hooks/useGetModal";
+import { useTheme } from "@mui/material/styles";
 
 const IconWrapper = styled(Paper)(({ theme }) => ({
     display: "flex",
@@ -52,7 +51,6 @@ const items = [
     { icon: TakeoutDiningIcon, label: "BoxLunch" },
     { icon: CoffeeIcon, label: "CoffeeBreak" },
     { icon: FavoriteIcon, label: "Bodas" },
-    { icon: RoomServiceIcon, label: "Meseros" },
 ];
 
 const ServiceCard = styled(Card)(({ theme }) => ({
@@ -68,6 +66,7 @@ const ServiceCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function Home() {
+    const theme = useTheme();
     const { closerStore } = useSelector((state: any) => state.place);
     const { handleOpenModal } = useGetModal({ modalType: "place" });
     const pulse = keyframes`
@@ -199,7 +198,28 @@ export default function Home() {
                     <ModalStoresDetail />
                 </Box>
             ) : (
-                <></>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column", // Apila los elementos verticalmente
+                        alignItems: "center", // Centra el contenido horizontalmente
+                        justifyContent: "center",
+                        my: 4,
+                        mx: 2,
+                    }}
+                >
+                    <MapPin size={32} color="gray" />
+
+                    <Typography
+                        variant="body1" // Tamaño de texto estándar
+                        align="center" // Alinea el texto al centro
+                        sx={{ mt: 2, color: "text.primary" }} // Margen superior y color de texto primario
+                    >
+                        Algunas funciones del sitio web necesitan permisos de
+                        localización. Por favor, habilita la localización en la
+                        configuración de tu navegador.
+                    </Typography>
+                </Box>
             )}
             <Box
                 sx={{
@@ -352,7 +372,7 @@ export default function Home() {
                         borderRadius: 2,
                     }}
                 >
-                    <Grid container spacing={3} justifyContent="center">
+                    <Grid container spacing={12} justifyContent="center">
                         {items.map(({ icon: Icon, label }) => (
                             <Grid item key={label}>
                                 <Box
