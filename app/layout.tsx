@@ -26,11 +26,7 @@ export default function RootLayout({
                     <Providers>
                         <ProtectedRoute>
                             <Header />
-                            <ClientWrapper>
-                                {" "}
-                                {/* Envuelve los children con el componente cliente */}
-                                {children}
-                            </ClientWrapper>
+                            <ClientWrapper children={children}></ClientWrapper>
                             <Footer />
                             <WhatsappButton />
                         </ProtectedRoute>

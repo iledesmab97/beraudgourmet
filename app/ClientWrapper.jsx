@@ -10,7 +10,11 @@ import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
+const colors = {
+    primary: "#295386",
+    secondary: "#4e5762",
+    default: "#FFFFFF",
+};
 // Crea un contexto para el tema
 const LayoutContext = createContext();
 
@@ -19,20 +23,23 @@ export const useLayoutContext = () => {
     return useContext(LayoutContext);
 };
 
+const libraries = ["places"];
+
 export default function ClientWrapper({ children }) {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
-        libraries: ["places"],
+        libraries,
     });
+
     const { handleAddPlace } = useGetPlace();
-    const pathname = usePathname();
-    const [loading, setLoading] = useState(true);
     const [locationPermission, setLocationPermission] = useState(null);
     const [position, setPosition] = useState(null);
     const dispatch = useDispatch();
     const { stores, status, error } = useSelector((state) => state.storeList);
+    const [loading, setLoading] = useState(true);
 
     const requestLocationPermission = async () => {
+        if (loading) return;
         // Solicitar permiso de ubicación mientras se muestra la animación
         if (navigator.geolocation) {
             try {
@@ -66,22 +73,17 @@ export default function ClientWrapper({ children }) {
         }
     };
 
-    const handleButtonClick = () => {
-        setLoading(!loading); // Cambia el estado de loading
-        requestLocationPermission();
-    };
-
-    //Get Sotres first an then ask for location permissions
-
     useEffect(() => {
         dispatch(fetchStoreListThunk());
     }, [dispatch]);
 
     useEffect(() => {
-        if (!isLoaded) return;
-
+        if (status !== "succeeded")
+            if (sessionStorage.getItem("hasAnimated")) {
+                setLoading(false);
+            }
         requestLocationPermission();
-    }, [isLoaded]);
+    }, [status, loading]);
 
     useEffect(() => {
         if (!position) return;
@@ -143,40 +145,22 @@ export default function ClientWrapper({ children }) {
         });
     }, [position]);
 
-    useEffect(() => {
-        // Verifica si la animación ya se ejecutó para esta ruta
-        const hasAnimated = sessionStorage.getItem(`hasAnimated_${pathname}`);
-
-        if (!hasAnimated) {
-            setLoading(true);
-        } else {
-            setLoading(false);
-        }
-    }, [pathname]);
-
     const handleAnimationComplete = () => {
-        // Guardar en sessionStorage que la animación ya se ejecutó para esta ruta
-        sessionStorage.setItem(`hasAnimated_${pathname}`, "true");
         setLoading(false);
     };
 
     return (
         <>
-            {loading && (
+            {loading && !sessionStorage.getItem("hasAnimated") && (
                 <CurtainAnimation
                     onComplete={handleAnimationComplete}
                     storesStatus={status}
                 />
             )}
-            {!loading && (
-                <LayoutContext.Provider
-                    value={{ loading, locationPermission, handleButtonClick }}
-                >
-                    {children}
-                </LayoutContext.Provider>
-            )}
-            {/* Muestra un mensaje de estado del permiso de ubicación */}
-            {locationPermission && <></>}
+
+            <LayoutContext.Provider value={""}>
+                {children}
+            </LayoutContext.Provider>
         </>
     );
 }

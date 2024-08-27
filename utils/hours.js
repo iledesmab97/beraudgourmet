@@ -108,7 +108,6 @@ export function getTimeLimitTodaySchedue(place) {
 
     const scheduleOfDay = todaysScheduleIs(scheduleList);
     const orderDayObject = dayjs();
-    console.log(scheduleOfDay);
     const minHour = scheduleOfDay.hours.split(" - ")[0];
     const maxHour = scheduleOfDay.hours.split(" - ")[1];
     return {

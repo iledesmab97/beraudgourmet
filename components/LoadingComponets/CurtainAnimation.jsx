@@ -9,17 +9,22 @@ const colors = {
 
 export function CurtainAnimation({ onComplete, storesStatus }) {
     const [shouldAnimate, setShouldAnimate] = useState(false);
+    const [curtainsClosed, setCurtainsClosed] = useState(true); // Estado para mantener las cortinas cerradas si el status no es 'succeeded'
 
     useEffect(() => {
-        // Verificar si la animación ya se ejecutó en esta sesión
         const hasAnimated = sessionStorage.getItem("hasAnimated");
 
-        if (!hasAnimated) {
-            setShouldAnimate(true); // Ejecutar animación
+        if (storesStatus === "succeeded") {
+            if (!hasAnimated) {
+                setShouldAnimate(true); // Ejecutar la animación
+                setCurtainsClosed(false);
+            } else {
+                onComplete();
+            }
         } else {
-            onComplete(); // Saltar animación y ejecutar el callback directamente
+            setCurtainsClosed(true); // Mantener las cortinas cerradas si el status no es 'succeeded'
         }
-    }, [onComplete]);
+    }, [onComplete, storesStatus]);
 
     const curtainVariants = {
         initial: { scaleX: 1 },
@@ -30,83 +35,97 @@ export function CurtainAnimation({ onComplete, storesStatus }) {
     };
 
     const handleAnimationComplete = () => {
-        // Guardar en sessionStorage que la animación ya se ejecutó
         sessionStorage.setItem("hasAnimated", "true");
+        setCurtainsClosed(false); // Las cortinas deben abrirse después de la animación
         onComplete();
     };
 
-    if (!shouldAnimate) {
-        // Si no se debe animar, no renderizamos las cortinas
-        return null;
-    }
-
-    return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                height: "100vh",
-                width: "100%",
-                overflow: "hidden",
-                backgroundColor: colors.default,
-                zIndex: 9999,
-            }}
-        >
-            {storesStatus === "succeeded" ? (
-                <>
-                    {" "}
-                    <motion.div
-                        style={{
-                            position: "absolute",
-                            inset: 0,
-                            originX: 0,
-                            backgroundColor: colors.primary,
-                        }}
-                        variants={curtainVariants}
-                        initial="initial"
-                        animate="animate"
-                        onAnimationComplete={handleAnimationComplete} // Manejar el final de la animación
-                    />
-                    <motion.div
-                        style={{
-                            position: "absolute",
-                            inset: 0,
-                            originX: 1,
-                            backgroundColor: colors.primary,
-                        }}
-                        variants={curtainVariants}
-                        initial="initial"
-                        animate="animate"
-                        // No se necesita onAnimationComplete aquí
-                    />
-                </>
-            ) : (
-                <></>
-            )}
+    // Renderizar las cortinas cerradas en color azul si el status no es 'succeeded'
+    if (curtainsClosed) {
+        return (
             <div
                 style={{
-                    position: "absolute",
-                    inset: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    height: "100vh",
+                    width: "100%",
+                    overflow: "hidden",
+                    backgroundColor: colors.primary, // Azul cuando cerradas
+                    zIndex: 9999,
                 }}
             >
-                {" "}
-                <motion.h1
+                {/* Cortinas cerradas */}
+                <div
                     style={{
-                        fontSize: "2rem",
-                        fontWeight: "bold",
-                        color: colors.default,
+                        position: "absolute",
+                        inset: 0,
+                        backgroundColor: colors.primary, // Azul cuando cerradas
                     }}
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 0 }}
-                    transition={{ duration: 0.5, delay: 1 }}
-                >
-                    Cargando...
-                </motion.h1>
+                />
             </div>
-        </div>
-    );
+        );
+    }
+
+    // Renderizar animación solo si shouldAnimate es true
+    if (shouldAnimate) {
+        return (
+            <div
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    height: "100vh",
+                    width: "100%",
+                    overflow: "hidden",
+                    backgroundColor: colors.default,
+                    zIndex: 9999,
+                }}
+            >
+                <motion.div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        originX: 0,
+                        backgroundColor: colors.primary,
+                    }}
+                    variants={curtainVariants}
+                    initial="initial"
+                    animate="animate"
+                    onAnimationComplete={handleAnimationComplete}
+                />
+                <motion.div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        originX: 1,
+                        backgroundColor: colors.primary,
+                    }}
+                    variants={curtainVariants}
+                    initial="initial"
+                    animate="animate"
+                />
+                <div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <motion.h1
+                        style={{
+                            fontSize: "2rem",
+                            fontWeight: "bold",
+                            color: colors.default,
+                        }}
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 0 }}
+                        transition={{ duration: 0.5, delay: 1 }}
+                    ></motion.h1>
+                </div>
+            </div>
+        );
+    }
 }
