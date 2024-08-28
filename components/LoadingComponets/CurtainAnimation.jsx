@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { BaguetteSpinner } from "@/components/LoadingComponets/BaguetteSpinner";
 
 const colors = {
     primary: "#295386",
@@ -55,7 +56,7 @@ export function CurtainAnimation({ onComplete, storesStatus }) {
                     zIndex: 9999,
                 }}
             >
-                {/* Cortinas cerradas */}
+                <BaguetteSpinner loading={curtainsClosed} />
                 <div
                     style={{
                         position: "absolute",

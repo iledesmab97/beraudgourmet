@@ -2,12 +2,12 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { CurtainAnimation } from "@/components/LoadingComponets/CurtainAnimation"; // Ajusta la ruta según sea necesario
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStoreListThunk } from "@/stores/actions/stores";
 import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
+import MaintenanceComponent from "@/components/Maintenance/MaintenanceComponent";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const colors = {
@@ -30,10 +30,10 @@ export default function ClientWrapper({ children }) {
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries,
     });
-
     const { handleAddPlace } = useGetPlace();
     const [locationPermission, setLocationPermission] = useState(null);
     const [position, setPosition] = useState(null);
+    const [maintenance, setMaintenance] = useState(true);
     const dispatch = useDispatch();
     const { stores, status, error } = useSelector((state) => state.storeList);
     const [loading, setLoading] = useState(true);
@@ -157,10 +157,13 @@ export default function ClientWrapper({ children }) {
                     storesStatus={status}
                 />
             )}
-
-            <LayoutContext.Provider value={""}>
-                {children}
-            </LayoutContext.Provider>
+            {maintenance ? (
+                <MaintenanceComponent />
+            ) : (
+                <LayoutContext.Provider value={""}>
+                    {children}
+                </LayoutContext.Provider>
+            )}
         </>
     );
 }
