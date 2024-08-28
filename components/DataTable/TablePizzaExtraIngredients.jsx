@@ -246,7 +246,7 @@ function TablePizzaExtraIngredients() {
                             onClick={addNewExtraIngredient}
                             disabled={!extraIngredients}
                         >
-                            Nueva Pizza
+                            Nuevo Ingrediente
                         </Button>
                     ) : (
                         <IconButton

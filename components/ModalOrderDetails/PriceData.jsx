@@ -25,7 +25,8 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetOrderList from '@/hooks/useGetOrderList'
 
 import { extractElements, descriptionWithoutIngredientsOut, deepEqual, descriptionOrder, deepUnequal } from '@/utils/preparingData'
-import { changeOrderItems, getAllOrders } from '@/services/orderApi'
+import { changeOrderItems, getAllOrders, getItemsOrder } from '@/services/orderApi'
+import { getPizzaIngredients } from '@/services/productApi'
 
 function preparingDataForDescription(order) {
     const extra = {}
@@ -42,56 +43,21 @@ function preparingDataForDescription(order) {
     }
 }
 
-function PriceData({ orders }) {
+function PriceData({ order }) {
 
     const { products, totalProducts } = useGetProducts({type: 'pizzas'})
-    const [ordersState, setOrdersState] = useState(JSON.parse(JSON.stringify(orders)))
+    const [ordersState, setOrdersState] = useState(JSON.parse(JSON.stringify(order)))
     const [currentOrders, setCurrentorders] = useState(() => {
-        const { id, itemsxOrder, totalCost, totalCostByItems } = orders
-        const newItemsxOrder = itemsxOrder.map(currentItem => {
-            const { KindProduct } = currentItem
-            const { ingredientsOut, item } = extractElements(currentItem.description, KindProduct)
-            const { size, masaType, name } = item
-            const productFinded = totalProducts[KindProduct + 's'].find(p => p.name === name)
-            let cost
-            switch (KindProduct) {
-                case 'pizza': {
-                    cost = productFinded ? productFinded.price[size][masaType] : '0'
-                    break
-                }
-                case 'salad': {
-                    cost = productFinded ? productFinded.totalPriceByUnity : '0'
-                    break
-                }
-            }
-            return {
-                ...currentItem,
-                ingredientsOut,
-                item: {
-                    // ...currentItem,
-                    ...item,
-                    cost
-                }
-            }
-        })
+        const { id, totalCost, totalCostByItems } = order
         return {
             id,
-            itemsxOrder: newItemsxOrder,
+            itemsxOrder: [],
             totalCost,
             totalCostByItems
         }
     })
-    const [subElements, setSubElements] = useState(() => {
-        const listOrders = currentOrders.itemsxOrder.map(order => {
-            const { genericDataItem } = extractElements(order.description, order.KindProduct)
-            return {
-                ...order,
-                genericDataItem
-            }
-        })
-        return listOrders
-    })
-    const [openCollapse, setOpenCollapse] = useState(() => currentOrders.itemsxOrder.map(order => false))
+    const [subElements, setSubElements] = useState([])
+    const [openCollapse, setOpenCollapse] = useState([])
     const [editing, setEditing] = useState(false)
     const { extraIngredients } = useGetExtraIngredients()
     const [pizzaList, setPizzaList] = useState([])
@@ -100,8 +66,25 @@ function PriceData({ orders }) {
     const orderUpdated = useRef(null)
     const updateTotalSubElement = useRef(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleAddOrderList } = useGetOrderList()
+    const { orderList, handleAddOrderList } = useGetOrderList()
     const [loading, setLoading] = useState(false)
+    const [loadingItems, setLoadingItems] = useState(true)
+    const [errorItems, setErrorItems] = useState('')
+    const [openIngredients, setOpenIngredients] = useState(false)
+    const [productIngredients, setProductIngredients] = useState([])
+    const productName = useRef('')
+    const loadingIngredients = openIngredients && productIngredients.length === 0
+
+    // Buscar los items de la orde
+    useEffect(() => {
+        getItems()
+    }, [])
+
+    // Actualizar openCollapse
+    useEffect(() => {
+        if (subElements.length === openCollapse.length) return
+        setOpenCollapse(() => subElements.map(() => false))
+    }, [subElements])
 
     // Actualizar la información del estado subElements
     useEffect(() => {
@@ -127,9 +110,13 @@ function PriceData({ orders }) {
 
     // Actualizar los estados pizzaList y saladList
     useEffect(() => {
-        if (!totalProducts || !totalProducts.pizzas || !totalProducts.salads) return
-        setPizzaList(totalProducts.pizzas.map(pizza => pizza.name))
-        setSaladList(totalProducts.salads.map(salad => salad.name))
+        if (!totalProducts) return
+        if (totalProducts.pizzas) {
+            setPizzaList(totalProducts.pizzas.map(pizza => pizza.name))
+        }
+        if (totalProducts.salads) {
+            setSaladList(totalProducts.salads.map(salad => salad.name))
+        }
     }, [totalProducts])
 
     useEffect(() => {
@@ -172,6 +159,87 @@ function PriceData({ orders }) {
         })
         orderUpdated.current = null
     }, [subElements])
+
+    // Hacer búsqueda de los ingredientes del producto seleccionado
+    useEffect(() => {
+        let active = true
+        if (!loadingIngredients) {
+            return undefined
+        }
+
+        async function getProductIngredients() {
+            const ingredients = await getPizzaIngredients(productName.current)
+            if (active) {
+                setProductIngredients(ingredients.map(ingredient => ingredient.name))
+            }
+        }
+        getProductIngredients()
+
+        return () => {
+            active = false
+        }
+    }, [loadingIngredients])
+
+    // Borrar la lista de ingredientes cuando se cierra el Autocomplete
+    useEffect(() => {
+        if (!openIngredients) {
+            setProductIngredients([])
+        }
+    }, [openIngredients])
+
+    function handleChangeOpenIngredientsList(value, name) {
+        productName.current = name
+        setOpenIngredients(value)
+    }
+
+    async function getItems() {
+        const itemsxOrder = await getItemsOrder(currentOrders.id)
+        if (itemsxOrder.message) setErrorItems(itemsxOrder.message)
+        else {
+            const newItemsxOrder = itemsxOrder.map(currentItem => {
+                const { KindProductId } = currentItem
+                const dataExtractOfDescription = extractElements(currentItem.description, KindProductId)
+                const { ingredientsOut, item, genericDataItem } = dataExtractOfDescription
+                const extraIngredientsFromDescription = dataExtractOfDescription.extraIngredients
+                const { size, masaType, name } = item
+                const productFinded = totalProducts[KindProductId === 1 ? 'pizzas' : 'salads'].find(p => p.name === name)
+                let cost
+                switch (KindProductId) {
+                    case 1: {
+                        cost = productFinded ? productFinded.price[size][masaType] : '0'
+                        break
+                    }
+                    case 2: {
+                        cost = productFinded ? productFinded.totalPriceByUnity : '0'
+                        break
+                    }
+                }
+                const extraIngredientsData = extraIngredientsFromDescription.map(extra => extraIngredients[extra.name])
+                return {
+                    ...currentItem,
+                    ingredientsOut,
+                    extraIngredients: extraIngredientsFromDescription.map((extra, index) => ({
+                        ...extra,
+                        costPerUnit: extraIngredientsData[index].totalPrice,
+                        cost: String(extraIngredientsData[index].totalPrice * extra.quantity)
+                    })),
+                    item: {
+                        // ...currentItem,
+                        ...item,
+                        cost
+                    },
+                    genericDataItem
+                }
+            })
+            const newCurrentOrder = {
+                ...currentOrders,
+                itemsxOrder: newItemsxOrder
+            }
+            setCurrentorders(newCurrentOrder)
+            setSubElements(newItemsxOrder)
+        }
+        setLoadingItems(false)
+    }
 
     function handleChangeCollapse(indexCollapse) {
         const newOpenCollapse = openCollapse.map((element, index) => index === indexCollapse ? !element : element )
@@ -469,7 +537,7 @@ function PriceData({ orders }) {
             text = response.message
             status = 'error'
         } else {
-            text = response
+            text = 'Data updated successfully'
             status = 'success'
         }
         handleUpdateAlertMessage({
@@ -478,24 +546,26 @@ function PriceData({ orders }) {
             status
         })
         if (!response.message) {
-            getAllOrders().then(data => {
+            getAllOrders({ p: orderList.currentPage, items: orderList.itemsxPage}).then(data => {
                 handleAddOrderList(data)                
             })
             const newOrder = {
                 ...orderToCompare,
                 ...currentOrdersToCompare
             }
-            setOrdersState(newOrder)
+            setOrdersState(response)
+            setLoading(false)
+            return 'Data updated successfully'
         }
         setLoading(false)
-        return response
+        return {message: response.message}
     }
 
     function findOptions(itemOrder, option, extraOption) {
-        const { KindProduct } = itemOrder
+        const { KindProductId } = itemOrder
         let optionList = []
-        switch (KindProduct) {
-            case 'pizza': {
+        switch (KindProductId) {
+            case 1: {
                 const pizzaFinded = products.find(pizza => pizza.name === itemOrder.item.name)
                 switch (option) {
                     case 'size': {
@@ -506,13 +576,10 @@ function PriceData({ orders }) {
                         optionList = Object.keys(pizzaFinded.price[extraOption])
                         break
                     }
-                    case 'ingredientsOut': {
-                        optionList = pizzaFinded.ingredients
-                    }
                 }
                 break
             }
-            case 'salad': {
+            case 2: {
                 const saladFinded = totalProducts['salads'].find(salad => salad.name === itemOrder.item.name)
                 optionList = saladFinded.ingredients
                 break
@@ -524,13 +591,13 @@ function PriceData({ orders }) {
         return optionList
     }
 
-    function findList(itemOrder) {
-        const { KindProduct } = itemOrder
-        switch (KindProduct) {
-            case 'pizza': {
+    function findProductList(itemOrder) {
+        const { KindProductId } = itemOrder
+        switch (KindProductId) {
+            case 1: {
                 return pizzaList
             }
-            case 'salad': {
+            case 2: {
                 return saladList
             }
         }
@@ -543,12 +610,16 @@ function PriceData({ orders }) {
             }}
         >
             {
-                currentOrders.itemsxOrder && (
-                    // subElements && (
+                loadingItems && <h1>Loading...</h1>
+            }
+            {
+                errorItems && <h1>Error: {errorItems}</h1>
+            }
+            {
+                (currentOrders.itemsxOrder.length && subElements.length) ? (
                     <>
                         {
                             currentOrders.itemsxOrder.map((order, orderIndex) => (
-                                // subElements.map((order, orderIndex) => (
                                 <Grid container key={`order(${orderIndex})`}>
                                     <Grid
                                         item
@@ -633,7 +704,7 @@ function PriceData({ orders }) {
                                                                                 <Autocomplete
                                                                                     value={order.item.name}
                                                                                     onChange={(event, newItem) => { handleChangeItem({newItem, orderIndex }) }}
-                                                                                    options={findList(order)}
+                                                                                    options={findProductList(order)}
                                                                                     renderInput={(params) => {
                                                                                         return <TextField
                                                                                             variant='standard'
@@ -650,7 +721,7 @@ function PriceData({ orders }) {
                                                                                     }}
                                                                                 />
                                                                                 {
-                                                                                    order.KindProduct === 'pizza' ? (
+                                                                                    order.KindProductId === 1 ? (
                                                                                         <>
                                                                                             {'('}
                                                                                             <Autocomplete
@@ -673,6 +744,7 @@ function PriceData({ orders }) {
                                                                                                 }}
                                                                                             />
                                                                                             {'cm),'}
+                                                                                            
                                                                                             <Autocomplete
                                                                                                 value={order.item.masaType}
                                                                                                 onChange={(event, newMass) => { handleChangeMass({ newMass, orderIndex }) }}
@@ -802,7 +874,6 @@ function PriceData({ orders }) {
                                                                                             </IconButton>
                                                                                         </Box>
                                                                                     </Box>
-
                                                                                 ) : (
                                                                                     <Typography
                                                                                         sx={{
@@ -860,14 +931,18 @@ function PriceData({ orders }) {
                                                                                 editing ? (
                                                                                     <>
                                                                                         <Autocomplete
+                                                                                            open={openIngredients}
+                                                                                            onOpen={() => handleChangeOpenIngredientsList(true, order.item.name)}
+                                                                                            onClose={() => handleChangeOpenIngredientsList(false, order.item.name)}
                                                                                             value={ingredient}
                                                                                             onChange={( event, newIngredientOut ) => { handleChangeIngredientOut({ orderIndex, ingredientIndex, newIngredientOut }) } }
-                                                                                            options={findOptions(order, 'ingredientsOut')}
+                                                                                            options={productIngredients}
                                                                                             getOptionDisabled={(option) => listIngredintsOut.includes(option)}
+                                                                                            loading={loadingIngredients}
                                                                                             renderInput={(params) => {
                                                                                                 return <TextField
-                                                                                                    variant='standard'
                                                                                                     {...params}
+                                                                                                    variant='standard'
                                                                                                 />
                                                                                             }}
                                                                                             sx={{
@@ -1063,7 +1138,7 @@ function PriceData({ orders }) {
                         </List>
 
                     </>
-                )
+                ) : null
             }
             
             <Box

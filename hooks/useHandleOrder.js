@@ -1,152 +1,165 @@
-import { useState, useEffect, useRef, useMemo } from "react"
-import useGetModal from '@/hooks/useGetModal'
-import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useState, useEffect, useRef, useMemo } from "react";
+import useGetModal from "@/hooks/useGetModal";
+import useGetExtraIngredients from "@/hooks/useGetExtraIngredients";
 
-function initialInput(product) {
+function initialInput(productDetails) {
     const genericInput = {
-        ingredientsModal: product?.ingredientsModal ? product.ingredientsModal : [],
-        extra: product?.extra ? product.extra : {},
-        quantity: product?.quantity ? product.quantity : 1,
-    }
-    const extraInput = {}
-    if (product.productType === 'pizza') {
-        extraInput.size = product.size ? product.size : '30cm',
-        extraInput.mass = product?.mass ? product.mass : Object.keys(product.price['30cm'])[0]
+        ingredientsModal: productDetails?.ingredientsModal
+            ? productDetails.ingredientsModal
+            : [],
+        extra: productDetails?.extra ? productDetails.extra : {},
+        quantity: productDetails?.quantity ? productDetails.quantity : 1,
+    };
+    const extraInput = {};
+    if (productDetails.productType === "pizza") {
+        (extraInput.size = productDetails.size ? productDetails.size : "30cm"),
+            (extraInput.mass = productDetails?.mass
+                ? productDetails.mass
+                : Object.keys(productDetails.price["30cm"])[0]);
     }
 
     const totalInput = {
         ...genericInput,
-        ...extraInput
-    }
+        ...extraInput,
+    };
 
-    return totalInput
+    return totalInput;
 }
 
-export default function useHandleOrder({ product }) {
-
-    const [currentProduct, setCurrentProduct] = useState(product)
-    const { extraIngredients } = useGetExtraIngredients()
-    const [inputs, setInputs] = useState(initialInput(product))
-    const { handleUpdateModalOrder} = useGetModal({modalType:'order'})
+export default function useHandleOrder({ productDetails }) {
+    const [currentProduct, setCurrentProduct] = useState(productDetails);
+    const { extraIngredients } = useGetExtraIngredients();
+    const [inputs, setInputs] = useState({});
+    const { handleUpdateModalOrder } = useGetModal({ modalType: "order" });
 
     const totalPrice = useMemo(() => {
-        let price
-        if (product.productType === 'salad') {
-            price = product.totalPriceByUnity
+        if (!productDetails) return 0;
+        let price;
+        if (productDetails.productType === "salad") {
+            price = productDetails.totalPriceByUnity;
         } else {
-            price = product.price[inputs.size][inputs.mass]
+            price =
+                productDetails.price[inputs.size][inputs.mass]
+                    .totalPriceByUnity;
         }
         const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
-            const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0
-            return acc + quantity * extraIngredients[cur].totalPrice
-        }, 0)
-        const pizzaWithExtras = Number(price) + totalExtras
-        const totalPrice = inputs.quantity * (pizzaWithExtras)
-        return Math.ceil(totalPrice)
-    }, [inputs])
+            const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0;
+            return acc + quantity * extraIngredients[cur].totalPrice;
+        }, 0);
+        const pizzaWithExtras = Number(price) + totalExtras;
+        const totalPrice = inputs.quantity * pizzaWithExtras;
+        return Math.ceil(totalPrice);
+    }, [inputs]);
 
-    const updateValue = useRef(null)
+    const updateValue = useRef(null);
 
     function handleCurrentProduct(newProduct) {
-        setCurrentProduct(newProduct)
+        setCurrentProduct(newProduct);
     }
 
     // Actualizar el currentProduct para asignarle las características específicas del pedido
     useEffect(() => {
-        const newCurrentProduct = {
-            ...currentProduct,
+        if (!productDetails) return;
+        const newInput = initialInput(productDetails);
+        setInputs(newInput);
+        handleCurrentProduct({
+            ...productDetails,
             size: inputs.size,
             quantity: inputs.quantity,
             mass: inputs.mass,
             ingredientsModal: inputs.ingredientsModal,
             extra: inputs.extra,
-            totalPrice
-        }
-        handleCurrentProduct(newCurrentProduct)
-    }, [])
+            totalPrice,
+        });
+    }, [productDetails]);
 
     // Actualizar las especificaciones del pedido en el global storage cuando se cierra el modal ChooseProduct
+    useEffect(() => {
+        if (!currentProduct) return;
+        handleUpdateModalOrder(currentProduct);
+    }, [currentProduct]);
 
     useEffect(() => {
-        handleUpdateModalOrder(currentProduct)
-    }, [currentProduct])
-
-    useEffect(() => {
-        if (!updateValue.current) return
-        const { name } = updateValue.current
+        if (!updateValue.current) return;
+        const { name } = updateValue.current;
         const newCurrentProduct = {
             ...currentProduct,
             [name]: inputs[name],
-            totalPrice
-        }
-        handleCurrentProduct(newCurrentProduct)
-    }, [inputs])
+            totalPrice,
+        };
+        handleCurrentProduct(newCurrentProduct);
+    }, [inputs]);
 
-    function handleSize (event) {
-        setInputs(prevInputs => ({
+    function handleSize(event) {
+        setInputs((prevInputs) => ({
             ...prevInputs,
-            size: event.target.value
-        }))
-        updateValue.current = {name: 'size'}
+            size: event.target.value,
+        }));
+        updateValue.current = { name: "size" };
     }
 
-    function handleQuantity (event) {
-        const operation = event.target.name
-        setInputs(prevInput => {
-            let newValue
-            if (operation === '+') {
-              newValue = prevInput.quantity+=1
-            } else if (operation === '-' && inputs.quantity > 1) {
-              newValue = prevInput.quantity-=1
+    function handleQuantity(event) {
+        const operation = event.target.name;
+        setInputs((prevInput) => {
+            let newValue;
+            if (operation === "+") {
+                newValue = prevInput.quantity += 1;
+            } else if (operation === "-" && inputs.quantity > 1) {
+                newValue = prevInput.quantity -= 1;
             } else {
-                newValue = prevInput.quantity
+                newValue = prevInput.quantity;
             }
             return {
                 ...prevInput,
-                quantity: newValue
-            }
-        })
-        updateValue.current = {name: 'quantity'}
+                quantity: newValue,
+            };
+        });
+        updateValue.current = { name: "quantity" };
     }
 
-    function handleMass (event) {
-        setInputs(prevInput => ({
+    function handleMass(event) {
+        setInputs((prevInput) => ({
             ...prevInput,
-            mass: event.target.value
-        }))
-        updateValue.current = {name: 'mass'}
+            mass: event.target.value,
+        }));
+        updateValue.current = { name: "mass" };
     }
 
-    function handleIngredientsModal (event) {
-        const ingredient = event.target.labels[0].textContent
-        const isChecked = event.target.checked
-        const newInput = structuredClone(inputs)
-        const index = newInput.ingredientsModal.indexOf(ingredient)
+    function handleIngredientsModal(event) {
+        const ingredient = event.target.labels[0].textContent;
+        const isChecked = event.target.checked;
+        const newInput = structuredClone(inputs);
+        const index = newInput.ingredientsModal.indexOf(ingredient);
         if (isChecked) {
-            if (index === -1) return
-            newInput.ingredientsModal.splice(index, 1)
+            if (index === -1) return;
+            newInput.ingredientsModal.splice(index, 1);
         } else {
-            if (index !== -1) return
-            newInput.ingredientsModal.push(ingredient)
+            if (index !== -1) return;
+            newInput.ingredientsModal.push(ingredient);
         }
-        setInputs(newInput)
-        updateValue.current = {name: 'ingredientsModal'}
+        setInputs(newInput);
+        updateValue.current = { name: "ingredientsModal" };
     }
 
-    function handleExtra ({ingredient, operation}) {
-        const extraName = ingredient.name
-        const newInputs = structuredClone(inputs)
-        if (operation === '+') {
-            newInputs.extra[extraName] = newInputs.extra[extraName] ? newInputs.extra[extraName] +=1 : 1
-        } else if (operation === '-') {
+    function handleExtra({ ingredient, operation }) {
+        const extraName = ingredient.name;
+        const newInputs = structuredClone(inputs);
+        if (operation === "+") {
+            newInputs.extra[extraName] = newInputs.extra[extraName]
+                ? (newInputs.extra[extraName] += 1)
+                : 1;
+        } else if (operation === "-") {
             if (newInputs.extra[extraName] && newInputs.extra[extraName] >= 2) {
-                newInputs.extra[extraName] -=1
-            } else if (newInputs.extra[extraName] && newInputs.extra[extraName] === 1) {
-                delete newInputs.extra[extraName]
-            } else return
-        } else return
-        setInputs(newInputs)
-        updateValue.current = {name: 'extra'}
+                newInputs.extra[extraName] -= 1;
+            } else if (
+                newInputs.extra[extraName] &&
+                newInputs.extra[extraName] === 1
+            ) {
+                delete newInputs.extra[extraName];
+            } else return;
+        } else return;
+        setInputs(newInputs);
+        updateValue.current = { name: "extra" };
     }
 
     return {
@@ -158,5 +171,5 @@ export default function useHandleOrder({ product }) {
         handleMass,
         handleIngredientsModal,
         handleExtra,
-    }
+    };
 }

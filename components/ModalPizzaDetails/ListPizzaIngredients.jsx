@@ -15,11 +15,9 @@ import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import Typography from '@mui/material/Typography'
 
-import { useState } from 'react'
-import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import useGetProducts from '@/hooks/useGetProducts'
+import { useState, useEffect } from 'react'
+import { useSelector } from "react-redux";
 
-import { updatePizza } from '@/services/productApi'
 import { isSameArray } from '@/utils/preparingData'
 
 function validation(listIngredients) {
@@ -38,15 +36,29 @@ function errorStyles(error) {
     }
 }
 
-function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInput, property, pizzaNew, errorsIngredients, handleInputsChecked, ...props }) {
+function ListPizzaIngredients({ pizza, updatePizzaProperty, id, handleChangeInput, property, pizzaNew, errorsIngredients, handleInputsChecked, ...props }) {
 
-    const [ingredientsList, setIngredientsList] = useState(ingredients)
-    const [currentIngredientList, setCurrentIngredientList] = useState(ingredientsList)
+    const allIngredientsObject = useSelector((state) => state.extraIngredients);
+    const [allIngredients, setAllIngredients] = useState([])
+    const [currentIngredientList, setCurrentIngredientList] = useState(pizza.ingredients)
     const [edit, setEdit] = useState(pizzaNew || false)
-    const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
+
+    useEffect(() => {
+        const list = []
+        for (let ingredient in allIngredientsObject) {
+            const { id, name, price, totalPrice, available } = allIngredientsObject[ingredient]
+            list.push({
+                id,
+                name,
+                price,
+                totalPrice,
+                available
+            })
+        }
+        setAllIngredients(list)
+    }, [allIngredientsObject])
 
     function handleChange(event) {
         const {name, value} = event.target
@@ -71,7 +83,7 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
             setErrors(newErrors)
             return setLoading(false)    
         }
-        if (!isSameArray(currentIngredientList, ingredientsList) && !currentIngredientList.includes('')) {
+        if (!isSameArray(currentIngredientList, pizza.ingredients) && !currentIngredientList.includes('')) {
             if (!pizzaNew) await saveIngredients()    
             handleChangeInput({value: currentIngredientList, property})
             handleInputsChecked(property, true)
@@ -87,34 +99,12 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
     }
 
     async function saveIngredients() {
-        console.log('Guardando información...')  
-        const response = await updatePizza( id, {
+        const newProduct = {
+            id: id,
             property: 'ingredients',
             value: currentIngredientList
-        })
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
-        } else {
-            text = response
-            status = 'success'
-        }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
-        })
-        if (!response.message) {
-            setIngredientsList(currentIngredientList)
-            handleUpdateProduct({
-                type: 'pizzas',
-                id: id,
-                property: 'ingredients',
-                value: currentIngredientList
-            })
-            console.log('Datos guardados exitosamente')
-        }
+        };
+        updatePizzaProperty(newProduct)
     }
 
     return (
@@ -128,84 +118,80 @@ function ListPizzaIngredients({ ingredients, id, allIngredients, handleChangeInp
             }}
         >
             <Typography variant='title' >Ingredientes de la Pizza</Typography>
-            {
-                allIngredients.length ? (
-                    <List
-                        sx={{
-                            width: 'fit-content',
-                            position: 'relative'
-                        }}
-                    >
-                        {
-                            currentIngredientList.map((currentIngredient, index) => (
-                                <ListItem
-                                    key={`currentIngredientList:${currentIngredient}(${index})`}
-                                >
-                                    <ListItemText
-                                        primary={
-                                            <>
-                                                <InputLabel>{`Nº ${index+1}`}</InputLabel>
-                                                <Box
-                                                    sx={{
-                                                        width: 'fit-content',
-                                                        position: 'relative'
+            <List
+                sx={{
+                    width: 'fit-content',
+                    position: 'relative'
+                }}
+            >
+                {
+                    currentIngredientList.map((currentIngredient, index) => (
+                        <ListItem
+                            key={`currentIngredientList:${currentIngredient}(${index})`}
+                        >
+                            <ListItemText
+                                primary={
+                                    <>
+                                        <InputLabel>{`Nº ${index+1}`}</InputLabel>
+                                        <Box
+                                            sx={{
+                                                width: 'fit-content',
+                                                position: 'relative'
+                                            }}
+                                        >
+                                            <FormControl error={errors.includes(index)}>
+                                                <Select
+                                                    disabled={!edit}
+                                                    name={String(index)}
+                                                    value={currentIngredient}
+                                                    onChange={handleChange}
+                                                    displayEmpty={true}
+                                                    renderValue={ function(value) {
+                                                        if (!value) return 'Agregar...'
+                                                        return value
                                                     }}
+                                                    {...props}
                                                 >
-                                                    <FormControl error={errors.includes(index)}>
-                                                        <Select
-                                                            disabled={!edit}
-                                                            name={String(index)}
-                                                            value={currentIngredient}
-                                                            onChange={handleChange}
-                                                            displayEmpty={true}
-                                                            renderValue={ function(value) {
-                                                                if (!value) return 'Agregar...'
-                                                                return value
-                                                            }}
-                                                            {...props}
-                                                        >
-                                                            {
-                                                                allIngredients.map(ingredientOption => (
-                                                                    <MenuItem
-                                                                        key={`allIngredients:${ingredientOption}`}
-                                                                        value={ingredientOption}
-                                                                        disabled={currentIngredientList.includes(ingredientOption)}
-                                                                    >
-                                                                        {ingredientOption}
-                                                                    </MenuItem>
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                        {
-                                                            errors.includes(index) ? <FormHelperText>Agrega un ingrediente</FormHelperText> : null
-                                                        }
-                                                    </FormControl>
                                                     {
-                                                        edit ? (
-                                                            <IconButton
-                                                                name={index}
-                                                                sx={{
-                                                                    position: 'absolute',
-                                                                    top: '50%',
-                                                                    left: '100%',
-                                                                    transform: 'translateY(-50%)'
-                                                                }}
-                                                                onClick={() => {removeIngredient(index)}}
+                                                        allIngredients.map(ingredient => (
+                                                            <MenuItem
+                                                                key={`allIngredients:${ingredient.name}`}
+                                                                value={ingredient.name}
+                                                                disabled={currentIngredientList.includes(ingredient.name)}
                                                             >
-                                                                <DeleteForeverIcon />
-                                                            </IconButton>
-                                                        ) : null
+                                                                {ingredient.name}
+                                                            </MenuItem>
+                                                        ))
                                                     }
-                                                </Box>
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                            ))
-                        }
-                    </List>
-                ) : null
-            }
+                                                </Select>
+                                                {
+                                                    errors.includes(index) ? <FormHelperText>Agrega un ingrediente</FormHelperText> : null
+                                                }
+                                            </FormControl>
+                                            {
+                                                edit ? (
+                                                    <IconButton
+                                                        name={index}
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: '50%',
+                                                            left: '100%',
+                                                            transform: 'translateY(-50%)'
+                                                        }}
+                                                        onClick={() => {removeIngredient(index)}}
+                                                    >
+                                                        <DeleteForeverIcon />
+                                                    </IconButton>
+                                                ) : null
+                                            }
+                                        </Box>
+                                    </>
+                                }
+                            />
+                        </ListItem>
+                    ))
+                }
+            </List>
             {
                 edit ? (
                     <Box>

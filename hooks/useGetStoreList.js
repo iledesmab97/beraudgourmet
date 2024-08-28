@@ -3,7 +3,7 @@ import { addStoreList } from '@/stores/storeList/slice'
 
 function sortStores(storeListToAdd, storelist = {}) {
     // Creo una copia del storeList actual
-    const newStoreList = {...storelist}
+    const newStoreList = JSON.parse(JSON.stringify(storelist))
     // Itero sobre cada elemento de la lista de stores que deseo ordenar
     storeListToAdd.forEach(store => {
         // Extraigo la propiedad city de cada store de la lista

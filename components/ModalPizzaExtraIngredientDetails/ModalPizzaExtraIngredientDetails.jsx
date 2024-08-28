@@ -253,7 +253,7 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             pizzaNew={newExtraIngredient}
                             handleChangeInput={handleChangeInput}
                             handleInputsChecked={handleInputsChecked}
-                            errors={missingData.name}
+                            errors={missingData?.name}
                             sx={{
                                 width: '160px'
                             }}
@@ -278,7 +278,7 @@ function ModalPizzaExtraIngredientDetails({ openExtraIngredientDetails, handleOp
                             pizzaNew={newExtraIngredient}
                             handleChangeInput={handleChangeInput}
                             handleInputsChecked={handleInputsChecked}
-                            errors={missingData.cost}
+                            errors={missingData?.cost}
                             sx={{
                                 width: '160px'
                             }}

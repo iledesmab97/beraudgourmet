@@ -3,24 +3,13 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import Input from '@mui/material/Input'
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import Collapse from '@mui/material/Collapse'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 
@@ -35,7 +24,6 @@ import useGetAlertMessage from '@/hooks/useGetAlertMessage'
 import useGetProducts from '@/hooks/useGetProducts'
 
 import { getAllMasses, getAllSizes, addNewSize, deleteSize, addNewMass, deleteMass } from '@/services/pizzaCharacteristicsApi'
-import { updateCharacteristicsPizza } from '@/services/productApi'
 import { deepEqual } from '@/utils/preparingData'
 
 function validation(input) {
@@ -65,9 +53,9 @@ function errorStyles(error) {
     }
 }
 
-function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, errors, pizzaId, handleInputsChecked }) {
+function PizzaCharacteristics({ pizza, updatePizzaProperty, handleChangeInput, pizzaNew, property, errors, pizzaId, handleInputsChecked }) {
 
-    const [currentSizesList, setCurrentSizesList] = useState(Object.entries(sizes))
+    const [currentSizesList, setCurrentSizesList] = useState(Object.entries(pizza.price))
     const [arrayOpenColapse, setArrayOpencopase] = useState(currentSizesList.map(() => pizzaNew || false ))
     const [edit, setEdit] = useState(pizzaNew || false)
     const [massesList, setMassesList] = useState([])
@@ -79,12 +67,14 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
     const [errorsCurrentSizesList, setErrorsCurrentSizesList] = useState({})
     const [loading, setLoading] = useState(false)
     const { handleUpdateAlertMessage } = useGetAlertMessage()
-    const { handleUpdateProduct } = useGetProducts({type:'pizzas'})
     const selectSize = useRef()
 
     useEffect(() => {
-        getMassesList()
-        getSizesList()
+        async function getCharacteristics() {
+            await getMassesList()
+            await getSizesList()
+        }
+        getCharacteristics()
     }, [])
 
     async function getMassesList() {
@@ -117,7 +107,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                 handleChangeInput({value: Object.fromEntries(currentSizesList), property})
                 handleInputsChecked(property, true)
             } else {
-                if (!deepEqual(sizes, Object.fromEntries(currentSizesList))) {
+                if (!deepEqual(pizza.price, Object.fromEntries(currentSizesList))) {
                     const listNewCharacteristicsOfPizza = []
                     const currentSizesListObject = Object.fromEntries(currentSizesList)
                     for (let size in currentSizesListObject) {
@@ -133,29 +123,11 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                         }
                     }
                     console.log('Actualizando datos...')
-                    const response = await updateCharacteristicsPizza(pizzaId, listNewCharacteristicsOfPizza)
-                    let text, status
-                    if (response.message) {
-                        text = response.message
-                        status = 'error'
-                    } else {
-                        text = response
-                        status = 'success'
-                    }
-                    handleUpdateAlertMessage({
-                        checked: true,
-                        text,
-                        status
+                    updatePizzaProperty({
+                        id: pizzaId,
+                        property: 'characteristics',
+                        value: listNewCharacteristicsOfPizza
                     })
-                    if (!response.message) {
-                        handleUpdateProduct({
-                            type: 'pizzas',
-                            id: pizzaId,
-                            property: 'price',
-                            value: currentSizesListObject
-                        })
-                        console.log('Datos actualizados')
-                    }
                 }
             }
         }
@@ -186,14 +158,6 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
         newSizesList.push(inputSize)
         await setSizesList(newSizesList)
         handleChangeSize(inputSize, indexSize)
-        // if (!response.message) {
-        //     handleUpdateProduct({
-        //         type: 'pizzas',
-        //         id: id,
-        //         property: 'ingredients',
-        //         value: currentIngredientList
-        //     })
-        // }
     }
 
     async function addMass(indexSize, indexMass) {
@@ -336,7 +300,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             status
         })
 
-        handleChangeSize(Object.entries(sizes)[indexSize][0], indexSize)
+        handleChangeSize(Object.entries(pizza.price)[indexSize][0], indexSize)
         
         const newSizesList = [...sizesList].filter(sizeOfList => sizeOfList !== size)
         setSizesList(newSizesList)
@@ -358,7 +322,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
             status
         })
 
-        handleChangeMass(Object.keys(Object.entries(sizes)[indexSize][1])[indexMass], indexSize, indexMass)
+        handleChangeMass(Object.keys(Object.entries(pizza.price)[indexSize][1])[indexMass], indexSize, indexMass)
         
         const newMassesList = [...massesList].filter(massOfList => massOfList !== mass)
         setMassesList(newMassesList)
@@ -633,7 +597,7 @@ function PizzaCharacteristics({ sizes, handleChangeInput, pizzaNew, property, er
                                                                 <TextField
                                                                     // variant="standard"
                                                                     size='small'
-                                                                    value={cost}
+                                                                    value={cost.price}
                                                                     onChange={(event) => {handleChangeCost(event.target.value, indexSize, mass)}}
                                                                     disabled={!edit}
                                                                     // error={Boolean(errors.price ? errors.price[size][mass] : false)}

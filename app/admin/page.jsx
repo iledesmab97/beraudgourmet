@@ -4,31 +4,22 @@ import ToolLateralBar from '@/components/ToolLateralBar/ToolLateralBar'
 import DataPanel from '@/components/DataPanel/DataPanel'
 import AlertMessage from '@/components/AlertMessage/AlertMessage'
 import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary'
-import Ups from '@/components/Ups/Ups'
 
 import Container from '@mui/material/Container'
-import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 
 import MenuIcon from '@mui/icons-material/Menu'
 
 import { useState, useEffect } from 'react'
-import useGetUser from '@/hooks/useGetUser';
-import useGetProducts from '@/hooks/useGetProducts'
-import useGetStoreList from '@/hooks/useGetStoreList'
-import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
-import useGetOrderList from '@/hooks/useGetOrderList'
 import { useLoadScript } from "@react-google-maps/api"
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import useLoadData from '@/hooks/useLoadData'
 
-import { lookingForUserLoged } from '@/services/userApi'
-import { getPizzasWithCosts, getExtraIngredients, getSalads } from '@/services/productApi'
-import { getAllStoresWithSchedules } from '@/services/storeApi'
-import { getAllOrders } from '@/services/orderApi'
+import { useDispatch } from 'react-redux'
+import { addProductsListThunk } from '@/stores/actions/products'
 
 import styles from './page.module.css'
 
@@ -37,11 +28,6 @@ const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 function AdminPlace() {
 
     const [ toolSelected, setToolSelected] = useState('Orders')
-    const { handleAddUser } = useGetUser()
-    const { products, handleAddProductsList } = useGetProducts({type:'pizzas'})
-    const { storeList, handleAddStoreList } = useGetStoreList()
-    const { extraIngredients, handleAddExtraIngredinetsList } = useGetExtraIngredients()
-    const { orderList, handleAddOrderList } = useGetOrderList()
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries: ['places'],
@@ -50,60 +36,27 @@ function AdminPlace() {
     const matches = useMediaQuery(theme.breakpoints.down('md'))
     const [totalMatches, setTotalMatches] = useState('null')
     const [openToolLateralBar, setOpenToolLateralBar] = useState(false)
+    const { loadData } = useLoadData()
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        lookingForUserLoged()
-            .then( userLoged => {
-                if (!userLoged) return
-                handleAddUser(userLoged)
-            })
-            .catch(error => alert(error.message))
-        if (!(products && products.pizzas)) {
-            getPizzasWithCosts().then(data => {
-                handleAddProductsList({
-                type: 'pizzas',
-                products: data
-                })
-            })
-        }
-        if (!(products && products.salads)) {
-            getSalads().then(data => {
-                handleAddProductsList({
-                type: 'salads',
-                products: data
-                })
-            })
-        }
-        if (!(storeList && Object.keys(storeList).length)) {
-            getAllStoresWithSchedules().then(storeList => {
-                handleAddStoreList(storeList)
-            })
-        }
-        if (!orderList.length) {
-            getAllOrders()
-                .then(data => {
-                    if (data.message) throw new Error(data.message)
-                    handleAddOrderList(data)
-                })
-                .catch(error => alert(error.message))
-        }
-        if (!Object.keys(extraIngredients).length) {
-            getExtraIngredients().then(data => {
-                handleAddExtraIngredinetsList({ extraIngredientsList: data })
-            })
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        loadData('admin')
     }, [])
+
+
+    useEffect(() => {
+        dispatch(addProductsListThunk());
+    }, [dispatch]);
 
     useEffect(() => {
         setTotalMatches(String(matches))
     }, [matches])
 
-    function handleToolSelected(newTool: string) {
+    function handleToolSelected(newTool) {
         setToolSelected(newTool)
     }
 
-    function handleOpenToolLateralBar(value: boolean) {
+    function handleOpenToolLateralBar(value) {
         setOpenToolLateralBar(value)
     }
 

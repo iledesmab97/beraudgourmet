@@ -9,9 +9,6 @@ import OrderData from '@/components/ModalOrderDetails/OrderData'
 import OtherData from '@/components/ModalOrderDetails/OtherData'
 import PriceData from '@/components/ModalOrderDetails/PriceData'
 
-import styles from './ModalOrderDetails.module.css'
-import dayjs from 'dayjs'
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -76,19 +73,14 @@ function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrde
                     <Divider sx={{ width: '100%'}} />
 
                     <PriceData
-                        orders={currentOrder}
+                        order={currentOrder}
                     />
                     <Divider sx={{ width: '100%'}} />
-                    
+
                     <OtherData
                         currentOrder={currentOrder}
-                        user={currentOrder.user}
-                        store={currentOrder.store}
-                        dateEmited={currentOrder.applicationDate}
-                        dateToRecive={currentOrder.deliveryDate}
-                        deliveryInformation={currentOrder.deliveryInformation}
                         handleUpdateOrderProperty={handleUpdateOrderProperty}
-                    />   
+                    />
                 </Box>                
             </Grid>
         </Modal> 

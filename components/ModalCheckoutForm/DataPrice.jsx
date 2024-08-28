@@ -8,7 +8,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import CrossText from '@/components/CrossText/CrossText'
 
-function DataPrice({ orders, payment_method, checkout }) {
+function DataPrice({ orders, checkout, quote }) {
     return (
         <Grid
             sx={{
@@ -80,34 +80,31 @@ function DataPrice({ orders, payment_method, checkout }) {
                                 }}
                             >
                                 <Typography>
-                                    {/* {`Total Carrito (MXN) incl. $${checkout.commissionIVA} IVA`}  */}
                                     {`Total Carrito (MXN) incl. IVA`} 
                                 </Typography>
                                 <Typography>
                                     ${checkout.totalPriceCar}
                                 </Typography>
                             </ListItem>
-                            {/* {
-                                payment_method === 'card' && (
-                                    <>
-                                        <ListItem
-                                            sx={{
-                                                pr: '0px',
-                                                pl: '0px',
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}
-                                        >
-                                            <Typography>
-                                                Comisión Stripe:
-                                            </Typography>
-                                            <Typography>
-                                                ${ checkout.commissionStripe }
-                                            </Typography>
-                                        </ListItem>
-                                    </>
-                                )
-                            } */}
+                            {
+                                quote ? (
+                                    <ListItem
+                                        sx={{
+                                            pr: '0px',
+                                            pl: '0px',
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <Typography>
+                                            {`Total Delivery`} 
+                                        </Typography>
+                                        <Typography>
+                                            ${quote.fee.feeIVAStripe}
+                                        </Typography>
+                                    </ListItem>
+                                ) : null
+                            }
                         </List>
 
                     </>
@@ -126,13 +123,11 @@ function DataPrice({ orders, payment_method, checkout }) {
                 </Typography>
                 <Typography>
                     {
-                        // payment_method === 'card' ?
-                        //     (
-                        //         `$${ Number(checkout.commissionStripe) + Number(checkout.totalPriceCar) }`
-                        //     ) : (
-                        //         `$${ Number(checkout.totalPriceCar) }`
-                        //     )
-                        `$${ Number(checkout.totalPriceCar) }`
+                        quote ? (
+                            `$${ Number(checkout.totalPriceCar) + quote.fee.feeIVAStripe }`
+                        ) : (
+                            `$${ Number(checkout.totalPriceCar )}`
+                        )
                     }
                 </Typography>
             </Box>

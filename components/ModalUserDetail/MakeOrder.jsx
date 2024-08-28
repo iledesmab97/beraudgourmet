@@ -39,7 +39,7 @@ function MakeOrder({ user, updateOrders }) {
     const { handleUpdateAlertMessage } = useGetAlertMessage()
     const [loading, setLoading] = useState(false)
     const [canMakeOrder, setCanMakeOrder] = useState(false)
-    const { handleAddOrderList } = useGetOrderList()
+    const { orderList, handleAddOrderList } = useGetOrderList()
 
     // Actualizar canMakeOrder para saber si ya se puede hacer una orden
     useEffect(() => {
@@ -158,7 +158,7 @@ function MakeOrder({ user, updateOrders }) {
             updateOrders()
             console.log('Información guardada con exito')
             setLoading(false)
-            getAllOrders()
+            getAllOrders({ p: orderList.currentPage, items: orderList.itemsxPage})
                 .then(data => {
                     if (data.message) throw new Error(data.message)
                     handleAddOrderList(data)

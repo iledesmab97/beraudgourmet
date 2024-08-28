@@ -1,108 +1,153 @@
-import { requestSettings } from '@/utils/preparingData'
+import { requestSettings } from "@/utils/preparingData";
 
-const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-export function getAllOrders(querys) {
-
-    let lastPath
-    if (querys) {
-        const { userName, userEmail, userPhoneNumber } = querys
-        
-        if (userName || userEmail || userPhoneNumber) {
-            lastPath = Object.keys(querys).filter(q => querys[q]).map(q => q + '=' + querys[q] ).join('&&')
-        }
+export async function getAllOrders(queries) {
+    let lastPath;
+    if (queries) {
+        lastPath = Object.keys(queries)
+            .map((query) => `${query}=${queries[query]}`)
+            .join("&&");
     }
 
-    return fetch(`${PATH_BACK}/orders${lastPath ? '?' + lastPath : ''}`, {
-        ...requestSettings(),
-        cache: 'no-store'
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            return data
-        })
-        .catch(error => ({message: error.message}))
+    try {
+        const response = await fetch(
+            `${PATH_BACK}/orders${lastPath ? "?" + lastPath : ""}`,
+            {
+                ...requestSettings(),
+                cache: "no-store",
+            }
+        );
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function getAllOrdersOfUser(userId) {
-
-    return fetch(`${PATH_BACK}/orders/${userId}`, {
-        ...requestSettings(),
-        cache: 'no-store'
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            return data
-        })
-        .catch(error => ({message: error.message}))
+export async function getAllOrdersOfUser(userId) {
+    try {
+        const response = await fetch(`${PATH_BACK}/orders/user/${userId}`, {
+            ...requestSettings(),
+            cache: "no-store",
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function updateOrder(id, body) {
-    return fetch(`${PATH_BACK}/orders/${id}`, {
-        ...requestSettings('PUT'),
-        body: JSON.stringify(body),
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            return data
-        })
-        .catch(error => ({message: error.message}))
+export async function getOneOrder(orderId) {
+    try {
+        const response = await fetch(`${PATH_BACK}/orders/${orderId}`, {
+            ...requestSettings(),
+            cache: "no-store",
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getItemsOrder(orderId) {
+    try {
+        const response = await fetch(`${PATH_BACK}/orders/items/${orderId}`, {
+            ...requestSettings(),
+            cache: "no-store",
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function updateOrder(id, body) {
+    try {
+        const res = await fetch(`${PATH_BACK}/orders/${id}`, {
+            ...requestSettings("PUT"),
+            body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
 export async function sendImage(id, formData) {
     return fetch(`${PATH_BACK}/orders/image/${id}`, {
-        ...requestSettings('POST', null, 'image'),
+        ...requestSettings("POST", null, "image"),
         body: formData,
     })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            return data
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            return data;
         })
-        .catch(error => ({message: error.message}))
+        .catch((error) => ({ message: error.message }));
 }
 
 export async function registerOrder(data) {
     return fetch(`${PATH_BACK}/orders`, {
-        ...requestSettings('POST'),
-        body: JSON.stringify(data)
+        ...requestSettings("POST"),
+        body: JSON.stringify(data),
     })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            console.log('La orden fue creada exitosamente')
-            return data
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            console.log("La orden fue creada exitosamente");
+            return data;
         })
-        .catch(error => ({message: error.message}))
+        .catch((error) => ({ message: error.message }));
 }
 
 export function requestRemovalOrder(id) {
-    if (!id) return {message: 'id can not be undefined'}
+    if (!id) return { message: "id can not be undefined" };
     return fetch(`${PATH_BACK}/orders/${id}`, {
-        ...requestSettings('DELETE')
+        ...requestSettings("DELETE"),
     })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            console.log('La orden fue removida exitosamente')
-            return data
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.message) throw new Error(data.message);
+            console.log("La orden fue removida exitosamente");
+            return data;
         })
-        .catch(error => ({message: error.message}))
+        .catch((error) => ({ message: error.message }));
 }
 
-export function changeOrderItems(data) {
-    return fetch(`${PATH_BACK}/orders/changeItems`, {
-        ...requestSettings('PUT'),
-        body: JSON.stringify(data)
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message) throw new Error(data.message)
-            console.log('Los items de la orden fueron actualizados exitosamente')
-            return data
-        })
-        .catch(error => ({message: error.message}))
+export async function changeOrderItems(data) {
+    try {
+        const res = await fetch(`${PATH_BACK}/orders/changeItems`, {
+            ...requestSettings("PUT"),
+            body: JSON.stringify(data),
+        });
+        const data_1 = await res.json();
+        if (data_1.message) throw new Error(data_1.message);
+        console.log("Los items de la orden fueron actualizados exitosamente");
+        return data_1;
+    } catch (error) {
+        return { message: error.message };
+    }
+}
+
+export async function getDeliveryInformationOfOrder(id) {
+    try {
+        const response = await fetch(`${PATH_BACK}/deliveryInformation/${id}`, {
+            ...requestSettings(),
+            cache: "no-store",
+        });
+        const data = await response.json();
+        if (data.message) throw new Error(data.message);
+        return data;
+    } catch (error) {
+        return { message: error.message };
+    }
 }

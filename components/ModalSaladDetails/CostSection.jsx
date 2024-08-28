@@ -21,7 +21,7 @@ function validator(inputCost) {
     return error
 }
 
-function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsChecked, updateProperty, updateState }) {
+function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsChecked, updateSaladProperty, updateProperty, updateState }) {
 
     const [price, setPrice] = useState(salad.price)
     const [edit, setEdit] = useState(false)
@@ -51,35 +51,11 @@ function CostSection({ salad, saladNew, errors, handleChangeInput, handleInputsC
     async function updatePrice() {
         console.log('Actualizando...')
         setLoading(true)
-        const response = await updateProperty( salad.id, { property: 'cost', value: price })
-        let text, status
-        if (response.message) {
-            text = response.message
-            status = 'error'
-        } else {
-            text = 'Ingredientes actualizados exitosamente'
-            status = 'success'
-        }
-        handleUpdateAlertMessage({
-            checked: true,
-            text,
-            status
+        updateSaladProperty({
+            id: salad.id,
+            property: 'cost',
+            value: price
         })
-        if (!response.message) {
-            updateState({
-                id: response.id,
-                properties: {
-                    price: response.cost,
-                    totalPriceByUnity: response.costIVAStripe
-                }
-            })
-
-            setLoading(false)
-            return 'Información guardada con exito'
-        } else {
-            setLoading(false)
-            return 'No se ha guardado la información exitosamente'
-        }
     }
 
     return (

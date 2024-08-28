@@ -1,68 +1,70 @@
-'use client'
+"use client";
 
-import Box from '@mui/material/Box'
-import Alert from '@mui/material/Alert'
-import Collapse from '@mui/material/Collapse'
-import AlertTitle from '@mui/material/AlertTitle'
-import Typography from '@mui/material/Typography'
+import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
+import Collapse from "@mui/material/Collapse";
+import AlertTitle from "@mui/material/AlertTitle";
+import Typography from "@mui/material/Typography";
 
-import CheckIcon from '@mui/icons-material/Check'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
-import { useEffect } from 'react'
-import useGetAlertMessage from '@/hooks/useGetAlertMessage'
-import useDebounce from '@/hooks/useDebounce'
+import { useEffect } from "react";
+import useGetAlertMessage from "@/hooks/useGetAlertMessage";
+import useDebounce from "@/hooks/useDebounce";
 
-import styles from './AlertMessage.module.css'
+import styles from "./AlertMessage.module.css";
 
 const iconsStatus = {
     success: <CheckCircleOutlineIcon />,
-    error: <ErrorOutlineIcon />
-}
+    error: <ErrorOutlineIcon />,
+};
 
 function AlertMessage() {
-
-    const { alertMessage, handleCloseAlertMessage } = useGetAlertMessage()
-    const { debounceSetValue } = useDebounce()
+    const { alertMessage, handleCloseAlertMessage } = useGetAlertMessage();
+    const { debounceSetValue } = useDebounce();
 
     useEffect(() => {
-        if (!alertMessage.checked) return
+        if (!alertMessage.checked) return;
         debounceSetValue(() => {
-            handleCloseAlertMessage()
-        }, 5000)
-
-    }, [alertMessage.checked])
+            handleCloseAlertMessage();
+        }, 5000);
+    }, [alertMessage.checked]);
 
     return (
-        <Box
-            className={styles.containerAlertMessage}
-        >
+        <Box className={styles.containerAlertMessage}>
             <Collapse
                 in={alertMessage.checked}
                 orientation="horizontal"
                 className={styles.containerCollapse}
             >
                 <Alert
-                    icon={ alertMessage.status ? iconsStatus[alertMessage.status] : null}
+                    icon={
+                        alertMessage.status
+                            ? iconsStatus[alertMessage.status]
+                            : null
+                    }
                     severity={alertMessage.status}
                     onClose={handleCloseAlertMessage}
-                    variant='filled'
+                    variant="filled"
                     sx={{
-                        width: '400px'
+                        width: "400px",
                     }}
                     className={styles.containerAlert}
                 >
                     <AlertTitle>
-                        <Typography variant='title' sx={{ color: 'white' }}>
-                            { alertMessage.status ? alertMessage.status[0].toUpperCase() + alertMessage.status.slice(1).toLowerCase() : ''}
+                        <Typography variant="title" sx={{ color: "white" }}>
+                            {alertMessage.status
+                                ? alertMessage.status[0].toUpperCase() +
+                                  alertMessage.status.slice(1).toLowerCase()
+                                : ""}
                         </Typography>
                     </AlertTitle>
                     {alertMessage.text}
                 </Alert>
             </Collapse>
         </Box>
-    )
+    );
 }
 
-export default AlertMessage
+export default AlertMessage;

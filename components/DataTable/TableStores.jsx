@@ -1,5 +1,3 @@
-import Box from '@mui/material/Box'
-
 import TableContainer from '@mui/material/TableContainer'
 import Table from '@mui/material/Table'
 import TableHead from '@mui/material/TableHead'
@@ -18,46 +16,31 @@ import ModalStoreDetailAdmin from '@/components/ModalStoreDetailAdmin/ModalStore
 import TablePaginationActions from '@/components/TablePaginationActions/TablePaginationActions'
 
 import { useState, useEffect } from 'react'
-import useGetStoreList from '@/hooks/useGetStoreList'
+import { fetchStoreListThunk } from "@/stores/actions/stores";
+import { useDispatch, useSelector } from "react-redux";
 
-const columns = ['ID', 'Nombre', 'Ciudad', 'Coordenadas', 'Teléfono', 'Acción']
-
-function listStores(storeList) {
-    const arrayStoreList = []
-    if (Object.keys(storeList).length) {
-        for (let city in storeList) {
-            storeList[city].stores.forEach(store => {
-                const newStore = {
-                    ...store,
-                    city
-                }
-                arrayStoreList.push(newStore)
-            })
-        }
-    }
-    return arrayStoreList
-}
+const columns = ['ID', 'Nombre', 'Ciudad', 'Dirección','Teléfono', 'Acción']
 
 function TableStores() {
 
-    const { storeList, handleAddStoreList } = useGetStoreList()
-    const [ storeListArray, setStoreListArray ] = useState(listStores(storeList))
+    const { stores, status, error } = useSelector(
+        (state) => state.storeList
+    );
     const [currentStore, setCurrentStore] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [openStoreDetails, setOpenStoreDetails] = useState(false)
     const openMenu = Boolean(anchorElMenu)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const dispatch = useDispatch();
 
     function toggleMenu() {
         setAnchorElMenu(null)
     }
 
     useEffect(() => {
-        if (Object.keys(storeList).length) {
-            setStoreListArray(listStores(storeList))
-        }
-    }, [storeList])
+        dispatch(fetchStoreListThunk());
+    }, [dispatch]);
 
     function handleClickButtonAction(event, store) {
         setAnchorElMenu(event.currentTarget)
@@ -113,22 +96,30 @@ function TableStores() {
                     </TableHead>
                     <TableBody>
                         {
-                            storeListArray.map(store => (
-                                <TableRow key={store.name}>
-                                    <TableCell>{store.id}</TableCell>
-                                    <TableCell>{store.name}</TableCell>
-                                    <TableCell>{store.city}</TableCell>
-                                    <TableCell>{store.place}</TableCell>
-                                    <TableCell>{store.phone}</TableCell>
-                                    <TableCell>
-                                        <IconButton
-                                            onClick={(event) => handleClickButtonAction(event, store)}
-                                        >
-                                            <MoreHorizIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                            status === 'loading' && <h1>Loading...</h1>
+                        }
+                        {
+                            error && <h1>Error: {error}</h1>
+                        }
+                        {
+                            stores ? (
+                                stores.map(store => (
+                                    <TableRow key={store.name}>
+                                        <TableCell>{store.id}</TableCell>
+                                        <TableCell>{store.name}</TableCell>
+                                        <TableCell>{store.city}</TableCell>
+                                        <TableCell>{store.place}</TableCell>
+                                        <TableCell>{store.phone}</TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                onClick={(event) => handleClickButtonAction(event, store)}
+                                            >
+                                                <MoreHorizIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : null
                         }
                     </TableBody>
                 </Table>
@@ -136,7 +127,7 @@ function TableStores() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={storeListArray.length}
+                count={ stores ? stores.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={(event, newPage) => { handleChangePage(newPage) }}
