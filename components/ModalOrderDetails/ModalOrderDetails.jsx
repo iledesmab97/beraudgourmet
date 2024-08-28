@@ -9,20 +9,28 @@ import OrderData from '@/components/ModalOrderDetails/OrderData'
 import OtherData from '@/components/ModalOrderDetails/OtherData'
 import PriceData from '@/components/ModalOrderDetails/PriceData'
 
-import styles from './ModalOrderDetails.module.css'
-import dayjs from 'dayjs'
-
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 750,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '500px',
+        md: '750px'
+    },
+    height: {
+        xs: '80%',
+        md: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 4,
+        md: 5
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -30,7 +38,7 @@ const style = {
     gap: 2,
 }
 
-function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrder }) {
+function ModalOrderDetails({ openOrderDetail, handleOpenOrderDetail, currentOrder, handleUpdateOrderProperty }) {
 
     return (
         <Modal
@@ -61,25 +69,22 @@ function ModalCheckoutForm({ openOrderDetail, handleOpenOrderDetail, currentOrde
                         boxSizing: 'border-box'
                     }}
                 >
-                    <OrderData currentOrder={currentOrder} />
+                    <OrderData currentOrder={currentOrder} handleUpdateOrderProperty={handleUpdateOrderProperty} />
                     <Divider sx={{ width: '100%'}} />
 
                     <PriceData
-                        orders={currentOrder}
+                        order={currentOrder}
                     />
                     <Divider sx={{ width: '100%'}} />
-                    
+
                     <OtherData
-                        user={currentOrder.user}
-                        store={currentOrder.store}
-                        dateEmited={currentOrder.applicationDate}
-                        dateToRecive={currentOrder.deliveryDate}
-                        deliveryInformation={currentOrder.deliveryInformation}
-                    />   
+                        currentOrder={currentOrder}
+                        handleUpdateOrderProperty={handleUpdateOrderProperty}
+                    />
                 </Box>                
             </Grid>
         </Modal> 
     )
 }
 
-export default ModalCheckoutForm
+export default ModalOrderDetails

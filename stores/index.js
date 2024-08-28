@@ -1,13 +1,20 @@
-import { configureStore } from "@reduxjs/toolkit"
-import userReducer from './user/slice'
-import ordersReducer from './order/slice'
-import placeReducer from './place/slice'
-import modalReducer from './modal/slice'
-import checkoutReducer from './checkout/slice'
-import storeListReducer from './storeList/slice'
-import productsReducer from './products/slice'
-import extraIngredientsReducer from './extraIngredients/slice'
-import alertMessageReducer from './alertMessage/slice'
+import { configureStore } from "@reduxjs/toolkit";
+import { thunk } from "redux-thunk";
+import userReducer from "./user/slice";
+import ordersReducer from "./order/slice";
+import placeReducer from "./place/slice";
+import modalReducer from "./modal/slice";
+import checkoutReducer from "./checkout/slice";
+import storeListReducer from "./storeList/slice";
+import productsReducer from "./products/slice";
+import extraIngredientsReducer from "./extraIngredients/slice";
+import alertMessageReducer from "./alertMessage/slice";
+import alertDialogMessageReducer from "./alertDialogMessage/slice";
+import orderListReducer from "./orderList/slice";
+import stepsReducer from "./steps/slice";
+import drawerReducer from "./drawer/slice";
+import productDetailsReducer from "./productDetails/slice";
+import uberQuoteReducer from "./uber/slice";
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +26,13 @@ export const store = configureStore({
         storeList: storeListReducer,
         products: productsReducer,
         extraIngredients: extraIngredientsReducer,
-        alertMessage: alertMessageReducer
-    }
-})
+        alertMessage: alertMessageReducer,
+        alertDialogMessage: alertDialogMessageReducer,
+        orderList: orderListReducer,
+        steps: stepsReducer,
+        drawer: drawerReducer,
+        productDetails: productDetailsReducer,
+        uberQuote: uberQuoteReducer,
+    },
+    middleware: [thunk],
+});

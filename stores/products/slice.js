@@ -1,31 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+    addProductsListThunk,
+    updateProductThunk,
+} from "@/stores/actions/products";
 
-const initialState = {}
-
+const initialState = {
+    status: "pending",
+    pizzas: null,
+    salads: null,
+    error: null,
+};
 export const productsSlice = createSlice({
-    name: 'products',
+    name: "products",
     initialState,
-    reducers: {
-        addProductsList: (state, action) => {
-            const { type, products } = action.payload
-            if (state[type]) {
-                const productsFitered = products.filter( product => {
-                    return !state[type].some(producIncluded => producIncluded.name === product.name)
-                } )
-                return {
-                    ...state,
-                    [type]: [...state[type], ...productsFitered]
-                }
-            } else {
-                return {
-                    ...state,
-                    [type]: [...products]
-                }
-            }
-        }
-    }
-})
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(addProductsListThunk.pending, (state) => {
+                state.status = "pending";
+            })
+            .addCase(addProductsListThunk.fulfilled, (state, action) => {
+                const { pizzas, salads } = action.payload;
+                state.pizzas = pizzas;
+                state.salads = salads;
+                state.status = "succeeded";
+            })
+            .addCase(addProductsListThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(updateProductThunk.pending, (state) => {
+                state.status = "pending";
+            })
+            .addCase(updateProductThunk.fulfilled, (state, action) => {
+                const { type, newProduct } = action.payload;
 
-export default productsSlice.reducer
+                const newList = JSON.parse(JSON.stringify(state[type]));
+                let index;
+                const currentItem = newList.find((item, i) => {
+                    index = i;
+                    return item.id === newProduct.id;
+                });
 
-export const { addProductsList } = productsSlice.actions
+                newList[index] = newProduct;
+                state[type] = newList;
+
+                state.status = "succeeded";
+            })
+            .addCase(updateProductThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+    },
+});
+
+export default productsSlice.reducer;

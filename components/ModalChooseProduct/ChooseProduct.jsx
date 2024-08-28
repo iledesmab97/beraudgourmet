@@ -1,13 +1,5 @@
 'use client'
 
-import { forwardRef } from 'react'
-import AboutPizza from './AboutPizza'
-import CustomizePizza from './CustomizePizza'
-import FooterModalChooseProduct from './FooterModalChooseProduct'
-import useGetModal from '@/hooks/useGetModal'
-import useGetOrder from '@/hooks/useGetOrders'
-import useHandleOrder from '@/hooks/useHandleOrder'
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -15,10 +7,28 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles'
 import { useMediaQuery } from '@mui/material'
 
+import AboutPizza from './AboutPizza'
+import CustomizePizza from './CustomizePizza'
+import FooterModalChooseProduct from './FooterModalChooseProduct'
+
+import { forwardRef, useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import useGetModal from '@/hooks/useGetModal'
+import useGetOrder from '@/hooks/useGetOrders'
+import useHandleOrder from '@/hooks/useHandleOrder'
+import useHandleShoppingGuide from '@/hooks/useHandleShoppingGuide'
+
+import { addProductDetailsThunk, removeProductDetailsThunk } from '@/stores/actions/productDetails'
+
 const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
     const { product, edit, handleCloseModalOrder } = useGetModal({modalType:'order' })
+    const { data: productDetails, status, error } = useSelector(
+        (state) => state.productDetails
+    );
     const { handleAddOrder, handleUpdateOrder } = useGetOrder()
+    const { nextStepGuide } = useHandleShoppingGuide()
+    const dispatch = useDispatch();
 
     const {
         currentProduct,
@@ -29,13 +39,19 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
         handleMass,
         handleIngredientsModal,
         handleExtra,
-        handleAddedItem
-    } = useHandleOrder({ product })
+    } = useHandleOrder({ productDetails })
 
     const theme = useTheme()
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
     
+    useEffect(() => {
+        dispatch(addProductDetailsThunk({id: product.id, type: product.productType}))
+        return () => {
+            dispatch(removeProductDetailsThunk())
+        }
+    }, [])
+
     let width = ''
 
     if (isSmallScreen) {
@@ -48,20 +64,24 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
         position: 'absolute',
         top: '50%',
         left: '50%',
-        marginTop: 0,
-        marginLeft: 0,
-        padding: 4,
-        paddingBottom: 0,
-        paddingRight: 0,
+        m: '0px',
         transform: 'translate(-50%, -50%)',
-        width,
-        height: 600,
+        width: {
+            xs: '324px',
+            sm: '500px',
+            md: '860px'
+        },
+        height: {
+            xs: '80%',
+            md: '600px'
+        },
         bgcolor: 'background.paper',
-        // border: '2px solid #000',
         boxShadow: 24,
-        // p: 3,
         borderRadius: 5,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        '&.MuiGrid-root': {
+            m: '0px'
+        }
     }
 
     return (
@@ -70,22 +90,34 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
             {...props}
             ref={ref}
             variant='modal'
-            sx={style}
             direction='row'
             justifyContent='center'
             alignItems='stretch'
+            sx={style}
+            spacing={{
+                xs: 2,
+                sm: 4
+            }}
             container
             item
-            // xs={10}
-            // sm={9}
-            // md={9}
-            // lg={9}
-            // xl={8}
         >
             <Grid
+                id='container-modal-order-pizza'
+                item
                 container
                 sx={{
-                    height: '90%',
+                    height: {
+                        xs: '85%',
+                        sm: '90%'
+                    },
+                    overflowY: {
+                        xs: 'auto',
+                        md: 'hidden'
+                    },
+                    pr: {
+                        xs: 2,
+                        sm: 4
+                    }
                 }}
             >
                 <Grid
@@ -96,36 +128,45 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                         {product.name}
                     </Typography>
                 </Grid>
+
                 <AboutPizza product={product} />
 
-                <CustomizePizza
-                    currentProduct={currentProduct}
-                    name={product?.information?.name}
-                    ingredientsProduct={product?.ingredients}
-                    customizePizza = {{
-                        size: inputs.size,
-                        handleSize,
-                        mass: inputs.mass,
-                        handleMass,
-                        ingredientsModal: inputs.ingredientsModal,
-                        handleIngredientsModal,
-                        extra: inputs.extra,
-                        handleExtra
-                    }}
-                />
+                {
+                    currentProduct ? (
+                        <CustomizePizza
+                            currentProduct={currentProduct}
+                            name={productDetails?.information?.name}
+                            ingredientsProduct={productDetails?.ingredients}
+                            customizePizza = {{
+                                size: inputs.size,
+                                handleSize,
+                                mass: inputs.mass,
+                                handleMass,
+                                ingredientsModal: inputs.ingredientsModal,
+                                handleIngredientsModal,
+                                extra: inputs.extra,
+                                handleExtra
+                            }}
+                        />
+                    ) : null
+                }
             </Grid>
 
-            <FooterModalChooseProduct
-                handleQuantity={handleQuantity}
-                quantity={inputs.quantity}
-                totalPrice={totalPrice}
-                edit={edit}
-                handleAddOrder={handleAddOrder}
-                currentProduct={currentProduct}
-                handleCloseModalOrder={handleCloseModalOrder}
-                handleAddedItem={handleAddedItem}
-                handleUpdateOrder={handleUpdateOrder}
-            />
+            {
+                currentProduct ? (
+                    <FooterModalChooseProduct
+                        handleQuantity={handleQuantity}
+                        quantity={inputs.quantity}
+                        totalPrice={totalPrice}
+                        edit={edit}
+                        handleAddOrder={handleAddOrder}
+                        currentProduct={currentProduct}
+                        handleCloseModalOrder={handleCloseModalOrder}
+                        handleUpdateOrder={handleUpdateOrder}
+                        nextStep={nextStepGuide}
+                    />
+                ) : null
+            }
 
         </Grid>
     )

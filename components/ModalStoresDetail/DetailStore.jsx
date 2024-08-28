@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/List'
-import CircleIcon from '@mui/icons-material/Circle'
 import ListItemText from '@mui/material/ListItemText'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -13,19 +12,36 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+
 import PlaceIcon from '@mui/icons-material/Place'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import CircleIcon from '@mui/icons-material/Circle'
+
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 export default function DetailStore({ currentStore }) {
+
+    const theme = useTheme()
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
+
     return (
         <Grid
+            id={'DetailStore-container'}
             item
-            xs={8}
+            sm={8}
             pr={1}
             sx={{
-                height: '100%',
-                overflowY: 'auto'
+                height: {
+                    xs: 'fit-content',
+                    sm: '100%'
+                },
+                overflowY: {
+                    sm: 'auto'
+                }
             }}
         >
             <Box
@@ -46,35 +62,33 @@ export default function DetailStore({ currentStore }) {
                         component={'li'}
                         sx={{
                             display: 'flex',
-                            flexDirection: 'column'
                         }}
                     >
+                        <CircleIcon
+                            color={currentStore.open ? 'primary' : 'secondary'}
+                            sx={{
+                                mr: '8px'
+                            }}
+                        />
                         <Box
                             sx={{
                                 display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center'
+                                flexDirection: 'column',
+                                alignItems: 'flex-start'
                             }}
-                        >
-                            <CircleIcon
-                                color={currentStore.open ? 'primary' : 'secondary'}
-                                sx={{
-                                    mr: '8px'
-                                }}
-                            />
+                        >  
                             <Typography
                                 component={'span'}
                             >
                                 {currentStore.open ? 'Abierto' : 'Cerrado'}
                             </Typography>
+                            <Typography>
+                                { currentStore.open ? `Cerramos a las ${currentStore.closeTime}` : `Abrimos a las ${currentStore.openTime}` }
+                            </Typography>
                         </Box>
-                        <Typography>
-                            {currentStore.closeTime}
-                        </Typography>
                     </ListItem>
                     <ListItem
                         component={'li'}
-                        // disablePadding
                         sx={{
                             display: 'flex',
                             flexDirection: 'row'
@@ -145,14 +159,11 @@ export default function DetailStore({ currentStore }) {
                     </Typography>
                     <TableContainer
                         component={Paper}
-                        // sx={{
-                        //     width: '100%'
-                        // }}
                     >
                         <Table>
                             <TableBody>
                                 {
-                                    currentStore.pickUpSchedule.map(hour => (
+                                    currentStore.pickupSchedule.pickupSchedule.map(hour => (
                                         <TableRow
                                             key={hour.days + hour.hours}
                                         >
@@ -165,6 +176,7 @@ export default function DetailStore({ currentStore }) {
                         </Table>
                     </TableContainer>
                     <Typography
+                        id={'DetailStore-title-Horario_Entrega'}
                         variant='title'
                         sx={{
                             display: 'flex',
@@ -176,14 +188,11 @@ export default function DetailStore({ currentStore }) {
                     </Typography>
                     <TableContainer
                         component={Paper}
-                        // sx={{
-                        //     width: '100%'
-                        // }}
                     >
                         <Table>
                             <TableBody>
                                 {
-                                    currentStore.deliverySchedule.map(hour => (
+                                    currentStore.deliverySchedule.deliverySchedule.map(hour => (
                                         <TableRow
                                             key={hour.days + hour.hours}
                                         >
@@ -197,7 +206,10 @@ export default function DetailStore({ currentStore }) {
                     </TableContainer>
                 </Box>
             </Box>
-
+            <MoveDown
+                sectionToGo={'#DetailStore-title-Horario_Entrega'}
+                containerId={ isLargeScreen ? '#DetailStore-container' : '#ModalStoresDetail-container' }
+            />
         </Grid>
     )
 }

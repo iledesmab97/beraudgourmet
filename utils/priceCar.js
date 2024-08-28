@@ -10,17 +10,21 @@ export function calculateTotalPay(totalCar, stripe) {
         totalClient: 0,
         totalPriceCar: 0
     }
-    const tasaIVA = 0.16
-    const commissionIVA = totalCar * tasaIVA
-    // const commissionStripe = totalCar * 0.036 + 3
-    const commissionStripe = stripe ? (totalCar + commissionIVA) * 0.036 + 3 : 0
-    const IVA = (commissionStripe) * tasaIVA
-    const totalClient = totalCar + commissionStripe + IVA
+    // const tasaIVA = 0.16
+    // const commissionIVA = totalCar * tasaIVA
+    // // const commissionStripe = totalCar * 0.036 + 3
+    // const commissionStripe = stripe ? (totalCar + commissionIVA) * 0.036 + 3 : 0
+    // const IVA = (commissionStripe) * tasaIVA
+    // const totalClient = totalCar + commissionStripe + IVA
+    const totalClient = totalCar
     return ({
         totalPriceCar: twoDecimals(totalCar),
-        commissionIVA: twoDecimals(commissionIVA),
-        commissionStripe: twoDecimals(commissionStripe + IVA),
-        IVA: twoDecimals(IVA),
+        // commissionIVA: twoDecimals(commissionIVA),
+        commissionIVA: 0,
+        // commissionStripe: twoDecimals(commissionStripe + IVA),
+        commissionStripe: 0,
+        // IVA: twoDecimals(IVA),
+        IVA: 0,
         totalClient: twoDecimals(totalClient)
     })
 }
@@ -30,4 +34,9 @@ export function totalPrice(orders, stripe) {
         return acc + cur.totalPrice
     }, 0)
     return calculateTotalPay(totalPriceCar, stripe)
+}
+
+export function calculateTotalToPay(pricePizza, extraIngredients) {
+    const totalExtraIngredients = extraIngredients.reduce((acc, cur) => acc + Number(cur.total) , 0)
+    return Number(pricePizza) + totalExtraIngredients
 }

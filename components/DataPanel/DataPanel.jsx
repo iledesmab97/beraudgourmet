@@ -2,9 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { getAllOrders } from '@/services/orderApi'
+import { getAllUsers } from '@/services/userApi'
 
 import TabBar from '@/components/TabBar/TabBar'
-import DataTable from '@/components/DataTable/DataTable'
+import TableOrders from '@/components/DataTable/TableOrders'
+import TablePizzas from '@/components/DataTable/TablePizzas'
+import TableSalads from '@/components/DataTable/TableSalads'
+import TableStores from '@/components/DataTable/TableStores'
+import TableUsers from '@/components/DataTable/TableUsers'
+import TablePizzaExtraIngredients from '@/components/DataTable/TablePizzaExtraIngredients'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -12,20 +18,36 @@ import Typography from '@mui/material/Typography'
 
 import styles from './DataPanel.module.css'
 
-function DataPanel() {
+const listToolOptions = {
+    Orders: {
+        title: 'Historial de Ordenes',
+        listTabs: ['Todas las ordenes', 'Entregadas', 'Pendientes'],
+    },
+    Pizzas: {
+        title: 'Lista de Pizzas',
+        listTabs: ['Todas las pizzas']
+    },
+    Salads: {
+        title: 'Lista de Ensaladas',
+        listTabs: ['Todas las ensaladas']
+    },
+    Stores: {
+        title: 'Lista de Tiendas',
+        listTabs: ['Todas las tiendas']
+    },
+    Users: {
+        title: 'Lista de Usuarios',
+        listTabs: ['Todos los usuarios']
+    },
+    'Extra Ingredients': {
+        title: 'Lista de Ingredientes Extra',
+        listTabs: ['Todos']
+    }
+}
+
+function DataPanel({ toolSelected }) {
 
     const [tabSelected, setTabSelected] = useState(0)
-    const [orders, setOrders] = useState([])
-
-    useEffect(() => {
-        getAllOrders()
-            .then(data => updateOrders(data))
-    }, [])
-
-
-    function updateOrders(newListOrders) {
-        setOrders(newListOrders)
-    }
 
     function handleChange(event, newValue) {
         setTabSelected(newValue)
@@ -34,18 +56,53 @@ function DataPanel() {
     return (
         <Grid
             item
-            xs={9}
+            container
+            xs={12}
+            md={9}
             direction='column'
             gap={1}
             className={styles.DataPanel}
+            wrap='nowrap'
         >
             <Typography
                 variant='encabezado'
+                component={'h1'}
+                sx={{
+                    my: '16px'
+                }}
             >
-                Historial de Ordenes
+                {listToolOptions[toolSelected].title}
             </Typography>
-            <TabBar tabSelected={tabSelected} handleChange={handleChange} />
-            <DataTable orders={orders} updateOrders={updateOrders} />
+            <TabBar tabSelected={tabSelected} handleChange={handleChange} listTabs={listToolOptions[toolSelected].listTabs} />
+            <Box
+                sx={{
+                    height: {
+                        xs: '60%',
+                        sm: '80%',
+                        md: '70%',
+                    },
+                    position: 'relative'
+                }}
+            >
+                {
+                    toolSelected === 'Orders' ? <TableOrders /> : null
+                }
+                {
+                    toolSelected === 'Pizzas' ? <TablePizzas /> : null
+                }
+                {
+                    toolSelected === 'Salads' ? <TableSalads /> : null
+                }
+                {
+                    toolSelected === 'Stores' ? <TableStores /> : null
+                }
+                {
+                    toolSelected === 'Users' ? <TableUsers /> : null
+                }
+                {
+                    toolSelected === 'Extra Ingredients' ? <TablePizzaExtraIngredients /> : null
+                }
+            </Box>
         </Grid>
     )
 }

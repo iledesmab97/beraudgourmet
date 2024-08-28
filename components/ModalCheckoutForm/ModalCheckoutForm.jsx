@@ -1,28 +1,30 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import useGetModal from '@/hooks/useGetModal'
-import { loadStripe } from '@stripe/stripe-js'
-import {Elements} from '@stripe/react-stripe-js'
-import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
-import useGetUser from '@/hooks/useGetUser'
-import useGetPlace from '@/hooks/useGetPlace'
-import useGetOrders from '@/hooks/useGetOrders'
-import useGetCheckout from '@/hooks/useGetCheckout'
-import {totalPrice} from '@/utils/priceCar'
-import { createPaymentRequest, updatePaymentRequest } from '@/services/checkoutApi'
-import { descriptionOrder } from '@/utils/preparingData'
-
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
+
+import {Elements} from '@stripe/react-stripe-js'
+
 import DataOrder from '@/components/ModalCheckoutForm/DataOrder'
 import DataPrice from '@/components/ModalCheckoutForm/DataPrice'
+import CheckoutForm from '@/components/CheckoutForm/CheckoutForm'
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import { loadStripe } from '@stripe/stripe-js'
+import { useEffect, useState, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+
+import useGetModal from '@/hooks/useGetModal'
+import useGetUser from '@/hooks/useGetUser'
+import useGetPlace from '@/hooks/useGetPlace'
+import useGetOrders from '@/hooks/useGetOrders'
+import useGetCheckout from '@/hooks/useGetCheckout'
+
+import {totalPrice} from '@/utils/priceCar'
+import { createPaymentRequest, updatePaymentRequest } from '@/services/checkoutApi'
+import { descriptionOrder } from '@/utils/preparingData'
 
 import styles from './ModalCheckoutForm.module.css'
 import dayjs from 'dayjs'
@@ -36,12 +38,23 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 750,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '700px',
+        md: '750px'
+    },
+    height: {
+        xs: '80%',
+        sm: '60%',
+        md: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 5
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -58,6 +71,7 @@ function ModalCheckoutForm() {
     const {checkout, handleAddCheckout} = useGetCheckout()
     const [messageDelivery, setMessageDelivery] = useState('')
     const [preMessageDelivery, setPreMessageDelivery] = useState('')
+    const { quote } = useSelector(state => state.uberQuote)
 
     const [clientSecret, setClientSecret] = useState('')
     const [dataStripe, setDataStripe] = useState(null)
@@ -83,9 +97,21 @@ function ModalCheckoutForm() {
 
     useEffect(() => {
         if (!orders.length) return
+        let amount
+        const {totalClient} = totalPrice(orders)
+        if (quote) {
+            amount = Number(totalClient) + quote.fee.feeIVAStripe
+        } else {
+            amount = Number(totalClient)
+        }
         if (!dataStripe) {
-            const {totalClient} = totalPrice(orders)
-            createPaymentRequest({userId: user.id, email: user.email, amount: totalClient, description: orderDescription, payInPlace: false})
+            createPaymentRequest({
+                userId: user.id,
+                email: user.email,
+                amount,
+                description: orderDescription,
+                payInPlace: false
+            })
                 .then(data => {
                     if (data.clientSecret) {
                         const { clientSecret, id, status } = data
@@ -95,8 +121,7 @@ function ModalCheckoutForm() {
                     else console.log('Error:', data.message)
                 })
         } else {
-            const {totalClient} = totalPrice(orders)
-            updatePaymentRequest({amount: totalClient, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
+            updatePaymentRequest({amount, description: orderDescription, stripeId: dataStripe.id, payInPlace: false})
                 .then(data => {
                     if (data.clientSecret) {
                         const { clientSecret, id, status } = data
@@ -106,6 +131,19 @@ function ModalCheckoutForm() {
                     else console.log('Error:', data.message)
                 })
         }
+    }, [orders, quote])
+
+    useEffect(() => {
+        if (!orders.length && Object.keys(checkout).length ) return
+        const {totalPriceCar, commissionIVA, IVA, commissionStripe, totalClient} = totalPrice(orders)
+        const newPrices = {
+            totalPriceCar,
+            commissionIVA,
+            IVA,
+            commissionStripe,
+            totalClient
+        }
+        handleAddCheckout(newPrices)
     }, [orders])
 
     const appearance = {
@@ -134,20 +172,23 @@ function ModalCheckoutForm() {
         >
             <Grid
                 container
+                wrap='nowrap'
                 sx={style}
-                alignItems={'stretch'}
             >
-                <Typography
-                    variant='title'
-                    gutterBottom
-                >
-                    { place.typeDelivery && place.typeDelivery.totalName }
-                </Typography>
+                <Grid>
+                    <Typography
+                        variant='title'
+                        gutterBottom
+                    >
+                        { place.typeDelivery && place.typeDelivery.totalName }
+                    </Typography>
+                </Grid>
                 <Box
+                    id='cotainer-data-CheckoutForm'
                     sx={{
                         height: '90%',
                         width: '100%',
-                        overflowY: 'scroll',
+                        overflowY: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -166,8 +207,10 @@ function ModalCheckoutForm() {
                         orders={orders}
                         payment_method={payment_method}
                         checkout={checkout}
+                        quote={quote}
                     />
                     <Typography
+                        id='title-Pago-CheckoutForm'
                         variant='title'
                         gutterBottom
                         sx={{
@@ -202,6 +245,7 @@ function ModalCheckoutForm() {
                                         place={place}
                                         orders={orders}
                                         checkout={checkout}
+                                        quote={quote}
                                         payment_method={payment_method}
                                         dataStripe={dataStripe}
                                         handlePaymentMethod={handlePaymentMethod}
@@ -212,6 +256,10 @@ function ModalCheckoutForm() {
                             )
                         }
                     </Grid>
+                    <MoveDown
+                        sectionToGo={'#title-Pago-CheckoutForm'}
+                        containerId={ '#cotainer-data-CheckoutForm' }
+                    />
                 </Box>                
             </Grid>
         </Modal> 

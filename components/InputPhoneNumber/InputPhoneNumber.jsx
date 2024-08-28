@@ -11,6 +11,7 @@ function InputPhoneNumber({ numberPhone, errorsNumberPhone, userLoged, type, han
         <MuiTelInput
             // open={open}
             // onClose={handleClose}
+            placeholder='+52 + Teléfono'
             type={ userLoged && !type ? 'button' : 'text'}
             value={ numberPhone }
             onChange={handleChangeNumberPhone}

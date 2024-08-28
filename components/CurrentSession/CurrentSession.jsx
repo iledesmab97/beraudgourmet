@@ -29,10 +29,10 @@ function CurrentSession() {
         setAnchorEl(null)
     }
 
-    function logOut() {
+    async function logOut() {
         handleCloseUserMenu()
-        signOff()
-        router.push('/menu')
+        await signOff()
+        router.push('/pizzas')
     }
 
     return (

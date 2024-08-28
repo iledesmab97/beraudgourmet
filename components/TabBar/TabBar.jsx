@@ -9,19 +9,18 @@ import Tab from '@mui/material/Tab'
 
 import styles from './TabBar.module.css'
 
-const listTabs = [
-    'Todas las ordenes',
-    'Entregadas',
-    'Pendientes'
-]
-
-function TabBar({ tabSelected, handleChange }) {
+function TabBar({ tabSelected, handleChange, listTabs }) {
 
     return (
-        <Box className={styles.TabsBar}>
+        <Box
+            className={styles.TabsBar}
+        >
             <Tabs
                 value={tabSelected}
                 onChange={handleChange}
+                variant="scrollable"
+                scrollButtons
+                allowScrollButtonsMobile
             >
                 {
                     listTabs.map(tab => (

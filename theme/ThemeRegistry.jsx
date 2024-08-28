@@ -75,32 +75,59 @@ const themeOptions = {
       lineHeight: 1,
       padding: 9,
       fontSize: "0.8rem",
+    },
+    footer_title: {
+      fontFamily: "Montserrat",
+      fontWeight: 700,
+      lineHeight: 1.5,
+      padding: 9,
+      fontSize: "1rem",
+      color: 'white'
+    },
+    footer_text_link: {
+      fontFamily: "Montserrat",
+      fontWeight: 300,
+      lineHeight: 1,
+      padding: 9,
+      fontSize: "0.9rem",
+      color: '#EAEDF2',
+      '&:hover': {
+        textDecoration: 'underline'
+      }
+    },
+    footer_text: {
+      fontFamily: "Montserrat",
+      fontWeight: 300,
+      lineHeight: 1,
+      padding: 9,
+      fontSize: "0.9rem",
+      color: '#EAEDF2'
     }
   },
   components: {
-    MuiTextField: {
-      variants: [
-       {
-        props: {
-          variant: 'standard'
-        },
-        style: {
-          root: {
-            borderRadius: "4px",
-          },
-          input: {
-            width: "242px",
-            fontSize: "1.8rem",
-            fontFamily: "inherit",
-            border: "none",
-            backgroundColor: "#CCC",
-            borderRadius: "2px",
-            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
-          },
-        }
-       } 
-      ],
-    },
+    // MuiTextField: {
+    //   variants: [
+    //    {
+    //     props: {
+    //       variant: 'standard'
+    //     },
+    //     style: {
+    //       root: {
+    //         borderRadius: "4px",
+    //       },
+    //       input: {
+    //         width: "242px",
+    //         fontSize: "1.8rem",
+    //         fontFamily: "inherit",
+    //         border: "none",
+    //         backgroundColor: "#CCC",
+    //         borderRadius: "2px",
+    //         boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+    //       },
+    //     }
+    //    } 
+    //   ],
+    // },
     MuiGrid: {
       variants: [
        {

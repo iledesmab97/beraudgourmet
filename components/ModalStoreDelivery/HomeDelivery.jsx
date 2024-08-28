@@ -1,47 +1,54 @@
-'use client'
+"use client";
 
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment'
-import SearchIcon from '@mui/icons-material/Search';
-import PlaceFinder from '../PlaceFinder/PlaceFinder';
-import FormModalDeliveryPlace from '../ModalDeliveryPlace/FormModalDeliveryPlace'
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
-export default function HomeDelivery({
-    handleInputsAddress,
-    inputsHome,
-    typeLocation,
-    withinLimitSaved,
-    changeWithinLimitSaved,
-    distanceSaved,
-    closerStore,
-    handleDistanceSaved,
-    handleInputsHome,
-    handleTypeLocation,
-    handleCloserStore
-}) {
+import PlaceFinder from "../PlaceFinder/PlaceFinder";
+import FormModalDeliveryPlace from "../ModalDeliveryPlace/FormModalDeliveryPlace";
+
+import useHandlePlace from "@/hooks/useHandlePlace";
+import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
+
+import QuoteComponent from "../UberComponents/QuoteComponent";
+
+export default function HomeDelivery() {
+    const {
+        inputsHome,
+        typeLocation,
+        closerStore,
+        changeWithinLimitSaved,
+        handleInputsAddress,
+        handleDistanceSaved,
+        handleInputsHome,
+        handleTypeLocation,
+        handleCloserStore,
+    } = useHandlePlace();
+    const { nextStepGuide } = useHandleShoppingGuide();
 
     return (
         <>
             <Box
+                id="HomeDelivery-container"
                 sx={{
-                    width: '100%',
-                    maxHeight: '430px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
+                    width: "100%",
+                    maxHeight: {
+                        xs: "335px",
+                        sm: "490px",
+                        md: "430px",
+                    },
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
                     gap: 2,
-                    overflowY: 'auto',
-                    pr: 1
+                    overflowY: "auto",
+                    pr: 1,
                 }}
-            >    
+            >
                 <Typography
-                    variant='title'
+                    variant="title"
                     sx={{
-                    alignSelf: 'flex-start'
+                        alignSelf: "flex-start",
                     }}
                 >
                     DIRECCIÓN DE ENTREGA
@@ -49,27 +56,42 @@ export default function HomeDelivery({
 
                 <PlaceFinder
                     changeWithinLimitSaved={changeWithinLimitSaved}
-                    withinLimitSaved={withinLimitSaved}
+                    withinLimitSaved={inputsHome.withinLimitSaved}
                     handleInputsAddress={handleInputsAddress}
                     inputAddress={inputsHome.inputAddress}
-                    distanceSaved={distanceSaved}
+                    distanceSaved={inputsHome.distanceSaved}
+                    inputsHome={inputsHome}
                     closerStore={closerStore}
                     handleDistanceSaved={handleDistanceSaved}
                     handleCloserStore={handleCloserStore}
                 />
-                {
-                    withinLimitSaved
-                        ? <FormModalDeliveryPlace
+
+                {inputsHome.withinLimitSaved && closerStore ? (
+                    <>
+                        <QuoteComponent
+                            text={{
+                                width: "70%",
+                            }}
+                            spinner={{
+                                large: "20%",
+                            }}
+                            helperText={{
+                                textAlign: "right",
+                                mt: 0,
+                            }}
+                        />
+                        <FormModalDeliveryPlace
                             inputsHome={inputsHome}
                             typeLocation={typeLocation}
                             closerStore={closerStore}
                             handleInputsHome={handleInputsHome}
                             handleTypeLocation={handleTypeLocation}
-                            currentModal='place'
+                            currentModal="place"
+                            nextStep={nextStepGuide}
                         />
-                        : null
-                }
+                    </>
+                ) : null}
             </Box>
         </>
-    )
+    );
 }

@@ -1,99 +1,93 @@
-import { createSlice } from "@reduxjs/toolkit"
-
-const modal = {
-    email: '',
-    name: '',
-    phone: '',
-    password: '',
-    notifications: ''
-}
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     order: {
-        open: false
+        open: false,
     },
     place: {
-        open: false
+        open: false,
     },
     storesDetail: {
-        open: false
+        open: false,
     },
     deliveryPlace: {
-        open: false
+        open: false,
     },
     user: {
-        open: false
+        open: false,
     },
     changePassword: {
-        open: false
+        open: false,
     },
     changeEmail: {
-        open: false
+        open: false,
     },
     pay: {
-        open: false
+        open: false,
     },
     userOrders: {
-        open: false
-    }
-}
+        open: false,
+    },
+    legal: {
+        open: false,
+    },
+};
 
 export const modalSlice = createSlice({
-    name: 'modal',
+    name: "modal",
     initialState,
     reducers: {
-
         openModal: (state, action) => {
             return {
                 ...state,
                 [action.payload]: {
                     ...state[action.payload],
-                    open: true
-                }
-            }
+                    open: true,
+                },
+            };
         },
         closeModal: (state, action) => {
             return {
                 ...state,
                 [action.payload]: {
                     ...state[action.payload],
-                    open: false
-                }
-            }
+                    open: false,
+                },
+            };
         },
         closeModalPlace: (state, action) => {
             return {
                 ...state,
                 place: {
                     ...state.place,
-                    open: false
-                }
-            }
+                    open: false,
+                },
+            };
         },
         openModalOrder: (state, action) => {
-            const {item, index} = action.payload
+            const { item, index } = action.payload;
             if (index) {
                 return {
                     ...state,
                     order: {
                         ...state.order,
-                        open:true,
+                        open: true,
                         edit: {
                             item,
-                            index
-                        }
-                    }
-                }
+                            index,
+                        },
+                    },
+                };
             }
             if (state.order[action.payload.item.name]) {
                 return {
                     ...state,
                     order: {
                         ...state.order,
-                        open:true,
-                        currentProduct: item.name
-                    }
-                }
+                        open: true,
+                        currentProduct: item.name,
+                    },
+                };
             }
             return {
                 ...state,
@@ -101,9 +95,9 @@ export const modalSlice = createSlice({
                     ...state.order,
                     [item.name]: item,
                     open: true,
-                    currentProduct: item.name
-                }
-            }
+                    currentProduct: item.name,
+                },
+            };
         },
         closeModalOrder: (state, action) => {
             const newState = {
@@ -111,25 +105,28 @@ export const modalSlice = createSlice({
                 order: {
                     ...state.order,
                     open: false,
-                    edit: null 
-                }
-            }
-            return newState
+                    edit: null,
+                },
+            };
+            return newState;
         },
         updateModalOrder: (state, action) => {
-            const nameProduct = state.order.currentProduct
+            const nameProduct = state.order.currentProduct;
             return {
                 ...state,
                 order: {
                     ...state.order,
-                    [nameProduct]: action.payload
-                }
-            }
-        }
-    }
-})
+                    [nameProduct]: action.payload,
+                },
+            };
+        },
+        updateModalToInitialState: (state, action) => {
+            return initialState;
+        },
+    },
+});
 
-export default modalSlice.reducer
+export default modalSlice.reducer;
 
 export const {
     openModal,
@@ -137,5 +134,6 @@ export const {
     closeModalPlace,
     openModalOrder,
     closeModalOrder,
-    updateModalOrder
-} = modalSlice.actions
+    updateModalOrder,
+    updateModalToInitialState,
+} = modalSlice.actions;

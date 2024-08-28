@@ -1,12 +1,6 @@
 [
     {
-        "title": "Menú",
-        "path": "/menu",
-        "subNav": [
-            {
-                "title": "Pizzas",
-                "path": "Pizza-Section"
-            }
-        ]
+        "title": "Pizzas",
+        "path": "/pizzas"
     }
 ]

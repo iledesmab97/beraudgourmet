@@ -1,49 +1,59 @@
-'use client'
+"use client";
 
-import useGetPlace from '@/hooks/useGetPlace'
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete';
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import PlaceIcon from '@mui/icons-material/Place';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import ItemPlace from '../PlaceFinder/ItemPlace'
+import PlaceIcon from "@mui/icons-material/Place";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 
-export default function StorePickup({ storeList, handleInputsStore, inputsStore, handleCloseModal }) {
+import ItemPlace from "../PlaceFinder/ItemPlace";
 
-    const { handleAddPlace, handleTypeDelivery } = useGetPlace()
+import { useDispatch } from "react-redux";
+import useGetPlace from "@/hooks/useGetPlace";
+import useLocalData from "@/hooks/useLocalData";
+
+import { makePlace } from "@/stores/place/slice";
+
+export default function StorePickup({
+    storeList,
+    handleInputsStore,
+    inputsStore,
+    handleCloseModal,
+    nextStep,
+}) {
+    const { handleTypeDelivery } = useGetPlace();
+    const { saveLocalData } = useLocalData();
+    const dispatch = useDispatch()
 
     return (
         <>
-            <Box sx={{ width: '100%'}}>    
+            <Box sx={{ width: "100%" }}>
                 <Typography
-                variant='title'
-                sx={{
-                    alignSelf: 'flex-start'
-                }}
+                    id="modal-subtitle-BUSCAR"
+                    variant="title"
+                    sx={{
+                        alignSelf: "flex-start",
+                    }}
                 >
-                BUSCAR
+                    BUSCAR
                 </Typography>
 
                 <Autocomplete
                     disablePortal
-                    id='autocomplete-StorePickup'
-                    size='small'
+                    id="autocomplete-StorePickup"
+                    size="small"
                     fullWidth
                     options={Object.keys(storeList)}
-                    getOptionLabel={option => option}
-                    renderOption={
-                        (props, option) => (
-                        <ItemPlace
-                            {...props}
-                            place={option}
-                            key={option}
-                        />
+                    getOptionLabel={(option) => option}
+                    renderOption={(props, option) => (
+                        <ItemPlace {...props} place={option} key={option} />
                     )}
                     onChange={handleInputsStore}
                     renderInput={(params) => (
@@ -51,66 +61,82 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
                             {...params}
                             id="location"
                             label="Escriba su pueblo o ciudad"
-                            type='text'
-                            size='small'
-                            margin='dense'
+                            type="text"
+                            size="small"
+                            margin="dense"
                             fullWidth
                         />
                     )}
                 />
             </Box>
-            
+
             <Box
                 sx={{
-                    width:'100%',
-                    height: 370,
-                    overflowY: 'auto'
+                    width: "100%",
+                    height: {
+                        xs: "auto",
+                        sm: 360,
+                    },
                 }}
             >
                 <Typography
-                    variant='title'
+                    id="modal-subtitle-cityName"
+                    variant="title"
                     sx={{
-                        alignSelf: 'flex-start'
+                        alignSelf: "flex-start",
                     }}
                 >
-                {inputsStore.toUpperCase()}
+                    {inputsStore.toUpperCase()}
                 </Typography>
                 <List
                     sx={{
-                        width: '100%',
-                        p: '0px',
-                        position: 'static',
-                        overflow: 'hidden'
+                        width: "100%",
+                        height: {
+                            xs: "auto",
+                            sm: "90%",
+                        },
+                        p: "0px",
+                        position: "static",
+                        overflow: {
+                            xs: "hidden",
+                            sm: "auto",
+                        },
                     }}
                 >
-                    {
-                        storeList[inputsStore].stores.map((store, index) => (
+                    {storeList.map((store, index) => (
                         <ListItem
                             key={store.name + index}
-                            alignItems='flex-start'
+                            alignItems="flex-start"
                             sx={{
-                            borderTop: 1,
-                            borderColor: 'divider',
-                            p: 0,
-                            py: 2
+                                borderTop: 1,
+                                borderColor: "divider",
+                                p: 0,
+                                py: 2,
                             }}
                         >
-
                             <Box
                                 sx={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: {
+                                        xs: "column",
+                                        sm: "row",
+                                    },
+                                    justifyContent: "space-between",
                                 }}
                             >
                                 <Box
                                     sx={{
-                                        display: 'flex'
+                                        display: "flex",
+                                        width: {
+                                            xs: "100%",
+                                            sm: "65%",
+                                        },
                                     }}
                                 >
                                     <ListItemIcon
                                         sx={{
-                                            minWidth: '28px'
+                                            minWidth: "28px",
                                         }}
                                     >
                                         <PlaceIcon />
@@ -118,78 +144,118 @@ export default function StorePickup({ storeList, handleInputsStore, inputsStore,
 
                                     <Box
                                         sx={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'flex-start'
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "flex-start",
                                         }}
                                     >
-                                        <Typography
-                                            variant='title'  
-                                        >
+                                        <Typography variant="title">
                                             {store.name}
                                         </Typography>
                                         <Typography
-                                            variant='p'
-                                            component='p'
+                                            variant="p"
+                                            component="p"
                                             sx={{
-                                            px: 0
+                                                px: 0,
                                             }}
                                         >
                                             {store.place}
                                         </Typography>
                                         <Box
                                             sx={{
-                                            display: 'flex',
-                                            alignItems: 'center'
+                                                display: "flex",
+                                                alignItems: "center",
                                             }}
                                         >
                                             <LocalPhoneIcon />
-                                            <Typography
-                                                variant='p'
-                                            >
+                                            <Typography variant="p">
                                                 {store.phone}
                                             </Typography>
                                         </Box>
                                     </Box>
                                 </Box>
-                                <Box
+                                <Grid
+                                    container
+                                    direction={{
+                                        xs: "column",
+                                    }}
+                                    justifyContent={"space-between"}
+                                    alignItems={"flex-end"}
+                                    spacing={{
+                                        xs: 1,
+                                    }}
                                     sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-end',
-                                    mr: 1
+                                        width: {
+                                            xs: "100%",
+                                            sm: "fit-content",
+                                        },
+                                        mr: 1,
                                     }}
                                 >
-                                    <Typography
-                                        variant='title'
-                                    >
-                                        {store.open ? 'Abierto': 'Cerrado'}
-                                    </Typography>
-                                    <Typography>
-                                        {store.closeTime}
-                                    </Typography>
-                                    <Button
-                                        variant='contained'
-                                        size='small'
-                                        sx={{
-                                            mt: 2
+                                    <Grid
+                                        item
+                                        container
+                                        direction={{
+                                            xs: "row",
+                                            sm: "column",
                                         }}
-                                        onClick={() => {
-                                            handleAddPlace({closerStore: store})
-                                            handleTypeDelivery({name: 'store', totalName: 'Recoger en tienda'})
-                                            handleCloseModal('place')
+                                        alignItems={{
+                                            xs: "center",
+                                            sm: "flex-end",
                                         }}
-                                        disabled={!store.open}
+                                        justifyContent={{
+                                            xs: "flex-end",
+                                            sm: "flex-start",
+                                        }}
+                                        spacing={{
+                                            xs: 1,
+                                            sm: 0,
+                                        }}
                                     >
-                                        Haga su pedido ahora
-                                    </Button>
-                                </Box>
+                                        <Grid item>
+                                            <Typography variant="title">
+                                                {store.open
+                                                    ? `Cerramos a las:`
+                                                    : `Abrimos a las:`}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography variant="title">
+                                                {store.open
+                                                    ? store.closeTime
+                                                    : store.openTime}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            onClick={() => {
+                                                dispatch(makePlace({
+                                                    closerStore: store
+                                                }))
+                                                saveLocalData("place", {
+                                                    closerStore: store.id,
+                                                });
+                                                handleTypeDelivery({
+                                                    name: "store",
+                                                    totalName:
+                                                        "Recoger en tienda",
+                                                });
+                                                handleCloseModal("place");
+                                                nextStep("store");
+                                            }}
+                                        >
+                                            Recoger en esta tienda
+                                        </Button>
+                                    </Grid>
+                                </Grid>
                             </Box>
                         </ListItem>
-                        ))
-                    }
+                    ))}
                 </List>
             </Box>
         </>
-    )
+    );
 }

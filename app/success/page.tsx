@@ -1,6 +1,11 @@
 'use client'
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import useGetOrders from '@/hooks/useGetOrders'
+import useGetModal from '@/hooks/useGetModal'
+import useGetPlace from '@/hooks/useGetPlace'
+
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,6 +18,15 @@ import styles from './page.module.css'
 function SuccessPay() {
 
     const router = useRouter()
+    const { handleUpdateOrderToInitialState } = useGetOrders()
+    const { handleUpdateModalToInitialState } = useGetModal({modalType: 'pay'})
+    const { handleUpdatePlaceToInitialState } = useGetPlace()
+
+    useEffect(() => {
+        handleUpdateOrderToInitialState()
+        handleUpdateModalToInitialState()
+        handleUpdatePlaceToInitialState()
+    }, [])
 
     return (
         <Grid
@@ -21,8 +35,8 @@ function SuccessPay() {
             justifyContent='center'
             alignItems='center'
             sx={{
-                // bgcolor: 'green',
-                py: '5%'
+                position: 'absolute',
+                top: '30%',
             }}
         >
             <Box
@@ -37,7 +51,7 @@ function SuccessPay() {
                     variant='contained'
                     onClick={() => {
                         saveModal('userOrders')
-                        router.push('/menu')
+                        router.push('/pizzas')
                     }}
                 >
                     Ver historial de compras

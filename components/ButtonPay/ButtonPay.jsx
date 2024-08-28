@@ -1,41 +1,42 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import useGetModal from '@/hooks/useGetModal'
-import useGetOrders from '@/hooks/useGetOrders'
-import useGetPlace from '@/hooks/useGetPlace'
-import useGetUser from '@/hooks/useGetUser'
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 
-import Button from '@mui/material/Button'
+import useGetModal from "@/hooks/useGetModal";
+import useCanPay from "@/hooks/useCanPay";
+
+const textHelperText = {
+    user: "Aún no hay un usuario registrado",
+    orders: "No se ha hecho ningún pedido",
+    place: "No se ha indicado un lugar de entrega",
+    time: "El tiempo indicado está fuera del rango permitido",
+};
 
 function ButtonPay() {
-
-    const { handleOpenModal } = useGetModal({modalType: 'pay'})
-    const [canPay, setCanPay] = useState(false) 
-    const {orders} = useGetOrders()
-    const { place } = useGetPlace()
-    const { user } = useGetUser()
-
-    useEffect(() => {
-        if ( !orders.length || !user.email || !place.closerStore ) {
-            if (canPay) return setCanPay(false)
-            return
-        }
-        setCanPay(true)
-    }, [orders, place, user])
+    const { handleOpenModal } = useGetModal({ modalType: "pay" });
+    const { canPay, missing, whatDataMissing } = useCanPay();
 
     return (
-        <Button
-            variant='contained'
-            color='secondary'
-            sx={{ my:1 }}
-            fullWidth
-            disabled={!canPay}
-            onClick={() => {
-                handleOpenModal('pay')
-            }}
-        >Pagar</Button>
-    )
+        <FormControl fullWidth>
+            <Button
+                variant="contained"
+                color="primary"
+                sx={{ my: 1 }}
+                fullWidth
+                disabled={!canPay}
+                onClick={() => {
+                    if (!whatDataMissing()) handleOpenModal("pay");
+                }}
+            >
+                Pagar
+            </Button>
+            <FormHelperText sx={{ textAlign: "center" }}>
+                {missing ? textHelperText[missing] : missing}
+            </FormHelperText>
+        </FormControl>
+    );
 }
 
-export default ButtonPay
+export default ButtonPay;

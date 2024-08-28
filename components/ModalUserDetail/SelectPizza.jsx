@@ -1,0 +1,400 @@
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import TextField from '@mui/material/TextField'
+import IconButton from '@mui/material/IconButton'
+
+import CancelIcon from '@mui/icons-material/Cancel';
+
+import useGetProducts from '@/hooks/useGetProducts'
+import useGetExtraIngredients from '@/hooks/useGetExtraIngredients'
+import { useState, useEffect, useRef } from 'react'
+
+import { getAllMasses, getAllSizes } from '@/services/pizzaCharacteristicsApi'
+import { calculateTotalToPay } from '@/utils/priceCar'
+
+function SelectPizza({ product, index, updateProduct, updateManyPropertiesProduct, handleRemoveProduct }) {
+
+    const { products } = useGetProducts({ type: 'pizzas'})
+    const { extraIngredients } = useGetExtraIngredients()
+    const [ pizzas, setPizzas ] = useState( products ? products : [])
+    const [massList, setMassList] = useState([])
+    const [sizeList, setSizeList] = useState([])
+    const [extraIngredientsList, setExtraIngredients] = useState(() => {
+        if (Object.keys(extraIngredients).length) return []
+        const newList = []
+        for (let extra in extraIngredients) {
+            newList.push(extraIngredients[extra])
+        }
+        return newList
+    })
+    const firstTime = useRef(true)
+    
+    // Actualizar pizzas cuando products cambie
+    useEffect(() => {
+        if (!products) return
+        setPizzas(products)
+    }, [products])
+
+    // Solicitar la lista de Masas y Tamaños de pizzas disponibles
+    useEffect(() => {
+        if (!massList.length) {
+            getAllMasses().then(data => {
+                setMassList(data)
+            })
+        }
+        if (!sizeList.length) {
+            getAllSizes().then(data => {
+                setSizeList(data)
+            })
+        }
+    }, [])
+
+    // Actualizar extraIngredientsList cuando se modifique extraIngredients
+    useEffect(() => {
+        if (extraIngredientsList.length) return
+        setExtraIngredients(() => {
+            if (!Object.keys(extraIngredients).length) return []
+            const newList = []
+            for (let extra in extraIngredients) {
+                newList.push(extraIngredients[extra])
+            }
+            return newList
+        })
+    }, [extraIngredients])
+
+    // Añadir las propiedades quanity, constItemPerUnit y totalCostByItem cuando se haya seleccionado una pizza con su tamaño y masa
+    useEffect(() => {
+        if (!(product.pizza && product.size && product.mass && firstTime.current)) return
+        firstTime.current = false
+        updateManyPropertiesProduct({
+            properties: {
+                quantity: 1,
+                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] ),
+                totalCostByItem: calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], product.extraIngredients ? product.extraIngredients : [] )
+            },
+            index
+        })
+    }, [product])
+
+    // Actualizar los costos cada vez que se actualiza product.extraIngredients o product.quantity
+    useEffect(() => {
+        if (!(product.pizza && product.size && product.mass && !firstTime.current)) return
+        const extraIngredients = product.extraIngredients ? product.extraIngredients : []
+        updateManyPropertiesProduct({
+            properties: {
+                costItemPerUnit: 1 * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], extraIngredients ),
+                totalCostByItem: product.quantity * calculateTotalToPay(product.pizza.price[product.size.size][product.mass.name], extraIngredients )
+            },
+            index
+        })
+    }, [product.extraIngredients, product.quantity])
+
+    function handleChangeSelectPizza(event) {
+        const pizza = pizzas.find(pizza => pizza.name === event.target.value)
+        updateProduct({ property: 'pizza', value: pizza, index})
+    }
+
+    function handleChangeSizeSelected(event) {
+        const { value } = event.target
+        const newSizeSelected = sizeList.find(size => size.size === value)
+        updateProduct({ property: 'size', value: newSizeSelected, index})
+    }
+
+    function handleChangeMassSelected(event) {
+        const { value } = event.target
+        const newMassSelected = massList.find(mass => mass.name === value)
+        updateProduct({ property: 'mass', value: newMassSelected, index })
+    }
+
+    function handleChangePizzaIngredients(event) {
+        const { value } = event.target
+        updateProduct({ property: 'ingredientsOut', value, index })
+    }
+
+    function handleChangeExtraIngredientsSelected(event) {
+        const newList = event.target.value
+        const listExtraIngredients = product.extraIngredients ? product.extraIngredients : []
+        const newExtraIngredientsSelected = listExtraIngredients.filter(extraIngredient => newList.includes(extraIngredient.name))
+        newList.forEach(extraIngredient => {
+            if (!newExtraIngredientsSelected.some(extraIngredientNew => extraIngredientNew.name === extraIngredient)) {
+                const newExtraIngredient = extraIngredientsList.find(totalExtraIngredient => totalExtraIngredient.name === extraIngredient )
+                newExtraIngredientsSelected.push({
+                    ...newExtraIngredient,
+                    count: 1,
+                    total: newExtraIngredient.totalPrice
+                })
+            }
+        })
+        updateProduct({ property: 'extraIngredients', value: newExtraIngredientsSelected, index })
+    }
+
+    function handleChangeQuantityExtraIngredientsSelected(event, indexExtraIngredients) {
+        const number = Number(event.target.value)
+        if (Number.isNaN(number) || number < 1) return
+        const newExtraIngredientsSelected = [...product.extraIngredients]
+        newExtraIngredientsSelected[indexExtraIngredients] = {
+            ...newExtraIngredientsSelected[indexExtraIngredients],
+            count: number,
+            total: number * newExtraIngredientsSelected[indexExtraIngredients].totalPrice
+        }
+        updateProduct({ property: 'extraIngredients', value: newExtraIngredientsSelected, index })
+    }
+
+    function handleChangeQuantityPizzas(event) {
+        const { value } = event.target
+        if ( value < 1 ) return
+        updateProduct({ property: 'quantity', value , index })
+    }
+
+    return (
+        <Grid
+            container
+            item
+            spacing={2}
+            sx={{
+                width: '100%',
+                position: 'relative'
+            }}
+        >
+            <Grid item xs={4}>
+                <FormControl fullWidth>
+                    <InputLabel>Pizza *</InputLabel>
+                    <Select
+                        value={ product.pizza ? product.pizza.name : ''}
+                        label='Pizza *'
+                        onChange={handleChangeSelectPizza}
+                    >
+                        {
+                            pizzas.filter(pizza => pizza.status === 'ACTIVE').map(pizza => (
+                                <MenuItem key={pizza.name} value={pizza.name} >{pizza.name}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+            </Grid>
+            {
+                product.pizza ? (
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel>Tamaño *</InputLabel>
+                            <Select
+                                value={ product.size ? product.size.size : ''}
+                                label='Tamaño *'
+                                onChange={handleChangeSizeSelected}
+                            >
+                                {
+                                    Object.keys(product.pizza.price).map(size => (
+                                        <MenuItem key={size} value={size} >{size}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                ) : null
+            }
+            {
+                product.size ? (
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel>Masa *</InputLabel>
+                            <Select
+                                value={ product.mass ? product.mass.name : ''}
+                                label='Masa *'
+                                onChange={handleChangeMassSelected}
+                            >
+                                {
+                                    Object.keys(product.pizza.price[product.size.size]).map(mass => (
+                                        <MenuItem key={mass} value={mass} >{mass}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                ) : null
+            }
+            {
+                product.pizza && product.size && product.mass ? (
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel>Ingredientes fuera</InputLabel>
+                            <Select
+                                multiple
+                                value={ product.ingredientsOut ? product.ingredientsOut : [] }
+                                label='Ingredientes fuera'
+                                onChange={handleChangePizzaIngredients}
+                            >
+                                {
+                                    product.pizza.ingredients.map(ingredient => (
+                                        <MenuItem key={ingredient} value={ingredient} >{ingredient}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                ) : null
+            }
+            
+            <Grid container item xs={12} spacing={2}>
+                {
+                    product.pizza && product.size && product.mass ? (
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel>Ingredientes extra</InputLabel>
+                                <Select
+                                    multiple
+                                    value={ product.extraIngredients ? product.extraIngredients.map(extraIngredient => extraIngredient.name ) : []}
+                                    label='Ingredientes extra'
+                                    onChange={handleChangeExtraIngredientsSelected}
+                                >
+                                    {
+                                        extraIngredientsList.map(extraIngredient => (
+                                            <MenuItem key={extraIngredient.name} value={extraIngredient.name} >{extraIngredient.name}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    ) : null
+                }
+                {
+                    product.extraIngredients && product.extraIngredients.length ? (
+                        <Grid item xs={10} sm={7} md={6}>
+                            <List>
+                                {
+                                    product.extraIngredients.map((extraIngredient, index) => (
+                                        <ListItem key={`extraIngredientSelected(${extraIngredient.name})`}>
+                                            <ListItemText
+                                                primary={
+                                                    <Grid
+                                                        container
+                                                        spacing={1}
+                                                        alignItems={'center'}
+                                                    >
+                                                        <Grid item xs={6} md={5} >
+                                                            <TextField
+                                                                label={extraIngredient.name}
+                                                                type='number'
+                                                                value={extraIngredient.count}
+                                                                onChange={(event) => handleChangeQuantityExtraIngredientsSelected(event, index)}
+                                                                inputProps={{
+                                                                    sx:{
+                                                                        textAlign: 'center'
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </Grid>
+                                                        <Grid
+                                                            item
+                                                            sx={{
+                                                                width: 'fit-content'
+                                                            }}
+                                                        >
+                                                            <Typography>:</Typography>
+                                                        </Grid>
+                                                        <Grid item xs={5} sm={4} md={3} >
+                                                            <TextField
+                                                                label={'Costo'}
+                                                                value={ extraIngredient.total }
+                                                                InputProps={{
+                                                                    readOnly: true,
+                                                                }}
+                                                                inputProps={{
+                                                                    sx:{
+                                                                        textAlign: 'center'
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </Grid>
+                                                    </Grid>
+                                                }
+                                            />
+                                        </ListItem>
+                                    ))
+                                }
+                            </List>
+                        </Grid>
+                    ) : null
+                }
+                {
+                    product.pizza && product.size && product.mass ? (
+                        <Grid
+                            container
+                            item
+                            xs={12}
+                            sm={5}
+                            md={4}
+                            spacing={1}
+                            alignItems={'center'}
+                        >
+                            <Grid item xs={4} sm={6}>
+                                <TextField
+                                    label={'Cantidad'}
+                                    type='number'
+                                    value={product.quantity ? product.quantity : 1 }
+                                    onChange={handleChangeQuantityPizzas}
+                                    inputProps={{
+                                        sx:{
+                                            textAlign: 'center'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                            <Grid
+                                item
+                                sx={{
+                                    width: 'fit-content'
+                                }}
+                            >
+                                <Typography>:</Typography>
+                            </Grid>
+                            <Grid item xs={4} sm={5} >
+                                <TextField
+                                    label={'Total'}
+                                    value={product.totalCostByItem ? product.totalCostByItem : 0 }
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    inputProps={{
+                                        sx:{
+                                            textAlign: 'center'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    ) : null
+                }
+                
+            </Grid>
+            {
+                index ? (
+                    <Grid
+                        sx={{
+                            position: 'absolute',
+                            top: '16px',
+                            left: '100%'
+                        }}
+                    >
+                        <IconButton
+                            onClick={() => {handleRemoveProduct(index)}}
+                            sx={{
+                                color: '#f6685e'
+                            }}
+                        >
+                            <CancelIcon />
+                        </IconButton>
+                    </Grid>
+                ) : null
+            }
+        </Grid>
+    )
+}
+
+export default SelectPizza

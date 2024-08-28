@@ -1,11 +1,5 @@
 'use client'
 
-
-import useGetModal from '@/hooks/useGetModal'
-import useGetUser from '@/hooks/useGetUser'
-import useHandleUser from '@/hooks/useHandleUser'
-import UserLoged from '../OrderRewards/UserLoged'
-
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -14,23 +8,45 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 
+import UserLoged from '../OrderRewards/UserLoged'
+import MoveDown from '@/components/MoveDown/MoveDown'
+
+import useGetModal from '@/hooks/useGetModal'
+import useGetUser from '@/hooks/useGetUser'
+import useHandleUser from '@/hooks/useHandleUser'
+import useHandleSession from '@/hooks/useHandleSession'
+
+import { requestVerification, updateMyAccount } from '@/services/userApi'
+
+import styles from '@/components/MoveDown/MoveDown.module.css'
+
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
-    height: 700,
+    width: {
+        xs: '324px',
+        sm: '400px'
+    },
+    height: {
+        xs: '80%',
+        sm: '700px'
+    },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 5
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     // justifyContent: 'flex-start',
     justifyContent: 'space-between',
     gap: 2,
+    overflowY: 'auto'
   };
 
 function ModalUserInfo() {
@@ -38,6 +54,27 @@ function ModalUserInfo() {
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
     const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
+    const { closeSession } = useHandleSession()
+
+    async function sendVerification() {
+        const response = await requestVerification({email: user.email})
+        if (response.message) return alert(response.message)
+    }
+
+    function deleteAccount() {
+        updateMyAccount({ property: 'state', value: 'DESACTIVE'})
+            .then(data => {
+                if (data.message) throw new Error(data.message)
+                executeLogout()
+            })
+            .catch(error => alert(error.message))
+    }
+
+    function executeLogout() {
+        signOff()
+        closeSession()
+        handleCloseModal('user')
+    }
 
     return (
         <Modal
@@ -45,9 +82,11 @@ function ModalUserInfo() {
             onClose={() => { handleCloseModal('user') }}
         >
             <Grid
+                id={'ModalUserInfor-container'}
                 container
                 sx={style}
                 alignItems={'stretch'}
+                wrap='nowrap'
             >
                 <Typography
                     variant='title'
@@ -133,10 +172,19 @@ function ModalUserInfo() {
                         Ver historial de ordenes
                     </Button>
                     <Button
-                        onClick={ () => {}}
+                        onClick={deleteAccount}
                     >
                         Borrar mi cuenta
                     </Button>
+                    {
+                        !user.verified ? (
+                            <Button
+                                onClick={ () => {sendVerification()}}
+                            >
+                                Verificar mi correo electrónico
+                            </Button>
+                        ) : null
+                    }
                 </Grid>
                 <Grid
                     item
@@ -156,14 +204,17 @@ function ModalUserInfo() {
                         {user.email}
                     </Typography>
                     <Button
-                        onClick={ () => {
-                            signOff()
-                            handleCloseModal('user')
-                        }}
+                        id={'button-cerrar-sesion'}
+                        onClick={executeLogout}
                     >
-                        Cerrar Cesión
+                        Cerrar Sesión
                     </Button>
                 </Grid>
+                <MoveDown
+                    sectionToGo={'#button-cerrar-sesion'}
+                    containerId={ '#ModalUserInfor-container' }
+                    className={styles.buttonMoveDown2}
+                />
             </Grid>
 
         </Modal>        
