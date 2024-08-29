@@ -8,6 +8,9 @@ import { fetchStoreListThunk } from "@/stores/actions/stores";
 import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
 import MaintenanceComponent from "@/components/Maintenance/MaintenanceComponent";
+import StoreComponent from "./StoreComponent";
+import ServiciosEstaticos from "./Servicios";
+import { Box } from "@mui/material";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const colors = {
@@ -26,7 +29,7 @@ export const useLayoutContext = () => {
 const libraries = ["places"];
 
 export default function ClientWrapper({ children }) {
-    const { isLoaded, loadError } = useLoadScript({
+    useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries,
     });
@@ -158,7 +161,17 @@ export default function ClientWrapper({ children }) {
                 />
             )}
             {maintenance ? (
-                <MaintenanceComponent />
+                <Box
+                    sx={{
+                        display: "flex",
+                        bgcolor: "background.default",
+                        flexDirection: "column",
+                    }}
+                >
+                    <StoreComponent />
+                    <MaintenanceComponent />
+                    <ServiciosEstaticos />
+                </Box>
             ) : (
                 <LayoutContext.Provider value={""}>
                     {children}
