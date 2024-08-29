@@ -43,36 +43,29 @@ export default function ClientWrapper({ children }) {
 
     const requestLocationPermission = async () => {
         if (loading) return;
-        // Solicitar permiso de ubicación mientras se muestra la animación
-        if (navigator.geolocation) {
-            try {
-                const result = await navigator.permissions.query({
-                    name: "geolocation",
-                });
 
-                if (result.state === "granted") {
+        // Check if the browser supports geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
                     setLocationPermission("granted");
-                } else if (result.state === "prompt") {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            setLocationPermission("granted");
-                            setPosition(position.coords);
-                        },
-                        (error) => {
-                            console.error("Error al obtener ubicación:", error);
-                            setLocationPermission("denied");
-                        }
-                    );
-                } else {
-                    setLocationPermission("denied");
+                    setPosition(position.coords);
+                },
+                (error) => {
+                    console.error("Error al obtener ubicación:", error);
+
+                    // Check the error code to determine if the user denied permission
+                    if (error.code === error.PERMISSION_DENIED) {
+                        setLocationPermission("denied");
+                    } else {
+                        // Other errors (e.g., POSITION_UNAVAILABLE, TIMEOUT)
+                        setLocationPermission("denied");
+                    }
                 }
-            } catch (error) {
-                console.error(
-                    "Error al solicitar permiso de ubicación:",
-                    error
-                );
-                setLocationPermission("denied");
-            }
+            );
+        } else {
+            console.error("Geolocation no está soportado por este navegador.");
+            setLocationPermission("denied");
         }
     };
 
