@@ -15,8 +15,6 @@ const possiblePaths = [
 ];
 
 const pathByRoles = {
-    1: ["/admin", "/not-found"],
-    2: ["/admin", "/not-found"],
     3: [
         "/not-found",
         "/menu",
