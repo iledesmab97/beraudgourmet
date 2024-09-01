@@ -26,7 +26,7 @@ export default function RootLayout({
                     <Providers>
                         <ProtectedRoute>
                             <Header />
-                            <ClientWrapper children={children}></ClientWrapper>
+                            <ClientWrapper>{children}</ClientWrapper>
                             <Footer />
                             <WhatsappButton />
                         </ProtectedRoute>
