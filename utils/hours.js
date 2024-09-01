@@ -83,13 +83,9 @@ export function todaysScheduleIs(scheduleList) {
         const days = schedule.days.split("-");
         const indexStart = weekDaysES.indexOf(days[0]);
         const indexEnd = weekDaysES.indexOf(days[1]);
-
-        // Verifica si el día actual está dentro del rango de días
         if (indexStart <= indexEnd) {
-            // Caso normal: El rango está dentro de la misma semana (e.g., "Lunes-Miércoles")
             return indexOrderDay >= indexStart && indexOrderDay <= indexEnd;
         } else {
-            // Caso especial: El rango cruza el final de la semana (e.g., "Viernes-Martes")
             return indexOrderDay >= indexStart || indexOrderDay <= indexEnd;
         }
     });
