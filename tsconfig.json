@@ -29,7 +29,7 @@
         "**/*.tsx",
         ".next/types/**/*.ts",
         "theme/ThemeRegistry.jsx",
-        "app/pizzas/page.jsx"
-, "app/admin/page.jsx"    ],
+        "app/menu/page.jsx"
+    ],
     "exclude": ["node_modules"]
 }
