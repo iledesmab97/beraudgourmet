@@ -1,25 +1,26 @@
 "use client";
 import React from "react";
 import { Typography, Button, Box, keyframes } from "@mui/material";
-
 import { useSelector } from "react-redux";
 import { MapPin, PhoneIcon } from "lucide-react";
 import useGetModal from "@/hooks/useGetModal";
-
+import { useTheme } from "@mui/material/styles";
 import ModalStoresDetail from "@/components/ModalStoresDetail/ModalStoresDetail";
 
 export default function StoreComponent() {
+    const theme = useTheme(); // Get the theme object
     const { closerStore } = useSelector((state) => state.place);
     const { handleOpenModal } = useGetModal({ modalType: "place" });
+
     const pulse = keyframes`
     0% {
-      box-shadow: 0 0 0 0 rgba(41, 83, 134, 0.7);
+      box-shadow: 0 0 0 0 ${theme.palette.primary.main}70; // Use theme color with transparency
     }
     70% {
-      box-shadow: 0 0 0 10px rgba(41, 83, 134, 0);
+      box-shadow: 0 0 0 10px ${theme.palette.primary.main}00; // Transparent end state
     }
     100% {
-      box-shadow: 0 0 0 0 rgba(41, 83, 134, 0);
+      box-shadow: 0 0 0 0 ${theme.palette.primary.main}00; // Transparent end state
     }
   `;
 
@@ -34,6 +35,7 @@ export default function StoreComponent() {
       transform: translateY(0px);
     }
 `;
+
     return (
         <>
             {closerStore ? (
@@ -52,15 +54,14 @@ export default function StoreComponent() {
                             height: "auto",
                             borderRadius: 4,
                             padding: 3,
-                            background:
-                                "linear-gradient(45deg, #295386 30%, #4e5762 90%)",
-                            color: "white",
+                            background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.dark} 90%)`, // Use theme colors for gradient
+                            color: theme.palette.common.white, // Use theme color for text
                             textAlign: "left",
                             transition: "all 0.3s ease-in-out",
                             animation: `${pulse} 2s infinite`,
                             "&:hover": {
                                 transform: "scale(1.05)",
-                                boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+                                boxShadow: `0 10px 20px rgba(0,0,0,0.2)`,
                             },
                         }}
                         onClick={() => handleOpenModal("storesDetail")}
@@ -101,11 +102,12 @@ export default function StoreComponent() {
                                     <span
                                         style={{
                                             backgroundColor: closerStore.open
-                                                ? "#d4edda"
-                                                : "#f8d7da", // Light green if open, light red if closed
+                                                ? theme.palette.success.light
+                                                : theme.palette.error.light, // Use theme colors for background
                                             color: closerStore.open
-                                                ? "#155724"
-                                                : "#721c24", // Darker green text if open, dark red text if closed
+                                                ? theme.palette.success.main
+                                                : theme.palette.error
+                                                      .contrastText, // Use theme colors for text
                                             padding: "2px 6px",
                                             borderRadius: "4px",
                                         }}
@@ -116,23 +118,31 @@ export default function StoreComponent() {
                                     </span>
                                 </Typography>
                                 <Typography
-                                    variant="h6" // Slightly larger text for emphasis
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
-                                        color: "#1976d2", // Use a modern, blue color for the text
-                                        fontWeight: "bold", // Make the text bold
-                                        border: "1px solid #1976d2", // Add a subtle border for emphasis
-                                        padding: "4px 8px", // Add padding for spacing
-                                        borderRadius: "8px", // Rounded corners for a modern look
-                                        backgroundColor: "#e3f2fd", // Light blue background for a modern feel
-                                        maxWidth: "fit-content", // Adjust width to fit content
-                                        mt: 1, // Add some margin-top for spacing
+                                        color: theme.palette.primary
+                                            .contrastText, // Use theme color for text
+                                        fontWeight: "bold",
+                                        border: `1px solid ${theme.palette.primary.main}`, // Use theme color for border
+                                        padding: "4px 8px",
+                                        borderRadius: "8px",
+                                        backgroundColor:
+                                            theme.palette.primary.light, // Use theme color for background
+                                        maxWidth: "fit-content",
+                                        mt: 1,
+                                        fontSize: "22px",
                                     }}
                                 >
-                                    <PhoneIcon />{" "}
-                                    {/* Phone icon with a right margin for spacing */}
-                                    {closerStore.phone}
+                                    {""}
+                                    <PhoneIcon />
+                                    <Typography
+                                        variant=""
+                                        component="span"
+                                        sx={{ ml: 1 }}
+                                    >
+                                        {closerStore.phone}
+                                    </Typography>
                                 </Typography>
                             </Box>
                         </Box>
@@ -143,8 +153,8 @@ export default function StoreComponent() {
                 <Box
                     sx={{
                         display: "flex",
-                        flexDirection: "column", // Apila los elementos verticalmente
-                        alignItems: "center", // Centra el contenido horizontalmente
+                        flexDirection: "column",
+                        alignItems: "center",
                         justifyContent: "center",
                         my: 4,
                         mx: 2,
@@ -153,9 +163,9 @@ export default function StoreComponent() {
                     <MapPin size={32} color="gray" />
 
                     <Typography
-                        variant="body1" // Tamaño de texto estándar
-                        align="center" // Alinea el texto al centro
-                        sx={{ mt: 2, color: "text.primary" }} // Margen superior y color de texto primario
+                        variant="body1"
+                        align="center"
+                        sx={{ mt: 2, color: "text.primary" }}
                     >
                         Algunas funciones del sitio web necesitan permisos de
                         localización. Por favor, habilita la localización en la
