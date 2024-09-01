@@ -120,7 +120,7 @@ function Header() {
                                 <Link href="/" passHref>
                                     <MenuItem component="a">Inicio</MenuItem>
                                 </Link>
-                                <Link href="/pizzas" passHref>
+                                <Link href="/menu" passHref>
                                     <MenuItem component="a">Menús</MenuItem>
                                 </Link>
                                 <Link href="/about" passHref>
@@ -137,7 +137,7 @@ function Header() {
                         </Box>
                     ) : (
                         <>
-                            <Link href="/pizzas">
+                            <Link href="/menu">
                                 <ElegantButton color="inherit">
                                     Menús
                                 </ElegantButton>

@@ -1,121 +1,142 @@
-import { useState, useEffect, useMemo, useRef } from "react"
-import useGetUser from '@/hooks/useGetUser'
-import useDebounce from "./useDebounce"
-import useLocalData from '@/hooks/useLocalData'
+import { useState, useEffect, useMemo, useRef } from "react";
+import useGetUser from "@/hooks/useGetUser";
+import useDebounce from "./useDebounce";
+import useLocalData from "@/hooks/useLocalData";
 
-import { isPossiblePhoneNumber } from 'libphonenumber-js'
-import { userDataFromBackToFront, userDataFromFrontToBack, oneUserDataFromFrontToBack } from '@/utils/preparingData'
-import { newAccount, updateMyAccount, verifyProperty, requestLogout, verifyUserData } from '@/services/userApi'
-import { useRouter } from 'next/navigation'
+import { isPossiblePhoneNumber } from "libphonenumber-js";
+import {
+    userDataFromBackToFront,
+    userDataFromFrontToBack,
+    oneUserDataFromFrontToBack,
+} from "@/utils/preparingData";
+import {
+    newAccount,
+    updateMyAccount,
+    verifyProperty,
+    requestLogout,
+    verifyUserData,
+} from "@/services/userApi";
+import { useRouter } from "next/navigation";
 
-const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
-const validNombre=/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/
+const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+const validNombre = /^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/;
 
 const initialInputs = {
-    email: '',
-    name: '',
-    password: '',
-    numberPhone: '+52',
-}
+    email: "",
+    name: "",
+    password: "",
+    numberPhone: "+52",
+};
 
 const initialInputsEdit = {
-    email: '',
-    password: '',
-    passwordConfirmation: ''
-}
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+};
 
 function validation(inputs) {
-    const errors = {}
-    if ( !inputs.email ) errors.email = false
-    if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
-    if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
-    if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
-        const [code, place, number] = inputs.numberPhone.split(" ")
-        if (!code) errors.numberPhone = 'Coloca el código del país'
-        if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
+    const errors = {};
+    if (!inputs.email) errors.email = false;
+    if (inputs.email && !validEmail.test(inputs.email))
+        errors.email = "Ingrese un correo válido";
+    if (inputs.name && !validNombre.test(inputs.name))
+        errors.name = "No colocar números ni caracteres especiales";
+    if (!(inputs.numberPhone === undefined || inputs.numberPhone === null)) {
+        const [code, place, number] = inputs.numberPhone.split(" ");
+        if (!code) errors.numberPhone = "Coloca el código del país";
+        if (place && !isPossiblePhoneNumber(inputs.numberPhone))
+            errors.numberPhone = "Número de teléfono inválido";
     }
-    return errors
+    return errors;
 }
 
 function lastValidation(inputs) {
-    const errors = {}
-    if ( !inputs.email ) errors.email = 'Este campo no puede estar vacio'
-    if ( inputs.email && !validEmail.test(inputs.email)) errors.email = 'Ingrese un correo válido'
-    if ( !inputs.name ) errors.name = 'Este campo no puede estar vacio'
-    if ( inputs.name && !validNombre.test(inputs.name) ) errors.name = 'No colocar números ni caracteres especiales'
-    if ( !inputs.password ) errors.password = 'Este campo no puede estar vacio'
-    if ( inputs.passwordConfirmation === "" ) errors.passwordConfirmation = 'Este campo no puede estar vacio'
-    if ( !inputs.numberPhone ) errors.numberPhone = 'Este campo no puede estar vacio'
-    if ( !(inputs.numberPhone === undefined || inputs.numberPhone === null) ) {
-        const [code, place, number] = inputs.numberPhone.split(" ")
-        if (!code) errors.numberPhone = 'Coloca el código del país'
-        if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
+    const errors = {};
+    if (!inputs.email) errors.email = "Este campo no puede estar vacio";
+    if (inputs.email && !validEmail.test(inputs.email))
+        errors.email = "Ingrese un correo válido";
+    if (!inputs.name) errors.name = "Este campo no puede estar vacio";
+    if (inputs.name && !validNombre.test(inputs.name))
+        errors.name = "No colocar números ni caracteres especiales";
+    if (!inputs.password) errors.password = "Este campo no puede estar vacio";
+    if (inputs.passwordConfirmation === "")
+        errors.passwordConfirmation = "Este campo no puede estar vacio";
+    if (!inputs.numberPhone)
+        errors.numberPhone = "Este campo no puede estar vacio";
+    if (!(inputs.numberPhone === undefined || inputs.numberPhone === null)) {
+        const [code, place, number] = inputs.numberPhone.split(" ");
+        if (!code) errors.numberPhone = "Coloca el código del país";
+        if (place && !isPossiblePhoneNumber(inputs.numberPhone))
+            errors.numberPhone = "Número de teléfono inválido";
     }
-    return errors
+    return errors;
 }
 
 function searchUser(email) {
-    if (!email) return null
+    if (!email) return null;
     return fetch(`${PATH_BACK}/users/registered?email=${email}`)
-        .then(res => res.json())
-        .then(data => {
-            return data
-        })
+        .then((res) => res.json())
+        .then((data) => {
+            return data;
+        });
 }
 
 function useHandleUser() {
-
-    const { user, handleAddUser, handleUpdateUser, handleRemoveUser } = useGetUser()
-    const userLoged = user.name ? true : false
-    const [inputs, setInputs] = useState(() => userLoged ? {
-        email: user.email,
-        name: user.name,
-        password: user.password,
-        numberPhone: user.numberPhone
-    } : initialInputs)
+    const { user, handleAddUser, handleUpdateUser, handleRemoveUser } =
+        useGetUser();
+    const userLoged = user.name ? true : false;
+    const [inputs, setInputs] = useState(() =>
+        userLoged
+            ? {
+                  email: user.email,
+                  name: user.name,
+                  password: user.password,
+                  numberPhone: user.numberPhone,
+              }
+            : initialInputs
+    );
     const [inputsEdit, setInputsEdit] = useState({
-        email: '',
-        password: '',
-        passwordConfirmation: ''
-    })
-    const [errors, setErrors] = useState(validation(inputs))
-    const [errorsEdit, setErrorsEdit] = useState(validation(inputs))
+        email: "",
+        password: "",
+        passwordConfirmation: "",
+    });
+    const [errors, setErrors] = useState(validation(inputs));
+    const [errorsEdit, setErrorsEdit] = useState(validation(inputs));
     const [editing, setEditing] = useState({
         name: false,
-        numberPhone: false
-    })
-    const { debounceSetValue } = useDebounce()
-    const lastDataSet = useRef('')
-    const { saveLocalData } = useLocalData()
+        numberPhone: false,
+    });
+    const { debounceSetValue } = useDebounce();
+    const lastDataSet = useRef("");
+    const { saveLocalData } = useLocalData();
 
-    const [currentUser, setCurrentUser] = useState(null)
-    const router = useRouter()
+    const [currentUser, setCurrentUser] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         debounceSetValue(() => {
-            setErrors(validation(inputs))
-            if (!userLoged && (lastDataSet.current === 'email') && inputs.email) {
-                searchUser(inputs.email)
-                    .then(data => {
-                        if (data === true || data === false) setCurrentUser(data)
-                })
+            setErrors(validation(inputs));
+            if (!userLoged && lastDataSet.current === "email" && inputs.email) {
+                searchUser(inputs.email).then((data) => {
+                    if (data === true || data === false) setCurrentUser(data);
+                });
             }
-            if (!inputs.email) setCurrentUser(false)
-        }, 500)
-    }, [inputs])
+            if (!inputs.email) setCurrentUser(false);
+        }, 500);
+    }, [inputs]);
 
     useEffect(() => {
         debounceSetValue(() => {
-            const newError = validation(inputsEdit)
-            if ( !newError.email && inputsEdit.email === user.email ) {
-                newError.email = 'Debe ingresar otro correo electrónico'
+            const newError = validation(inputsEdit);
+            if (!newError.email && inputsEdit.email === user.email) {
+                newError.email = "Debe ingresar otro correo electrónico";
             }
             // setErrors(newError)
-            setErrorsEdit(newError)
-        }, 500)
-    }, [inputsEdit])
+            setErrorsEdit(newError);
+        }, 500);
+    }, [inputsEdit]);
 
     useEffect(() => {
         if (userLoged) {
@@ -123,184 +144,207 @@ function useHandleUser() {
                 email: user.email,
                 name: user.name,
                 password: user.password,
-                numberPhone: user.numberPhone
-            })
+                numberPhone: user.numberPhone,
+            });
         } else {
-            setInputs(initialInputs)
+            setInputs(initialInputs);
         }
-    }, [user])
-
-    // useEffect(() => {
-    //     if (user.role === 'client' || !user.role) return
-    //     router.push('/admin')
-    // }, [user])
+    }, [user]);
 
     function handleChange(event) {
-        const { name, value } = event.target
+        const { name, value } = event.target;
         const newInputs = {
             ...inputs,
-            [name]: value
-        }
-        setInputs(newInputs)
-        lastDataSet.current = name
+            [name]: value,
+        };
+        setInputs(newInputs);
+        lastDataSet.current = name;
     }
 
     function handleChangeEdit(event) {
-        const { name, value } = event.target
-        setInputsEdit(prevInputs => ({
+        const { name, value } = event.target;
+        setInputsEdit((prevInputs) => ({
             ...prevInputs,
-            [name]: value
-        }))
+            [name]: value,
+        }));
     }
 
     function handleChangeNumberPhone(newNumberPhone) {
-        setInputs(prevInputs => ({
+        setInputs((prevInputs) => ({
             ...prevInputs,
-            numberPhone: newNumberPhone
-        }))
-        lastDataSet.current = 'numberPhone'
+            numberPhone: newNumberPhone,
+        }));
+        lastDataSet.current = "numberPhone";
     }
 
     function verifyUser() {
-        const { email, password } = inputs
-        const errors = {}
-        if ( !email ) errors.email = 'El email no puede estar vacio'
-        if ( !password ) errors.password = 'La contraseña no puede estar vacia'
-        if ( errors.email || errors.password) return setErrors(errors)
-        return verifyUserData(email, password)
+        const { email, password } = inputs;
+        const errors = {};
+        if (!email) errors.email = "El email no puede estar vacio";
+        if (!password) errors.password = "La contraseña no puede estar vacia";
+        if (errors.email || errors.password) return setErrors(errors);
+        return verifyUserData(email, password);
     }
 
     async function logInUser() {
-        const response = await verifyUser()
-        if (response.message === 'Contraseña incorrecta') return setErrors({password: 'Contraseña incorrecta'})
-        if (response.message) return alert(response.message)
-        saveLocalData('user', response.token)
-        const userFront = userDataFromBackToFront(response.user) 
-        handleAddUser(userFront)
-        setInputs(userFront)
-        console.log('Se ha iniciado sesión exitosamente')
-        if (response.user.RoleId < 3) router.push('/admin')
+        const response = await verifyUser();
+        if (response.message === "Contraseña incorrecta")
+            return setErrors({ password: "Contraseña incorrecta" });
+        if (response.message) return alert(response.message);
+        saveLocalData("user", response.token);
+        const userFront = userDataFromBackToFront(response.user);
+        handleAddUser(userFront);
+        setInputs(userFront);
+        console.log("Se ha iniciado sesión exitosamente");
     }
 
     async function changePassword() {
         // Evaluate Errors
-        const newErors = lastValidation(inputsEdit)
+        const newErors = lastValidation(inputsEdit);
         if (newErors.password || newErors.passwordConfirmation) {
-            setErrorsEdit(newErors)
-            console.log('Error en la validación de datos')
-            return false
+            setErrorsEdit(newErors);
+            console.log("Error en la validación de datos");
+            return false;
         }
 
         // Verify correct password
-        const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.passwordConfirmation })
+        const isCorrectPassword = await verifyProperty({
+            property: "password",
+            value: inputsEdit.passwordConfirmation,
+        });
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrorsEdit({ passwordConfirmation: 'Contraseña incorrecta' })
-            console.log('No se cambió la contraseña')
-            return false
+            setErrorsEdit({ passwordConfirmation: "Contraseña incorrecta" });
+            console.log("No se cambió la contraseña");
+            return false;
         }
         // if Verify is true
-        const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'password', value: inputsEdit.password })
-        const response = await updateMyAccount(propertyToUpdate)
+        const propertyToUpdate = oneUserDataFromFrontToBack({
+            property: "password",
+            value: inputsEdit.password,
+        });
+        const response = await updateMyAccount(propertyToUpdate);
 
-        if ( response.message ) {
-            alert(response.message)
-            return false
+        if (response.message) {
+            alert(response.message);
+            return false;
         }
-        setInputsEdit(initialInputsEdit)
-        console.log(response)
-        return true
+        setInputsEdit(initialInputsEdit);
+        console.log(response);
+        return true;
     }
 
     async function changeEmail() {
         // Evaluate Errors
-        const newErrors = lastValidation(inputsEdit)
+        const newErrors = lastValidation(inputsEdit);
         if (newErrors.password || newErrors.email) {
-            setErrorsEdit(newErrors)
-            console.log('Error en la validación de datos')
-            return false
+            setErrorsEdit(newErrors);
+            console.log("Error en la validación de datos");
+            return false;
         }
-        
+
         // Verify correct password
-        const isCorrectPassword = await verifyProperty({ property: 'password', value: inputsEdit.password })
+        const isCorrectPassword = await verifyProperty({
+            property: "password",
+            value: inputsEdit.password,
+        });
 
         // If verify is false
         if (!isCorrectPassword) {
-            setErrorsEdit({ password: 'Contraseña incorrecta' })
-            console.log('Contraseña incorrecta')
-            return false
+            setErrorsEdit({ password: "Contraseña incorrecta" });
+            console.log("Contraseña incorrecta");
+            return false;
         }
 
         // if Verify is true
-        const propertyToUpdate = oneUserDataFromFrontToBack({ property: 'email', value: inputsEdit.email })
-        const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message ) {
-            alert(response.message)
-            return false
+        const propertyToUpdate = oneUserDataFromFrontToBack({
+            property: "email",
+            value: inputsEdit.email,
+        });
+        const response = await updateMyAccount(propertyToUpdate);
+        if (response.message) {
+            alert(response.message);
+            return false;
         }
         handleUpdateUser({
             ...user,
             email: inputsEdit.email,
-            password: inputsEdit.password
-        })
-        setInputsEdit(initialInputsEdit)
-        console.log(response)
-        return true
+            password: inputsEdit.password,
+        });
+        setInputsEdit(initialInputsEdit);
+        console.log(response);
+        return true;
     }
 
     async function signOff() {
-        const response = await requestLogout()
-        if (response.message) return alert(response.message)
-        localStorage.removeItem('user')
-        setInputs(initialInputs)
-        handleRemoveUser()
-        console.log(response)
+        const response = await requestLogout();
+        if (response.message) return alert(response.message);
+        localStorage.removeItem("user");
+        setInputs(initialInputs);
+        handleRemoveUser();
+        console.log(response);
     }
 
     async function handleEditing(event) {
-        const { name } = event.currentTarget
+        const { name } = event.currentTarget;
         if (!editing[name]) {
             return setEditing((prevEdit) => ({
                 ...prevEdit,
-                [name]: !editing[name]
-            }))
+                [name]: !editing[name],
+            }));
         }
-        const newErrors = lastValidation(inputs)
-        if (newErrors[name]) return setErrors({ [name]: newErrors[name] })
+        const newErrors = lastValidation(inputs);
+        if (newErrors[name]) return setErrors({ [name]: newErrors[name] });
         setEditing((prevEdit) => ({
             ...prevEdit,
-            [name]: !editing[name]
-        }))
-        const propertyToUpdate = oneUserDataFromFrontToBack({ property: name, value: inputs[name] })
-        const response = await updateMyAccount(propertyToUpdate)
-        if ( response.message ) return alert(response.message)
-        handleUpdateUser(inputs)
-        console.log(response)
+            [name]: !editing[name],
+        }));
+        const propertyToUpdate = oneUserDataFromFrontToBack({
+            property: name,
+            value: inputs[name],
+        });
+        const response = await updateMyAccount(propertyToUpdate);
+        if (response.message) return alert(response.message);
+        handleUpdateUser(inputs);
+        console.log(response);
     }
 
     async function signUp() {
-        const { email, password, name, numberPhone } = inputs
-        const errors = {}
-        if ( !email ) errors.email = 'El email no puede estar vacio'
-        if ( !password ) errors.password = 'La contraseña no puede estar vacia'
-        if ( !name ) errors.name = 'El nombre no puede estar vacio'
-        if ( !numberPhone ) errors.numberPhone = 'El número no puede estar vacio'
+        const { email, password, name, numberPhone } = inputs;
+        const errors = {};
+        if (!email) errors.email = "El email no puede estar vacio";
+        if (!password) errors.password = "La contraseña no puede estar vacia";
+        if (!name) errors.name = "El nombre no puede estar vacio";
+        if (!numberPhone) errors.numberPhone = "El número no puede estar vacio";
         else {
-            const [code, place, number] = inputs.numberPhone.split(" ")
-            if (!code) errors.numberPhone = 'Coloca el código del país'
-            if (!(place + number).length) errors.numberPhone = 'El número no puede estar vacio'
-            if ( place && !isPossiblePhoneNumber(inputs.numberPhone)) errors.numberPhone = 'Número de teléfono inválido'
+            const [code, place, number] = inputs.numberPhone.split(" ");
+            if (!code) errors.numberPhone = "Coloca el código del país";
+            if (!(place + number).length)
+                errors.numberPhone = "El número no puede estar vacio";
+            if (place && !isPossiblePhoneNumber(inputs.numberPhone))
+                errors.numberPhone = "Número de teléfono inválido";
         }
-        if ( errors.email || errors.password || errors.name || errors.numberPhone ) return setErrors(errors)
-        const userBack = userDataFromFrontToBack({ email, password, name, numberPhone})
-        const response = await newAccount(userBack)
-        if (response.message) return alert(response.message)
-        const userFront = userDataFromBackToFront(response)
-        saveLocalData('user', response.token)
-        handleAddUser(userFront)
-        setInputs(userFront)
-        console.log('Se ha iniciado sesión exitosamente')
+        if (
+            errors.email ||
+            errors.password ||
+            errors.name ||
+            errors.numberPhone
+        )
+            return setErrors(errors);
+        const userBack = userDataFromFrontToBack({
+            email,
+            password,
+            name,
+            numberPhone,
+        });
+        const response = await newAccount(userBack);
+        if (response.message) return alert(response.message);
+        const userFront = userDataFromBackToFront(response);
+        saveLocalData("user", response.token);
+        handleAddUser(userFront);
+        setInputs(userFront);
+        console.log("Se ha iniciado sesión exitosamente");
     }
 
     return {
@@ -320,8 +364,8 @@ function useHandleUser() {
         changeEmail,
         signUp,
         signOff,
-        handleEditing
-    }
+        handleEditing,
+    };
 }
 
-export default useHandleUser
+export default useHandleUser;

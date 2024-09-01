@@ -115,7 +115,7 @@ export default function Home() {
                                         alta calidad.
                                     </Typography>
                                     <Box sx={{ mt: 2 }}>
-                                        <Link href="/pizzas">
+                                        <Link href="/menu">
                                             <Button
                                                 variant="outlined"
                                                 color="primary"

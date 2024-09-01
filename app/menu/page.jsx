@@ -92,16 +92,21 @@ function Menu() {
                     <>
                         <PizzaCustomizable />
                         <Grid container item xs={12} md={8} spacing={3}>
-                            <ContainerItems
-                                itemList={pizzas}
-                                title={"Nuestra selección de Pizzas"}
-                                products={"pizzas"}
-                            />
-                            <ContainerItems
-                                itemList={salads}
-                                title={"Nuestra selección de Ensaladas"}
-                                products={"salads"}
-                            />
+                            {pizzas.length > 0 && (
+                                <ContainerItems
+                                    itemList={pizzas}
+                                    title={"Nuestra selección de Pizzas"}
+                                    products={"pizzas"}
+                                />
+                            )}
+
+                            {salads.length > 0 && (
+                                <ContainerItems
+                                    itemList={salads}
+                                    title={"Nuestra selección de Ensaladas"}
+                                    products={"salads"}
+                                />
+                            )}
                         </Grid>
                     </>
                 )}
