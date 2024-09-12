@@ -37,7 +37,7 @@ function AlertChangePassword({ params }) {
         console.log("Contraseña cambiada exitosamente");
         setLoading(false);
         closeAlertDialogMessage();
-        router.push("/pizzas");
+        router.push("/menu");
     }
 
     return (

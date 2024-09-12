@@ -60,8 +60,8 @@ export async function getAllStoresWithSchedules() {
     const todaySchedule = todaysScheduleIs(
         scheduelsHours.work.scheduleHoursList
     );
-    const closeTime = todaySchedule.endTime;
-    const openTime = todaySchedule.startTime;
+    const closeTime = todaySchedule ? todaySchedule.endTime : "";
+    const openTime = todaySchedule ? todaySchedule.startTime : "";
     const workSchedule = scheduelsHours.work.scheduleHoursList.map(
         (schedule) => ({
             id: schedule.id,

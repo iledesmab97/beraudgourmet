@@ -1,81 +1,77 @@
-const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK
+const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-export function getAllMasses() {
-    return fetch(`${PATH_BACK}/pizzaMasses`)
-        .then(response => response.json())
-        .then(data => data)
+export async function getAllMasses() {
+    const response = await fetch(`${PATH_BACK}/pizzaMasses`);
+    const data = await response.json();
+    return data;
 }
 
-export function getAllSizes() {
-    return fetch(`${PATH_BACK}/pizzaSizes`)
-        .then(response => response.json())
-        .then(data => data)
+export async function getAllSizes() {
+    const response = await fetch(`${PATH_BACK}/pizzaSizes`);
+    const data = await response.json();
+    return data;
 }
 
-export function addNewSize(size) {
-    return fetch(`${PATH_BACK}/pizzaSizes`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({size})
-      })
-        .then(response => {
-          return response.json()
-        })
-        .then(response => {
-          if (response.message) throw new Error(response.message)
-          return response
-        })
-        .catch(error => ({message: error.message}))
+export async function addNewSize(size) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzaSizes`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ size }),
+        });
+        const response_1 = await response.json();
+        if (response_1.message) throw new Error(response_1.message);
+        return response_1;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function deleteSize(size) {
-    return fetch(`${PATH_BACK}/pizzaSizes`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify({size})
-      })
-        .then(response => {
-          return response.json()
-        })
-        .then(response => {
-          if (response.message) throw new Error(response.message)
-          return response
-        })
-        .catch(error => ({message: error.message}))
+export async function deleteSize(size) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzaSizes`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ size }),
+        });
+        const response_1 = await response.json();
+        if (response_1.message) throw new Error(response_1.message);
+        return response_1;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function addNewMass(mass) {
-  return fetch(`${PATH_BACK}/pizzaMasses`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify({name: mass})
-  })
-    .then(response => {
-      return response.json()
-    })
-    .then(response => {
-      if (response.message) throw new Error(response.message)
-      return response
-    })
-    .catch(error => ({message: error.message}))
+export async function addNewMass(mass) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzaMasses`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ name: mass }),
+        });
+        const response_1 = await response.json();
+        if (response_1.message) throw new Error(response_1.message);
+        return response_1;
+    } catch (error) {
+        return { message: error.message };
+    }
 }
 
-export function deleteMass(mass) {
-  return fetch(`${PATH_BACK}/pizzaMasses`, {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({name: mass})
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(response => {
-        if (response.message) throw new Error(response.message)
-        return response
-      })
-      .catch(error => ({message: error.message}))
+export async function deleteMass(mass) {
+    try {
+        const response = await fetch(`${PATH_BACK}/pizzaMasses`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ name: mass }),
+        });
+        const response_1 = await response.json();
+        if (response_1.message) throw new Error(response_1.message);
+        return response_1;
+    } catch (error) {
+        return { message: error.message };
+    }
 }

@@ -11,8 +11,7 @@ import DetailStore from "./DetailStore";
 import useGetModal from "@/hooks/useGetModal";
 import useGetPlace from "@/hooks/useGetPlace";
 import useHandleStoresDetail from "@/hooks/useHandleStoresDetail";
-import useGetStoreList from "@/hooks/useGetStoreList";
-import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 
 const style = {
     position: "absolute",
@@ -42,6 +41,7 @@ const style = {
 };
 
 function ModalStoresDetail() {
+    const theme = useTheme();
     const { open, handleCloseModal } = useGetModal({
         modalType: "storesDetail",
     });

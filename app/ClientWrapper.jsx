@@ -1,75 +1,98 @@
 // app/components/ClientWrapper.tsx
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { CurtainAnimation } from "@/components/LoadingComponets/CurtainAnimation"; // Ajusta la ruta según sea necesario
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStoreListThunk } from "@/stores/actions/stores";
 import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
 import MaintenanceComponent from "@/components/Maintenance/MaintenanceComponent";
+import StoreComponent from "./StoreComponent";
+import { CurtainAnimation } from "@/components/LoadingComponets/CurtainAnimation";
+import ServiciosEstaticos from "./Servicios";
+import { Box } from "@mui/material";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-const colors = {
-    primary: "#295386",
-    secondary: "#4e5762",
-    default: "#FFFFFF",
-};
-// Crea un contexto para el tema
-const LayoutContext = createContext();
-
-// Hook personalizado para usar el contexto
-export const useLayoutContext = () => {
-    return useContext(LayoutContext);
-};
 
 const libraries = ["places"];
 
 export default function ClientWrapper({ children }) {
-    const { isLoaded, loadError } = useLoadScript({
+    const [isMaintenance, setIsMaintenance] = useState(false); // State to manage maintenance mode
+    const { handleAddPlace } = useGetPlace();
+    const dispatch = useDispatch();
+    const { stores, status, error } = useSelector((state) => state.storeList);
+    const [locationPermission, setLocationPermission] = useState(null);
+    const [position, setPosition] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
         libraries,
     });
-    const { handleAddPlace } = useGetPlace();
-    const [locationPermission, setLocationPermission] = useState(null);
-    const [position, setPosition] = useState(null);
-    const [maintenance, setMaintenance] = useState(true);
-    const dispatch = useDispatch();
-    const { stores, status, error } = useSelector((state) => state.storeList);
-    const [loading, setLoading] = useState(true);
+
+    const maintenanceRoutes = ["/menu"];
+
+    // Function to update maintenance state based on current path
+    const checkMaintenanceRoute = () => {
+        if (typeof window !== "undefined") {
+            const currentPath = window.location.pathname;
+            setIsMaintenance(maintenanceRoutes.includes(currentPath));
+        }
+    };
+
+    useEffect(() => {
+        // Check initial path when component mounts
+        checkMaintenanceRoute();
+
+        // Function to handle route changes
+        const handleRouteChange = () => {
+            checkMaintenanceRoute();
+        };
+
+        // Observe changes in the browser history (router navigations)
+        window.addEventListener("popstate", handleRouteChange);
+        window.addEventListener("pushState", handleRouteChange);
+        window.addEventListener("replaceState", handleRouteChange);
+
+        // Observe changes in the document (DOM) when the URL changes
+        const observer = new MutationObserver(() => {
+            handleRouteChange();
+        });
+
+        // Observe the body or any container where changes can occur due to route changes
+        observer.observe(document, { subtree: true, childList: true });
+
+        // Cleanup function to remove listeners and disconnect the observer
+        return () => {
+            window.removeEventListener("popstate", handleRouteChange);
+            window.removeEventListener("pushState", handleRouteChange);
+            window.removeEventListener("replaceState", handleRouteChange);
+            observer.disconnect();
+        };
+    }, []);
 
     const requestLocationPermission = async () => {
         if (loading) return;
-        // Solicitar permiso de ubicación mientras se muestra la animación
-        if (navigator.geolocation) {
-            try {
-                const result = await navigator.permissions.query({
-                    name: "geolocation",
-                });
 
-                if (result.state === "granted") {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
                     setLocationPermission("granted");
-                } else if (result.state === "prompt") {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            setLocationPermission("granted");
-                            setPosition(position.coords);
-                        },
-                        (error) => {
-                            console.error("Error al obtener ubicación:", error);
-                            setLocationPermission("denied");
-                        }
-                    );
-                } else {
-                    setLocationPermission("denied");
+                    setPosition(position.coords);
+                },
+                (error) => {
+                    console.error("Error al obtener ubicación:", error);
+
+                    if (error.code === error.PERMISSION_DENIED) {
+                        setLocationPermission("denied");
+                    } else {
+                        setLocationPermission("denied");
+                    }
                 }
-            } catch (error) {
-                console.error(
-                    "Error al solicitar permiso de ubicación:",
-                    error
-                );
-                setLocationPermission("denied");
-            }
+            );
+        } else {
+            console.error("Geolocation no está soportado por este navegador.");
+            setLocationPermission("denied");
         }
     };
 
@@ -78,10 +101,11 @@ export default function ClientWrapper({ children }) {
     }, [dispatch]);
 
     useEffect(() => {
-        if (status !== "succeeded")
+        if (status !== "succeeded") {
             if (sessionStorage.getItem("hasAnimated")) {
                 setLoading(false);
             }
+        }
         requestLocationPermission();
     }, [status, loading]);
 
@@ -126,9 +150,9 @@ export default function ClientWrapper({ children }) {
                     },
                     inputAddress: delivery.results[0].formatted_address,
                     street: {
-                        unity: "", // Empty string initially
-                        number: "", // Empty string initially
-                        streetName: "", // Empty string initially
+                        unity: "",
+                        number: "",
+                        streetName: "",
                     },
                 },
                 closerStore,
@@ -157,12 +181,20 @@ export default function ClientWrapper({ children }) {
                     storesStatus={status}
                 />
             )}
-            {maintenance ? (
-                <MaintenanceComponent />
+            {isMaintenance ? (
+                <Box
+                    sx={{
+                        display: "flex",
+                        bgcolor: "background.default",
+                        flexDirection: "column",
+                    }}
+                >
+                    <StoreComponent />
+                    <MaintenanceComponent />
+                    <ServiciosEstaticos />
+                </Box>
             ) : (
-                <LayoutContext.Provider value={""}>
-                    {children}
-                </LayoutContext.Provider>
+                children
             )}
         </>
     );

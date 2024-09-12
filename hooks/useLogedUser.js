@@ -1,46 +1,45 @@
-import { useCallback, useState, useEffect } from "react"
-import { useSearchParams, useRouter } from 'next/navigation'
-import { lookingForUserLoged, saveToken } from '@/services/userApi'
-import useGetUser from '@/hooks/useGetUser'
-import { modalSaved } from '@/utils/modal'
-import useGetModal from '@/hooks/useGetModal'
-import useLocalData from '@/hooks/useLocalData'
+import { useCallback, useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { lookingForUserLoged, saveToken } from "@/services/userApi";
+import useGetUser from "@/hooks/useGetUser";
+import { modalSaved } from "@/utils/modal";
+import useGetModal from "@/hooks/useGetModal";
+import useLocalData from "@/hooks/useLocalData";
 
 function useLogedUser() {
+    const searchParams = useSearchParams();
+    const { handleAddUser } = useGetUser();
+    const { handleOpenModal } = useGetModal({ modalType: "userOrders" });
+    const router = useRouter();
+    const { getLocalData } = useLocalData();
 
-    const searchParams = useSearchParams()
-    const { handleAddUser } = useGetUser()
-    const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
-    const router = useRouter()
-    const { getLocalData } = useLocalData()
-
-    const tokenUser = searchParams.get('tokenUser')
+    const tokenUser = searchParams.get("tokenUser");
 
     const gerUserLoged = useCallback(async () => {
-        let user
+        let user;
         if (tokenUser) {
-            user = await saveToken( tokenUser )
+            user = await saveToken(tokenUser);
         } else {
-            const token = getLocalData('user')
+            const token = getLocalData("user");
             if (!token) {
-                return false
+                return false;
             }
-            user = await lookingForUserLoged( token )
+            user = await lookingForUserLoged(token);
         }
         if (user.message) {
-            alert(user.message)
-            return false
+            alert(user.message);
+            return false;
         }
-        handleAddUser(user)
-        const modal = modalSaved()
-        if (modal) handleOpenModal(modal)
+        handleAddUser(user);
+        const modal = modalSaved();
+        if (modal) handleOpenModal(modal);
         if (tokenUser) {
-            router.push('/pizzas')
+            router.push("/menu");
         }
-        return true
-    }, [])
+        return true;
+    }, []);
 
-    return { gerUserLoged }
+    return { gerUserLoged };
 }
 
-export default useLogedUser
+export default useLogedUser;
