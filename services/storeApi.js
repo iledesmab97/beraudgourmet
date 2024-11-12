@@ -5,22 +5,10 @@ import { requestSettings } from "@/utils/preparingData";
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
 export async function getAllStores() {
-    try {
-        const response = await fetch(`${PATH_BACK}/stores`);
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        const newData = data.map((store) => ({
-            id: store.id,
-            name: store.name,
-            place: store.address,
-            city: store.city,
-            phone: store.phoneNumber,
-            coordinates: store.coordinates,
-        }));
-        return newData;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const response = await fetch(`${PATH_BACK}/stores`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function getOneStoreById(id) {
