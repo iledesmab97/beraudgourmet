@@ -126,21 +126,21 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
                     <FormGroup onChange={handleIngredientsModal}>
                         {currentProduct.ingredients.map((ingredient, index) => (
                             <FormControlLabel
-                                key={ingredient + index}
+                                key={ingredient.name + index}
                                 control={
                                     <Checkbox
                                         checked={
                                             ingredientsModal.includes(
-                                                ingredient
+                                                ingredient.name
                                             )
                                                 ? false
                                                 : true
                                         }
                                     />
                                 }
-                                label={ingredient}
+                                label={ingredient.name}
                                 sx={
-                                    ingredientsModal.includes(ingredient)
+                                    ingredientsModal.includes(ingredient.name)
                                         ? {
                                               textDecoration: "line-through",
                                           }
