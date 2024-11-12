@@ -33,16 +33,12 @@ export async function requestVerification({ email }) {
 }
 
 export async function fetchwhoAmI(token) {
-    try {
-        const response = await fetch(`${PATH_BACK}/users/loged`, {
-            ...requestSettings("GET", token),
-        });
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const response = await fetch(`${PATH_BACK}/users/loged`, {
+        ...requestSettings("GET", token),
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function newAccount(data) {
