@@ -15,7 +15,7 @@ const possiblePaths = [
 ];
 
 const pathByRoles = {
-    3: [
+    "client": [
         "/not-found",
         "/menu",
         "/",
@@ -42,8 +42,8 @@ async function validateUser(currentPath) {
     } else {
         user = { RoleId: "pedestrians" };
     }
-    if (pathByRoles[user.RoleId].includes(path)) return { allow: true };
-    return { allow: false, path: pathByRoles[user.RoleId][0] };
+    if (pathByRoles[user.RoleId.name].includes(path)) return { allow: true };
+    return { allow: false, path: pathByRoles[user.RoleId.name][0] };
 }
 
 function destructurePath(path) {
