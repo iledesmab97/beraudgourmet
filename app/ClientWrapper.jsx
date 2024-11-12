@@ -30,7 +30,8 @@ export default function ClientWrapper({ children }) {
         libraries,
     });
 
-    const maintenanceRoutes = ["/menu"];
+    // const maintenanceRoutes = ["/menu"];
+    const maintenanceRoutes = [];
 
     // Function to update maintenance state based on current path
     const checkMaintenanceRoute = () => {
@@ -124,19 +125,23 @@ export default function ClientWrapper({ children }) {
 
             for (const store of defaultStores) {
                 const { coordinates } = store;
-                const results = await directionService.route({
-                    origin: { lat: coordinates.lat, lng: coordinates.lng },
-                    destination: { lat: lat, lng: lng },
-                    travelMode: "DRIVING",
-                });
-                let currentDistance =
-                    results.routes[0].legs[0].distance.value / 1000;
-
-                if (currentDistance < newDistance) {
-                    newDistance = currentDistance;
-                    closerStore = store;
-
-                    if (currentDistance < 1) break;
+                try {
+                    const results = await directionService.route({
+                        origin: { lat: Number(coordinates.lat), lng: Number(coordinates.lng) },
+                        destination: { lat: lat, lng: lng },
+                        travelMode: "DRIVING",
+                    });
+                    let currentDistance =
+                        results.routes[0].legs[0].distance.value / 1000;
+    
+                    if (currentDistance < newDistance) {
+                        newDistance = currentDistance;
+                        closerStore = store;
+    
+                        if (currentDistance < 1) break;
+                    }
+                } catch(error) {
+                    return alert(error.message)
                 }
             }
             delivery = await geocoder.geocode({
