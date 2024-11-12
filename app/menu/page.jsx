@@ -97,6 +97,7 @@ function Menu() {
                                     itemList={pizzas}
                                     title={"Nuestra selección de Pizzas"}
                                     products={"pizzas"}
+                                    sectionId={"pizzasSection"}
                                 />
                             )}
 
@@ -105,6 +106,7 @@ function Menu() {
                                     itemList={salads}
                                     title={"Nuestra selección de Ensaladas"}
                                     products={"salads"}
+                                    sectionId={"saladsSection"}
                                 />
                             )}
                         </Grid>
