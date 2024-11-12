@@ -105,6 +105,7 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                 id='container-modal-order-pizza'
                 item
                 container
+                spacing={2}
                 sx={{
                     height: {
                         xs: '85%',
