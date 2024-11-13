@@ -1,10 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-    lookingForUserLoged,
+    fetchwhoAmI,
     requestLogout,
     searchUser,
     verifyUserData,
-    saveToken,
 } from "@/services/userApi";
 import { updatePlaceToInitialState } from "../place/slice.js";
 import { updateOrderToInitialState } from "../order/slice.js";
@@ -13,31 +12,15 @@ import { userDataFromBackToFront } from "@/utils/preparingData.js";
 
 export const verifyUserAction = createAsyncThunk(
     "user/verifyUser",
-    async (searchParams, { rejectWithValue }) => {
-        const tokenUser = searchParams.get("tokenUser");
+    async (tokenUser, { rejectWithValue }) => {
+        let token = tokenUser;
+        let user;
         try {
-            let user;
-            if (tokenUser) {
-                user = await saveToken(tokenUser);
-            } else {
-                const token = JSON.parse(localStorage.getItem("user"));
-                const cookies = JSON.parse(
-                    localStorage.getItem("acceptCookies")
-                );
-
-                if (!cookies) {
-                    localStorage.setItem("acceptCookies", false);
-                }
-
-                if (!token) {
-                    return rejectWithValue("No user logged in");
-                }
-
-                user = await lookingForUserLoged(token);
-                if (user.message) {
-                    throw new Error(user.message);
-                }
+            if (!token) {
+                token = JSON.parse(localStorage.getItem("user"));
             }
+            if (!token) throw new Error("No user logged in");
+            user = await fetchwhoAmI(token);
             return user;
         } catch (error) {
             return rejectWithValue(error.message);
