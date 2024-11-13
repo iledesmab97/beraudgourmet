@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import useGetUser from "@/hooks/useGetUser";
 import useDebounce from "./useDebounce";
@@ -19,7 +19,11 @@ import {
     verifyUserData,
 } from "@/services/userApi";
 
-import { updateUserAction } from "@/stores/actions/users";
+import {
+    updateUserAction,
+    logOutUserAction,
+    logInUserAction,
+} from "@/stores/actions/users";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -181,25 +185,13 @@ function useHandleUser() {
         lastDataSet.current = "numberPhone";
     }
 
-    function verifyUser() {
-        const { email, password } = inputs;
-        const errors = {};
-        if (!email) errors.email = "El email no puede estar vacio";
-        if (!password) errors.password = "La contraseña no puede estar vacia";
-        if (errors.email || errors.password) return setErrors(errors);
-        return verifyUserData(email, password);
-    }
-
     async function logInUser() {
-        const response = await verifyUser();
-        if (response.message === "Contraseña incorrecta")
-            return setErrors({ password: "Contraseña incorrecta" });
-        if (response.message) return alert(response.message);
-        saveLocalData("user", response.token);
-        const userFront = userDataFromBackToFront(response.user);
-        handleAddUser(userFront);
-        setInputs(userFront);
-        console.log("Se ha iniciado sesión exitosamente");
+        const { email, password } = inputs;
+        const newErrors = lastValidation(inputs);
+        if (newErrors.email || newErrors.password) {
+            return setErrors(errors);
+        }
+        dispatch(logInUserAction({ email, password }));
     }
 
     async function changePassword() {
@@ -235,7 +227,6 @@ function useHandleUser() {
             return false;
         }
         setInputsEdit(initialInputsEdit);
-        console.log(response);
         return true;
     }
 
@@ -277,17 +268,11 @@ function useHandleUser() {
             password: inputsEdit.password,
         });
         setInputsEdit(initialInputsEdit);
-        console.log(response);
         return true;
     }
 
     async function signOff() {
-        const response = await requestLogout();
-        if (response.message) return alert(response.message);
-        localStorage.removeItem("user");
-        setInputs(initialInputs);
-        handleRemoveUser();
-        console.log(response);
+        dispatch(logOutUserAction());
     }
 
     async function handleEditing(event) {
