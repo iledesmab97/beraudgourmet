@@ -178,32 +178,22 @@ export async function whatHappen(data) {
 }
 
 export async function requestLogout() {
-    try {
-        const response = await fetch(`${PATH_BACK}/users/logout`, {
-            ...requestSettings("POST"),
-        });
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const response = await fetch(`${PATH_BACK}/users/logout`, {
+        ...requestSettings("POST"),
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function verifyUserData(email, password) {
-    try {
-        const res = await fetch(`${PATH_BACK}/users/login`, {
-            ...requestSettings("POST"),
-            body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-        if (data.message) throw new Error(data.message);
-        const { token } = data;
-        const user = { ...data };
-        return { user, token };
-    } catch (error) {
-        return { message: error.message };
-    }
+    const res = await fetch(`${PATH_BACK}/users/login`, {
+        ...requestSettings("POST"),
+        body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function requestUserArchiving(user) {
