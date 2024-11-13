@@ -42,6 +42,7 @@ export const logOutUserAction = createAsyncThunk(
             dispatch(updateOrderToInitialState());
             return;
         } catch (error) {
+            alert(error.message);
             return rejectWithValue(error.message);
         }
     }
