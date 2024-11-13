@@ -4,6 +4,7 @@ import {
     requestLogout,
     searchUser,
     verifyUserData,
+    updateMyAccount,
 } from "@/services/userApi";
 import { updatePlaceToInitialState } from "../place/slice.js";
 import { updateOrderToInitialState } from "../order/slice.js";
@@ -78,6 +79,18 @@ export const searchUserAction = createAsyncThunk(
         try {
             const data = await searchUser(email);
             return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateUserAction = createAsyncThunk(
+    "user/updateUser",
+    async (properties, { rejectWithValue }) => {
+        try {
+            const user = await updateMyAccount(properties);
+            return user;
         } catch (error) {
             return rejectWithValue(error.message);
         }
