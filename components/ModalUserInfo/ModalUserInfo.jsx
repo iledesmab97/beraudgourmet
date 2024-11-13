@@ -11,12 +11,14 @@ import Radio from '@mui/material/Radio'
 import UserLoged from '../OrderRewards/UserLoged'
 import MoveDown from '@/components/MoveDown/MoveDown'
 
+import { useDispatch } from 'react-redux'
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
 import useHandleSession from '@/hooks/useHandleSession'
 
 import { requestVerification, updateMyAccount } from '@/services/userApi'
+import { logOutUserAction } from '@/stores/actions/users'
 
 import styles from '@/components/MoveDown/MoveDown.module.css'
 
@@ -55,6 +57,7 @@ function ModalUserInfo() {
     const { handleRemoveUser } = useGetUser()
     const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
     const { closeSession } = useHandleSession()
+    const dispatch = useDispatch()
 
     async function sendVerification() {
         const response = await requestVerification({email: user.email})
@@ -71,8 +74,7 @@ function ModalUserInfo() {
     }
 
     function executeLogout() {
-        signOff()
-        closeSession()
+        dispatch(logOutUserAction());
         handleCloseModal('user')
     }
 
