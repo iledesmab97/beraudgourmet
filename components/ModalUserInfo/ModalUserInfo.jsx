@@ -76,6 +76,8 @@ function ModalUserInfo() {
         handleCloseModal('user')
     }
 
+    if (!user) return null
+
     return (
         <Modal
             open={open}
