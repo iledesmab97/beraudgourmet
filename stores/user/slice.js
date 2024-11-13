@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { verifyUserAction } from "../actions/users";
+import { verifyUserAction, updateUserAction } from "../actions/users";
 
 const initialState = {};
 
@@ -27,6 +27,17 @@ export const userSlice = createSlice({
                 state.status = "succeeded";
             })
             .addCase(verifyUserAction.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(updateUserAction.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(updateUserAction.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.status = "succeeded";
+            })
+            .addCase(updateUserAction.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });
