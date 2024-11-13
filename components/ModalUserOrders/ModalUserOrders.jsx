@@ -50,7 +50,7 @@ function ModalUserOrders() {
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
 
     useEffect(() => {
-        if (!user.id) return;
+        if (!user || user.id) return;
         getAllOrdersOfUser(user.id).then((data) => {
             console.log(data);
             if (data.message) return alert(data.message);
