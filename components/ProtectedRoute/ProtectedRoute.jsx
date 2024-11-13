@@ -37,7 +37,7 @@ async function validateUser({ currentPath, user }) {
     const { path } = destructurePath(currentPath);
     let userLoged = user
     if (!userLoged) {
-        user = { RoleId: "pedestrians" };
+        userLoged = { RoleId: { name: "pedestrians" }};
     } 
     if (pathByRoles[userLoged.RoleId.name].includes(path)) return { allow: true };
     return { allow: false, path: pathByRoles[userLoged.RoleId.name][0] };
@@ -72,7 +72,7 @@ function ProtectedRoute({ children }) {
 
     // Redirect the user
     useEffect(() => {
-        if (!firstTime.current || !user) return
+        if (!firstTime.current) return
         validateUser({ currentPath: pathname, user })
             .then((data) => {
                 if (!data.allow) {
