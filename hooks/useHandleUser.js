@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import useGetUser from "@/hooks/useGetUser";
 import useDebounce from "./useDebounce";
 import useLocalData from "@/hooks/useLocalData";
@@ -16,7 +18,8 @@ import {
     requestLogout,
     verifyUserData,
 } from "@/services/userApi";
-import { useRouter } from "next/navigation";
+
+import { updateUserAction } from "@/stores/actions/users";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -86,7 +89,7 @@ function searchUser(email) {
 function useHandleUser() {
     const { user, handleAddUser, handleUpdateUser, handleRemoveUser } =
         useGetUser();
-    const userLoged = user.name ? true : false;
+    const userLoged = user ? true : false;
     const [inputs, setInputs] = useState(() =>
         userLoged
             ? {
@@ -114,6 +117,7 @@ function useHandleUser() {
 
     const [currentUser, setCurrentUser] = useState(null);
     const router = useRouter();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         debounceSetValue(() => {
@@ -130,7 +134,7 @@ function useHandleUser() {
     useEffect(() => {
         debounceSetValue(() => {
             const newError = validation(inputsEdit);
-            if (!newError.email && inputsEdit.email === user.email) {
+            if (!newError.email && inputsEdit.email === user?.email) {
                 newError.email = "Debe ingresar otro correo electrónico";
             }
             // setErrors(newError)
@@ -300,14 +304,7 @@ function useHandleUser() {
             ...prevEdit,
             [name]: !editing[name],
         }));
-        const propertyToUpdate = oneUserDataFromFrontToBack({
-            property: name,
-            value: inputs[name],
-        });
-        const response = await updateMyAccount(propertyToUpdate);
-        if (response.message) return alert(response.message);
-        handleUpdateUser(inputs);
-        console.log(response);
+        dispatch(updateUserAction({ property: name, value: inputs[name] }));
     }
 
     async function signUp() {
