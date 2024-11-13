@@ -9,7 +9,6 @@ import {
 import { updatePlaceToInitialState } from "../place/slice.js";
 import { updateOrderToInitialState } from "../order/slice.js";
 import { removeLocalData, saveLocalData } from "./manageLocalStorage.js";
-import { userDataFromBackToFront } from "@/utils/preparingData.js";
 
 export const verifyUserAction = createAsyncThunk(
     "user/verifyUser",
@@ -29,20 +28,19 @@ export const verifyUserAction = createAsyncThunk(
     }
 );
 
-export const logOutUser = createAsyncThunk(
+export const logOutUserAction = createAsyncThunk(
     "user/logoutUser",
     async (_, { dispatch, rejectWithValue }) => {
         try {
             const response = await requestLogout();
             if (response.message)
                 throw new Error("Unable to logout: " + response.message);
-            localStorage.removeItem("user");
+            removeLocalData("user");
             removeLocalData("orders");
             removeLocalData("place");
-            removeLocalData("user");
             dispatch(updatePlaceToInitialState());
             dispatch(updateOrderToInitialState());
-            return response;
+            return;
         } catch (error) {
             return rejectWithValue(error.message);
         }
@@ -53,22 +51,14 @@ export const logInUserAction = createAsyncThunk(
     "user/loginUser",
     async ({ email, password }, { rejectWithValue }) => {
         try {
-            if (!email)
-                throw {
-                    key: "email",
-                    message: "El email no puede estar vacio",
-                };
-            if (!password)
-                throw {
-                    key: "password",
-                    message: "La contraseña no puede estar vacia",
-                };
-            const response = await verifyUserData(email, password);
-            saveLocalData("user", response.token);
-            const userFront = userDataFromBackToFront(response.user);
-            return userFront;
+            const { user, token } = await verifyUserData(email, password);
+            saveLocalData("user", token);
+            return user;
         } catch (error) {
-            return rejectWithValue({ key: error.key, message: error.message });
+            if (error.message === "Contraseña incorrecta") {
+                alert(error.message);
+            }
+            return rejectWithValue({ message: error.message });
         }
     }
 );
