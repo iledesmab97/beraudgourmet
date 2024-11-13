@@ -51,20 +51,16 @@ export async function newAccount(data) {
     return data_1;
 }
 
-export async function updateMyAccount(data) {
-    try {
-        const res = await fetch(`${PATH_BACK}/users/update`, {
-            ...requestSettings("PUT"),
-            body: JSON.stringify(data),
-        });
-        const data_2 = await res.json();
-        if (data_2.message) throw new Error(data_2.message);
-        const { token } = data_2;
-        localStorage.setItem("user", JSON.stringify(token));
-        return "Se ha actualizado exitosamente";
-    } catch (error) {
-        return { message: error.message };
-    }
+export async function updateMyAccount(body) {
+    const res = await fetch(`${PATH_BACK}/users/update`, {
+        ...requestSettings("PUT"),
+        body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.message) throw new Error(data.message);
+    const { token, user } = data;
+    localStorage.setItem("user", JSON.stringify(token));
+    return user;
 }
 
 export async function verifyProperty(data) {
