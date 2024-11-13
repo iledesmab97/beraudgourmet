@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { verifyUserAction, updateUserAction } from "../actions/users";
+import {
+    verifyUserAction,
+    updateUserAction,
+    logOutUserAction,
+    logInUserAction,
+} from "../actions/users";
 
 const initialState = {};
 
@@ -25,6 +30,7 @@ export const userSlice = createSlice({
             .addCase(verifyUserAction.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.status = "succeeded";
+                delete state.error;
             })
             .addCase(verifyUserAction.rejected, (state, action) => {
                 state.status = "failed";
@@ -38,6 +44,29 @@ export const userSlice = createSlice({
                 state.status = "succeeded";
             })
             .addCase(updateUserAction.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(logOutUserAction.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(logOutUserAction.fulfilled, (state, action) => {
+                delete state.user;
+                state.status = "succeeded";
+            })
+            .addCase(logOutUserAction.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(logInUserAction.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(logInUserAction.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.status = "succeeded";
+                delete state.error;
+            })
+            .addCase(logInUserAction.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });
