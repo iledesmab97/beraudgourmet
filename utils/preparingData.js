@@ -421,3 +421,13 @@ export function validPlaceLocal(localPlace) {
         return false;
     return true;
 }
+
+export function generateURLQueries(queries) {
+    if (!queries) return "";
+    const filtersList = [];
+    for (let query in queries) {
+        filtersList.push(query + "=" + queries[query]);
+    }
+    const queriesString = "?" + filtersList.join("&&");
+    return queriesString;
+}
