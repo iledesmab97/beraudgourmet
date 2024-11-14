@@ -15,22 +15,45 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 
 import ItemPlace from "../PlaceFinder/ItemPlace";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useGetPlace from "@/hooks/useGetPlace";
 import useLocalData from "@/hooks/useLocalData";
 
 import { makePlace } from "@/stores/place/slice";
+import { useEffect, useState } from "react";
 
 export default function StorePickup({
-    storeList,
-    handleInputsStore,
-    inputsStore,
     handleCloseModal,
     nextStep,
 }) {
     const { handleTypeDelivery } = useGetPlace();
     const { saveLocalData } = useLocalData();
     const dispatch = useDispatch()
+    const { stores } = useSelector((state) => state.storeList);
+    const [cityList, setCityList] = useState(getCityList(stores))
+    const [citySelected, setCitySelected] = useState(null)
+
+    // Update cityList
+    useEffect(() => {
+        if (cityList.length) return
+        setCityList(getCityList(stores))
+    }, [stores])
+
+    function getCityList(stores) {
+        const cityList = []
+        if (stores) {
+            stores.forEach((store) => {
+                if (!cityList.includes(store.city)) {
+                    cityList.push(store.city)
+                }
+            })
+        }
+        return cityList
+    }
+
+    function handleChange(_, newValue) {
+        setCitySelected(newValue)
+    }
 
     return (
         <>
@@ -46,16 +69,17 @@ export default function StorePickup({
                 </Typography>
 
                 <Autocomplete
+                    value={citySelected}
                     disablePortal
                     id="autocomplete-StorePickup"
                     size="small"
                     fullWidth
-                    options={Object.keys(storeList)}
+                    options={cityList}
                     getOptionLabel={(option) => option}
                     renderOption={(props, option) => (
                         <ItemPlace {...props} place={option} key={option} />
                     )}
-                    onChange={handleInputsStore}
+                    onChange={handleChange}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -86,7 +110,7 @@ export default function StorePickup({
                         alignSelf: "flex-start",
                     }}
                 >
-                    {inputsStore.toUpperCase()}
+                    {citySelected ? citySelected.toUpperCase() : "TIENDAS"}
                 </Typography>
                 <List
                     sx={{
@@ -103,7 +127,12 @@ export default function StorePickup({
                         },
                     }}
                 >
-                    {storeList.map((store, index) => (
+                    {stores.filter((store) => {
+                        if (citySelected) {
+                            return store.city === citySelected
+                        }
+                        return true
+                    }).map((store, index) => (
                         <ListItem
                             key={store.name + index}
                             alignItems="flex-start"
