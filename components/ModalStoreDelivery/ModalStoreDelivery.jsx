@@ -46,10 +46,6 @@ export default function ModalStoreDelivery() {
     const [delivery, setDelivery] = useState("store");
     const { nextStepGuide } = useHandleShoppingGuide();
 
-    const { inputsStore, handleInputsStore } = useHandlePlace();
-
-    const { stores } = useSelector((state) => state.storeList);
-
     function handlePlace(place) {
         setDelivery(place);
     }
@@ -131,9 +127,6 @@ export default function ModalStoreDelivery() {
                     </ButtonGroup>
                     {delivery === "store" ? (
                         <StorePickup
-                            storeList={stores}
-                            inputsStore={inputsStore}
-                            handleInputsStore={handleInputsStore}
                             handleCloseModal={handleCloseModal}
                             nextStep={nextStepGuide}
                         />
