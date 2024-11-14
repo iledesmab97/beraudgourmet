@@ -6,7 +6,9 @@ export const fetchStoreListThunk = createAsyncThunk(
     "storeList/fetchStoreList",
     async (_, { rejectWithValue }) => {
         try {
-            const storeList = await getAllStores();
+            const storeList = await getAllStores({
+                relation: "Schedules",
+            });
             await delay(3000);
             return storeList;
         } catch (error) {
