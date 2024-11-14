@@ -1,11 +1,12 @@
 import { getAllSchedules } from "@/services/scheduleApi";
 import { isOpen, todaysScheduleIs } from "@/utils/hours";
-import { requestSettings } from "@/utils/preparingData";
+import { requestSettings, generateURLQueries } from "@/utils/preparingData";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-export async function getAllStores() {
-    const response = await fetch(`${PATH_BACK}/stores`);
+export async function getAllStores(queries) {
+    const queriesString = generateURLQueries(queries);
+    const response = await fetch(`${PATH_BACK}/stores${queriesString}`);
     const data = await response.json();
     if (data.message) throw new Error(data.message);
     return data;
