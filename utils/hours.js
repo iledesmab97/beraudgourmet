@@ -20,8 +20,8 @@ export const weekDaysES = [
 ];
 
 const typeDelivery = {
-    store: "pickupSchedule",
-    home: "deliverySchedule",
+    store: "pickup",
+    home: "delivery",
 };
 
 export function isOpen({ openTime, closeTime }) {
@@ -97,24 +97,22 @@ export function getTimeLimitTodaySchedue(place) {
             minHour: dayjs(),
             maxHour: dayjs(),
         };
-    const scheduleList =
-        place.closerStore[typeDelivery[place.typeDelivery.name]][
-            typeDelivery[place.typeDelivery.name]
-        ];
 
-    const scheduleOfDay = todaysScheduleIs(scheduleList);
-    const orderDayObject = dayjs();
-    const minHour = scheduleOfDay.hours.split(" - ")[0];
-    const maxHour = scheduleOfDay.hours.split(" - ")[1];
+    const schedule = place.closerStore.Schedules.find((schedule) => {
+        const sameScheduleType =
+            schedule.type === typeDelivery[place.typeDelivery.name];
+        const today = dayjs().format("dddd");
+        const sameDay = schedule.day === today;
+        if (sameScheduleType && sameDay) return true;
+        return false;
+    });
+
+    const [minHour, minMinute] = schedule.startTime.split(":");
+    const [maxHour, maxMinute] = schedule.endTime.split(":");
+
     return {
-        minHour: timeStringToObject(minHour)
-            .date(orderDayObject.date())
-            .month(orderDayObject.month())
-            .year(orderDayObject.year()),
-        maxHour: timeStringToObject(maxHour)
-            .date(orderDayObject.date())
-            .month(orderDayObject.month())
-            .year(orderDayObject.year()),
+        minHour: dayjs().hour(minHour).minute(minMinute),
+        maxHour: dayjs().hour(maxHour).minute(maxMinute),
     };
 }
 
