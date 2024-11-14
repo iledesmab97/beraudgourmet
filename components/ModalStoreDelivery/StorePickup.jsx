@@ -55,6 +55,22 @@ export default function StorePickup({
         setCitySelected(newValue)
     }
 
+    function selectStore(store) {
+        dispatch(makePlace({
+            closerStore: store
+        }))
+        saveLocalData("place", {
+            closerStore: store.id,
+        });
+        handleTypeDelivery({
+            name: "store",
+            totalName:
+                "Recoger en tienda",
+        });
+        handleCloseModal("place");
+        nextStep("store");
+    }
+
     return (
         <>
             <Box sx={{ width: "100%" }}>
@@ -250,9 +266,9 @@ export default function StorePickup({
                                         </Grid>
                                         <Grid item>
                                             <Typography variant="title">
-                                                {store.open
-                                                    ? store.closeTime
-                                                    : store.openTime}
+                                                {
+                                                    store.open ? store.closeTime : store.openTime
+                                                }
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -260,21 +276,7 @@ export default function StorePickup({
                                         <Button
                                             variant="contained"
                                             size="small"
-                                            onClick={() => {
-                                                dispatch(makePlace({
-                                                    closerStore: store
-                                                }))
-                                                saveLocalData("place", {
-                                                    closerStore: store.id,
-                                                });
-                                                handleTypeDelivery({
-                                                    name: "store",
-                                                    totalName:
-                                                        "Recoger en tienda",
-                                                });
-                                                handleCloseModal("place");
-                                                nextStep("store");
-                                            }}
+                                            onClick={() => selectStore(store)}
                                         >
                                             Recoger en esta tienda
                                         </Button>
