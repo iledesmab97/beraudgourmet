@@ -1,5 +1,6 @@
 import { twoDecimals } from "@/utils/priceCar";
 import { requestSettings } from "@/utils/preparingData";
+import { mapPizzaFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -32,19 +33,7 @@ export async function getOnePizzaById(id) {
         const response = await fetch(`${PATH_BACK}/pizzas/${id}`);
         const data = await response.json();
         if (data.message) throw new Error(data.message);
-        const { name, text, image, status, type, ingredients, price } = data;
-        const newPizzaData = {
-            id,
-            name,
-            text,
-            image,
-            status,
-            type,
-            productType: "pizza",
-            ingredients,
-            price,
-        };
-        return newPizzaData;
+        return mapPizzaFromBackend(data);
     } catch (error) {
         return { message: error.message };
     }
