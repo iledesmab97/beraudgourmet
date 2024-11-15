@@ -1,6 +1,7 @@
 import { getAllSchedules } from "@/services/scheduleApi";
 import { isOpen, todaysScheduleIs } from "@/utils/hours";
 import { requestSettings, generateURLQueries } from "@/utils/preparingData";
+import { mapStoresFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -9,7 +10,7 @@ export async function getAllStores(queries) {
     const response = await fetch(`${PATH_BACK}/stores${queriesString}`);
     const data = await response.json();
     if (data.message) throw new Error(data.message);
-    return data;
+    return mapStoresFromBackend(data);
 }
 
 export async function getOneStoreById(id) {
