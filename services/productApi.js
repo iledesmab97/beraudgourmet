@@ -162,26 +162,6 @@ export async function getCostOfPizza(id) {
     return data;
 }
 
-export async function getExtraIngredients() {
-    return fetch(`${PATH_BACK}/ingredients`)
-        .then((response) => response.json())
-        .then((data) => {
-            const extraIngredinetList = {};
-            data.forEach((extraIngredient) => {
-                const { id, name, cost, costIVAStripe, available } =
-                    extraIngredient;
-                extraIngredinetList[name] = {
-                    id,
-                    name,
-                    price: cost,
-                    totalPrice: costIVAStripe ? costIVAStripe : "0",
-                    available,
-                };
-            });
-            return extraIngredinetList;
-        });
-}
-
 export async function getPizzasWithCosts() {
     try {
         const pizzasList = await getPizzas();
