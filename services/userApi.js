@@ -2,6 +2,7 @@ import {
     userDataFromBackToFront,
     requestSettings,
 } from "@/utils/preparingData";
+import { mapUserFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -10,7 +11,7 @@ export async function getOneUserById(id) {
         const response = await fetch(`${PATH_BACK}/users/${id}`);
         const data = await response.json();
         if (data.message) throw new Error(data.message);
-        return data;
+        return mapUserFromBackend(data);
     } catch (error) {
         return { message: error.message };
     }
@@ -38,7 +39,7 @@ export async function fetchwhoAmI(token) {
     });
     const data = await response.json();
     if (data.message) throw new Error(data.message);
-    return data;
+    return mapUserFromBackend(data);
 }
 
 export async function newAccount(data) {
@@ -60,7 +61,7 @@ export async function updateMyAccount(body) {
     if (data.message) throw new Error(data.message);
     const { token, user } = data;
     localStorage.setItem("user", JSON.stringify(token));
-    return user;
+    return mapUserFromBackend(user);
 }
 
 export async function verifyProperty(data) {
@@ -193,7 +194,11 @@ export async function verifyUserData(email, password) {
     });
     const data = await res.json();
     if (data.message) throw new Error(data.message);
-    return data;
+    const { user, token } = data;
+    return {
+        user: mapUserFromBackend(user),
+        token,
+    };
 }
 
 export async function requestUserArchiving(user) {
