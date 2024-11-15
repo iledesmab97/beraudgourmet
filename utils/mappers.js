@@ -84,3 +84,36 @@ export function mapStoresFromBackend(stores) {
         };
     });
 }
+
+export function mapOrderToBackend(order) {
+    const {
+        applicationDate,
+        deliveryDate,
+        commissions,
+        delivery,
+        deliveryInformation,
+        itemsList,
+        storeId,
+        userId,
+        totalCost,
+        totalCostByItems,
+        stripeId,
+        paymentMethod,
+        paid,
+    } = order;
+    return {
+        applicationDate,
+        deliveryDate,
+        delivery,
+        deliveryInformation,
+        itemsList,
+        StoreId: storeId,
+        UserId: userId,
+        totalCost,
+        commissions,
+        totalCostByItems,
+        StripeId: stripeId,
+        paymentMethod,
+        paid,
+    };
+}
