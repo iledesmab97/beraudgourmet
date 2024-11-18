@@ -1,6 +1,7 @@
 import { twoDecimals } from "@/utils/priceCar";
 import { requestSettings } from "@/utils/preparingData";
 import { mapPizzaFromBackend } from "@/utils/mappers";
+import { generateURLQueries } from "@/utils/preparingData";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -69,26 +70,20 @@ export async function getOnePizzaByName(name) {
     }
 }
 
-export async function getPizzaIngredients(name) {
-    try {
-        const response = await fetch(`${PATH_BACK}/pizzas/ingredients/${name}`);
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+export async function getPizzaIngredients(queries) {
+    const query = generateURLQueries(queries);
+    const response = await fetch(`${PATH_BACK}/pizzas/ingredients${query}`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
-export async function getSaladIngredients(name) {
-    try {
-        const response = await fetch(`${PATH_BACK}/salads/ingredients/${name}`);
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+export async function getSaladIngredients(queries) {
+    const query = generateURLQueries(queries);
+    const response = await fetch(`${PATH_BACK}/salads/ingredients${query}`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function getPizzaCosts({ type }) {
