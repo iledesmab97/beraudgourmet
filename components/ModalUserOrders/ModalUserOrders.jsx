@@ -8,8 +8,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import useGetModal from "@/hooks/useGetModal";
-import useGetUser from "@/hooks/useGetUser";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 
@@ -44,19 +44,24 @@ function ModalUserOrders() {
     const { open, handleChangeModal } = useGetModal({
         modalType: "userOrders",
     });
-    const { user } = useGetUser();
+    const { user } = useSelector(state => state.user)
     const [orders, setOrders] = useState([]);
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
 
     useEffect(() => {
-        if (!user || user.id) return;
-        getAllOrdersOfUser(user.id).then((data) => {
-            console.log(data);
-            if (data.message) return alert(data.message);
-            return setOrders(data);
-        });
+        if (!user) return;
+        getOrders(user.id)
     }, [open]);
+
+    async function getOrders(userId) {
+        try {
+            const newOrrders = await getAllOrdersOfUser(userId)
+            setOrders(newOrrders)
+        } catch(error) {
+            alert(error.message)
+        }
+    }
 
     return (
         <Modal
