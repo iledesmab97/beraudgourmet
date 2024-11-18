@@ -117,3 +117,42 @@ export function mapOrderToBackend(order) {
         paid,
     };
 }
+
+export function mapOrderFromBackend(order) {
+    const {
+        id,
+        applicationDate,
+        deliveryDate,
+        commissions,
+        delivery,
+        DeliveryId,
+        ItemsxOrder,
+        StoreId,
+        UserId,
+        totalCost,
+        totalCostByItems,
+        StripeId,
+        paymentMethod,
+        paid,
+        closed,
+        url,
+    } = order;
+    return {
+        id,
+        applicationDate,
+        deliveryDate,
+        delivery,
+        DeliveryId,
+        itemsxOrder: ItemsxOrder,
+        StoreId,
+        UserId,
+        totalCost,
+        commissions,
+        totalCostByItems,
+        StripeId,
+        paymentMethod,
+        paid,
+        closed,
+        url,
+    };
+}
