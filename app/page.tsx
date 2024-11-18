@@ -1,4 +1,6 @@
 "use client";
+
+import Image from "next/image";
 import React from "react";
 import {
     Typography,
@@ -15,6 +17,7 @@ import { Restaurant, EventAvailable } from "@mui/icons-material";
 import Link from "next/link";
 import StoreComponent from "./StoreComponent";
 import ServiciosEstaticos from "./Servicios";
+import logoBeraund from "../public/images/homeimg/homeimgberaud/logoBeraud.png";
 
 const ServiceCard = styled(Card)(({ theme }) => ({
     height: "100%",
@@ -80,34 +83,44 @@ export default function Home() {
                         </Typography>
                     </Box>
 
-                    <Grid container spacing={4}>
+                    <Grid container spacing={4} justifyContent={"center"}>
                         <Grid item xs={12} md={6}>
                             <ServiceCard>
                                 <CardMedia
                                     component="div"
                                     sx={{
+                                        position: "relative",
                                         height: 140,
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
-                                        bgcolor: "primary.main",
                                         color: "white",
                                     }}
                                 >
-                                    <Restaurant sx={{ fontSize: 60 }} />
+                                    <Image
+                                        src={logoBeraund}
+                                        alt={"logoBeraud"}
+                                        fill
+                                    />
                                 </CardMedia>
-                                <CardContent>
+                                <CardContent
+                                    sx={{
+                                        bgcolor: "primary.main"
+                                    }}
+                                >
                                     <Typography
                                         gutterBottom
                                         variant="h5"
                                         component="div"
-                                        color="primary"
+                                        // color="primary"
+                                        color="white"
                                     >
                                         Menús de Comida
                                     </Typography>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        // color="text.secondary"
+                                        color="white"
                                     >
                                         Descubra nuestra selección de menús
                                         inspirados en la cocina francesa,
@@ -118,7 +131,14 @@ export default function Home() {
                                         <Link href="/menu">
                                             <Button
                                                 variant="outlined"
-                                                color="primary"
+                                                sx={{
+                                                    color: "white",
+                                                    borderColor: "white",
+                                                    "&:hover": {
+                                                        backgroundColor: "white",
+                                                        color: "#295386"
+                                                    }
+                                                }}
                                             >
                                                 Ver Menús
                                             </Button>
@@ -127,7 +147,7 @@ export default function Home() {
                                 </CardContent>
                             </ServiceCard>
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        {/* <Grid item xs={12} md={6}>
                             <ServiceCard>
                                 <CardMedia
                                     component="div"
@@ -172,7 +192,7 @@ export default function Home() {
                                     </Box>
                                 </CardContent>
                             </ServiceCard>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </Container>
                 <ServiciosEstaticos />
