@@ -26,6 +26,7 @@ import { contactUs } from "@/utils/contact";
 import { descriptionOrder } from "@/utils/preparingData";
 import { updatePaymentRequest } from "@/services/checkoutApi";
 import { registerOrder } from "@/services/orderApi";
+import { getPizzaIngredients, getSaladIngredients } from "@/services/productApi";
 
 import styles from "./CheckoutForm.module.css";
 
@@ -170,48 +171,54 @@ export default function CheckoutForm({
             return openAlertDialogMessage();
         }
 
-        if (!stripe || !elements) return;
-        setIsLoading(true);
+        try {
+            const { name, value } = await checkIngredientsAvailable()
+            if (!value) throw new Error(`Lo sentimos, el ingrediente "${name}" acaba de agortarse`)
 
-        const { paymentIntent, error } = await stripe.confirmPayment({
-            elements,
-            confirmParams: {
-                // return_url: 'http://localhost:3000/success',
-                // capture_method: 'manual'
-            },
-            redirect: "if_required",
-        });
-
-        if (error) {
-            if (
-                error.type === "card_error" ||
-                error.type === "validation_error"
-            ) {
-                setMessage(error.message);
-            } else {
-                setMessage("An unexpected error ocurred.");
-            }
-        } else {
-            const response = await registerOrder({
-                ...dataOrders,
-                stripeId: paymentIntent.id,
-                paymentMethod: "stripe",
-                paid: !checked,
-            });
-            if (response.message) {
-                setError(response.message);
-            }
+            if (!stripe || !elements) return;
             setIsLoading(true);
-            removeLocalData("orders");
-            removeLocalData("place");
-
-            return router.push("/success");
+    
+            const { paymentIntent, error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    // return_url: 'http://localhost:3000/success',
+                    // capture_method: 'manual'
+                },
+                redirect: "if_required",
+            });
+    
+            if (error) {
+                if (
+                    error.type === "card_error" ||
+                    error.type === "validation_error"
+                ) {
+                    setMessage(error.message);
+                } else {
+                    setMessage("An unexpected error ocurred.");
+                }
+            } else {
+                const response = await registerOrder({
+                    ...dataOrders,
+                    stripeId: paymentIntent.id,
+                    paymentMethod: "stripe",
+                    paid: !checked,
+                });
+                if (response.message) {
+                    setError(response.message);
+                }
+                setIsLoading(true);
+                removeLocalData("orders");
+                removeLocalData("place");
+    
+                return router.push("/success");
+            } 
+                
+        } catch(error) {
+            alert(error.message)
+        } finally {
+            setIsLoading(false);
+            setError("Algo salió mal");
         }
-
-        // la verificación fue exitosa
-
-        setIsLoading(false);
-        setError("Algo salió mal");
     }
 
     const paymentElementOptions = {
@@ -238,6 +245,37 @@ export default function CheckoutForm({
         });
         handleCloseModal("pay");
         return router.push("/success");
+    }
+
+    async function checkIngredientsAvailable() {
+        for (let item of orderItems) {
+            const { itemType, name } = item
+            let ingredients
+            switch (itemType) {
+                case "pizza": {
+                    ingredients = await getPizzaIngredients({ name })
+                    break
+                }
+                case "salad": {
+                    ingredients = await getSaladIngredients({ name })
+                    break
+                }
+            }
+            let missingIngredient
+            const allIngredientesAvailable = ingredients.every(({ quantity, count , name }) => {
+                if (quantity <= count) return true
+                missingIngredient = name
+                return false
+            })
+            if (!allIngredientesAvailable) {
+                const response = {
+                    name: missingIngredient,
+                    value: false
+                }
+                return response
+            }
+        }
+        return { value: true }
     }
 
     return (
