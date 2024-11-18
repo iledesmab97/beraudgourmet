@@ -48,18 +48,22 @@ function ModalUserOrders() {
     const [orders, setOrders] = useState([]);
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        if (!user) return;
+        if (!user || orders.length) return;
         getOrders(user.id)
     }, [open]);
 
     async function getOrders(userId) {
+        setLoading(true)
         try {
             const newOrrders = await getAllOrdersOfUser(userId)
             setOrders(newOrrders)
         } catch(error) {
             alert(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -83,7 +87,7 @@ function ModalUserOrders() {
                     Historial de Ordenes
                 </Typography>
                 {isLargeScreen ? (
-                    <OrdersTablet orders={orders} />
+                    <OrdersTablet orders={orders} loading={loading} />
                 ) : (
                     <OrdersList orders={orders} />
                 )}
