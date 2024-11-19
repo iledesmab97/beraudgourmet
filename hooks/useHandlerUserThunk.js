@@ -1,6 +1,7 @@
 import { useAppSelector, useAppDispatch } from "@/hooks/store";
 import { useRef } from "react";
 import { useEffect } from "react";
+import useGetModal from "@/hooks/useGetModal";
 
 import { updateAlertMessage } from "@/stores/alertMessage/slice";
 
@@ -8,6 +9,7 @@ import { updateUserAction } from "@/stores/actions/users";
 
 export default function useHandlerUserThunk() {
     const { user, status, error } = useAppSelector((state) => state.user);
+    const { handleChangeModal } = useGetModal({ modalType: "changePassword" });
     const dispatch = useAppDispatch();
     const alertText = useRef({
         text: "",
@@ -21,6 +23,8 @@ export default function useHandlerUserThunk() {
             alertText.current.text =
                 error === "Wrong password" ? "Contraseña incorrecta" : error;
         }
+
+        // Show message
         dispatch(
             updateAlertMessage({
                 checked: true,
@@ -28,6 +32,14 @@ export default function useHandlerUserThunk() {
                 status: status === "succeeded" ? "success" : "error",
             })
         );
+
+        // Close Modal Change password
+        if (
+            alertText.current.property === "password" &&
+            status === "succeeded"
+        ) {
+            handleChangeModal("changePassword", "user");
+        }
 
         alertText.current = {
             text: "",
