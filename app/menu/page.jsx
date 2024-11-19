@@ -22,6 +22,8 @@ import ShoppingCartButton from "@/components/ShoppingCartButton/ShoppingCartButt
 import AlertRecoverPassword from "@/components/AlertRecorverPassword/AlertRecorverPassword";
 import PizzaCustomizable from "@/components/PizzaCustomizable/PizzaCustomizable";
 import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
+import AlertMessage from "@/components/AlertMessage/AlertMessage"
+
 import useHandleSteps from "@/hooks/useHandleSteps";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
@@ -146,6 +148,7 @@ function Menu() {
                     toggleOpenOrderRewards={toggleOpenOrderRewards}
                 />
             ) : null}
+            <AlertMessage />
         </Container>
     );
 }
