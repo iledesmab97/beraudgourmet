@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import useGetModal from '@/hooks/useGetModal'
 import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
@@ -34,18 +34,23 @@ const style = {
     gap: 2,
 }
 
+const initialInputs = {
+    password: "",
+    newPassword: ""
+}
+
 function ModalChangePassword() {
 
-    const { user, statusUser, errorUser } = useSelector(state => state.user)
+    const { user, status: statusUser, error: errorUser } = useSelector(state => state.user)
     const { open, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
-    const [inputs, setInputs] = useState({
-        password: "",
-        newPassword: ""
-    })
-    const [errors, setErrors] = useState({
-        password: "",
-        newPassword: ""
-    })
+    const [inputs, setInputs] = useState(initialInputs)
+    const [errors, setErrors] = useState(initialInputs)
+
+    // Reboot inputs state
+    useEffect(() => {
+        if (statusUser !== "succeeded") return
+        setInputs(initialInputs)
+    }, [statusUser])
 
     const { updateUser } = useHandlerUserThunk()
 
