@@ -17,22 +17,25 @@ export default function useHandlerUserThunk() {
     // Active AlertMessage component and refres order table
     useEffect(() => {
         if (status === "loading" || alertText.current.text === "") return;
-        console.log("logré pasar el condicional");
+        if (error) {
+            alertText.current.text =
+                error === "Wrong password" ? "Contraseña incorrecta" : error;
+        }
         dispatch(
             updateAlertMessage({
                 checked: true,
-                text: status === "succeeded" ? alertText.current.text : error,
+                text: alertText.current.text,
                 status: status === "succeeded" ? "success" : "error",
             })
         );
-        console.log("ya despache el updateAlertMessage");
+
         alertText.current = {
             text: "",
             property: null,
         };
     }, [status]);
 
-    function updateUser({ property, value }) {
+    function updateUser({ property, value, verification }) {
         switch (property) {
             case "name": {
                 alertText.current = {
@@ -49,9 +52,17 @@ export default function useHandlerUserThunk() {
                 };
                 break;
             }
+            case "password": {
+                alertText.current = {
+                    text: "La contraseña se ha actualizado exitosamente",
+                    property: "password",
+                };
+
+                break;
+            }
         }
 
-        dispatch(updateUserAction({ property, value }));
+        dispatch(updateUserAction({ property, value, verification }));
     }
 
     return { updateUser };
