@@ -6,9 +6,12 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 
-import useGetModal from '@/hooks/useGetModal'
-import useHandleUser from '@/hooks/useHandleUser'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import useGetModal from '@/hooks/useGetModal'
+import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
+
+import { getInputsErrors } from "@/utils/preparingData"
 
 const style = {
     position: 'absolute',
@@ -33,14 +36,45 @@ const style = {
 
 function ModalChangePassword() {
 
+    const { user, statusUser, errorUser } = useSelector(state => state.user)
     const { open, handleChangeModal } = useGetModal({ modalType: 'changePassword' })
-    const { inputsEdit, errorsEdit, handleChangeEdit, changePassword } = useHandleUser()
-    const [loading, setLoading] = useState(false)
+    const [inputs, setInputs] = useState({
+        password: "",
+        newPassword: ""
+    })
+    const [errors, setErrors] = useState({
+        password: "",
+        newPassword: ""
+    })
+
+    const { updateUser } = useHandlerUserThunk()
+
+    function handleChangeInputs(event) {
+        const { name: property, value } = event.target
+        const newInputs = {
+            ...inputs,
+            [property]: value
+        }
+        handleErrors(newInputs)
+        setInputs(newInputs)
+    }
+
+    function handleErrors({ password, newPassword }) {
+        const { password: passwordError } = getInputsErrors({ password })
+        const { password: newPasswordError } = getInputsErrors({ password: newPassword })
+        const newErrors = {
+            ...(passwordError && { password: passwordError }),
+            ...(newPasswordError && { newPassword: newPasswordError })
+        }
+        setErrors(newErrors)
+    }
 
     async function handleChangePassword() {
-        setLoading(true)
-        if (await changePassword() === true) handleChangeModal('changePassword', 'user')
-        setLoading(false)
+        updateUser({
+            property: "password",
+            value: inputs.newPassword,
+            verification: inputs.password
+        })
     }
 
     return (
@@ -59,25 +93,25 @@ function ModalChangePassword() {
                     fullWidth
                     label='Contraseña actual'
                     type='password'
-                    name='passwordConfirmation'
-                    value={inputsEdit.passwordConfirmation}
-                    onChange={handleChangeEdit}
-                    error={errorsEdit.passwordConfirmation ? true : false}
-                    helperText={errorsEdit.passwordConfirmation ? errorsEdit.passwordConfirmation : ''}
+                    name='password'
+                    value={inputs.password}
+                    onChange={handleChangeInputs}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password}
                 />
                 <TextField
                     fullWidth
                     label='Nueva contraseña'
                     type='password'
-                    name='password'
-                    value={inputsEdit.password}
-                    onChange={handleChangeEdit}
-                    error={errorsEdit.password ? true : false}
-                    helperText={errorsEdit.password ? errorsEdit.password : ''}
+                    name='newPassword'
+                    value={inputs.newPassword}
+                    onChange={handleChangeInputs}
+                    error={Boolean(errors.newPassword)}
+                    helperText={errors.newPassword}
                 />
                 <Button
                     variant='contained'
-                    disabled={loading}
+                    disabled={statusUser === "loading" || Object.keys(errors).length}
                     sx={{
                         alignSelf: 'flex-end'
                     }}
