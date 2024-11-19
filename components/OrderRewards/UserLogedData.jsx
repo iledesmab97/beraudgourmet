@@ -16,7 +16,7 @@ import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
 
 import { getInputsErrors } from "@/utils/preparingData"
 
-function UserLogedData({ handleChangeNumberPhone, type, open }) {
+function UserLogedData() {
 
     const { user } = useSelector(state => state.user)
     const [inputs, setInputs] = useState(() => {
@@ -50,8 +50,7 @@ function UserLogedData({ handleChangeNumberPhone, type, open }) {
         setEditing(newEditing)
     }
 
-    function handleChangeInputs(event) {
-        const { name:property, value } = event.target
+    function handleChangeInputs({ property, value }) {
         const newInputs = {
             ...inputs,
             [property]: value
@@ -89,30 +88,28 @@ function UserLogedData({ handleChangeNumberPhone, type, open }) {
                             <AccountCircle />
                         </InputAdornment>
                     ),
-                    endAdornment: ( open
-                        ? (
-                            <IconButton
-                                name='name'
-                                position='end'
-                                onClick={() => { handleEditing("name") }}
-                                disabled={errors.name ? true : false}    
-                            >
-                                {
-                                    editing.name
-                                    ? <CheckIcon />
-                                    : <BorderColorIcon />
-                                }
-                            </IconButton>
-                        ): null
+                    endAdornment: (
+                        <IconButton
+                            name='name'
+                            position='end'
+                            onClick={() => { handleEditing("name") }}
+                            disabled={errors.name ? true : false}    
+                        >
+                            {
+                                editing.name
+                                ? <CheckIcon />
+                                : <BorderColorIcon />
+                            }
+                        </IconButton>
                     ),
-                    readOnly: !editing.name && open ? true : false
+                    readOnly: !editing.name
                 }}
                 sx={{
                     width: '100%',
                     // height: '40px',
                     m: '0px'
                 }}
-                onChange={handleChangeInputs}
+                onChange={(event) => {handleChangeInputs({ property: event.target.name, value: event.target.value})}}
                 value={ inputs.name}
                 inputProps={{
                     sx: {
@@ -128,26 +125,24 @@ function UserLogedData({ handleChangeNumberPhone, type, open }) {
                 numberPhone={inputs.numberPhone}
                 errorsNumberPhone={errors.numberPhone}
                 userLoged={true}
-                type={type}
-                handleChangeNumberPhone={handleChangeNumberPhone}
+                type={"text"}
+                handleChangeNumberPhone={(value) => {handleChangeInputs({ property: "numberPhone", value })}}
                 InputProps={{
-                    endAdornment: ( open
-                        ? (
-                            <IconButton
-                                name='numberPhone'
-                                position='end'
-                                onClick={handleEditing}
-                                disabled={errors.numberPhone ? true : false}    
-                            >
-                                {
-                                    editing.numberPhone
-                                    ? <CheckIcon />
-                                    : <BorderColorIcon />
-                                }
-                            </IconButton>
-                        ): null
+                    endAdornment: (
+                        <IconButton
+                            name='numberPhone'
+                            position='end'
+                            onClick={() => {handleEditing("numberPhone")}}
+                            disabled={Boolean(errors.numberPhone)}    
+                        >
+                            {
+                                editing.numberPhone
+                                ? <CheckIcon />
+                                : <BorderColorIcon />
+                            }
+                        </IconButton>
                     ),
-                    readOnly: !editing.numberPhone && open ? true : false
+                    readOnly: !editing.numberPhone
                 }}
             />
         </Grid>
