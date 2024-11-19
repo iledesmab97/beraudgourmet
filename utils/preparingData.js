@@ -444,6 +444,10 @@ export function getInputsErrors(inputs) {
     else if (inputs.name && !validNombre.test(inputs.name))
         errors.name = "No colocar números ni caracteres especiales";
     if (!inputs.password) errors.password = "Este campo no puede estar vacio";
+    if (!inputs.passwordConfirmation)
+        errors.passwordConfirmation = "Este campo no puede estar vacio";
+    else if (inputs.passwordConfirmation !== inputs.password)
+        errors.passwordConfirmation = "Las contraseñas no coinciden";
     if (!inputs.numberPhone)
         errors.numberPhone = "Este campo no puede estar vacio";
     else if (
