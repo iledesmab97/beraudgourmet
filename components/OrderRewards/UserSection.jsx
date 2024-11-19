@@ -1,20 +1,15 @@
 "use client";
 
+import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 
-import UserLoged from "./UserLoged";
 import UserNew from "./UserNew";
+import ButtonNameUserLoged from "./ButtonNameUserLoged"
+import ButtonPhoneUserLoged from "./ButtonPhoneUserLoged"
 import SliceProgressBar from "@/components/SliceProgressBar/SliceProgressBar";
 
 import useHandleUser from "@/hooks/useHandleUser";
-
-const styleButtons = {
-    textTransform: "none",
-    marginTop: "8px",
-    marginBottom: "4px",
-};
 
 export default function UserSection() {
     const {
@@ -44,12 +39,18 @@ export default function UserSection() {
             </Typography>
 
             {userLoged ? (
-                <UserLoged
-                    userLoged={userLoged}
-                    inputs={inputs}
-                    errors={errors}
-                    editing={editing}
-                />
+                <Grid
+                    item
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px'
+                    }}
+                >
+                    <ButtonNameUserLoged inputs={inputs}/>
+                    <ButtonPhoneUserLoged inputs={inputs}/>
+                </Grid>
             ) : (
                 <UserNew
                     inputs={inputs}
