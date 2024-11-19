@@ -12,10 +12,11 @@ import CheckIcon from '@mui/icons-material/Check'
 
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-
 import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
 
-function UserLogedData({ handleChangeNumberPhone, errors, type, open }) {
+import { getInputsErrors } from "@/utils/preparingData"
+
+function UserLogedData({ handleChangeNumberPhone, type, open }) {
 
     const { user } = useSelector(state => state.user)
     const [inputs, setInputs] = useState(() => {
@@ -28,6 +29,10 @@ function UserLogedData({ handleChangeNumberPhone, errors, type, open }) {
     const [editing, setEditing] = useState({
         name: false,
         numberPhone: false
+    })
+    const [errors, setErrors] = useState({
+        name: "",
+        numberPhone: ""
     })
     const { updateUser } = useHandlerUserThunk()
 
@@ -47,10 +52,17 @@ function UserLogedData({ handleChangeNumberPhone, errors, type, open }) {
 
     function handleChangeInputs(event) {
         const { name:property, value } = event.target
-        setInputs(prevState => ({
-            ...prevState,
+        const newInputs = {
+            ...inputs,
             [property]: value
-        }))
+        }
+        handleErrros(newInputs)
+        setInputs(newInputs)
+    }
+
+    function handleErrros(inputs) {
+        const { name, numberPhone } = getInputsErrors(inputs)
+        setErrors({ name, numberPhone })
     }
 
     return (
