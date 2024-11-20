@@ -18,6 +18,15 @@ export const weekDaysES = [
     "Viernes",
     "Sábado",
 ];
+export const weekDaysEN_ES = {
+    Sunday: "Domingo",
+    Monday: "Lunes",
+    Tuesday: "Martes",
+    Wednesday: "Miércoles",
+    Thursday: "Jueves",
+    Friday: "Viernes",
+    Saturday: "Sábado",
+};
 
 const typeDelivery = {
     store: "pickup",
@@ -186,4 +195,14 @@ export function howMuchLeftTime(time) {
     }
 
     return { sec: missing, min: `${min}:${sec}` };
+}
+
+export function sortWeekDays(listDays) {
+    const sorteList = listDays.sort((a, b) => {
+        const na = weekDaysEN.indexOf(a.day);
+        const nb = weekDaysEN.indexOf(b.day);
+        return na - nb;
+    });
+
+    return sorteList;
 }
