@@ -172,7 +172,7 @@ export default function CheckoutForm({
         }
 
         try {
-            const { name, value } = await checkIngredientsAvailable()
+            const { name, value } = await checkIngredientsAvailable(orderItems)
             if (!value) throw new Error(`Lo sentimos, el ingrediente "${name}" acaba de agortarse`)
 
             if (!stripe || !elements) return;
@@ -247,7 +247,7 @@ export default function CheckoutForm({
         return router.push("/success");
     }
 
-    async function checkIngredientsAvailable() {
+    async function checkIngredientsAvailable(orderItems) {
         for (let item of orderItems) {
             const { itemType, name } = item
             let ingredients
