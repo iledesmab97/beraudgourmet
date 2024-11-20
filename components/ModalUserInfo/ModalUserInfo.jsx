@@ -8,7 +8,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 
-import UserLoged from '../OrderRewards/UserLoged'
+import UserLogedData from '../OrderRewards/UserLogedData'
 import MoveDown from '@/components/MoveDown/MoveDown'
 
 import { useDispatch } from 'react-redux'
@@ -98,17 +98,7 @@ function ModalUserInfo() {
                 >
                     Su cuenta
                 </Typography>
-                <UserLoged
-                    userLoged={userLoged}
-                    inputs={inputs}
-                    errors={errors}
-                    handleChange={handleChange}
-                    handleChangeNumberPhone={handleChangeNumberPhone}
-                    type={'text'}
-                    editing={editing}
-                    handleEditing={handleEditing}
-                    open={open}
-                />
+                <UserLogedData/>
                 <Grid
                     item
                     sx={{
