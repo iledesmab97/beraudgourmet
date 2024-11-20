@@ -8,6 +8,7 @@ export const fetchStoreListThunk = createAsyncThunk(
         try {
             const storeList = await getAllStores({
                 relation: "Schedules",
+                available: true,
             });
             await delay(3000);
             return storeList;
