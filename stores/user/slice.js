@@ -42,6 +42,7 @@ export const userSlice = createSlice({
             .addCase(updateUserAction.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.status = "succeeded";
+                delete state.error;
             })
             .addCase(updateUserAction.rejected, (state, action) => {
                 state.status = "failed";
