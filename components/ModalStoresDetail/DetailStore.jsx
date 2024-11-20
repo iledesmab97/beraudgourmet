@@ -25,6 +25,8 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 
+import { weekDaysEN_ES, sortWeekDays } from "@/utils/hours"
+
 export default function DetailStore({ currentStore }) {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
@@ -52,9 +54,11 @@ export default function DetailStore({ currentStore }) {
                 }
             }
         })
+        const schedulePickupSorted = sortWeekDays(pickup)
+        const scheduleDeliverySorted = sortWeekDays(delivery)
         return {
-            pickup,
-            delivery
+            pickup: schedulePickupSorted,
+            delivery: scheduleDeliverySorted
         }
     }
 
@@ -196,7 +200,7 @@ export default function DetailStore({ currentStore }) {
                                 {scheduleList.pickup.map(
                                     (schedule) => (
                                         <TableRow key={schedule.id}>
-                                            <TableCell align='center'>{schedule.day}</TableCell>
+                                            <TableCell align='center'>{weekDaysEN_ES[schedule.day]}</TableCell>
                                             <TableCell align='center'>{schedule.startTime}</TableCell>
                                             <TableCell align='center'>{schedule.endTime}</TableCell>
                                         </TableRow>
@@ -229,7 +233,7 @@ export default function DetailStore({ currentStore }) {
                                 {scheduleList.delivery.map(
                                     (schedule) => (
                                         <TableRow key={schedule.id}>
-                                            <TableCell align='center'>{schedule.day}</TableCell>
+                                            <TableCell align='center'>{weekDaysEN_ES[schedule.day]}</TableCell>
                                             <TableCell align='center'>{schedule.startTime}</TableCell>
                                             <TableCell align='center'>{schedule.endTime}</TableCell>
                                         </TableRow>
