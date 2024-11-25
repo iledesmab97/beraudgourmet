@@ -25,7 +25,7 @@ function differenceTime(now, later) {
 export default function TimeChoose() {
 
     const {place, handleDeadLine} = useGetPlace()
-    const [hour, setHour] = useState( place && place.deadLine ? timeStringToObject(place.deadLine.time.realTime) : dayjs().add(30, 'minute'))
+    const [hour, setHour] = useState( place && place.deadLine &&  place.deadLine.time ? timeStringToObject(place.deadLine.time.realTime) : dayjs().add(30, 'minute'))
     const [textHour, setTextHour] = useState('')
     const [today, setToday] = useState(true)
     const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue(place))
