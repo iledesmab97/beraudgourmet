@@ -60,6 +60,7 @@ export default function DateChoose() {
   const { place, handleDeadLine} = useGetPlace()
   const [date, setDate] = useState( place && place.deadLine ? dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY') : getNearestAvailableDate(place.closerStore))
   const [textDate, setTextDate] = useState('')
+  const [currentTypeDelivery, setCurrentTypeDelivery] = useState(place.typeDelivery)
 
   useEffect(() => {
     if (!date) return
@@ -83,7 +84,7 @@ export default function DateChoose() {
 
   function getNearestAvailableDate(store) {
     const { Schedules } = store
-    const pickupSchedules = Schedules.filter(schedule => schedule.type === "pickup")
+    const pickupSchedules = Schedules.filter(schedule => schedule.type === typeDelivery[currentTypeDelivery.name] )
     const closerSchedule = getNearestSchedule(pickupSchedules)
     const closerScheduleDay = dayjs().day(weekDaysEN.indexOf(closerSchedule.day))
     return closerScheduleDay
@@ -120,7 +121,7 @@ export default function DateChoose() {
           // }}
           shouldDisableDate={(day) => {
             const dateToday = day.day()
-            const datesNotAvailable = place.closerStore.Schedules.filter(schedule => schedule.type === "pickup").map(schedule => {
+            const datesNotAvailable = place.closerStore.Schedules.filter(schedule => schedule.type === typeDelivery[currentTypeDelivery.name]).map(schedule => {
               return weekDaysEN.indexOf(schedule.day)             
             })
             return !datesNotAvailable.includes(dateToday)
