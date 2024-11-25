@@ -1,4 +1,7 @@
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 export const weekDaysEN = [
     "Sunday",
@@ -101,17 +104,18 @@ export function todaysScheduleIs(scheduleList) {
 }
 
 export function getTimeLimitTodaySchedue(place) {
+    const { closerStore, deadLine } = place;
     if (!place.deadLine)
         return {
             minHour: dayjs(),
             maxHour: dayjs(),
         };
 
-    const schedule = place.closerStore.Schedules.find((schedule) => {
+    const today = dayjs(deadLine.date.realDate, "DD/MM/YYYY");
+    const schedule = closerStore.Schedules.find((schedule) => {
         const sameScheduleType =
             schedule.type === typeDelivery[place.typeDelivery.name];
-        const today = dayjs().format("dddd");
-        const sameDay = schedule.day === today;
+        const sameDay = schedule.day === today.format("dddd");
         if (sameScheduleType && sameDay) return true;
         return false;
     });
