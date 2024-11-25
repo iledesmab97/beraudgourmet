@@ -28,7 +28,7 @@ export const weekDaysEN_ES = {
     Saturday: "Sábado",
 };
 
-const typeDelivery = {
+export const typeDelivery = {
     store: "pickup",
     home: "delivery",
 };
