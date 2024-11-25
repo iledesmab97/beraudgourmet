@@ -12,6 +12,7 @@ import 'dayjs/locale/en-gb'
 import TextField from '@mui/material/TextField'
 import Input from '@mui/material/Input'
 import Typography from '@mui/material/Typography'
+import { getNearestSchedule, weekDaysEN } from "@/utils/hours"
 
 const daysES = {
   ['Monday']: 'Lunes',
@@ -57,7 +58,7 @@ export default function DateChoose() {
 
 
   const { place, handleDeadLine} = useGetPlace()
-  const [date, setDate] = useState( place && place.deadLine ? dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY') : dayjs())
+  const [date, setDate] = useState( place && place.deadLine ? dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY') : getNearestAvailableDate(place.closerStore))
   const [textDate, setTextDate] = useState('')
 
   useEffect(() => {
@@ -78,6 +79,14 @@ export default function DateChoose() {
 
   function handleChange (event) {
     setDate(event)
+  }
+
+  function getNearestAvailableDate(store) {
+    const { Schedules } = store
+    const pickupSchedules = Schedules.filter(schedule => schedule.type === "pickup")
+    const closerSchedule = getNearestSchedule(pickupSchedules)
+    const closerScheduleDay = dayjs().day(weekDaysEN.indexOf(closerSchedule.day))
+    return closerScheduleDay
   }
 
   return (
