@@ -206,3 +206,19 @@ export function sortWeekDays(listDays) {
 
     return sorteList;
 }
+
+export function getNearestSchedule(scheduleList) {
+    const today = dayjs();
+    let nday = today.day();
+    for (let i of weekDaysEN) {
+        const scheduleDay = scheduleList.find(
+            (schedule) => schedule.day === weekDaysEN[nday]
+        );
+        if (scheduleDay) return scheduleDay;
+        nday++;
+        if (nday >= 6) {
+            nday = nday - 6;
+        }
+    }
+    return null;
+}
