@@ -12,7 +12,7 @@ import 'dayjs/locale/en-gb'
 import TextField from '@mui/material/TextField'
 import Input from '@mui/material/Input'
 import Typography from '@mui/material/Typography'
-import { getNearestSchedule, weekDaysEN } from "@/utils/hours"
+import { getNearestSchedule, weekDaysEN, typeDelivery } from "@/utils/hours"
 
 const daysES = {
   ['Monday']: 'Lunes',
@@ -118,6 +118,13 @@ export default function DateChoose() {
           //   width:'100%',
           //   minWidth: '0px !important'
           // }}
+          shouldDisableDate={(day) => {
+            const dateToday = day.day()
+            const datesNotAvailable = place.closerStore.Schedules.filter(schedule => schedule.type === "pickup").map(schedule => {
+              return weekDaysEN.indexOf(schedule.day)             
+            })
+            return !datesNotAvailable.includes(dateToday)
+          }}
         />
       </DemoContainer>
     </LocalizationProvider>
