@@ -34,8 +34,11 @@ import useGetDrawer from "@/hooks/useGetDrawer";
 import useLoadData from "@/hooks/useLoadData";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductsListThunk } from "@/stores/actions/products";
+import { fetchStoreListThunk } from "@/stores/actions/stores";
 
-function Menu() {
+import { getAllCompanies } from "@/services/companyApi";
+
+function Menu({ params }) {
     const [totalMatches, setTotalMatches] = useState("null");
 
     useHandleSteps();
@@ -69,8 +72,31 @@ function Menu() {
         setTotalMatches(String(matches));
     }, [matches]);
 
+    // Cargar las tiendas de la compañia
+    useEffect(() => {
+        getStores()
+    }, [dispatch]);
+
     function toggleOpenOrderRewards(value) {
         setOpenOrderRewards(value);
+    }
+
+    async function getStores() {
+        const { company: companyName } = params
+        try {
+            const [company] = await getAllCompanies({
+                available: true,
+                name: companyName
+            })
+            dispatch(fetchStoreListThunk({
+                relation: "Schedules",
+                relation2: "Company",
+                available: true,
+                Company: company.id
+            }));
+        } catch(error) {
+            alert(error.message)
+        }
     }
 
     return (
