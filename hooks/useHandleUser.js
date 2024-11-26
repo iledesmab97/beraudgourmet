@@ -185,13 +185,12 @@ function useHandleUser() {
         lastDataSet.current = "numberPhone";
     }
 
-    async function logInUser() {
-        const { email, password } = inputs;
+    async function verifyError() {
         const newErrors = lastValidation(inputs);
         if (newErrors.email || newErrors.password) {
-            return setErrors(errors);
+            setErrors(errors);
+            return newErrors;
         }
-        dispatch(logInUserAction({ email, password }));
     }
 
     async function changePassword() {
@@ -341,7 +340,7 @@ function useHandleUser() {
         user,
         editing,
         handleChangeNumberPhone,
-        logInUser,
+        verifyError,
         changePassword,
         changeEmail,
         signUp,
