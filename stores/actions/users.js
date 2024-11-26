@@ -56,10 +56,7 @@ export const logInUserAction = createAsyncThunk(
             saveLocalData("user", token);
             return user;
         } catch (error) {
-            if (error.message === "Contraseña incorrecta") {
-                alert(error.message);
-            }
-            return rejectWithValue({ message: error.message });
+            return rejectWithValue(error.message);
         }
     }
 );
