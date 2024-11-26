@@ -29,7 +29,7 @@
         "**/*.tsx",
         ".next/types/**/*.ts",
         "theme/ThemeRegistry.jsx",
-        "app/menu/page.jsx"
+        "app/[company]/page.jsx"
     ],
     "exclude": ["node_modules"]
 }
