@@ -10,6 +10,7 @@ import ButtonPhoneUserLoged from "./ButtonPhoneUserLoged"
 import SliceProgressBar from "@/components/SliceProgressBar/SliceProgressBar";
 
 import useHandleUser from "@/hooks/useHandleUser";
+import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
 
 export default function UserSection() {
     const {
@@ -20,9 +21,17 @@ export default function UserSection() {
         userLoged,
         editing,
         handleChangeNumberPhone,
-        logInUser,
+        logInUser: verifyError,
         signUp,
     } = useHandleUser();
+    const { loginUser } = useHandlerUserThunk("UserNew")
+
+    function login() {
+        const { email, password } = inputs
+        const newError = verifyError()
+        if (Object.keys(newError).length) return
+        loginUser({ email, password })
+    }
 
     return (
         <FormControl
@@ -59,7 +68,7 @@ export default function UserSection() {
                     editing={editing}
                     currentUser={currentUser}
                     handleChangeNumberPhone={handleChangeNumberPhone}
-                    logInUser={logInUser}
+                    login={login}
                     signUp={signUp}
                 />
             )}
