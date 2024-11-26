@@ -4,12 +4,9 @@ import { delay } from "@/utils/wait";
 
 export const fetchStoreListThunk = createAsyncThunk(
     "storeList/fetchStoreList",
-    async (_, { rejectWithValue }) => {
+    async (queries, { rejectWithValue }) => {
         try {
-            const storeList = await getAllStores({
-                relation: "Schedules",
-                available: true,
-            });
+            const storeList = await getAllStores(queries);
             await delay(3000);
             return storeList;
         } catch (error) {
