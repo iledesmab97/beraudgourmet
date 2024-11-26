@@ -11,14 +11,12 @@ import Radio from '@mui/material/Radio'
 import UserLogedData from '../OrderRewards/UserLogedData'
 import MoveDown from '@/components/MoveDown/MoveDown'
 
-import { useDispatch } from 'react-redux'
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
-import useHandleSession from '@/hooks/useHandleSession'
+import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
 
 import { requestVerification, updateMyAccount } from '@/services/userApi'
-import { logOutUserAction } from '@/stores/actions/users'
 
 import styles from '@/components/MoveDown/MoveDown.module.css'
 
@@ -55,9 +53,8 @@ function ModalUserInfo() {
 
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
-    const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
-    const { closeSession } = useHandleSession()
-    const dispatch = useDispatch()
+    const { user} = useHandleUser()
+    const { logout } = useHandlerUserThunk()
 
     async function sendVerification() {
         const response = await requestVerification({email: user.email})
@@ -74,7 +71,7 @@ function ModalUserInfo() {
     }
 
     function executeLogout() {
-        dispatch(logOutUserAction());
+        logout()
         handleCloseModal('user')
     }
 
@@ -165,11 +162,11 @@ function ModalUserInfo() {
                     >
                         Ver historial de ordenes
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={deleteAccount}
                     >
                         Borrar mi cuenta
-                    </Button>
+                    </Button> */}
                     {
                         !user.verified ? (
                             <Button
