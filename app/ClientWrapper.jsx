@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchStoreListThunk } from "@/stores/actions/stores";
 import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
 import MaintenanceComponent from "@/components/Maintenance/MaintenanceComponent";
@@ -96,10 +95,6 @@ export default function ClientWrapper({ children }) {
             setLocationPermission("denied");
         }
     };
-
-    useEffect(() => {
-        dispatch(fetchStoreListThunk());
-    }, [dispatch]);
 
     useEffect(() => {
         if (status !== "succeeded") {
