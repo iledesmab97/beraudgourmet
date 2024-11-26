@@ -5,7 +5,7 @@ import useGetModal from "@/hooks/useGetModal";
 
 import { updateAlertMessage } from "@/stores/alertMessage/slice";
 
-import { updateUserAction } from "@/stores/actions/users";
+import { updateUserAction, logInUserAction } from "@/stores/actions/users";
 
 export default function useHandlerUserThunk() {
     const { user, status, error } = useAppSelector((state) => state.user);
@@ -77,5 +77,13 @@ export default function useHandlerUserThunk() {
         dispatch(updateUserAction({ property, value, verification }));
     }
 
-    return { updateUser };
+    async function loginUser({ email, password }) {
+        alertText.current = {
+            text: "Has iniciado sesión exitosamente",
+            property: "loged",
+        };
+        dispatch(logInUserAction({ email, password }));
+    }
+
+    return { updateUser, loginUser };
 }
