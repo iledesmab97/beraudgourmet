@@ -21,7 +21,7 @@ export default function UserSection() {
         userLoged,
         editing,
         handleChangeNumberPhone,
-        logInUser: verifyError,
+        verifyError,
         signUp,
     } = useHandleUser();
     const { loginUser } = useHandlerUserThunk("UserNew")
