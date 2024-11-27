@@ -10,7 +10,7 @@ import StorePickup from "./StorePickup";
 import HomeDelivery from "./HomeDelivery";
 import MoveDown from "@/components/MoveDown/MoveDown";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useGetModal from "@/hooks/useGetModal";
 import useHandlePlace from "@/hooks/useHandlePlace";
 import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
@@ -41,13 +41,30 @@ const style = {
 };
 
 export default function ModalStoreDelivery() {
+
+    const { stores } = useSelector(state => state.storeList)
     const { open, handleCloseModal } = useGetModal({ modalType: "place" });
+    const [storeList, setStoreList] = useState({
+        pickup: isThereScheduleAvailable({ stores, type: "pickup" }),
+        delivery: isThereScheduleAvailable({ stores, type: "delivery" })
+    })
 
     const [delivery, setDelivery] = useState("store");
     const { nextStepGuide } = useHandleShoppingGuide();
 
+    useEffect(() => {
+        setStoreList({
+            pickup: isThereScheduleAvailable({ stores, type: "pickup" }),
+            delivery: isThereScheduleAvailable({ stores, type: "delivery" })
+        })
+    }, [stores])
+
     function handlePlace(place) {
         setDelivery(place);
+    }
+
+    function isThereScheduleAvailable({ stores, type }) {
+        return stores.some(store => store.Schedules.some(schedule => schedule.type === type))
     }
 
     return (
@@ -100,6 +117,7 @@ export default function ModalStoreDelivery() {
                     >
                         <Button
                             onClick={() => handlePlace("store")}
+                            disabled={!storeList.pickup}
                             sx={
                                 delivery === "store"
                                     ? {
@@ -113,6 +131,7 @@ export default function ModalStoreDelivery() {
                         </Button>
                         <Button
                             onClick={() => handlePlace("home")}
+                            disabled={!storeList.delivery}
                             sx={
                                 delivery === "home"
                                     ? {
