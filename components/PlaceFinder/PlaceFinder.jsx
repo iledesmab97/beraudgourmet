@@ -8,7 +8,7 @@ import ItemPlace from "./ItemPlace";
 import { Box, CircularProgress, Paper } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import usePlaceFinder from "@/hooks/usePlaceFinder";
 
 import { makePlace } from "@/stores/place/slice";
@@ -24,7 +24,10 @@ function PlaceFinder({
     handleDistanceSaved,
     handleCloserStore,
 }) {
-    const stores = useSelector((state) => state.storeList.stores);
+    const { stores } = useSelector((state) => state.storeList);
+    const storesWithDeliverySchedule = useRef(stores.filter(store => {
+        return store.Schedules.some(schedule => schedule.type === "delivery")
+    }))
     const { place } = useSelector(state => state)
     const dispatch = useDispatch()
     
@@ -38,7 +41,7 @@ function PlaceFinder({
         storeMoreClose,
         handleSelect,
         handleInputChange,
-    } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores });
+    } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores: storesWithDeliverySchedule.current });
 
     useEffect(() => {
         if (address === inputAddress) return;
