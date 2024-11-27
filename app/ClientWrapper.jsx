@@ -175,12 +175,13 @@ export default function ClientWrapper({ children }) {
 
     return (
         <>
-            {loading && !sessionStorage.getItem("hasAnimated") && (
-                <CurtainAnimation
-                    onComplete={handleAnimationComplete}
-                    storesStatus={status}
-                />
-            )}
+            {
+                loading && !sessionStorage.getItem("hasAnimated") && (
+                    <CurtainAnimation
+                        onComplete={handleAnimationComplete}
+                    />
+                )
+            }
             {isMaintenance ? (
                 <Box
                     sx={{
