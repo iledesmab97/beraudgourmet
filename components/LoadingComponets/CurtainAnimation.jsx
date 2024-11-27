@@ -22,7 +22,7 @@ export function CurtainAnimation({ onComplete }) {
             } else {
                 onComplete();
             }
-        }, 1500)
+        }, 3000)
     }, [onComplete]);
 
     const curtainVariants = {
