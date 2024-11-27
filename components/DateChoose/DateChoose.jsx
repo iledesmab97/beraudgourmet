@@ -58,9 +58,9 @@ export default function DateChoose() {
 
 
   const { place, handleDeadLine} = useGetPlace()
+  const [currentTypeDelivery, setCurrentTypeDelivery] = useState(place.typeDelivery)
   const [date, setDate] = useState( place && place.deadLine ? dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY') : getNearestAvailableDate(place.closerStore))
   const [textDate, setTextDate] = useState('')
-  const [currentTypeDelivery, setCurrentTypeDelivery] = useState(place.typeDelivery)
 
   useEffect(() => {
     if (!date) return
