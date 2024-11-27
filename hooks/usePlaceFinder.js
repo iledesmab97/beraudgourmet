@@ -55,12 +55,12 @@ export default function usePlaceFinder({
     }
 
     function handleSelect(event, value, reason) {
-        const suggestion = event.target.textContent;
+        const { description } = value;
         setSelectedSuggestion(value);
-        handleSetAddress(suggestion);
-        setValue(suggestion, false); // false para no borrar el valor del campo
+        handleSetAddress(description);
+        setValue(description, false); // false para no borrar el valor del campo
         clearSuggestions();
-        calculateRoute(suggestion);
+        calculateRoute(description);
     }
 
     async function calculateRoute(address) {
@@ -72,7 +72,10 @@ export default function usePlaceFinder({
         for (const store of stores) {
             const { coordinates } = store;
             const results = await directionService.route({
-                origin: { lat: coordinates.lat, lng: coordinates.lng },
+                origin: {
+                    lat: Number(coordinates.lat),
+                    lng: Number(coordinates.lng),
+                },
                 destination: address,
                 travelMode: "DRIVING",
             });
@@ -87,6 +90,10 @@ export default function usePlaceFinder({
                 if (currentDistance < 1) break;
             }
         }
+        if (!closerStore)
+            return alert(
+                "En este momento no estamos prestando el servicio de delivery"
+            );
         setDistance(newDistance);
         setStoreMoreClose(closerStore);
     }
