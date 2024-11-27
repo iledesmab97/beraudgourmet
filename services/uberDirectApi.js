@@ -3,7 +3,7 @@ const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
 // Get a delivery quote
 export const getDeliveryQuote = async (pickup_address, dropoff_address) => {
-    const quoteUrl = `${PATH_BACK}/uber-direct/quote`;
+    const quoteUrl = `${PATH_BACK}/ubers/quote`;
 
     try {
         const response = await fetch(quoteUrl, {
