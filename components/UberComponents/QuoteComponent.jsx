@@ -1,10 +1,18 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+
+import RefreshIcon from '@mui/icons-material/Refresh';
+
 import CenteredSpinner from "../LoadingComponets/CenteredSpinner";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
 const QuoteComponent = ({ text, spinner, helperText }) => {
-    const { timer, loading, error } = useHandleTimerDeliveryQuote();
+    const { timer, loading, error, refreshQuote } = useHandleTimerDeliveryQuote();
+
+    function getNewQuote() {
+        refreshQuote()
+    }
 
     return (
         <Box
@@ -57,6 +65,12 @@ const QuoteComponent = ({ text, spinner, helperText }) => {
                         </Typography>
                         <Typography variant="body1" color="primary">
                             ${localStorage.getItem("quote")}
+                            <IconButton
+                                color="primary"
+                                onClick={getNewQuote}
+                            >
+                                <RefreshIcon />
+                            </IconButton>
                         </Typography>
                     </Box>
                     <Box>
