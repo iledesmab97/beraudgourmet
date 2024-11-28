@@ -173,9 +173,7 @@ export default function FormModalDeliveryPlace({
                                 width: {
                                     xs: "100%",
                                     sm: `${
-                                        places[inputsHome.type.name].street[
-                                            index
-                                        ].width
+                                        places[inputsHome.type.name].street[index].width
                                     }%`,
                                 },
                             }}
