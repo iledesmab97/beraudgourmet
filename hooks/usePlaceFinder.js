@@ -1,5 +1,8 @@
 import { useState, useMemo } from "react";
-import usePlacesAutocomplete from "use-places-autocomplete";
+import usePlacesAutocomplete, {
+    getGeocode,
+    getLatLng,
+} from "use-places-autocomplete";
 import useDebounce from "./useDebounce";
 
 export default function usePlaceFinder({
@@ -98,6 +101,48 @@ export default function usePlaceFinder({
         setStoreMoreClose(closerStore);
     }
 
+    async function getTotalDataAddress(description) {
+        const [totalDataSelectedSuggestion] = await getGeocode({
+            address: description,
+        });
+
+        const { lat, lng } = getLatLng(totalDataSelectedSuggestion);
+        const addressFormatted = getAddressFormatted(
+            totalDataSelectedSuggestion.address_components
+        );
+        return {
+            ...addressFormatted,
+            coordinates: { lat, lng },
+        };
+    }
+
+    function getAddressFormatted(addressComponents) {
+        function findComponent(type) {
+            const component = addressComponents.find((comp) =>
+                comp.types.includes(type)
+            );
+            return component ? component.short_name : null;
+        }
+
+        const streetNumber = findComponent("street_number");
+        const route = findComponent("route");
+        const city =
+            findComponent("locality") ||
+            findComponent("administrative_area_level_2");
+        const state = findComponent("administrative_area_level_1");
+        const zipCode = findComponent("postal_code");
+        const country = findComponent("country");
+
+        return {
+            streetNumber,
+            route,
+            city,
+            state,
+            zipCode,
+            country,
+        };
+    }
+
     return {
         address,
         data,
@@ -109,5 +154,6 @@ export default function usePlaceFinder({
         handleSetAddress,
         handleSelect,
         handleInputChange,
+        getTotalDataAddress,
     };
 }
