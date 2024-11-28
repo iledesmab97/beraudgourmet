@@ -23,6 +23,7 @@ function PlaceFinder({
     closerStore,
     handleDistanceSaved,
     handleCloserStore,
+    changeInpusHome
 }) {
     const { stores } = useSelector((state) => state.storeList);
     const storesWithDeliverySchedule = useRef(stores.filter(store => {
@@ -41,6 +42,7 @@ function PlaceFinder({
         storeMoreClose,
         handleSelect,
         handleInputChange,
+        getTotalDataAddress
     } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores: storesWithDeliverySchedule.current });
 
     useEffect(() => {
@@ -55,20 +57,43 @@ function PlaceFinder({
     }, [distance]);
 
     useEffect(() => {
-        if (!storeMoreClose) return
-        dispatch(makePlace({
-            inputsHome,
+        if (!storeMoreClose || !withinLimitSaved) return
+        updatePlace()
+    }, [storeMoreClose, withinLimitSaved]);
+
+    useEffect(() => {
+        handleCloserStore(storeMoreClose)
+    }, [place])
+
+    async function fillDataInputsHome(address) {
+        return await getTotalDataAddress(address)
+    }
+
+    async function updatePlace() {
+        const { inputAddress } = inputsHome
+        const { streetNumber, route, city, state, zipCode, country, coordinates } = await fillDataInputsHome(inputAddress)
+        const newInputHome = {
+            ...inputsHome,
+            city,
+            postalCode: zipCode,
+            street: {
+                number: streetNumber,
+                streetName: route
+            },
+            state,
+            coordinates
+        }
+        const newPlace = {
+            inputsHome: newInputHome,
             closerStore: storeMoreClose,
             typeDelivery: {
                 name: "home",
                 totalName: "Entrega a domicilio",
             }
-        }))
-    }, [storeMoreClose]);
-
-    useEffect(() => {
-        handleCloserStore(storeMoreClose)
-    }, [place])
+        }
+        dispatch(makePlace(newPlace))
+        changeInpusHome(newInputHome)
+    }
 
     return (
         <>
