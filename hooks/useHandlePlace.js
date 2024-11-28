@@ -3,6 +3,27 @@ import useGetPlace from "./useGetPlace";
 import useGetStoreList from "@/hooks/useGetStoreList";
 import typeLocations from "@/typePlaces.json";
 
+function getInitialInputHome() {
+    const initiaInputHome = {
+        inputAddress: "",
+        street: {
+            ["unity"]: "",
+            ["number"]: "",
+            ["streetName"]: "",
+        },
+        city: "",
+        postalCode: "",
+        note: "",
+        type: {
+            name: "home",
+            totalName: "Casa: Dirección residencial",
+        },
+        distanceSaved: null,
+        withinLimitSaved: null,
+    };
+    return initiaInputHome;
+}
+
 function useHandlePlace() {
     const { storeList } = useGetStoreList();
     const { place } = useGetPlace();
@@ -10,60 +31,14 @@ function useHandlePlace() {
         return Object.keys(storeList)[0];
     });
     const [typeLocation, setTypeLocation] = useState(() => {
-        if (place.inputsHome) return typeLocations[place.inputsHome.type.name];
         return typeLocations.home;
     });
     const [closerStore, setCloserStore] = useState(null);
-    const [inputsHome, setInputsHome] = useState(() => {
-        return {
-            inputAddress: "",
-            street: {
-                ["unity"]: "",
-                ["number"]: "",
-                ["streetName"]: "",
-            },
-            city: "",
-            postalCode: "",
-            note: "",
-            type: {
-                name: typeLocation.name,
-                totalName: typeLocation.totalName,
-            },
-            distanceSaved: null,
-            withinLimitSaved: null,
-        };
-    });
+    const [inputsHome, setInputsHome] = useState(getInitialInputHome());
 
     useEffect(() => {
         setInputsStore(Object.keys(storeList)[0]);
     }, [storeList]);
-
-    useEffect(() => {
-        if (
-            place.inputsHome &&
-            place.inputsHome.inputAddress !== inputsHome?.inputAddress
-        )
-            setInputsHome(place.inputsHome);
-        else if (!place.inputsHome && inputsHome?.inputAddress) {
-            setInputsHome({
-                inputAddress: "",
-                street: {
-                    ["unity"]: "",
-                    ["number"]: "",
-                    ["streetName"]: "",
-                },
-                city: "",
-                postalCode: "",
-                note: "",
-                type: {
-                    name: typeLocation.name,
-                    totalName: typeLocation.totalName,
-                },
-                distanceSaved: null,
-                withinLimitSaved: null,
-            });
-        }
-    }, [place]);
 
     function handleCloserStore(newCloserStore) {
         setCloserStore(newCloserStore);
