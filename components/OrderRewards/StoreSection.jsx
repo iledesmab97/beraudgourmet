@@ -37,6 +37,13 @@ export default function StoreSection() {
         handleTypeDelivery({ name, totalName });
     }
 
+    function getTextToRenderOnButton() {
+        const number = inputsHome?.street?.number
+        const street = inputsHome?.street?.streetName
+        const address = inputsHome.inputAddress.split(",")[0]
+        return `${number}/ ${street}, ${address}`                  
+    }
+
     return (
         <Grid
             id="StoreSection-container"
@@ -145,19 +152,7 @@ export default function StoreSection() {
                                         handleOpenModal("deliveryPlace");
                                     }}
                                 >
-                                    {inputsHome?.street?.unity === "" ||
-                                    inputsHome?.street?.number === "" ||
-                                    inputsHome?.street?.streetName === ""
-                                        ? // If any property is an empty string, display "Verify Address"
-                                          "Verify Address"
-                                        : // If all properties are filled, display the formatted address
-                                          `${inputsHome.street.unity}/${
-                                              inputsHome.street.number
-                                          } ${inputsHome.street.streetName}, ${
-                                              inputsHome.inputAddress.split(
-                                                  ","
-                                              )[0]
-                                          }`}
+                                    {getTextToRenderOnButton()}
                                 </Button>
                             </Grid>
                         </>
