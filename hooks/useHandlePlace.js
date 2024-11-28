@@ -8,7 +8,6 @@ function getInitialInputHome(primaryInputHome) {
     const initiaInputHome = {
         inputAddress: "",
         street: {
-            ["unity"]: "",
             ["number"]: "",
             ["streetName"]: "",
         },
