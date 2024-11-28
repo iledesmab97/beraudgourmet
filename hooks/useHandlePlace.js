@@ -147,6 +147,12 @@ function useHandlePlace({ primaryInputHome }) {
         }
     }
 
+    function changeInpusHome(updates) {
+        const newInputsHome = { ...inputsHome };
+        Object.assign(newInputsHome, updates);
+        setInputsHome(newInputsHome);
+    }
+
     return {
         inputsStore,
         inputsHome,
@@ -159,6 +165,7 @@ function useHandlePlace({ primaryInputHome }) {
         handleInputsHome,
         handleTypeLocation,
         handleCloserStore,
+        changeInpusHome,
     };
 }
 
