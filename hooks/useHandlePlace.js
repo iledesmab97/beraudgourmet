@@ -3,7 +3,8 @@ import useGetPlace from "./useGetPlace";
 import useGetStoreList from "@/hooks/useGetStoreList";
 import typeLocations from "@/typePlaces.json";
 
-function getInitialInputHome() {
+function getInitialInputHome(primaryInputHome) {
+    if (primaryInputHome) return primaryInputHome;
     const initiaInputHome = {
         inputAddress: "",
         street: {
@@ -24,17 +25,29 @@ function getInitialInputHome() {
     return initiaInputHome;
 }
 
-function useHandlePlace() {
+function useHandlePlace({ primaryInputHome }) {
     const { storeList } = useGetStoreList();
     const { place } = useGetPlace();
     const [inputsStore, setInputsStore] = useState(() => {
         return Object.keys(storeList)[0];
     });
     const [typeLocation, setTypeLocation] = useState(() => {
+        if (primaryInputHome) {
+            return typeLocations[primaryInputHome.type.name];
+        }
         return typeLocations.home;
     });
     const [closerStore, setCloserStore] = useState(null);
-    const [inputsHome, setInputsHome] = useState(getInitialInputHome());
+    const [inputsHome, setInputsHome] = useState(
+        getInitialInputHome(primaryInputHome)
+    );
+
+    // Update inputsHome when primaryInputHome changed
+    useEffect(() => {
+        if (!primaryInputHome) return;
+        setInputsHome(primaryInputHome);
+        setTypeLocation(typeLocations[primaryInputHome.type.name]);
+    }, [primaryInputHome]);
 
     useEffect(() => {
         setInputsStore(Object.keys(storeList)[0]);
