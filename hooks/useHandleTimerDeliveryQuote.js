@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDeliveryQuote } from "@/stores/actions/uberDirect";
 
-export default function useHandleTimerDeliveryQuote() {
+export default function useHandleTimerDeliveryQuote(initialize) {
     const { quote, loading, error } = useSelector((state) => state.uberQuote);
     const [timer, setTimer] = useState(null);
     const { inputsHome, closerStore } = useSelector((state) => state.place);
@@ -25,7 +25,11 @@ export default function useHandleTimerDeliveryQuote() {
             return;
         }
 
-        startCountdownTimer();
+        if (initialize) {
+            refreshQuote();
+        } else {
+            startCountdownTimer();
+        }
 
         return () => {
             if (intervalId.current) {
