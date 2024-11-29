@@ -81,6 +81,7 @@ export default function HomeDelivery() {
                                 textAlign: "right",
                                 mt: 0,
                             }}
+                            initialize={true}
                         />
                         <FormModalDeliveryPlace
                             inputsHome={inputsHome}
