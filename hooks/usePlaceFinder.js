@@ -52,18 +52,22 @@ export default function usePlaceFinder({
     }
 
     function handleInputChange(event) {
-        if (!event) return;
-        debounceSetValue(() => setValue(event.target.value), 500);
-        handleSetAddress(event.target.value);
+        const { value } = event.target;
+        handleSetAddress(value);
+        if (value) {
+            debounceSetValue(() => setValue(value), 500);
+        }
     }
 
     function handleSelect(event, value, reason) {
-        const { description } = value;
+        const description = value?.description ? value.description : "";
         setSelectedSuggestion(value);
         handleSetAddress(description);
-        setValue(description, false); // false para no borrar el valor del campo
-        clearSuggestions();
-        calculateRoute(description);
+        if (description) {
+            setValue(description, false); // false para no borrar el valor del campo
+            clearSuggestions();
+            calculateRoute(description);
+        }
     }
 
     async function calculateRoute(address) {
