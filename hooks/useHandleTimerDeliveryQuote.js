@@ -69,8 +69,14 @@ export default function useHandleTimerDeliveryQuote() {
         } else if (duration === 600) {
             dispatch(
                 fetchDeliveryQuote({
-                    pickup_address: closerStore.place,
-                    dropoff_address: inputsHome.inputAddress,
+                    pickup: {
+                        address: closerStore.place,
+                        coordinates: closerStore.coordinates,
+                    },
+                    dropoff: {
+                        address: inputsHome.inputAddress,
+                        coordinates: inputsHome.coordinates,
+                    },
                 })
             );
         }
