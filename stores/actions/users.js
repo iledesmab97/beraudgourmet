@@ -8,7 +8,7 @@ import {
 } from "@/services/userApi";
 import { updatePlaceToInitialState } from "../place/slice.js";
 import { updateOrderToInitialState } from "../order/slice.js";
-import { removeLocalData, saveLocalData } from "./manageLocalStorage.js";
+import { removeLocalData, saveLocalData } from "@/utils/manageLocalStorage.js";
 
 export const verifyUserAction = createAsyncThunk(
     "user/verifyUser",
@@ -40,6 +40,8 @@ export const logOutUserAction = createAsyncThunk(
             removeLocalData("place");
             removeLocalData("countdownTimer");
             removeLocalData("expirationDate");
+            removeLocalData("uberToken");
+            removeLocalData("quote");
             dispatch(updatePlaceToInitialState());
             dispatch(updateOrderToInitialState());
             return;
