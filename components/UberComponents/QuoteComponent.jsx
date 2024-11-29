@@ -7,8 +7,8 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import CenteredSpinner from "../LoadingComponets/CenteredSpinner";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
-const QuoteComponent = ({ text, spinner, helperText }) => {
-    const { timer, loading, error, refreshQuote } = useHandleTimerDeliveryQuote();
+const QuoteComponent = ({ text, spinner, helperText, initialize }) => {
+    const { timer, loading, error, refreshQuote } = useHandleTimerDeliveryQuote(initialize);
 
     function getNewQuote() {
         refreshQuote()
