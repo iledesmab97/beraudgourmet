@@ -22,7 +22,8 @@ export default function HomeDelivery() {
         handleInputsHome,
         handleTypeLocation,
         handleCloserStore,
-    } = useHandlePlace();
+        changeInpusHome
+    } = useHandlePlace({});
     const { nextStepGuide } = useHandleShoppingGuide();
 
     return (
@@ -64,6 +65,7 @@ export default function HomeDelivery() {
                     closerStore={closerStore}
                     handleDistanceSaved={handleDistanceSaved}
                     handleCloserStore={handleCloserStore}
+                    changeInpusHome={changeInpusHome}
                 />
 
                 {inputsHome.withinLimitSaved && closerStore ? (
