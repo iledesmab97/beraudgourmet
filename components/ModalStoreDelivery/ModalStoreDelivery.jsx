@@ -12,7 +12,6 @@ import MoveDown from "@/components/MoveDown/MoveDown";
 
 import { useEffect, useState } from "react";
 import useGetModal from "@/hooks/useGetModal";
-import useHandlePlace from "@/hooks/useHandlePlace";
 import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
 import { useSelector } from "react-redux";
 
