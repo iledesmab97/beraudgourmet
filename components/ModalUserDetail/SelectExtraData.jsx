@@ -27,7 +27,7 @@ function SelectExtraData({ extraData, updateExtraData }) {
         handleCloserStore,
         handleInputsHome,
         handleTypeLocation,
-    } = useHandlePlace();
+    } = useHandlePlace({});
 
     useEffect(() => {
         const newExtraData = {
