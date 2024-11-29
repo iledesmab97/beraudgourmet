@@ -38,6 +38,8 @@ export const logOutUserAction = createAsyncThunk(
             removeLocalData("user");
             removeLocalData("orders");
             removeLocalData("place");
+            removeLocalData("countdownTimer");
+            removeLocalData("expirationDate");
             dispatch(updatePlaceToInitialState());
             dispatch(updateOrderToInitialState());
             return;
