@@ -81,6 +81,7 @@ function PlaceFinder({
                 streetName: route
             },
             state,
+            country,
             coordinates
         }
         const newPlace = {
