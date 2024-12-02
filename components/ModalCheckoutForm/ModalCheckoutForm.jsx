@@ -81,7 +81,7 @@ function ModalCheckoutForm() {
     }, [orders])
 
     useEffect(() => {
-        if (!place.deadLine) return
+        if (!place.deadLine || !place.deadLine.time) return
         let newMessageDeliver
         let newPreMessageDelivery
         if (dayjs().isSame(dayjs(place.deadLine.date.realDate, 'D/M/YYYY'), 'day')) {
