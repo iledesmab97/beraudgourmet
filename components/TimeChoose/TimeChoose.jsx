@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import useGetPlace from '@/hooks/useGetPlace'
 
 import { timeStringToObject, dateInRange, getTimeLimitTodaySchedue, objectDateToString } from '@/utils/hours'
@@ -24,11 +25,12 @@ function differenceTime(now, later) {
 
 export default function TimeChoose() {
 
-    const {place, handleDeadLine} = useGetPlace()
-    const [hour, setHour] = useState( place && place.deadLine &&  place.deadLine.time ? timeStringToObject(place.deadLine.time.realTime) : dayjs().add(30, 'minute'))
+    const { closerStore, typeDelivery, deadLine } = useSelector( state => state.place )
+    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue({ closerStore, deadLine, typeDelivery }))
+    const [hour, setHour] = useState( deadLine &&  deadLine.time ? timeStringToObject(deadLine.time.realTime) : dayjs().add(30, 'minute'))
+    const { handleDeadLine} = useGetPlace()
     const [textHour, setTextHour] = useState('')
     const [today, setToday] = useState(true)
-    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue(place))
     const [timeWithinRange, setTimeWithinRange] = useState( () => {
         const { inRange , why } = dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, daySelected: hour})
         return { inRange , why }
@@ -44,33 +46,55 @@ export default function TimeChoose() {
         } else {
             if (why === 'past hour') newHelperText = `La hora seleccionada debe ser mayor a la actual (hora actual ${objectDateToString(dayjs()).split(' - ')[1]})`
             else if (why === 'too soon') newHelperText = `Mínimo 30 minutos entre la hora actual y la hora de entrega (${textHour})`
-            else newHelperText = `Fuera del horario de ${place.typeDelivery.totalName.toLowerCase()} (${objectDateToString(limitHours.minHour).split(' - ')[1]} - ${objectDateToString(limitHours.maxHour).split(' - ')[1]})`
+            else newHelperText = `Fuera del horario de ${typeDelivery.totalName.toLowerCase()} (${objectDateToString(limitHours.minHour).split(' - ')[1]} - ${objectDateToString(limitHours.maxHour).split(' - ')[1]})`
         }
         setHelperText(newHelperText)
     }, [timeWithinRange])
 
     // Actualizar los límites de horario de la nueva fecha
     useEffect(() => {
-        if (!place.deadLine) return
-        setLimitHours(getTimeLimitTodaySchedue(place))
-    }, [place])
+        if (!deadLine) return
+        const { minHour, maxHour } = getTimeLimitTodaySchedue({ closerStore, deadLine, typeDelivery })
+        setLimitHours({ minHour, maxHour })
+    }, [closerStore, typeDelivery, deadLine])
 
     // Calcular si la nueva fecha seleccionada es hoy o no
     useEffect(() => {
-        if (!(place.deadLine && place.deadLine.date)) return
+        if (!(deadLine && deadLine.date)) return
         const currentDay = dayjs()
-        const date = dayjs(place.deadLine.date.realDate, 'D/M/YYYY')
+        const date = dayjs(deadLine.date.realDate, 'D/M/YYYY')
         const diffDays = date.format('D') - currentDay.format('D')
         if (diffDays === 0) return setToday(true)
         return setToday(false)
-    }, [place])
+    }, [closerStore, typeDelivery, deadLine])
 
     useEffect(() => {
         if (!hour) return
+        const relativeHour = getRelativeHour(hour)
+        setTextHour(relativeHour)
+        handleDeadLine({
+            property: 'time',
+            value: {realTime: hour.format('hh:mm a'), relativeTime: relativeHour}
+        })
+    }, [hour])
+
+    useEffect(() => {
+        if (!deadLine) return
+        const dateSelectedObject = dayjs(deadLine.date.realDate.replaceAll('/', '-'), 'DD-MM-YYYY').hour(hour.hour()).minute(hour.minute())
+        const { inRange, why } = dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, daySelected: dateSelectedObject})
+        setTimeWithinRange({ inRange, why })
+    }, [hour, limitHours])
+
+    function handleHour(event) {
+        setHour(event)
+    }
+
+    function getRelativeHour(hour) {
         const currentHour = dayjs()
         let newTextHour
         let newTextMinutes
         const [diffHours, diffMinuts] = differenceTime(currentHour, hour)
+        
         if (diffHours === 0) {
             newTextHour = ''
         } else if (diffHours === 1) {
@@ -80,6 +104,7 @@ export default function TimeChoose() {
         } else {
             newTextHour = ''
         }
+
         if (diffMinuts === 0) {
             newTextMinutes = ''
         } else if (diffMinuts === 1) {
@@ -89,23 +114,9 @@ export default function TimeChoose() {
         } else {
             newTextMinutes = 'Indica una hora mayor a la actual'
         }
+
         const totalText = `${newTextHour}${newTextMinutes}`
-        setTextHour(totalText)
-        handleDeadLine({
-            property: 'time',
-            value: {realTime: hour.format('hh:mm a'), relativeTime: totalText}
-        })
-    }, [hour])
-
-    useEffect(() => {
-        if (!place.deadLine) return
-        const dateSelectedObject = dayjs(place.deadLine.date.realDate.replaceAll('/', '-'), 'DD-MM-YYYY').hour(hour.hour()).minute(hour.minute())
-        const { inRange, why } = dateInRange({minHour: limitHours.minHour, maxHour: limitHours.maxHour, daySelected: dateSelectedObject})
-        setTimeWithinRange({ inRange, why })
-    }, [hour, limitHours])
-
-    function handleHour(event) {
-        setHour(event)
+        return totalText
     }
 
     return (
@@ -122,8 +133,8 @@ export default function TimeChoose() {
                     }}
                     value={hour}
                     onChange={handleHour}
-                    disablePast={ place.deadLine ? dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') : false}
-                    minTime={ place.deadLine && dayjs().isSame(dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(29, 'minute') : limitHours.minHour.add(29, 'minute')}
+                    disablePast={ deadLine ? dayjs().isSame(dayjs(deadLine.date.realDate, 'DD/MM/YYYY'), 'day') : false}
+                    minTime={ deadLine && dayjs().isSame(dayjs(deadLine.date.realDate, 'DD/MM/YYYY'), 'day') ? dayjs().add(29, 'minute') : limitHours.minHour.add(29, 'minute')}
                     maxTime={limitHours.maxHour}
                 />
             </DemoContainer>
