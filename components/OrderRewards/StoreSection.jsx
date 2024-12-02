@@ -12,29 +12,26 @@ import PlaceIcon from "@mui/icons-material/Place";
 import DateChoose from "@/components/DateChoose/DateChoose";
 import TimeChoose from "@/components/TimeChoose/TimeChoose";
 
+import { useSelector } from "react-redux";
 import useGetModal from "@/hooks/useGetModal";
-import useGetPlace from "@/hooks/useGetPlace";
 
 export default function StoreSection() {
+    const { inputsHome, closerStore, typeDelivery, deadLine } = useSelector(state => state.place)
     const { handleOpenModal } = useGetModal({ modalType: "place" });
-    const { place, handleRemovePlace, handleTypeDelivery } = useGetPlace();
-    const closerStore = place.closerStore;
-    const inputsHome = place.inputsHome;
-    const typeDelivery = place.typeDelivery;
 
     function handleChange(event) {
-        const name = event.target.value;
-        if (name === "home" && !inputsHome) {
-            return handleOpenModal("deliveryPlace");
-        }
-        const totalName =
-            name === "home" ? "Entrega a domicilio" : "Recoger en tienda";
-        const newPlace = {
-            inputsHome: null,
-            closerStore: null,
-        };
-        handleRemovePlace(newPlace);
-        handleTypeDelivery({ name, totalName });
+        // const name = event.target.value;
+        // if (name === "home" && !inputsHome) {
+        //     return handleOpenModal("deliveryPlace");
+        // }
+        // const totalName =
+        //     name === "home" ? "Entrega a domicilio" : "Recoger en tienda";
+        // const newPlace = {
+        //     inputsHome: null,
+        //     closerStore: null,
+        // };
+        // handleRemovePlace(newPlace);
+        // handleTypeDelivery({ name, totalName });
     }
 
     function getTextToRenderOnButton() {
@@ -160,9 +157,13 @@ export default function StoreSection() {
                     <Grid item>
                         <DateChoose />
                     </Grid>
-                    <Grid item>
-                        <TimeChoose />
-                    </Grid>
+                    {
+                        deadLine ? (
+                            <Grid item>
+                                <TimeChoose />
+                            </Grid>
+                        ) : null
+                    }
                 </>
             ) : (
                 <>
