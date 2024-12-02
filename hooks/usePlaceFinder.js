@@ -52,6 +52,7 @@ export default function usePlaceFinder({
     }
 
     function handleInputChange(event) {
+        if (!event) return;
         const { value } = event.target;
         handleSetAddress(value);
         if (value) {
