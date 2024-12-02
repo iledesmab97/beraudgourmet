@@ -72,6 +72,7 @@ export default function StorePickup({
         });
         removeLocalData("countdownTimer");
         removeLocalData("expirationDate");
+        removeLocalData("quote");
         handleCloseModal("place");
         nextStep("store");
     }
