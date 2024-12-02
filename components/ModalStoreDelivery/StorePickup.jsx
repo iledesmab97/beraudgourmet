@@ -22,12 +22,13 @@ import useLocalData from "@/hooks/useLocalData";
 import { makePlace } from "@/stores/place/slice";
 import { useEffect, useState } from "react";
 
+import { saveLocalData, removeLocalData } from "@/utils/manageLocalStorage";
+
 export default function StorePickup({
     handleCloseModal,
     nextStep,
 }) {
     const { handleTypeDelivery } = useGetPlace();
-    const { saveLocalData } = useLocalData();
     const dispatch = useDispatch()
     const { stores } = useSelector((state) => state.storeList);
     const [cityList, setCityList] = useState(getCityList(stores))
@@ -56,17 +57,21 @@ export default function StorePickup({
     }
 
     function selectStore(store) {
-        dispatch(makePlace({
-            closerStore: store
-        }))
-        saveLocalData("place", {
-            closerStore: store.id,
-        });
-        handleTypeDelivery({
+        const typeDelivery = {
             name: "store",
             totalName:
                 "Recoger en tienda",
+        }
+        dispatch(makePlace({
+            closerStore: store,
+            typeDelivery
+        }))
+        saveLocalData("place", {
+            closerStore: store.id,
+            typeDelivery
         });
+        removeLocalData("countdownTimer");
+        removeLocalData("expirationDate");
         handleCloseModal("place");
         nextStep("store");
     }
