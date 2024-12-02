@@ -31,7 +31,7 @@ export const weekDaysEN_ES = {
     Saturday: "Sábado",
 };
 
-export const typeDelivery = {
+export const typeDeliveryOptions = {
     store: "pickup",
     home: "delivery",
 };
@@ -103,9 +103,12 @@ export function todaysScheduleIs(scheduleList) {
     });
 }
 
-export function getTimeLimitTodaySchedue(place) {
-    const { closerStore, deadLine } = place;
-    if (!place.deadLine)
+export function getTimeLimitTodaySchedue({
+    closerStore,
+    deadLine,
+    typeDelivery,
+}) {
+    if (!deadLine)
         return {
             minHour: dayjs(),
             maxHour: dayjs(),
@@ -114,7 +117,7 @@ export function getTimeLimitTodaySchedue(place) {
     const today = dayjs(deadLine.date.realDate, "DD/MM/YYYY");
     const schedule = closerStore.Schedules.find((schedule) => {
         const sameScheduleType =
-            schedule.type === typeDelivery[place.typeDelivery.name];
+            schedule.type === typeDeliveryOptions[typeDelivery.name];
         const sameDay = schedule.day === today.format("dddd");
         if (sameScheduleType && sameDay) return true;
         return false;
