@@ -18,11 +18,12 @@ export default function useCanPay() {
 
     function whatDataMissing() {
         const { minHour, maxHour } = getTimeLimitTodaySchedue(place);
-        const daySelected = place.deadLine
-            ? place.deadLine.date.realDate +
-              " - " +
-              place.deadLine.time.realTime
-            : null;
+        const daySelected =
+            place.deadLine && place.deadLine.time
+                ? place.deadLine.date.realDate +
+                  " - " +
+                  place.deadLine.time.realTime
+                : null;
         if (
             !orders.length &&
             !user &&
