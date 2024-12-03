@@ -79,28 +79,32 @@ export default function usePlaceFinder({
 
         for (const store of stores) {
             const { coordinates } = store;
-            const results = await directionService.route({
-                origin: {
-                    lat: Number(coordinates.lat),
-                    lng: Number(coordinates.lng),
-                },
-                destination: address,
-                travelMode: "DRIVING",
-            });
+            try {
+                const results = await directionService.route({
+                    origin: {
+                        lat: Number(coordinates.lat),
+                        lng: Number(coordinates.lng),
+                    },
+                    destination: address,
+                    travelMode: "DRIVING",
+                });
 
-            let currentDistance =
-                results.routes[0].legs[0].distance.value / 1000;
+                let currentDistance =
+                    results.routes[0].legs[0].distance.value / 1000;
 
-            if (currentDistance < newDistance) {
-                newDistance = currentDistance;
-                closerStore = store;
+                if (currentDistance < newDistance) {
+                    newDistance = currentDistance;
+                    closerStore = store;
 
-                if (currentDistance < 1) break;
+                    if (currentDistance < 1) break;
+                }
+            } catch (error) {
+                continue;
             }
         }
         if (!closerStore)
             return alert(
-                "En este momento no estamos prestando el servicio de delivery"
+                "En este momento no estamos prestando el servicio de delivery a este lugar"
             );
         setDistance(newDistance);
         setStoreMoreClose(closerStore);
