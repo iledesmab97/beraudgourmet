@@ -13,12 +13,20 @@ const initialState = {
     tracking: null,
     error: null,
     loading: false,
+    refresh: false,
 };
 
 const uberDirectSlice = createSlice({
     name: "uberDirect",
     initialState,
-    reducers: {},
+    reducers: {
+        resetCount: (state, action) => {
+            return {
+                ...state,
+                refresh: action.payload,
+            };
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchDeliveryQuote.pending, (state) => {
@@ -78,5 +86,7 @@ const uberDirectSlice = createSlice({
         // });
     },
 });
+
+export const { resetCount } = uberDirectSlice.actions;
 
 export default uberDirectSlice.reducer;
