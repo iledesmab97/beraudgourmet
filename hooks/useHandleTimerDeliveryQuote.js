@@ -2,8 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDeliveryQuote } from "@/stores/actions/uberDirect";
 
+import { resetCount } from "@/stores/uber/slice";
+
+import {
+    removeLocalData,
+    getLocalData,
+    saveLocalData,
+} from "@/utils/manageLocalStorage";
+
 export default function useHandleTimerDeliveryQuote(initialize) {
-    const { quote, loading, error } = useSelector((state) => state.uberQuote);
+    const { quote, loading, error, refresh } = useSelector(
+        (state) => state.uberQuote
+    );
     const [timer, setTimer] = useState(null);
     const { inputsHome, closerStore } = useSelector((state) => state.place);
     const intervalId = useRef(null);
@@ -12,21 +22,19 @@ export default function useHandleTimerDeliveryQuote(initialize) {
     useEffect(() => {
         if (loading) {
             clearInterval(intervalId.current);
-            localStorage.removeItem("countdownTimer");
-            localStorage.removeItem("expirationDate");
+            removeLocalData("expirationDate");
             return;
         }
 
         if (error) {
             clearInterval(intervalId.current);
             intervalId.current = null;
-            localStorage.removeItem("countdownTimer");
-            localStorage.removeItem("expirationDate");
+            removeLocalData("expirationDate");
             return;
         }
 
         if (initialize) {
-            refreshQuote();
+            dispatch(resetCount(true));
         } else {
             startCountdownTimer();
         }
@@ -39,29 +47,31 @@ export default function useHandleTimerDeliveryQuote(initialize) {
         };
     }, []);
 
+    useEffect(() => {
+        if (refresh) {
+            dispatch(resetCount(false));
+            refreshQuote();
+        }
+    }, [refresh]);
+
     function refreshQuote() {
         clearInterval(intervalId.current);
         intervalId.current = null;
-        localStorage.removeItem("countdownTimer");
-        localStorage.removeItem("expirationDate");
-        localStorage.removeItem("quote");
+        removeLocalData("expirationDate");
+        removeLocalData("quote");
         setTimer("10:00");
-        startCountdownTimer();
-        return;
+        return startCountdownTimer();
     }
 
     function getDuration() {
         let duration;
-        if (!localStorage.getItem("countdownTimer")) {
+        if (!getLocalData("expirationDate")) {
             duration = 600;
-            localStorage.setItem("countdownTimer", "10:00");
             const currentDate = Math.round(Date.now() / 1000);
             const expirationDate = currentDate + 600;
-            localStorage.setItem("expirationDate", expirationDate);
+            saveLocalData("expirationDate", expirationDate);
         } else {
-            const expirationDate = Number(
-                localStorage.getItem("expirationDate")
-            );
+            const expirationDate = Number(getLocalData("expirationDate"));
             duration = expirationDate - Math.round(Date.now() / 1000);
         }
         return duration;
@@ -92,7 +102,6 @@ export default function useHandleTimerDeliveryQuote(initialize) {
             .toString()
             .padStart(2, "0")}`;
 
-        localStorage.setItem("countdownTimer", formattedTime);
         setTimer(formattedTime);
     }
 
