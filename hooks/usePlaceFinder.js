@@ -25,8 +25,8 @@ export default function usePlaceFinder({
         return null;
     }, [distance]);
     const [storeMoreClose, setStoreMoreClose] = useState(closerStore);
-    const sw = new google.maps.LatLng(19.0, -99.4);
-    const ne = new google.maps.LatLng(19.8, -98.8);
+    const sw = { lat: 19.392859721213277, lng: -99.28758348373333 };
+    const ne = { lat: 19.487428244562256, lng: -99.11594403710876 };
 
     const bounds = new google.maps.LatLngBounds(sw, ne);
     const {
@@ -38,7 +38,7 @@ export default function usePlaceFinder({
     } = usePlacesAutocomplete({
         requestOptions: {
             // Change for locationBias and locationRestriction refer to google maps API docs
-            bounds: bounds,
+            locationRestriction: bounds,
             componentRestrictions: {
                 country: "MX",
             },
@@ -160,5 +160,6 @@ export default function usePlaceFinder({
         handleSelect,
         handleInputChange,
         getTotalDataAddress,
+        ready,
     };
 }
