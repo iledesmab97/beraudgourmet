@@ -42,7 +42,8 @@ function PlaceFinder({
         storeMoreClose,
         handleSelect,
         handleInputChange,
-        getTotalDataAddress
+        getTotalDataAddress,
+        ready
     } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores: storesWithDeliverySchedule.current });
 
     useEffect(() => {
@@ -101,6 +102,7 @@ function PlaceFinder({
             <Autocomplete
                 fullWidth
                 disablePortal
+                disabled={!ready}
                 id="autocomplete-PlaceFinder"
                 // noOptionsText={null}
                 options={address ? data : []}
