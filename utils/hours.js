@@ -132,7 +132,7 @@ export function getTimeLimitTodaySchedue({
     };
 }
 
-export function dateInRange({ minHour, maxHour, daySelected }) {
+export function dateInRange({ minHour, maxHour, daySelected, typeDelivery }) {
     let why = "out of time";
 
     const selectedDateObject =
@@ -142,9 +142,9 @@ export function dateInRange({ minHour, maxHour, daySelected }) {
             ? dateStringToDate(daySelected)
             : daySelected;
     const minTimeObject =
-        typeof minHour === "string" ? timeStringToObject(minDate) : minHour;
+        typeof minHour === "string" ? timeStringToObject(minHour) : minHour;
     const maxTimeObject =
-        typeof maxHour === "string" ? timeStringToObject(maxDate) : maxHour;
+        typeof maxHour === "string" ? timeStringToObject(maxHour) : maxHour;
 
     const maxDateObject = maxTimeObject
         .date(selectedDateObject.format("D"))
@@ -160,12 +160,22 @@ export function dateInRange({ minHour, maxHour, daySelected }) {
         return { inRange: false, why: "past hour" };
     }
 
-    if (
-        selectedDateObject.isAfter(minDateObject) &&
-        selectedDateObject.isBefore(dayjs().add(29, "minute"))
-    ) {
-        why = "too soon";
-        minDateObject = dayjs().add(30, "minute");
+    if (typeDelivery.name === "store") {
+        if (
+            selectedDateObject.isAfter(minDateObject) &&
+            selectedDateObject.isBefore(dayjs().add(29, "minute"))
+        ) {
+            why = "too soon";
+            minDateObject = dayjs().add(29, "minute");
+        }
+    } else if (typeDelivery.name === "home") {
+        if (
+            selectedDateObject.isAfter(minDateObject) &&
+            selectedDateObject.isBefore(dayjs().add(59, "minute"))
+        ) {
+            why = "too soon";
+            minDateObject = dayjs().add(59, "minute");
+        }
     }
 
     const inRange =
