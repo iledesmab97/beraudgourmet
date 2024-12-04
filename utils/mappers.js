@@ -156,3 +156,28 @@ export function mapOrderFromBackend(order) {
         url,
     };
 }
+
+export function mapDeliveryInformationToBackend(deliveryInformation) {
+    const {
+        city,
+        coordinates,
+        country,
+        inputAddress,
+        note,
+        postalCode,
+        state,
+        street,
+        id: quoteId,
+    } = deliveryInformation;
+    return {
+        address: inputAddress,
+        street: `${street.number} ${street.streetName}`,
+        city,
+        state,
+        zip_code: postalCode,
+        country,
+        notes: note,
+        location: coordinates,
+        quoteId,
+    };
+}
