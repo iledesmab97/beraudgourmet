@@ -24,10 +24,7 @@ export const fetchDeliveryQuote = createAsyncThunk(
                 pickup,
                 dropoff,
             });
-            localStorage.setItem(
-                "quote",
-                quote.fee.feeIVAStripe ? quote.fee.feeIVAStripe : "60"
-            );
+            saveLocalData("quote", quote);
             return quote;
         } catch (error) {
             return rejectWithValue(error.message);
