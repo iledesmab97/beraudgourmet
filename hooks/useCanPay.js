@@ -28,7 +28,12 @@ export default function useCanPay() {
             !orders.length &&
             !user &&
             !place.closerStore &&
-            !dateInRange({ minHour, maxHour, daySelected }).inRange
+            !dateInRange({
+                minHour,
+                maxHour,
+                daySelected,
+                typeDelivery: place.typeDelivery,
+            }).inRange
         ) {
             setMissing("");
             if (canPay) setCanPay(false);
@@ -49,7 +54,14 @@ export default function useCanPay() {
             if (canPay) setCanPay(false);
             return "place";
         }
-        if (!dateInRange({ minHour, maxHour, daySelected }).inRange) {
+        if (
+            !dateInRange({
+                minHour,
+                maxHour,
+                daySelected,
+                typeDelivery: place.typeDelivery,
+            }).inRange
+        ) {
             setMissing("time");
             if (canPay) setCanPay(false);
             return "time";
