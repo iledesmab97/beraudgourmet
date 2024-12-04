@@ -20,6 +20,12 @@ const uberDirectSlice = createSlice({
     name: "uberDirect",
     initialState,
     reducers: {
+        addQuote: (state, action) => {
+            return {
+                ...state,
+                quote: action.payload,
+            };
+        },
         resetCount: (state, action) => {
             return {
                 ...state,
@@ -87,6 +93,6 @@ const uberDirectSlice = createSlice({
     },
 });
 
-export const { resetCount } = uberDirectSlice.actions;
+export const { addQuote, resetCount } = uberDirectSlice.actions;
 
 export default uberDirectSlice.reducer;
