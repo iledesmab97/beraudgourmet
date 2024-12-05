@@ -173,9 +173,7 @@ export default function FormModalDeliveryPlace({
                                 width: {
                                     xs: "100%",
                                     sm: `${
-                                        places[inputsHome.type.name].street[
-                                            index
-                                        ].width
+                                        places[inputsHome.type.name].street[index].width
                                     }%`,
                                 },
                             }}
@@ -192,6 +190,7 @@ export default function FormModalDeliveryPlace({
                                 value={inputsHome.street[input]}
                                 fullWidth
                                 key={input + index}
+                                disabled={true}
                             />
                         </Grid>
                     ))}
@@ -237,6 +236,7 @@ export default function FormModalDeliveryPlace({
                             onChange={handleInputsHome}
                             value={inputsHome.city}
                             fullWidth
+                            disabled={true}
                         />
                     </Grid>
                     <Grid
@@ -256,6 +256,7 @@ export default function FormModalDeliveryPlace({
                             onChange={handleInputsHome}
                             value={inputsHome.postalCode}
                             fullWidth
+                            disabled={true}
                         />
                     </Grid>
                 </Grid>

@@ -8,10 +8,12 @@ import Button from "@mui/material/Button";
 import ListStores from "./ListStores";
 import DetailStore from "./DetailStore";
 
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material/styles";
+
 import useGetModal from "@/hooks/useGetModal";
 import useGetPlace from "@/hooks/useGetPlace";
-import useHandleStoresDetail from "@/hooks/useHandleStoresDetail";
-import { useTheme } from "@mui/material/styles";
 
 const style = {
     position: "absolute",
@@ -45,12 +47,17 @@ function ModalStoresDetail() {
     const { open, handleCloseModal } = useGetModal({
         modalType: "storesDetail",
     });
-    const { place, handleAddPlace } = useGetPlace();
-    const inputsHome = place.inputsHome;
-    const closerStore = place.closerStore;
-    const { currentStore, handleCurrentStoreDetail } = useHandleStoresDetail({
-        place: closerStore,
-    });
+    const { inputsHome, closerStore } = useSelector(state => state.place)
+    const { handleAddPlace } = useGetPlace();
+    const [currentStore, setCurrentStore] = useState(closerStore)
+
+    useEffect(() => {
+        setCurrentStore(closerStore)
+    }, [closerStore])
+
+    function handleCurrentStoreDetail(newCurrentStore) {
+        setCurrentStore(newCurrentStore)
+    }
 
     if (!currentStore) return;
 

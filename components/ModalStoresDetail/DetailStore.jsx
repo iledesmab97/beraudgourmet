@@ -7,6 +7,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
@@ -22,10 +23,44 @@ import MoveDown from "@/components/MoveDown/MoveDown";
 
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+
+import { weekDaysEN_ES, sortWeekDays } from "@/utils/hours"
 
 export default function DetailStore({ currentStore }) {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+
+    const [scheduleList, setScheduleList] = useState(getSchedules(currentStore))
+
+    useEffect(() => {
+        setScheduleList(getSchedules(currentStore))
+    }, [currentStore])
+
+    function getSchedules(store) {
+        const { Schedules } = store
+        const pickup = []
+        const delivery = []
+        Schedules.forEach(schedule => {
+            const { type } = schedule
+            switch (type) {
+                case "pickup": {
+                    pickup.push(schedule)
+                    break
+                }
+                case "delivery": {
+                    delivery.push(schedule)
+                    break
+                }
+            }
+        })
+        const schedulePickupSorted = sortWeekDays(pickup)
+        const scheduleDeliverySorted = sortWeekDays(delivery)
+        return {
+            pickup: schedulePickupSorted,
+            delivery: scheduleDeliverySorted
+        }
+    }
 
     return (
         <Grid
@@ -150,16 +185,24 @@ export default function DetailStore({ currentStore }) {
                         }}
                     >
                         <AccessTimeIcon />
-                        Horario para recoger
+                        Horarios para recoger en tienda
                     </Typography>
                     <TableContainer component={Paper}>
                         <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align='center'>Día</TableCell>
+                                    <TableCell align='center'>Hora de apertura</TableCell>
+                                    <TableCell align='center'>Hora de cierre</TableCell>
+                                </TableRow>
+                            </TableHead>
                             <TableBody>
-                                {currentStore.pickupSchedule.pickupSchedule.map(
-                                    (hour) => (
-                                        <TableRow key={hour.days + hour.hours}>
-                                            <TableCell>{hour.days}</TableCell>
-                                            <TableCell>{hour.hours}</TableCell>
+                                {scheduleList.pickup.map(
+                                    (schedule) => (
+                                        <TableRow key={schedule.id}>
+                                            <TableCell align='center'>{weekDaysEN_ES[schedule.day]}</TableCell>
+                                            <TableCell align='center'>{schedule.startTime}</TableCell>
+                                            <TableCell align='center'>{schedule.endTime}</TableCell>
                                         </TableRow>
                                     )
                                 )}
@@ -179,12 +222,20 @@ export default function DetailStore({ currentStore }) {
                     </Typography>
                     <TableContainer component={Paper}>
                         <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align='center'>Día</TableCell>
+                                    <TableCell align='center'>Hora de apertura</TableCell>
+                                    <TableCell align='center'>Hora de cierre</TableCell>
+                                </TableRow>
+                            </TableHead>
                             <TableBody>
-                                {currentStore.deliverySchedule.deliverySchedule.map(
-                                    (hour) => (
-                                        <TableRow key={hour.days + hour.hours}>
-                                            <TableCell>{hour.days}</TableCell>
-                                            <TableCell>{hour.hours}</TableCell>
+                                {scheduleList.delivery.map(
+                                    (schedule) => (
+                                        <TableRow key={schedule.id}>
+                                            <TableCell align='center'>{weekDaysEN_ES[schedule.day]}</TableCell>
+                                            <TableCell align='center'>{schedule.startTime}</TableCell>
+                                            <TableCell align='center'>{schedule.endTime}</TableCell>
                                         </TableRow>
                                     )
                                 )}

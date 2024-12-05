@@ -1,43 +1,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-    lookingForUserLoged,
+    fetchwhoAmI,
     requestLogout,
     searchUser,
     verifyUserData,
-    saveToken,
+    updateMyAccount,
 } from "@/services/userApi";
 import { updatePlaceToInitialState } from "../place/slice.js";
 import { updateOrderToInitialState } from "../order/slice.js";
-import { removeLocalData, saveLocalData } from "./manageLocalStorage.js";
-import { userDataFromBackToFront } from "@/utils/preparingData.js";
+import { removeLocalData, saveLocalData } from "@/utils/manageLocalStorage.js";
 
 export const verifyUserAction = createAsyncThunk(
     "user/verifyUser",
-    async (searchParams, { rejectWithValue }) => {
-        const tokenUser = searchParams.get("tokenUser");
+    async (tokenUser, { rejectWithValue }) => {
+        let token = tokenUser;
+        let user;
         try {
-            let user;
-            if (tokenUser) {
-                user = await saveToken(tokenUser);
-            } else {
-                const token = JSON.parse(localStorage.getItem("user"));
-                const cookies = JSON.parse(
-                    localStorage.getItem("acceptCookies")
-                );
-
-                if (!cookies) {
-                    localStorage.setItem("acceptCookies", false);
-                }
-
-                if (!token) {
-                    return rejectWithValue("No user logged in");
-                }
-
-                user = await lookingForUserLoged(token);
-                if (user.message) {
-                    throw new Error(user.message);
-                }
+            if (!token) {
+                token = JSON.parse(localStorage.getItem("user"));
             }
+            if (!token) throw new Error("No user logged in");
+            user = await fetchwhoAmI(token);
             return user;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -45,21 +28,25 @@ export const verifyUserAction = createAsyncThunk(
     }
 );
 
-export const logOutUser = createAsyncThunk(
+export const logOutUserAction = createAsyncThunk(
     "user/logoutUser",
     async (_, { dispatch, rejectWithValue }) => {
         try {
             const response = await requestLogout();
             if (response.message)
                 throw new Error("Unable to logout: " + response.message);
-            localStorage.removeItem("user");
+            removeLocalData("user");
             removeLocalData("orders");
             removeLocalData("place");
-            removeLocalData("user");
+            removeLocalData("countdownTimer");
+            removeLocalData("expirationDate");
+            removeLocalData("uberToken");
+            removeLocalData("quote");
             dispatch(updatePlaceToInitialState());
             dispatch(updateOrderToInitialState());
-            return response;
+            return;
         } catch (error) {
+            alert(error.message);
             return rejectWithValue(error.message);
         }
     }
@@ -69,22 +56,11 @@ export const logInUserAction = createAsyncThunk(
     "user/loginUser",
     async ({ email, password }, { rejectWithValue }) => {
         try {
-            if (!email)
-                throw {
-                    key: "email",
-                    message: "El email no puede estar vacio",
-                };
-            if (!password)
-                throw {
-                    key: "password",
-                    message: "La contraseña no puede estar vacia",
-                };
-            const response = await verifyUserData(email, password);
-            saveLocalData("user", response.token);
-            const userFront = userDataFromBackToFront(response.user);
-            return userFront;
+            const { user, token } = await verifyUserData(email, password);
+            saveLocalData("user", token);
+            return user;
         } catch (error) {
-            return rejectWithValue({ key: error.key, message: error.message });
+            return rejectWithValue(error.message);
         }
     }
 );
@@ -95,6 +71,18 @@ export const searchUserAction = createAsyncThunk(
         try {
             const data = await searchUser(email);
             return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateUserAction = createAsyncThunk(
+    "user/updateUser",
+    async (properties, { rejectWithValue }) => {
+        try {
+            const user = await updateMyAccount(properties);
+            return user;
         } catch (error) {
             return rejectWithValue(error.message);
         }

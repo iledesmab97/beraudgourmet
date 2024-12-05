@@ -8,8 +8,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import useGetModal from "@/hooks/useGetModal";
-import useGetUser from "@/hooks/useGetUser";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 
@@ -44,19 +44,28 @@ function ModalUserOrders() {
     const { open, handleChangeModal } = useGetModal({
         modalType: "userOrders",
     });
-    const { user } = useGetUser();
+    const { user } = useSelector(state => state.user)
     const [orders, setOrders] = useState([]);
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        if (!user.id) return;
-        getAllOrdersOfUser(user.id).then((data) => {
-            console.log(data);
-            if (data.message) return alert(data.message);
-            return setOrders(data);
-        });
+        if (!user || orders.length) return;
+        getOrders(user.id)
     }, [open]);
+
+    async function getOrders(userId) {
+        setLoading(true)
+        try {
+            const newOrrders = await getAllOrdersOfUser(userId)
+            setOrders(newOrrders)
+        } catch(error) {
+            alert(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <Modal
@@ -78,7 +87,7 @@ function ModalUserOrders() {
                     Historial de Ordenes
                 </Typography>
                 {isLargeScreen ? (
-                    <OrdersTablet orders={orders} />
+                    <OrdersTablet orders={orders} loading={loading} />
                 ) : (
                     <OrdersList orders={orders} />
                 )}

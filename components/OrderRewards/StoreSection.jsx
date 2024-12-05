@@ -12,29 +12,33 @@ import PlaceIcon from "@mui/icons-material/Place";
 import DateChoose from "@/components/DateChoose/DateChoose";
 import TimeChoose from "@/components/TimeChoose/TimeChoose";
 
+import { useSelector } from "react-redux";
 import useGetModal from "@/hooks/useGetModal";
-import useGetPlace from "@/hooks/useGetPlace";
 
 export default function StoreSection() {
+    const { inputsHome, closerStore, typeDelivery, deadLine } = useSelector(state => state.place)
     const { handleOpenModal } = useGetModal({ modalType: "place" });
-    const { place, handleRemovePlace, handleTypeDelivery } = useGetPlace();
-    const closerStore = place.closerStore;
-    const inputsHome = place.inputsHome;
-    const typeDelivery = place.typeDelivery;
 
     function handleChange(event) {
-        const name = event.target.value;
-        if (name === "home" && !inputsHome) {
-            return handleOpenModal("deliveryPlace");
-        }
-        const totalName =
-            name === "home" ? "Entrega a domicilio" : "Recoger en tienda";
-        const newPlace = {
-            inputsHome: null,
-            closerStore: null,
-        };
-        handleRemovePlace(newPlace);
-        handleTypeDelivery({ name, totalName });
+        // const name = event.target.value;
+        // if (name === "home" && !inputsHome) {
+        //     return handleOpenModal("deliveryPlace");
+        // }
+        // const totalName =
+        //     name === "home" ? "Entrega a domicilio" : "Recoger en tienda";
+        // const newPlace = {
+        //     inputsHome: null,
+        //     closerStore: null,
+        // };
+        // handleRemovePlace(newPlace);
+        // handleTypeDelivery({ name, totalName });
+    }
+
+    function getTextToRenderOnButton() {
+        const number = inputsHome?.street?.number
+        const street = inputsHome?.street?.streetName
+        const address = inputsHome.inputAddress.split(",")[0]
+        return `${number}/ ${street}, ${address}`                  
     }
 
     return (
@@ -145,19 +149,7 @@ export default function StoreSection() {
                                         handleOpenModal("deliveryPlace");
                                     }}
                                 >
-                                    {inputsHome?.street?.unity === "" ||
-                                    inputsHome?.street?.number === "" ||
-                                    inputsHome?.street?.streetName === ""
-                                        ? // If any property is an empty string, display "Verify Address"
-                                          "Verify Address"
-                                        : // If all properties are filled, display the formatted address
-                                          `${inputsHome.street.unity}/${
-                                              inputsHome.street.number
-                                          } ${inputsHome.street.streetName}, ${
-                                              inputsHome.inputAddress.split(
-                                                  ","
-                                              )[0]
-                                          }`}
+                                    {getTextToRenderOnButton()}
                                 </Button>
                             </Grid>
                         </>
@@ -165,9 +157,13 @@ export default function StoreSection() {
                     <Grid item>
                         <DateChoose />
                     </Grid>
-                    <Grid item>
-                        <TimeChoose />
-                    </Grid>
+                    {
+                        deadLine ? (
+                            <Grid item>
+                                <TimeChoose />
+                            </Grid>
+                        ) : null
+                    }
                 </>
             ) : (
                 <>

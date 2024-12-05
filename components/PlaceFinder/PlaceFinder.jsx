@@ -8,7 +8,7 @@ import ItemPlace from "./ItemPlace";
 import { Box, CircularProgress, Paper } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import usePlaceFinder from "@/hooks/usePlaceFinder";
 
 import { makePlace } from "@/stores/place/slice";
@@ -23,8 +23,12 @@ function PlaceFinder({
     closerStore,
     handleDistanceSaved,
     handleCloserStore,
+    changeInpusHome
 }) {
-    const stores = useSelector((state) => state.storeList.stores);
+    const { stores } = useSelector((state) => state.storeList);
+    const storesWithDeliverySchedule = useRef(stores.filter(store => {
+        return store.Schedules.some(schedule => schedule.type === "delivery")
+    }))
     const { place } = useSelector(state => state)
     const dispatch = useDispatch()
     
@@ -38,7 +42,9 @@ function PlaceFinder({
         storeMoreClose,
         handleSelect,
         handleInputChange,
-    } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores });
+        getTotalDataAddress,
+        ready
+    } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores: storesWithDeliverySchedule.current });
 
     useEffect(() => {
         if (address === inputAddress) return;
@@ -52,26 +58,51 @@ function PlaceFinder({
     }, [distance]);
 
     useEffect(() => {
-        if (!storeMoreClose) return
-        dispatch(makePlace({
-            inputsHome,
+        if (!storeMoreClose || !withinLimitSaved) return
+        updatePlace()
+    }, [storeMoreClose, withinLimitSaved]);
+
+    useEffect(() => {
+        handleCloserStore(storeMoreClose)
+    }, [place])
+
+    async function fillDataInputsHome(address) {
+        return await getTotalDataAddress(address)
+    }
+
+    async function updatePlace() {
+        const { inputAddress } = inputsHome
+        const { streetNumber, route, city, state, zipCode, country, coordinates } = await fillDataInputsHome(inputAddress)
+        const newInputHome = {
+            ...inputsHome,
+            city,
+            postalCode: zipCode,
+            street: {
+                number: streetNumber,
+                streetName: route
+            },
+            state,
+            country,
+            coordinates
+        }
+        const newPlace = {
+            inputsHome: newInputHome,
             closerStore: storeMoreClose,
             typeDelivery: {
                 name: "home",
                 totalName: "Entrega a domicilio",
             }
-        }))
-    }, [storeMoreClose]);
-
-    useEffect(() => {
-        handleCloserStore(storeMoreClose)
-    }, [place])
+        }
+        dispatch(makePlace(newPlace))
+        changeInpusHome(newInputHome)
+    }
 
     return (
         <>
             <Autocomplete
                 fullWidth
                 disablePortal
+                disabled={!ready}
                 id="autocomplete-PlaceFinder"
                 // noOptionsText={null}
                 options={address ? data : []}

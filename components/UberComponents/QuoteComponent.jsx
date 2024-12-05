@@ -1,10 +1,33 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+
+import RefreshIcon from '@mui/icons-material/Refresh';
+
 import CenteredSpinner from "../LoadingComponets/CenteredSpinner";
+
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
-const QuoteComponent = ({ text, spinner, helperText }) => {
-    const { timer, loading, error } = useHandleTimerDeliveryQuote();
+import { addQuote } from "@/stores/uber/slice";
+import { getLocalData } from "@/utils/manageLocalStorage";
+
+const QuoteComponent = ({ text, spinner, helperText, initialize }) => {
+    const { quote } = useSelector(state => state.uberQuote)
+    const { timer, loading, error, refreshQuote } = useHandleTimerDeliveryQuote(initialize);
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (!quote && getLocalData("quote")) {
+            const newQuote = getLocalData("quote")
+            dispatch(addQuote(newQuote))
+        }
+    }, [])
+
+    function getNewQuote() {
+        refreshQuote()
+    }
 
     return (
         <Box
@@ -56,7 +79,13 @@ const QuoteComponent = ({ text, spinner, helperText }) => {
                             Precio de envío:
                         </Typography>
                         <Typography variant="body1" color="primary">
-                            ${localStorage.getItem("quote")}
+                            ${quote?.fee.feeIVAStripe || ""}
+                            <IconButton
+                                color="primary"
+                                onClick={getNewQuote}
+                            >
+                                <RefreshIcon />
+                            </IconButton>
                         </Typography>
                     </Box>
                     <Box>

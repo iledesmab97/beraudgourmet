@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import useGetUser from "@/hooks/useGetUser";
 import useDebounce from "./useDebounce";
 import useLocalData from "@/hooks/useLocalData";
@@ -16,7 +18,12 @@ import {
     requestLogout,
     verifyUserData,
 } from "@/services/userApi";
-import { useRouter } from "next/navigation";
+
+import {
+    updateUserAction,
+    logOutUserAction,
+    logInUserAction,
+} from "@/stores/actions/users";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -86,7 +93,7 @@ function searchUser(email) {
 function useHandleUser() {
     const { user, handleAddUser, handleUpdateUser, handleRemoveUser } =
         useGetUser();
-    const userLoged = user.name ? true : false;
+    const userLoged = user ? true : false;
     const [inputs, setInputs] = useState(() =>
         userLoged
             ? {
@@ -114,6 +121,7 @@ function useHandleUser() {
 
     const [currentUser, setCurrentUser] = useState(null);
     const router = useRouter();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         debounceSetValue(() => {
@@ -130,7 +138,7 @@ function useHandleUser() {
     useEffect(() => {
         debounceSetValue(() => {
             const newError = validation(inputsEdit);
-            if (!newError.email && inputsEdit.email === user.email) {
+            if (!newError.email && inputsEdit.email === user?.email) {
                 newError.email = "Debe ingresar otro correo electrónico";
             }
             // setErrors(newError)
@@ -177,25 +185,12 @@ function useHandleUser() {
         lastDataSet.current = "numberPhone";
     }
 
-    function verifyUser() {
-        const { email, password } = inputs;
-        const errors = {};
-        if (!email) errors.email = "El email no puede estar vacio";
-        if (!password) errors.password = "La contraseña no puede estar vacia";
-        if (errors.email || errors.password) return setErrors(errors);
-        return verifyUserData(email, password);
-    }
-
-    async function logInUser() {
-        const response = await verifyUser();
-        if (response.message === "Contraseña incorrecta")
-            return setErrors({ password: "Contraseña incorrecta" });
-        if (response.message) return alert(response.message);
-        saveLocalData("user", response.token);
-        const userFront = userDataFromBackToFront(response.user);
-        handleAddUser(userFront);
-        setInputs(userFront);
-        console.log("Se ha iniciado sesión exitosamente");
+    async function verifyError() {
+        const newErrors = lastValidation(inputs);
+        if (newErrors.email || newErrors.password) {
+            setErrors(errors);
+            return newErrors;
+        }
     }
 
     async function changePassword() {
@@ -231,7 +226,6 @@ function useHandleUser() {
             return false;
         }
         setInputsEdit(initialInputsEdit);
-        console.log(response);
         return true;
     }
 
@@ -273,17 +267,11 @@ function useHandleUser() {
             password: inputsEdit.password,
         });
         setInputsEdit(initialInputsEdit);
-        console.log(response);
         return true;
     }
 
     async function signOff() {
-        const response = await requestLogout();
-        if (response.message) return alert(response.message);
-        localStorage.removeItem("user");
-        setInputs(initialInputs);
-        handleRemoveUser();
-        console.log(response);
+        dispatch(logOutUserAction());
     }
 
     async function handleEditing(event) {
@@ -300,14 +288,7 @@ function useHandleUser() {
             ...prevEdit,
             [name]: !editing[name],
         }));
-        const propertyToUpdate = oneUserDataFromFrontToBack({
-            property: name,
-            value: inputs[name],
-        });
-        const response = await updateMyAccount(propertyToUpdate);
-        if (response.message) return alert(response.message);
-        handleUpdateUser(inputs);
-        console.log(response);
+        dispatch(updateUserAction({ property: name, value: inputs[name] }));
     }
 
     async function signUp() {
@@ -359,7 +340,7 @@ function useHandleUser() {
         user,
         editing,
         handleChangeNumberPhone,
-        logInUser,
+        verifyError,
         changePassword,
         changeEmail,
         signUp,

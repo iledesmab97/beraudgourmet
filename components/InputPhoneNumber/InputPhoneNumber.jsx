@@ -1,16 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { MuiTelInput } from 'mui-tel-input'
 
 function InputPhoneNumber({ numberPhone, errorsNumberPhone, userLoged, type, handleChangeNumberPhone, ...rest }) {
 
-    const [open, setOpen] = useState(false)
-
     return ( 
         <MuiTelInput
-            // open={open}
-            // onClose={handleClose}
             placeholder='+52 + Teléfono'
             type={ userLoged && !type ? 'button' : 'text'}
             value={ numberPhone }
@@ -23,7 +18,6 @@ function InputPhoneNumber({ numberPhone, errorsNumberPhone, userLoged, type, han
                 m: '0px',
                 textAlign: 'left'
             }}
-            disabled={ userLoged && !type ? true : false}
             inputProps={{
                 sx: {
                     textAlign: 'left'

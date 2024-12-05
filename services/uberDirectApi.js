@@ -1,9 +1,17 @@
 import { requestSettings } from "@/utils/preparingData";
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
+// Get uberToken
+export async function getUberToken() {
+    const response = await fetch(`${PATH_BACK}/ubers/token`);
+    const data = await response.json();
+    if (data.message) throw new Error(`Error server: ${data.message}`);
+    return data;
+}
+
 // Get a delivery quote
-export const getDeliveryQuote = async (pickup_address, dropoff_address) => {
-    const quoteUrl = `${PATH_BACK}/uber-direct/quote`;
+export const getDeliveryQuote = async ({ pickup, dropoff, token }) => {
+    const quoteUrl = `${PATH_BACK}/ubers/quote?token=${token}`;
 
     try {
         const response = await fetch(quoteUrl, {
@@ -12,8 +20,8 @@ export const getDeliveryQuote = async (pickup_address, dropoff_address) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                pickup_address,
-                dropoff_address,
+                pickup,
+                dropoff,
             }),
         });
         if (!response.ok) {

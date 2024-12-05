@@ -5,12 +5,12 @@ import { mapStoresFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
-export async function getAllStores(queries) {
+export async function getAllCompanies(queries) {
     const queriesString = generateURLQueries(queries);
-    const response = await fetch(`${PATH_BACK}/stores${queriesString}`);
+    const response = await fetch(`${PATH_BACK}/companies${queriesString}`);
     const data = await response.json();
     if (data.message) throw new Error(data.message);
-    return mapStoresFromBackend(data);
+    return data;
 }
 
 export async function getOneStoreById(id) {

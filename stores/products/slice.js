@@ -23,7 +23,6 @@ export const productsSlice = createSlice({
                 const { pizzas, salads } = action.payload;
                 state.pizzas = pizzas;
                 state.salads = salads;
-                console.log(pizzas, salads);
                 state.status = "succeeded";
             })
             .addCase(addProductsListThunk.rejected, (state, action) => {

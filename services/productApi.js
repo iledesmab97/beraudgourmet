@@ -1,5 +1,7 @@
 import { twoDecimals } from "@/utils/priceCar";
 import { requestSettings } from "@/utils/preparingData";
+import { mapPizzaFromBackend } from "@/utils/mappers";
+import { generateURLQueries } from "@/utils/preparingData";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -32,19 +34,7 @@ export async function getOnePizzaById(id) {
         const response = await fetch(`${PATH_BACK}/pizzas/${id}`);
         const data = await response.json();
         if (data.message) throw new Error(data.message);
-        const { name, text, image, status, type, ingredients, price } = data;
-        const newPizzaData = {
-            id,
-            name,
-            text,
-            image,
-            status,
-            type,
-            productType: "pizza",
-            ingredients,
-            price,
-        };
-        return newPizzaData;
+        return mapPizzaFromBackend(data);
     } catch (error) {
         return { message: error.message };
     }
@@ -80,26 +70,20 @@ export async function getOnePizzaByName(name) {
     }
 }
 
-export async function getPizzaIngredients(name) {
-    try {
-        const response = await fetch(`${PATH_BACK}/pizzas/ingredients/${name}`);
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+export async function getPizzaIngredients(queries) {
+    const query = generateURLQueries(queries);
+    const response = await fetch(`${PATH_BACK}/pizzas/ingredients${query}`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
-export async function getSaladIngredients(name) {
-    try {
-        const response = await fetch(`${PATH_BACK}/salads/ingredients/${name}`);
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+export async function getSaladIngredients(queries) {
+    const query = generateURLQueries(queries);
+    const response = await fetch(`${PATH_BACK}/salads/ingredients${query}`);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function getPizzaCosts({ type }) {
@@ -171,26 +155,6 @@ export async function getCostOfPizza(id) {
     const data = await response.json();
     if (data.message) throw new Error(data.message);
     return data;
-}
-
-export async function getExtraIngredients() {
-    return fetch(`${PATH_BACK}/ingredients`)
-        .then((response) => response.json())
-        .then((data) => {
-            const extraIngredinetList = {};
-            data.forEach((extraIngredient) => {
-                const { id, name, cost, costIVAStripe, available } =
-                    extraIngredient;
-                extraIngredinetList[name] = {
-                    id,
-                    name,
-                    price: cost,
-                    totalPrice: costIVAStripe ? costIVAStripe : "0",
-                    available,
-                };
-            });
-            return extraIngredinetList;
-        });
 }
 
 export async function getPizzasWithCosts() {

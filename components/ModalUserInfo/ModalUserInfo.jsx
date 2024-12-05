@@ -8,13 +8,13 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 
-import UserLoged from '../OrderRewards/UserLoged'
+import UserLogedData from '../OrderRewards/UserLogedData'
 import MoveDown from '@/components/MoveDown/MoveDown'
 
 import useGetModal from '@/hooks/useGetModal'
 import useGetUser from '@/hooks/useGetUser'
 import useHandleUser from '@/hooks/useHandleUser'
-import useHandleSession from '@/hooks/useHandleSession'
+import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
 
 import { requestVerification, updateMyAccount } from '@/services/userApi'
 
@@ -53,8 +53,8 @@ function ModalUserInfo() {
 
     const {open, handleCloseModal, handleChangeModal} = useGetModal({modalType: 'user'})
     const { handleRemoveUser } = useGetUser()
-    const { inputs, errors, handleChange, userLoged, user, editing, handleChangeNumberPhone, signOff, handleEditing} = useHandleUser()
-    const { closeSession } = useHandleSession()
+    const { user} = useHandleUser()
+    const { logout } = useHandlerUserThunk()
 
     async function sendVerification() {
         const response = await requestVerification({email: user.email})
@@ -71,10 +71,11 @@ function ModalUserInfo() {
     }
 
     function executeLogout() {
-        signOff()
-        closeSession()
+        logout()
         handleCloseModal('user')
     }
+
+    if (!user) return null
 
     return (
         <Modal
@@ -94,17 +95,7 @@ function ModalUserInfo() {
                 >
                     Su cuenta
                 </Typography>
-                <UserLoged
-                    userLoged={userLoged}
-                    inputs={inputs}
-                    errors={errors}
-                    handleChange={handleChange}
-                    handleChangeNumberPhone={handleChangeNumberPhone}
-                    type={'text'}
-                    editing={editing}
-                    handleEditing={handleEditing}
-                    open={open}
-                />
+                <UserLogedData/>
                 <Grid
                     item
                     sx={{
@@ -171,11 +162,11 @@ function ModalUserInfo() {
                     >
                         Ver historial de ordenes
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={deleteAccount}
                     >
                         Borrar mi cuenta
-                    </Button>
+                    </Button> */}
                     {
                         !user.verified ? (
                             <Button

@@ -1,25 +1,30 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+    getUberToken,
     getDeliveryQuote,
     createDeliveryOrder,
     trackDelivery,
     cancelDelivery,
 } from "../../services/uberDirectApi";
-import { delay } from "@/utils/wait";
+import { getLocalData, saveLocalData } from "@/utils/manageLocalStorage";
 
 // Async thunk to get delivery quote
 export const fetchDeliveryQuote = createAsyncThunk(
     "uberDirect/fetchDeliveryQuote",
-    async ({ pickup_address, dropoff_address }, { rejectWithValue }) => {
+    async ({ pickup, dropoff }, { rejectWithValue }) => {
         try {
-            const quote = await getDeliveryQuote(
-                pickup_address,
-                dropoff_address
-            );
-            localStorage.setItem(
-                "quote",
-                quote.fee.feeIVAStripe ? quote.fee.feeIVAStripe : "60"
-            );
+            let uberToken = getLocalData("uberToken");
+            if (!uberToken) {
+                const { access_token } = await getUberToken();
+                uberToken = access_token;
+                saveLocalData("uberToken", uberToken);
+            }
+            const quote = await getDeliveryQuote({
+                token: uberToken,
+                pickup,
+                dropoff,
+            });
+            saveLocalData("quote", quote);
             return quote;
         } catch (error) {
             return rejectWithValue(error.message);
