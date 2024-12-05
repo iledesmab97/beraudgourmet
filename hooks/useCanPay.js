@@ -56,7 +56,7 @@ export default function useCanPay() {
         }
         if (
             !dateInRange({
-                minHour,
+                minHour: minHour.subtract(1, "minute"),
                 maxHour,
                 daySelected,
                 typeDelivery: place.typeDelivery,
