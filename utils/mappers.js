@@ -105,7 +105,7 @@ export function mapOrderToBackend(order) {
         applicationDate,
         deliveryDate,
         delivery,
-        deliveryInformation,
+        deliveryData: deliveryInformation,
         itemsList,
         StoreId: storeId,
         UserId: userId,
