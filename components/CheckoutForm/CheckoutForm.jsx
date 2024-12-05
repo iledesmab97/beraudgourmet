@@ -27,8 +27,15 @@ import { descriptionOrder } from "@/utils/preparingData";
 import { updatePaymentRequest } from "@/services/checkoutApi";
 import { registerOrder } from "@/services/orderApi";
 import { getPizzaIngredients, getSaladIngredients } from "@/services/productApi";
+import { mapDeliveryInformationToBackend } from "@/utils/mappers";
 
 import styles from "./CheckoutForm.module.css";
+
+const wrappersType = {
+    "30cm": "S",
+    "60cm": "M",
+    "90cm": "L",
+}
 
 export default function CheckoutForm({
     user,
@@ -70,6 +77,7 @@ export default function CheckoutForm({
             itemType: productType,
             size,
             mass,
+            wrapper: wrappersType[size],
             quantity,
             ingredientsOut: ingredientsModal,
             extraIngredients: Object.keys(extra).map((extraIngredient) => ({
@@ -92,7 +100,7 @@ export default function CheckoutForm({
             place.deadLine.date.realDate + " - " + place.deadLine.time.realTime,
         delivery: place.inputsHome ? true : false,
         itemsList: orderItems,
-        deliveryInformation: place.inputsHome,
+        deliveryInformation: place.inputsHome ? mapDeliveryInformationToBackend({ ...place.inputsHome, ...quote }) : null
     };
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
