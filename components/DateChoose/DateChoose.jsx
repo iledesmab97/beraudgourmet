@@ -122,7 +122,8 @@ export default function DateChoose() {
           slotProps={{
             textField: {
               helperText: date.isBefore(dayjs(), 'day') ? 'La fecha de entrega debe ser mayor a la actual' : textDate,
-              size:'small'
+              size:'small',
+              readOnly: true
             }
           }}
           // maxDate={dayjs().add(1, 'week').subtract(1, 'day')}
