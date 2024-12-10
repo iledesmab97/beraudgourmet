@@ -137,7 +137,7 @@ function Header() {
                         </Box>
                     ) : (
                         <>
-                            <Link href="/menu">
+                            {/* <Link href="/menu">
                                 <ElegantButton color="inherit">
                                     Menús
                                 </ElegantButton>
@@ -146,7 +146,7 @@ function Header() {
                                 <ElegantButton color="inherit">
                                     Eventos
                                 </ElegantButton>
-                            </Link>
+                            </Link> */}
                             {/* <Link href="/contacto" passHref>
                                 <ElegantButton color="inherit" component="a">
                                     Contacto

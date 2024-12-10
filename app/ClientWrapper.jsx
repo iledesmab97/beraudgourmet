@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchStoreListThunk } from "@/stores/actions/stores";
 import { useLoadScript } from "@react-google-maps/api";
 import useGetPlace from "@/hooks/useGetPlace";
 import MaintenanceComponent from "@/components/Maintenance/MaintenanceComponent";
@@ -30,7 +29,8 @@ export default function ClientWrapper({ children }) {
         libraries,
     });
 
-    const maintenanceRoutes = ["/menu"];
+    // const maintenanceRoutes = ["/menu"];
+    const maintenanceRoutes = [];
 
     // Function to update maintenance state based on current path
     const checkMaintenanceRoute = () => {
@@ -97,10 +97,6 @@ export default function ClientWrapper({ children }) {
     };
 
     useEffect(() => {
-        dispatch(fetchStoreListThunk());
-    }, [dispatch]);
-
-    useEffect(() => {
         if (status !== "succeeded") {
             if (sessionStorage.getItem("hasAnimated")) {
                 setLoading(false);
@@ -124,19 +120,23 @@ export default function ClientWrapper({ children }) {
 
             for (const store of defaultStores) {
                 const { coordinates } = store;
-                const results = await directionService.route({
-                    origin: { lat: coordinates.lat, lng: coordinates.lng },
-                    destination: { lat: lat, lng: lng },
-                    travelMode: "DRIVING",
-                });
-                let currentDistance =
-                    results.routes[0].legs[0].distance.value / 1000;
-
-                if (currentDistance < newDistance) {
-                    newDistance = currentDistance;
-                    closerStore = store;
-
-                    if (currentDistance < 1) break;
+                try {
+                    const results = await directionService.route({
+                        origin: { lat: Number(coordinates.lat), lng: Number(coordinates.lng) },
+                        destination: { lat: lat, lng: lng },
+                        travelMode: "DRIVING",
+                    });
+                    let currentDistance =
+                        results.routes[0].legs[0].distance.value / 1000;
+    
+                    if (currentDistance < newDistance) {
+                        newDistance = currentDistance;
+                        closerStore = store;
+    
+                        if (currentDistance < 1) break;
+                    }
+                } catch(error) {
+                    return alert(error.message)
                 }
             }
             delivery = await geocoder.geocode({
@@ -175,12 +175,13 @@ export default function ClientWrapper({ children }) {
 
     return (
         <>
-            {loading && !sessionStorage.getItem("hasAnimated") && (
-                <CurtainAnimation
-                    onComplete={handleAnimationComplete}
-                    storesStatus={status}
-                />
-            )}
+            {
+                loading && !sessionStorage.getItem("hasAnimated") && (
+                    <CurtainAnimation
+                        onComplete={handleAnimationComplete}
+                    />
+                )
+            }
             {isMaintenance ? (
                 <Box
                     sx={{

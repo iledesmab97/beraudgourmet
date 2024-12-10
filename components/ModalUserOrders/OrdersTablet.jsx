@@ -6,9 +6,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
+import CenteredSpinner from '../LoadingComponets/CenteredSpinner';
+
 import { extractIngredientsOut } from '@/utils/preparingData'
 
-function OrdersTablet({orders}) {
+function OrdersTablet({ orders, loading }) {
     return (
         <Grid
             item
@@ -17,7 +19,11 @@ function OrdersTablet({orders}) {
                 overflowY: 'auto'
             }}
         >
-            <TableContainer>
+            <TableContainer
+                sx={{
+                    height: "100%",
+                }}
+            >
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -67,6 +73,11 @@ function OrdersTablet({orders}) {
                         }
                     </TableBody>
                 </Table>
+                {
+                    loading ? (
+                        <CenteredSpinner />
+                    ) : null
+                }
             </TableContainer>
         </Grid>
     )

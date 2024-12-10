@@ -1,5 +1,7 @@
 "use client";
-import React from "react";
+
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import {
     Typography,
     Button,
@@ -15,6 +17,8 @@ import { Restaurant, EventAvailable } from "@mui/icons-material";
 import Link from "next/link";
 import StoreComponent from "./StoreComponent";
 import ServiciosEstaticos from "./Servicios";
+import logoBeraund from "../public/images/homeimg/homeimgberaud/logoBeraud.png";
+import { getAllCompanies } from "@/services/companyApi"
 
 const ServiceCard = styled(Card)(({ theme }) => ({
     height: "100%",
@@ -30,6 +34,22 @@ const ServiceCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function Home() {
+
+    const [companieList, setCompanieList] = useState([])
+
+    useEffect(() => {
+        getCompanies()
+    }, [])
+
+    async function getCompanies() {
+        try {
+            const newCompanyList = await getAllCompanies({ available: true })
+            setCompanieList(newCompanyList)
+        } catch(error: any) {
+            alert(error.message)
+        }
+    }
+
     return (
         <>
             <StoreComponent />
@@ -80,54 +100,72 @@ export default function Home() {
                         </Typography>
                     </Box>
 
-                    <Grid container spacing={4}>
-                        <Grid item xs={12} md={6}>
-                            <ServiceCard>
-                                <CardMedia
-                                    component="div"
-                                    sx={{
-                                        height: 140,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        bgcolor: "primary.main",
-                                        color: "white",
-                                    }}
-                                >
-                                    <Restaurant sx={{ fontSize: 60 }} />
-                                </CardMedia>
-                                <CardContent>
-                                    <Typography
-                                        gutterBottom
-                                        variant="h5"
-                                        component="div"
-                                        color="primary"
-                                    >
-                                        Menús de Comida
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                    >
-                                        Descubra nuestra selección de menús
-                                        inspirados en la cocina francesa,
-                                        preparados con ingredientes frescos y de
-                                        alta calidad.
-                                    </Typography>
-                                    <Box sx={{ mt: 2 }}>
-                                        <Link href="/menu">
-                                            <Button
-                                                variant="outlined"
-                                                color="primary"
+                    <Grid container spacing={4} justifyContent={"center"}>
+                        {
+                            companieList.map((company: any) => (
+                                <Grid item xs={12} md={6}>
+                                    <ServiceCard>
+                                        <CardMedia
+                                            component="div"
+                                            sx={{
+                                                position: "relative",
+                                                height: 140,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                color: "white",
+                                            }}
+                                        >
+                                            <Image
+                                                src={logoBeraund}
+                                                alt={"logoBeraud"}
+                                                fill
+                                            />
+                                        </CardMedia>
+                                        <CardContent
+                                            sx={{
+                                                bgcolor: "primary.main"
+                                            }}
+                                        >
+                                            <Typography
+                                                gutterBottom
+                                                variant="h5"
+                                                component="div"
+                                                // color="primary"
+                                                color="white"
                                             >
-                                                Ver Menús
-                                            </Button>
-                                        </Link>
-                                    </Box>
-                                </CardContent>
-                            </ServiceCard>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
+                                                {company.title}
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                // color="text.secondary"
+                                                color="white"
+                                            >
+                                                {company.text}
+                                            </Typography>
+                                            <Box sx={{ mt: 2 }}>
+                                                <Link href={"/" + company.name}>
+                                                    <Button
+                                                        variant="outlined"
+                                                        sx={{
+                                                            color: "white",
+                                                            borderColor: "white",
+                                                            "&:hover": {
+                                                                backgroundColor: "white",
+                                                                color: "#295386"
+                                                            }
+                                                        }}
+                                                    >
+                                                        Ver Menús
+                                                    </Button>
+                                                </Link>
+                                            </Box>
+                                        </CardContent>
+                                    </ServiceCard>
+                                </Grid>
+                            ))
+                        }
+                        {/* <Grid item xs={12} md={6}>
                             <ServiceCard>
                                 <CardMedia
                                     component="div"
@@ -172,7 +210,7 @@ export default function Home() {
                                     </Box>
                                 </CardContent>
                             </ServiceCard>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </Container>
                 <ServiciosEstaticos />

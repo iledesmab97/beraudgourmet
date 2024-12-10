@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 
-import { fetchwhoAmI } from "@/services/userApi";
+import { verifyUserAction } from "@/stores/actions/users";
 
 const possiblePaths = [
     "admin",
@@ -15,7 +16,7 @@ const possiblePaths = [
 ];
 
 const pathByRoles = {
-    3: [
+    "client": [
         "/not-found",
         "/menu",
         "/",
@@ -32,18 +33,14 @@ const pathByRoles = {
     ],
 };
 
-async function validateUser(currentPath) {
+async function validateUser({ currentPath, user }) {
     const { path } = destructurePath(currentPath);
-    const userTokenString = localStorage.getItem("user");
-    const userToken = userTokenString ? JSON.parse(userTokenString) : null;
-    let user;
-    if (userToken) {
-        user = await fetchwhoAmI(userToken);
-    } else {
-        user = { RoleId: "pedestrians" };
-    }
-    if (pathByRoles[user.RoleId].includes(path)) return { allow: true };
-    return { allow: false, path: pathByRoles[user.RoleId][0] };
+    let userLoged = user
+    if (!userLoged) {
+        userLoged = { RoleId: { name: "pedestrians" }};
+    } 
+    if (pathByRoles[userLoged.RoleId.name].includes(path)) return { allow: true };
+    return { allow: false, path: pathByRoles[userLoged.RoleId.name][0] };
 }
 
 function destructurePath(path) {
@@ -64,9 +61,19 @@ function ProtectedRoute({ children }) {
     const [allowedPath, setAllowedPath] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
+    const { user } = useSelector(state => state.user)
+    const firstTime = useRef(true)
+    const dispatch = useDispatch()
 
+    // Load user in Redux
     useEffect(() => {
-        validateUser(pathname)
+        dispatch(verifyUserAction())
+    }, [pathname])
+
+    // Redirect the user
+    useEffect(() => {
+        if (!firstTime.current) return
+        validateUser({ currentPath: pathname, user })
             .then((data) => {
                 if (!data.allow) {
                     setAllowedPath(false);
@@ -76,7 +83,8 @@ function ProtectedRoute({ children }) {
                 }
             })
             .catch((error) => alert(error.message));
-    }, [pathname]);
+        firstTime.current = false
+    }, [user])
 
     return allowedPath ? children : null;
 }

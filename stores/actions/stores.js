@@ -1,13 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllStoresWithSchedules } from "../../services/storeApi"; // Ensure the correct path
-import { delay } from "@/utils/wait";
+import { getAllStores } from "../../services/storeApi"; // Ensure the correct path
 
 export const fetchStoreListThunk = createAsyncThunk(
     "storeList/fetchStoreList",
-    async (_, { rejectWithValue }) => {
+    async (queries, { rejectWithValue }) => {
         try {
-            const storeList = await getAllStoresWithSchedules();
-            await delay(3000);
+            const storeList = await getAllStores(queries);
             return storeList;
         } catch (error) {
             return rejectWithValue(error.message);

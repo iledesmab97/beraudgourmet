@@ -1,31 +1,30 @@
-import { useEffect } from "react"
-import useGetSteps from '@/hooks/useGetSteps'
-import useGetUser from '@/hooks/useGetUser'
-import useGetOrders from '@/hooks/useGetOrders'
-import useGetPlace from '@/hooks/useGetPlace'
+import { useEffect } from "react";
+import useGetSteps from "@/hooks/useGetSteps";
+import useGetUser from "@/hooks/useGetUser";
+import useGetOrders from "@/hooks/useGetOrders";
+import useGetPlace from "@/hooks/useGetPlace";
 
 function useHandleSteps() {
-
-    const { steps, handleSteps } = useGetSteps()
-    const { user } = useGetUser()
-    const { orders } = useGetOrders()
-    const { place } = useGetPlace()
+    const { steps, handleSteps } = useGetSteps();
+    const { user } = useGetUser();
+    const { orders } = useGetOrders();
+    const { place } = useGetPlace();
 
     useEffect(() => {
-        const newSteps = { ...steps }
-        if (Boolean(user.email) !== steps.user) {
-            newSteps.user = Boolean(user.email)
+        const newSteps = { ...steps };
+        if (Boolean(user) !== steps.user) {
+            newSteps.user = Boolean(user);
         }
         if (Boolean(orders.length) !== steps.orders) {
-            newSteps.order = Boolean(orders.length)
+            newSteps.order = Boolean(orders.length);
         }
         if (Boolean(Object.keys(place).length) !== steps.store) {
-            newSteps.store = Boolean(Object.keys(place).length)
+            newSteps.store = Boolean(Object.keys(place).length);
         }
-        handleSteps(newSteps)
-    }, [user, orders, place])
+        handleSteps(newSteps);
+    }, [user, orders, place]);
 
-    return steps
-}   
+    return steps;
+}
 
-export default useHandleSteps
+export default useHandleSteps;

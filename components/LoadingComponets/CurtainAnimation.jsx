@@ -8,24 +8,22 @@ const colors = {
     default: "#FFFFFF",
 };
 
-export function CurtainAnimation({ onComplete, storesStatus }) {
+export function CurtainAnimation({ onComplete }) {
     const [shouldAnimate, setShouldAnimate] = useState(false);
     const [curtainsClosed, setCurtainsClosed] = useState(true); // Estado para mantener las cortinas cerradas si el status no es 'succeeded'
 
     useEffect(() => {
         const hasAnimated = sessionStorage.getItem("hasAnimated");
 
-        if (storesStatus === "succeeded") {
+        setTimeout(() => {
             if (!hasAnimated) {
                 setShouldAnimate(true); // Ejecutar la animación
                 setCurtainsClosed(false);
             } else {
                 onComplete();
             }
-        } else {
-            setCurtainsClosed(true); // Mantener las cortinas cerradas si el status no es 'succeeded'
-        }
-    }, [onComplete, storesStatus]);
+        }, 3000)
+    }, [onComplete]);
 
     const curtainVariants = {
         initial: { scaleX: 1 },

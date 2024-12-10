@@ -2,6 +2,7 @@ import {
     userDataFromBackToFront,
     requestSettings,
 } from "@/utils/preparingData";
+import { mapUserFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -10,7 +11,7 @@ export async function getOneUserById(id) {
         const response = await fetch(`${PATH_BACK}/users/${id}`);
         const data = await response.json();
         if (data.message) throw new Error(data.message);
-        return data;
+        return mapUserFromBackend(data);
     } catch (error) {
         return { message: error.message };
     }
@@ -33,16 +34,12 @@ export async function requestVerification({ email }) {
 }
 
 export async function fetchwhoAmI(token) {
-    try {
-        const response = await fetch(`${PATH_BACK}/users/loged`, {
-            ...requestSettings("GET", token),
-        });
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const response = await fetch(`${PATH_BACK}/users/loged`, {
+        ...requestSettings("GET", token),
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return mapUserFromBackend(data);
 }
 
 export async function newAccount(data) {
@@ -55,20 +52,16 @@ export async function newAccount(data) {
     return data_1;
 }
 
-export async function updateMyAccount(data) {
-    try {
-        const res = await fetch(`${PATH_BACK}/users/update`, {
-            ...requestSettings("PUT"),
-            body: JSON.stringify(data),
-        });
-        const data_2 = await res.json();
-        if (data_2.message) throw new Error(data_2.message);
-        const { token } = data_2;
-        localStorage.setItem("user", JSON.stringify(token));
-        return "Se ha actualizado exitosamente";
-    } catch (error) {
-        return { message: error.message };
-    }
+export async function updateMyAccount(body) {
+    const res = await fetch(`${PATH_BACK}/users/update`, {
+        ...requestSettings("PUT"),
+        body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.message) throw new Error(data.message);
+    const { token, user } = data;
+    localStorage.setItem("user", JSON.stringify(token));
+    return mapUserFromBackend(user);
 }
 
 export async function verifyProperty(data) {
@@ -186,32 +179,26 @@ export async function whatHappen(data) {
 }
 
 export async function requestLogout() {
-    try {
-        const response = await fetch(`${PATH_BACK}/users/logout`, {
-            ...requestSettings("POST"),
-        });
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const response = await fetch(`${PATH_BACK}/users/logout`, {
+        ...requestSettings("POST"),
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function verifyUserData(email, password) {
-    try {
-        const res = await fetch(`${PATH_BACK}/users/login`, {
-            ...requestSettings("POST"),
-            body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-        if (data.message) throw new Error(data.message);
-        const { token } = data;
-        const user = { ...data };
-        return { user, token };
-    } catch (error) {
-        return { message: error.message };
-    }
+    const res = await fetch(`${PATH_BACK}/users/login`, {
+        ...requestSettings("POST"),
+        body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (data.message) throw new Error(data.message);
+    const { user, token } = data;
+    return {
+        user: mapUserFromBackend(user),
+        token,
+    };
 }
 
 export async function requestUserArchiving(user) {

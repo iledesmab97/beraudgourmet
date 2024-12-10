@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 
 import FormModalDeliveryPlace from "./FormModalDeliveryPlace";
 
+import { useSelector } from "react-redux";
 import useGetModal from "@/hooks/useGetModal";
 import useHandlePlace from "@/hooks/useHandlePlace";
 import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
@@ -31,6 +32,7 @@ const style = {
 
 export default function ModalDeliveryPlace() {
     
+    const { inputsHome: primaryInputHome } = useSelector(state => state.place)
     const { open, handleCloseModal } = useGetModal({
         modalType: "deliveryPlace",
     });
@@ -39,7 +41,7 @@ export default function ModalDeliveryPlace() {
         typeLocation,
         handleInputsHome,
         handleTypeLocation,
-    } = useHandlePlace();
+    } = useHandlePlace({ primaryInputHome });
     const { nextStepGuide } = useHandleShoppingGuide();
 
     return (

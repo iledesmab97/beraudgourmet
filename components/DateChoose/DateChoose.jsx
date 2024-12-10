@@ -12,6 +12,9 @@ import 'dayjs/locale/en-gb'
 import TextField from '@mui/material/TextField'
 import Input from '@mui/material/Input'
 import Typography from '@mui/material/Typography'
+import { getNearestSchedule, weekDaysEN, typeDeliveryOptions } from "@/utils/hours"
+
+import { useSelector } from 'react-redux';
 
 const daysES = {
   ['Monday']: 'Lunes',
@@ -56,8 +59,15 @@ function NoteCalendar() {
 export default function DateChoose() {
 
 
-  const { place, handleDeadLine} = useGetPlace()
-  const [date, setDate] = useState( place && place.deadLine ? dayjs(place.deadLine.date.realDate, 'DD/MM/YYYY') : dayjs())
+  const { closerStore, typeDelivery, deadLine } = useSelector(state => state.place)
+  const { handleDeadLine} = useGetPlace()
+  const [date, setDate] = useState(() => {
+    if (deadLine) {
+      return dayjs(deadLine.date.realDate, 'DD/MM/YYYY')
+    }
+    const dayNear = getNearestAvailableDate({ Schedules: closerStore.Schedules, typeDelivery })
+    return dayNear
+  })
   const [textDate, setTextDate] = useState('')
 
   useEffect(() => {
@@ -76,8 +86,23 @@ export default function DateChoose() {
     handleDeadLine({property: 'date', value: {realDate: date.format('DD/MM/YYYY'), relativeDate: newTextDate}})
   }, [date])
 
+  // Update data
+  useEffect(() => {
+    if (deadLine) return
+    const dayNear = getNearestAvailableDate({ Schedules: closerStore.Schedules, typeDelivery })
+    setDate(dayNear)
+  }, [typeDelivery])
+
   function handleChange (event) {
     setDate(event)
+  }
+
+  function getNearestAvailableDate({ Schedules, typeDelivery }) {
+    const schedulesFiltered = Schedules.filter(schedule => schedule.type === typeDeliveryOptions[typeDelivery.name] )
+    const closerSchedule = getNearestSchedule(schedulesFiltered)
+    const closerScheduleDay = dayjs().day(weekDaysEN.indexOf(closerSchedule.day))
+    const nextcloserScheduleDay = closerScheduleDay.isBefore(dayjs()) ? closerScheduleDay.add(7, 'day') : closerScheduleDay
+    return nextcloserScheduleDay
   }
 
   return (
@@ -109,6 +134,13 @@ export default function DateChoose() {
           //   width:'100%',
           //   minWidth: '0px !important'
           // }}
+          shouldDisableDate={(day) => {
+            const dateToday = day.day()
+            const datesNotAvailable = closerStore.Schedules.filter(schedule => schedule.type === typeDeliveryOptions[typeDelivery.name]).map(schedule => {
+              return weekDaysEN.indexOf(schedule.day)             
+            })
+            return !datesNotAvailable.includes(dateToday)
+          }}
         />
       </DemoContainer>
     </LocalizationProvider>

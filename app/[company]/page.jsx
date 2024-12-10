@@ -22,8 +22,9 @@ import ShoppingCartButton from "@/components/ShoppingCartButton/ShoppingCartButt
 import AlertRecoverPassword from "@/components/AlertRecorverPassword/AlertRecorverPassword";
 import PizzaCustomizable from "@/components/PizzaCustomizable/PizzaCustomizable";
 import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
+import AlertMessage from "@/components/AlertMessage/AlertMessage"
+
 import useHandleSteps from "@/hooks/useHandleSteps";
-import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
 import { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
@@ -32,8 +33,11 @@ import useGetDrawer from "@/hooks/useGetDrawer";
 import useLoadData from "@/hooks/useLoadData";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductsListThunk } from "@/stores/actions/products";
+import { fetchStoreListThunk } from "@/stores/actions/stores";
 
-function Menu() {
+import { getAllCompanies } from "@/services/companyApi";
+
+function Menu({ params }) {
     const [totalMatches, setTotalMatches] = useState("null");
 
     useHandleSteps();
@@ -67,8 +71,31 @@ function Menu() {
         setTotalMatches(String(matches));
     }, [matches]);
 
+    // Cargar las tiendas de la compañia
+    useEffect(() => {
+        getStores()
+    }, [dispatch]);
+
     function toggleOpenOrderRewards(value) {
         setOpenOrderRewards(value);
+    }
+
+    async function getStores() {
+        const { company: companyName } = params
+        try {
+            const [company] = await getAllCompanies({
+                available: true,
+                name: companyName
+            })
+            dispatch(fetchStoreListThunk({
+                relation: "Schedules",
+                relation2: "Company",
+                available: true,
+                Company: company.id
+            }));
+        } catch(error) {
+            alert(error.message)
+        }
     }
 
     return (
@@ -97,6 +124,7 @@ function Menu() {
                                     itemList={pizzas}
                                     title={"Nuestra selección de Pizzas"}
                                     products={"pizzas"}
+                                    sectionId={"pizzasSection"}
                                 />
                             )}
 
@@ -105,6 +133,7 @@ function Menu() {
                                     itemList={salads}
                                     title={"Nuestra selección de Ensaladas"}
                                     products={"salads"}
+                                    sectionId={"saladsSection"}
                                 />
                             )}
                         </Grid>
@@ -144,6 +173,7 @@ function Menu() {
                     toggleOpenOrderRewards={toggleOpenOrderRewards}
                 />
             ) : null}
+            <AlertMessage />
         </Container>
     );
 }

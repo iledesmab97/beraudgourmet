@@ -10,9 +10,8 @@ import StorePickup from "./StorePickup";
 import HomeDelivery from "./HomeDelivery";
 import MoveDown from "@/components/MoveDown/MoveDown";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useGetModal from "@/hooks/useGetModal";
-import useHandlePlace from "@/hooks/useHandlePlace";
 import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
 import { useSelector } from "react-redux";
 
@@ -41,121 +40,131 @@ const style = {
 };
 
 export default function ModalStoreDelivery() {
+
+    const { stores } = useSelector(state => state.storeList)
     const { open, handleCloseModal } = useGetModal({ modalType: "place" });
+    const [storeList, setStoreList] = useState({
+        pickup: isThereScheduleAvailable({ stores, type: "pickup" }),
+        delivery: isThereScheduleAvailable({ stores, type: "delivery" })
+    })
 
     const [delivery, setDelivery] = useState("store");
     const { nextStepGuide } = useHandleShoppingGuide();
 
-    const { inputsStore, handleInputsStore } = useHandlePlace();
-
-    const { stores } = useSelector((state) => state.storeList);
+    useEffect(() => {
+        setStoreList({
+            pickup: isThereScheduleAvailable({ stores, type: "pickup" }),
+            delivery: isThereScheduleAvailable({ stores, type: "delivery" })
+        })
+    }, [stores])
 
     function handlePlace(place) {
         setDelivery(place);
     }
 
+    function isThereScheduleAvailable({ stores, type }) {
+        return stores.some(store => store.Schedules.some(schedule => schedule.type === type))
+    }
+
     return (
-        <div>
-            <Modal
-                open={open}
-                onClose={() => {
-                    handleCloseModal("place");
-                }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Box
-                        id="modal-container-storeDelivery"
+        <Modal
+            open={open}
+            onClose={() => {
+                handleCloseModal("place");
+            }}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+                <Box
+                    id="modal-container-storeDelivery"
+                    sx={{
+                        height: "100%",
+                        pr: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: 2,
+                        overflowY: {
+                            xs: "auto",
+                            sm: "hidden",
+                        },
+                    }}
+                >
+                    <Typography
+                        id="modal-modal-title"
+                        variant="title"
+                        component="h2"
+                        align="center"
                         sx={{
-                            height: "100%",
-                            pr: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                            gap: 2,
-                            overflowY: {
-                                xs: "auto",
-                                sm: "hidden",
-                            },
+                            mb: 5,
                         }}
                     >
-                        <Typography
-                            id="modal-modal-title"
-                            variant="title"
-                            component="h2"
-                            align="center"
-                            sx={{
-                                mb: 5,
-                            }}
-                        >
-                            {delivery === "store"
-                                ? "Encuentre su tienda más cercana"
-                                : "Indique el lugar de entrega"}
-                        </Typography>
+                        {delivery === "store"
+                            ? "Encuentre su tienda más cercana"
+                            : "Indique el lugar de entrega"}
+                    </Typography>
 
-                        <ButtonGroup
-                            size="large"
-                            variant="contained"
-                            aria-label="contained large button group"
-                            sx={{
-                                mb: 3,
-                            }}
+                    <ButtonGroup
+                        size="large"
+                        variant="contained"
+                        aria-label="contained large button group"
+                        sx={{
+                            mb: 3,
+                        }}
+                    >
+                        <Button
+                            onClick={() => handlePlace("store")}
+                            disabled={!storeList.pickup}
+                            sx={
+                                delivery === "store"
+                                    ? {
+                                            backgroundColor:
+                                                "rgb(28, 58, 93)",
+                                        }
+                                    : {}
+                            }
                         >
-                            <Button
-                                onClick={() => handlePlace("store")}
-                                sx={
-                                    delivery === "store"
-                                        ? {
-                                              backgroundColor:
-                                                  "rgb(28, 58, 93)",
-                                          }
-                                        : {}
-                                }
-                            >
-                                Recoger en la tienda
-                            </Button>
-                            <Button
-                                onClick={() => handlePlace("home")}
-                                sx={
-                                    delivery === "home"
-                                        ? {
-                                              backgroundColor:
-                                                  "rgb(28, 58, 93)",
-                                          }
-                                        : {}
-                                }
-                            >
-                                Entrega a domicilio
-                            </Button>
-                        </ButtonGroup>
-                        {delivery === "store" ? (
-                            <StorePickup
-                                storeList={stores}
-                                inputsStore={inputsStore}
-                                handleInputsStore={handleInputsStore}
-                                handleCloseModal={handleCloseModal}
-                                nextStep={nextStepGuide}
-                            />
-                        ) : (
-                            <HomeDelivery />
-                        )}
-                        <MoveDown
-                            sectionToGo={
-                                delivery === "store"
-                                    ? "#modal-subtitle-cityName"
-                                    : "#title-note-formModalDeliveryPlace"
+                            Recoger en la tienda
+                        </Button>
+                        <Button
+                            onClick={() => handlePlace("home")}
+                            disabled={!storeList.delivery}
+                            sx={
+                                delivery === "home"
+                                    ? {
+                                            backgroundColor:
+                                                "rgb(28, 58, 93)",
+                                        }
+                                    : {}
                             }
-                            containerId={
-                                delivery === "store"
-                                    ? "#modal-container-storeDelivery"
-                                    : "#HomeDelivery-container"
-                            }
+                        >
+                            Entrega a domicilio
+                        </Button>
+                    </ButtonGroup>
+                    {delivery === "store" ? (
+                        <StorePickup
+                            handleCloseModal={handleCloseModal}
+                            nextStep={nextStepGuide}
                         />
-                    </Box>
+                    ) : (
+                        <HomeDelivery />
+                    )}
+                    <MoveDown
+                        sectionToGo={
+                            delivery === "store"
+                                ? "#modal-subtitle-cityName"
+                                : "#title-note-formModalDeliveryPlace"
+                        }
+                        containerId={
+                            delivery === "store"
+                                ? "#modal-container-storeDelivery"
+                                : "#HomeDelivery-container"
+                        }
+                    />
                 </Box>
-            </Modal>
-        </div>
+            </Box>
+        </Modal>
     );
 }

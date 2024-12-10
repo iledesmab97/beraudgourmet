@@ -1,8 +1,11 @@
 import { ROLES } from "@/config/user";
+import { isPossiblePhoneNumber } from "libphonenumber-js";
 
 const sameProperties = ["name", "email", "promotion", "verified"];
 const regExpIngredientsOut = /\~(.*?)\~/g;
 const regExpSize = /\((.*?)\)/;
+const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+const validNombre = /^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/;
 
 export function userDataFromBackToFront(userBack) {
     const {
@@ -420,4 +423,40 @@ export function validPlaceLocal(localPlace) {
     if (minimumProperties.some((property) => !(property in localPlace)))
         return false;
     return true;
+}
+
+export function generateURLQueries(queries) {
+    if (!queries) return "";
+    const filtersList = [];
+    for (let query in queries) {
+        filtersList.push(query + "=" + queries[query]);
+    }
+    const queriesString = "?" + filtersList.join("&&");
+    return queriesString;
+}
+
+export function getInputsErrors(inputs) {
+    const errors = {};
+    if (!inputs.email) errors.email = "Este campo no puede estar vacio";
+    else if (inputs.email && !validEmail.test(inputs.email))
+        errors.email = "Ingrese un correo válido";
+    if (!inputs.name) errors.name = "Este campo no puede estar vacio";
+    else if (inputs.name && !validNombre.test(inputs.name))
+        errors.name = "No colocar números ni caracteres especiales";
+    if (!inputs.password) errors.password = "Este campo no puede estar vacio";
+    if (!inputs.passwordConfirmation)
+        errors.passwordConfirmation = "Este campo no puede estar vacio";
+    else if (inputs.passwordConfirmation !== inputs.password)
+        errors.passwordConfirmation = "Las contraseñas no coinciden";
+    if (!inputs.numberPhone)
+        errors.numberPhone = "Este campo no puede estar vacio";
+    else if (
+        !(inputs.numberPhone === undefined || inputs.numberPhone === null)
+    ) {
+        const [code, place, number] = inputs.numberPhone.split(" ");
+        if (!code) errors.numberPhone = "Coloca el código del país";
+        if (place && !isPossiblePhoneNumber(inputs.numberPhone))
+            errors.numberPhone = "Número de teléfono inválido";
+    }
+    return errors;
 }

@@ -1,4 +1,5 @@
 import { requestSettings } from "@/utils/preparingData";
+import { mapOrderToBackend, mapOrderFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -27,17 +28,13 @@ export async function getAllOrders(queries) {
 }
 
 export async function getAllOrdersOfUser(userId) {
-    try {
-        const response = await fetch(`${PATH_BACK}/orders/user/${userId}`, {
-            ...requestSettings(),
-            cache: "no-store",
-        });
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const response = await fetch(`${PATH_BACK}/orders/user/${userId}`, {
+        ...requestSettings(),
+        cache: "no-store",
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data.map((item) => mapOrderFromBackend(item));
 }
 
 export async function getOneOrder(orderId) {
@@ -95,18 +92,14 @@ export async function sendImage(id, formData) {
         .catch((error) => ({ message: error.message }));
 }
 
-export async function registerOrder(data) {
-    return fetch(`${PATH_BACK}/orders`, {
+export async function registerOrder(body) {
+    const response = await fetch(`${PATH_BACK}/orders`, {
         ...requestSettings("POST"),
-        body: JSON.stringify(data),
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.message) throw new Error(data.message);
-            console.log("La orden fue creada exitosamente");
-            return data;
-        })
-        .catch((error) => ({ message: error.message }));
+        body: JSON.stringify(mapOrderToBackend(body)),
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export function requestRemovalOrder(id) {

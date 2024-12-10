@@ -1,0 +1,8 @@
+.containerAlertMessage {
+    /* position: absolute; */
+    position: fixed;
+    left: 50px;
+    bottom: 50px;
+    /* border: solid 1px black; */
+    /* width: 500px; */
+}

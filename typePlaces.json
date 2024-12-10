@@ -4,19 +4,14 @@
         "totalName": "Casa: Dirección residencial",
         "street": [
             {
-                "name": "unity",
-                "nameES": "Unidad",
-                "width": 20
-            },
-            {
                 "name": "number",
                 "nameES": "Numero",
-                "width": 20
+                "width": 25
             },
             {
                 "name": "streetName",
                 "nameES": "Nombre de la calle",
-                "width": 60
+                "width": 75
             }
         ],
         "city": {

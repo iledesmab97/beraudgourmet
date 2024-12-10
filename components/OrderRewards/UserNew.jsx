@@ -2,12 +2,12 @@
 
 import UserLoged from "./UserLoged";
 
-import Link from "next/link";
-
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
+
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import GoogleIcon from "@mui/icons-material/Google";
 
@@ -15,7 +15,6 @@ import useGetModal from "@/hooks/useGetModal";
 import useGetAlertDialogMessage from "@/hooks/useGetAlertDialogMessage";
 
 import { fetchAuthGoogle } from "@/services/authApi";
-import { Typography } from "@mui/material";
 
 const styleButtons = {
     textTransform: "none",
@@ -40,7 +39,7 @@ function UserNew({
     editing,
     currentUser,
     handleChangeNumberPhone,
-    logInUser,
+    login,
     signUp,
 }) {
     const { handleOpenModal } = useGetModal({ modalType: "legal" });
@@ -125,7 +124,7 @@ function UserNew({
                         margin="dense"
                         // size='small'
                         sx={styleButtons}
-                        onClick={logInUser}
+                        onClick={login}
                     >
                         Iniciar sesión
                     </Button>
