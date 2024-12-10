@@ -11,7 +11,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
 import { useEffect, useState, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
     PaymentElement,
     useStripe,
@@ -57,6 +57,7 @@ export default function CheckoutForm({
     const { openAlertDialogMessage } = useGetAlertDialogMessage({
         type: "phoneMissing",
     });
+    const pathname = usePathname()
 
     const textOrderToWhatsapp = orders
         .map((order) => descriptionOrder(order))
@@ -218,7 +219,7 @@ export default function CheckoutForm({
                 removeLocalData("orders");
                 removeLocalData("place");
     
-                return router.push("/success");
+                return router.push(`${pathname}/success`);
             } 
                 
         } catch(error) {
