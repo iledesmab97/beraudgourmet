@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import useGetOrders from "@/hooks/useGetOrders";
 import useGetModal from "@/hooks/useGetModal";
 import useGetPlace from "@/hooks/useGetPlace";
@@ -17,6 +17,8 @@ import styles from "./page.module.css";
 
 function SuccessPay() {
     const router = useRouter();
+    const pathname = usePathname()
+    const routeToRedirect = pathname.split("/")[1]
     const { handleUpdateOrderToInitialState } = useGetOrders();
     const { handleUpdateModalToInitialState } = useGetModal({
         modalType: "pay",
@@ -28,6 +30,11 @@ function SuccessPay() {
         handleUpdateModalToInitialState();
         handleUpdatePlaceToInitialState();
     }, []);
+
+    function redirect() {
+        saveModal("userOrders");
+        router.push(`/${ routeToRedirect }`);
+    }
 
     return (
         <Grid
@@ -48,10 +55,7 @@ function SuccessPay() {
                 </Box>
                 <Button
                     variant="contained"
-                    onClick={() => {
-                        saveModal("userOrders");
-                        router.push("/menu");
-                    }}
+                    onClick={redirect}
                 >
                     Ver historial de compras
                 </Button>

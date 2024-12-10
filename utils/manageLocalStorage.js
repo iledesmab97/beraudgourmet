@@ -7,5 +7,7 @@ export const saveLocalData = (key, value) => {
 };
 
 export const getLocalData = (key) => {
-    return JSON.parse(localStorage.getItem(key));
+    const value = localStorage.getItem(key);
+    if (typeof value === "string") return value;
+    return JSON.parse(value);
 };
