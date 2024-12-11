@@ -67,7 +67,7 @@ function PlaceFinder({
     }, [place])
 
     async function fillDataInputsHome(address) {
-        return await getTotalDataAddress(address)
+        return await getTotalDataAddress({ address })
     }
 
     async function updatePlace() {
