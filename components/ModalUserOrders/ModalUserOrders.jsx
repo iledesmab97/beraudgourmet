@@ -53,7 +53,7 @@ function ModalUserOrders() {
     useEffect(() => {
         if (!user || orders.length) return;
         getOrders(user.id)
-    }, [open]);
+    }, [open, user]);
 
     async function getOrders(userId) {
         setLoading(true)

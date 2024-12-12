@@ -8,6 +8,7 @@ import LocalPizzaIcon from "@mui/icons-material/LocalPizza";
 import { SaladIcon, PizzaIcon } from "../../public/svg/index.js";
 
 import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -55,13 +56,14 @@ function NavBar() {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down("md"));
     const { handleChangeOpenDrawer } = useGetDrawer();
+    const { company } = useParams()
 
     // useEffect(() => {
     //   handleSubNav(getSubNav(pathname))
     // }, [pathname])
 
     useEffect(() => {
-        if (!matches || pathname !== "/menu") return;
+        if (!matches || !company || pathname.includes("success")) return;
 
         const navBar = document.querySelector("#navBar-container");
         const body = document.getElementsByTagName("html")[0];
@@ -92,7 +94,7 @@ function NavBar() {
     //   setSubNav(newSubNav)
     // }
 
-    if (pathname !== "/menu") return null;
+    if ( !company || pathname.includes("success")) return null;
 
     return (
         <>
