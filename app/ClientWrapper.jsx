@@ -1,15 +1,19 @@
 // app/components/ClientWrapper.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useLoadScript } from "@react-google-maps/api";
-import useGetPlace from "@/hooks/useGetPlace";
 import MaintenanceComponent from "@/components/Maintenance/MaintenanceComponent";
 import StoreComponent from "./StoreComponent";
 import { CurtainAnimation } from "@/components/LoadingComponets/CurtainAnimation";
-import ServiciosEstaticos from "./Servicios";
 import { Box } from "@mui/material";
+
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useLoadScript } from "@react-google-maps/api";
+import useGoogleMaps from "@/hooks/useGoogleMaps";
+
+import ServiciosEstaticos from "./Servicios";
+import { getLocalData, saveLocalData  } from "@/utils/manageLocalStorage";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -17,12 +21,12 @@ const libraries = ["places"];
 
 export default function ClientWrapper({ children }) {
     const [isMaintenance, setIsMaintenance] = useState(false); // State to manage maintenance mode
-    const { handleAddPlace } = useGetPlace();
-    const dispatch = useDispatch();
-    const { stores, status, error } = useSelector((state) => state.storeList);
+    const { status } = useSelector((state) => state.storeList);
     const [locationPermission, setLocationPermission] = useState(null);
     const [position, setPosition] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { getTotalDataAddress } = useGoogleMaps()
+    const params = useParams()
 
     useLoadScript({
         googleMapsApiKey: `${GOOGLE_MAPS_API_KEY}`,
@@ -81,13 +85,7 @@ export default function ClientWrapper({ children }) {
                     setPosition(position.coords);
                 },
                 (error) => {
-                    console.error("Error al obtener ubicación:", error);
-
-                    if (error.code === error.PERMISSION_DENIED) {
-                        setLocationPermission("denied");
-                    } else {
-                        setLocationPermission("denied");
-                    }
+                    setLocationPermission("denied");
                 }
             );
         } else {
@@ -102,76 +100,47 @@ export default function ClientWrapper({ children }) {
                 setLoading(false);
             }
         }
-        requestLocationPermission();
+        if (!getLocalData("geolocation")) {
+            requestLocationPermission();
+        }
     }, [status, loading]);
 
     useEffect(() => {
-        if (!position) return;
-        async function calculateCloserRoute({
-            lat,
-            lng,
-            stores: defaultStores,
-        }) {
-            const directionService = new google.maps.DirectionsService();
-            const geocoder = new google.maps.Geocoder();
-            let newDistance = Infinity;
-            let closerStore;
-            let delivery;
-
-            for (const store of defaultStores) {
-                const { coordinates } = store;
-                try {
-                    const results = await directionService.route({
-                        origin: { lat: Number(coordinates.lat), lng: Number(coordinates.lng) },
-                        destination: { lat: lat, lng: lng },
-                        travelMode: "DRIVING",
-                    });
-                    let currentDistance =
-                        results.routes[0].legs[0].distance.value / 1000;
-    
-                    if (currentDistance < newDistance) {
-                        newDistance = currentDistance;
-                        closerStore = store;
-    
-                        if (currentDistance < 1) break;
-                    }
-                } catch(error) {
-                    return alert(error.message)
-                }
-            }
-            delivery = await geocoder.geocode({
-                location: { lat: lat, lng: lng },
-            });
-
-            handleAddPlace({
-                inputsHome: {
-                    type: {
-                        name: "home",
-                    },
-                    inputAddress: delivery.results[0].formatted_address,
-                    street: {
-                        unity: "",
-                        number: "",
-                        streetName: "",
-                    },
-                },
-                closerStore,
-                typeDelivery: {
-                    name: "home",
-                    totalName: "Entrega a domicilio",
-                },
-            });
-        }
-        calculateCloserRoute({
-            lat: position.latitude,
-            lng: position.longitude,
-            stores,
-        });
+        const geolocation = getLocalData('geolocation')
+        if (!position || geolocation) return;
+        getHomeDataDirection(position)
     }, [position]);
 
     const handleAnimationComplete = () => {
         setLoading(false);
     };
+
+    async function getHomeDataDirection(position) {
+        const { latitude: lat, longitude: lng } = position
+        const totalDataAddress = await getTotalDataAddress({ location: {
+            lat,
+            lng
+        }})
+        const { totalAddress: inputAddress, streetNumber, route, city, state, zipCode, country, coordinates } = totalDataAddress
+        const newInputHome = {
+            inputAddress,
+            type: {
+                name: "home",
+                totalName: "Casa: Dirección residencial"
+            },
+            city,
+            postalCode: zipCode,
+            street: {
+                number: streetNumber,
+                streetName: route
+            },
+            state,
+            country,
+            coordinates
+        }
+
+        saveLocalData("geolocation", { ... newInputHome });
+    }
 
     return (
         <>
