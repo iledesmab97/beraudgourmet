@@ -45,13 +45,16 @@ export default function useGoogleMaps() {
                     if (currentDistance < 1) break;
                 }
             } catch (error) {
+                console.error("error:", error);
                 continue;
             }
         }
-        if (!closerStore)
-            return alert(
+        if (!closerStore) {
+            alert(
                 "En este momento no estamos prestando el servicio de delivery a este lugar"
             );
+            return {};
+        }
         const { coordinates: originCoordinates, place: originPlace } =
             closerStore;
         const objectResults = {
