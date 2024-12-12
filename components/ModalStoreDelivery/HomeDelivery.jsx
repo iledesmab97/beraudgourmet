@@ -1,6 +1,7 @@
 "use client";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import PlaceFinder from "../PlaceFinder/PlaceFinder";
@@ -10,8 +11,16 @@ import useHandlePlace from "@/hooks/useHandlePlace";
 import useHandleShoppingGuide from "@/hooks/useHandleShoppingGuide";
 
 import QuoteComponent from "../UberComponents/QuoteComponent";
+import { useEffect, useState } from "react";
+import useGoogleMaps from "@/hooks/useGoogleMaps";
+
+import { getLocalData } from "@/utils/manageLocalStorage";
+import { useSelector } from "react-redux";
 
 export default function HomeDelivery() {
+    const { stores } = useSelector(state => state.storeList )
+    const [ geolocation, setGeolocation ] = useState(null)
+    const { calculateRoute } = useGoogleMaps()
     const {
         inputsHome,
         typeLocation,
@@ -22,9 +31,23 @@ export default function HomeDelivery() {
         handleInputsHome,
         handleTypeLocation,
         handleCloserStore,
-        changeInpusHome
+        changeInpusHome,
+        updatePlace
     } = useHandlePlace({});
     const { nextStepGuide } = useHandleShoppingGuide();
+
+    useEffect(() => {
+        const newGeolocations = getLocalData("geolocation")
+        if (!newGeolocations) return
+        setGeolocation(newGeolocations)
+    }, [])
+
+    async function findMyPlace() {
+        const { coordinates, inputAddress } = geolocation
+        handleInputsAddress(inputAddress)
+        const { distance: newDistance, closerStore: newCloserStore } = await calculateRoute({ addressCoordinates: coordinates, stores })
+        updatePlace({ inputAddress, distance: newDistance, closerStore: newCloserStore})
+    }
 
     return (
         <>
@@ -55,17 +78,24 @@ export default function HomeDelivery() {
                     DIRECCIÓN DE ENTREGA
                 </Typography>
 
+                {
+                    geolocation ? (
+                        <Button
+                            variant="outlined"
+                            onClick={findMyPlace}
+                            sx={{
+                                alignSelf: "flex-start"
+                            }}
+                        >
+                            Dirección actual
+                        </Button>
+                    ) : null
+                }
+
                 <PlaceFinder
-                    changeWithinLimitSaved={changeWithinLimitSaved}
-                    withinLimitSaved={inputsHome.withinLimitSaved}
                     handleInputsAddress={handleInputsAddress}
-                    inputAddress={inputsHome.inputAddress}
-                    distanceSaved={inputsHome.distanceSaved}
                     inputsHome={inputsHome}
-                    closerStore={closerStore}
-                    handleDistanceSaved={handleDistanceSaved}
-                    handleCloserStore={handleCloserStore}
-                    changeInpusHome={changeInpusHome}
+                    updatePlace={updatePlace}
                 />
 
                 {inputsHome.withinLimitSaved && closerStore ? (
