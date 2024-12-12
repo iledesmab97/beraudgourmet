@@ -8,6 +8,10 @@ export const saveLocalData = (key, value) => {
 
 export const getLocalData = (key) => {
     const value = localStorage.getItem(key);
-    if (typeof value === "string") return value;
-    return JSON.parse(value);
+    try {
+        const totalValue = JSON.parse(value);
+        return totalValue;
+    } catch (error) {
+        return value;
+    }
 };
