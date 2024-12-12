@@ -96,7 +96,7 @@ function ModalCheckoutForm() {
     }, [place])
 
     useEffect(() => {
-        if (!orders.length) return
+        if (!orders.length || !user) return
         let amount
         const {totalClient} = totalPrice(orders)
         if (quote) {
