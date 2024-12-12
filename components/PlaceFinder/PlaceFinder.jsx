@@ -2,99 +2,77 @@
 
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-// import { GoogleMap } from '@react-google-maps/api'
 import ItemPlace from "./ItemPlace";
 
 import { Box, CircularProgress, Paper } from "@mui/material";
 
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
-import usePlaceFinder from "@/hooks/usePlaceFinder";
-
-import { makePlace } from "@/stores/place/slice";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import usePlacesAutocomplete from "use-places-autocomplete";
+import useGoogleMaps from "@/hooks/useGoogleMaps";
+import useDebounce from "@/hooks/useDebounce";
 
 function PlaceFinder({
-    changeWithinLimitSaved,
-    withinLimitSaved,
     handleInputsAddress,
-    inputAddress,
-    distanceSaved,
     inputsHome,
-    closerStore,
-    handleDistanceSaved,
-    handleCloserStore,
-    changeInpusHome
+    updatePlace
 }) {
+
+    const [selectedSuggestion, setSelectedSuggestion] = useState(null);
     const { stores } = useSelector((state) => state.storeList);
-    const storesWithDeliverySchedule = useRef(stores.filter(store => {
-        return store.Schedules.some(schedule => schedule.type === "delivery")
-    }))
-    const { place } = useSelector(state => state)
-    const dispatch = useDispatch()
-    
+    const { calculateRoute } = useGoogleMaps()
+    const { debounceSetValue } = useDebounce()
+
+    const sw = { lat: 19.392859721213277, lng: -99.28758348373333 };
+    const ne = { lat: 19.487428244562256, lng: -99.11594403710876 };
+
+    const bounds = new google.maps.LatLngBounds(sw, ne);
+
     const {
-        address,
-        data,
-        status,
-        selectedSuggestion,
-        distance,
-        withinLimit,
-        storeMoreClose,
-        handleSelect,
-        handleInputChange,
-        getTotalDataAddress,
-        ready
-    } = usePlaceFinder({ inputAddress, distanceSaved, closerStore, stores: storesWithDeliverySchedule.current });
-
-    useEffect(() => {
-        if (address === inputAddress) return;
-        handleInputsAddress(address);
-    }, [address, selectedSuggestion]);
-
-    useEffect(() => {
-        if (distance !== distanceSaved) handleDistanceSaved(distance);
-        if (withinLimit !== withinLimitSaved)
-            changeWithinLimitSaved(withinLimit);
-    }, [distance]);
-
-    useEffect(() => {
-        if (!storeMoreClose || !withinLimitSaved) return
-        updatePlace()
-    }, [storeMoreClose, withinLimitSaved]);
-
-    useEffect(() => {
-        handleCloserStore(storeMoreClose)
-    }, [place])
-
-    async function fillDataInputsHome(address) {
-        return await getTotalDataAddress({ address })
+        ready,
+        value,
+        suggestions: { status, data },
+        setValue,
+        clearSuggestions,
+    } = usePlacesAutocomplete({
+        requestOptions: {
+            // Change for locationBias and locationRestriction refer to google maps API docs
+            locationRestriction: bounds,
+            componentRestrictions: {
+                country: "MX",
+            },
+        },
+    });
+    
+    function handleInputChange(event) {
+        if (!event) return;
+        const { value } = event.target;
+        handleInputsAddress(value);
+        getOptions(value)
     }
 
-    async function updatePlace() {
-        const { inputAddress } = inputsHome
-        const { streetNumber, route, city, state, zipCode, country, coordinates } = await fillDataInputsHome(inputAddress)
-        const newInputHome = {
-            ...inputsHome,
-            city,
-            postalCode: zipCode,
-            street: {
-                number: streetNumber,
-                streetName: route
-            },
-            state,
-            country,
-            coordinates
+
+    async function handleSelect(event, value, reason) {
+        const description = value?.description ? value.description : "";
+        setSelectedSuggestion(value);
+        handleInputsAddress(description)
+        if (description) {
+            setValue(description, false); // false para no borrar el valor del campo
+            clearSuggestions();
+            const { distance: newDistance, closerStore: newCloserStore } =
+                await calculateRoute({ address: description, stores });
+            updatePlace({
+                inputAddress: description,
+                distance: newDistance,
+                closerStore: newCloserStore,
+            });
         }
-        const newPlace = {
-            inputsHome: newInputHome,
-            closerStore: storeMoreClose,
-            typeDelivery: {
-                name: "home",
-                totalName: "Entrega a domicilio",
-            }
+    }
+
+    function getOptions(value) {
+        if (value) {
+            debounceSetValue(() => setValue(value), 500);
         }
-        dispatch(makePlace(newPlace))
-        changeInpusHome(newInputHome)
     }
 
     return (
@@ -105,7 +83,7 @@ function PlaceFinder({
                 disabled={!ready}
                 id="autocomplete-PlaceFinder"
                 // noOptionsText={null}
-                options={address ? data : []}
+                options={inputsHome.inputAddress ? data : []}
                 getOptionLabel={(option) =>
                     option.description ? option.description : option
                 }
@@ -119,7 +97,7 @@ function PlaceFinder({
                 )}
                 value={selectedSuggestion}
                 onChange={handleSelect}
-                inputValue={address}
+                inputValue={inputsHome.inputAddress}
                 onInputChange={handleInputChange}
                 isOptionEqualToValue={(option, value) => {
                     return option.description === value.description;
@@ -131,16 +109,16 @@ function PlaceFinder({
                         label="Place"
                         size="small"
                         margin="dense"
-                        error={withinLimit === null ? false : !withinLimit}
+                        error={inputsHome.withinLimitSaved === null ? false : !inputsHome.withinLimitSaved}
                         helperText={
-                            withinLimit === null || withinLimit
+                            inputsHome.withinLimitSaved === null || inputsHome.withinLimitSaved
                                 ? ""
-                                : `Maxima destancia 5 km. Distancia actual: ${distance} km`
+                                : `Maxima destancia 5 km. Distancia actual: ${inputsHome.distanceSaved} km`
                         }
                     />
                 )}
                 noOptionsText={
-                    address === "" ? (
+                    inputsHome.inputAddress === "" ? (
                         "Comienza a escribir..."
                     ) : status !== "OK" ? (
                         <Box display="flex" justifyContent="center" p={2}>
