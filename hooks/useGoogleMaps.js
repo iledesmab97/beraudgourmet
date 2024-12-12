@@ -5,7 +5,7 @@ import usePlacesAutocomplete, {
 
 export default function useGoogleMaps() {
     async function calculateRoute({ address, addressCoordinates, stores }) {
-        if (!address || !addressCoordinates) return setDistance(null);
+        if (!address && !addressCoordinates) return {};
         const directionService = new google.maps.DirectionsService();
         let newDistance = Infinity;
         let closerStore;
