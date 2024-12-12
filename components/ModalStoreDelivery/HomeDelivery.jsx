@@ -46,6 +46,7 @@ export default function HomeDelivery() {
         const { coordinates, inputAddress } = geolocation
         handleInputsAddress(inputAddress)
         const { distance: newDistance, closerStore: newCloserStore } = await calculateRoute({ addressCoordinates: coordinates, stores })
+        if (!newDistance || !newCloserStore) return
         updatePlace({ inputAddress, distance: newDistance, closerStore: newCloserStore})
     }
 
