@@ -11,6 +11,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import GoogleIcon from "@mui/icons-material/Google";
 
+import { useParams } from "next/navigation";
 import useGetModal from "@/hooks/useGetModal";
 import useGetAlertDialogMessage from "@/hooks/useGetAlertDialogMessage";
 
@@ -28,8 +29,8 @@ const stylesLegal = {
     cursor: "pointer",
 };
 
-async function signInGoogle() {
-    fetchAuthGoogle();
+async function signInGoogle(company) {
+    fetchAuthGoogle(company);
 }
 
 function UserNew({
@@ -43,7 +44,7 @@ function UserNew({
     signUp,
 }) {
     const { handleOpenModal } = useGetModal({ modalType: "legal" });
-
+    const { company } = useParams()
     const { openAlertDialogMessage } = useGetAlertDialogMessage({
         type: "recoverPassword",
     });
@@ -55,7 +56,7 @@ function UserNew({
 
     return (
         <>
-            <Button variant="outlined" onClick={signInGoogle}>
+            <Button variant="outlined" onClick={() => { signInGoogle(company) }}>
                 <GoogleIcon />
             </Button>
             <TextField

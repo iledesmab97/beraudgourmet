@@ -181,6 +181,7 @@ export async function whatHappen(data) {
 export async function requestLogout() {
     const response = await fetch(`${PATH_BACK}/users/logout`, {
         ...requestSettings("POST"),
+        credentials: "include",
     });
     const data = await response.json();
     if (data.message) throw new Error(data.message);
@@ -190,6 +191,7 @@ export async function requestLogout() {
 export async function verifyUserData(email, password) {
     const res = await fetch(`${PATH_BACK}/users/login`, {
         ...requestSettings("POST"),
+        credentials: "include",
         body: JSON.stringify({ email, password }),
     });
     const data = await res.json();

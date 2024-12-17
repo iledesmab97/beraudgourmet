@@ -1,5 +1,5 @@
 // app/layout.tsx
-import React from "react";
+import React, { Suspense } from "react";
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import Header from "@/components/Header/Header";
 import WhatsappButton from "@/components/WhatsappButton/WhatsappButton";
@@ -24,12 +24,14 @@ export default function RootLayout({
             <ThemeRegistry>
                 <body>
                     <Providers>
-                        <ProtectedRoute>
-                            <Header />
-                            <ClientWrapper>{children}</ClientWrapper>
-                            <Footer />
-                            <WhatsappButton />
-                        </ProtectedRoute>
+                        <Suspense fallback={null}>
+                            <ProtectedRoute>
+                                <Header />
+                                <ClientWrapper>{children}</ClientWrapper>
+                                <Footer />
+                                <WhatsappButton />
+                            </ProtectedRoute>
+                        </Suspense>
                     </Providers>
                 </body>
             </ThemeRegistry>

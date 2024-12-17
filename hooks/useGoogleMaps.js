@@ -133,8 +133,70 @@ export default function useGoogleMaps() {
         };
     }
 
+    const requestLocationPermission = async () => {
+        if (navigator.geolocation) {
+            return await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        resolve({
+                            status: "granted",
+                            coordinates: { lat: latitude, lng: longitude },
+                        });
+                    },
+                    (error) => {
+                        console.log("recuerdo haber dicho que no...");
+                        reject({ status: "denied" });
+                    }
+                );
+            });
+        } else {
+            console.error("Geolocation no está soportado por este navegador.");
+            return { status: "denied" };
+        }
+    };
+
+    async function getHomeDataDirection(position) {
+        const { lat, lng } = position;
+        const totalDataAddress = await getTotalDataAddress({
+            location: {
+                lat,
+                lng,
+            },
+        });
+        const {
+            totalAddress: inputAddress,
+            streetNumber,
+            route,
+            city,
+            state,
+            zipCode,
+            country,
+            coordinates,
+        } = totalDataAddress;
+        const newInputHome = {
+            inputAddress,
+            type: {
+                name: "home",
+                totalName: "Casa: Dirección residencial",
+            },
+            city,
+            postalCode: zipCode,
+            street: {
+                number: streetNumber,
+                streetName: route,
+            },
+            state,
+            country,
+            coordinates,
+        };
+        return newInputHome;
+    }
+
     return {
         calculateRoute,
         getTotalDataAddress,
+        requestLocationPermission,
+        getHomeDataDirection,
     };
 }

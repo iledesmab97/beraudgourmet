@@ -25,7 +25,7 @@ export default function ClientWrapper({ children }) {
     const [locationPermission, setLocationPermission] = useState(null);
     const [position, setPosition] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { getTotalDataAddress } = useGoogleMaps()
+    const { requestLocationPermission, getHomeDataDirection  } = useGoogleMaps()
     const params = useParams()
 
     useLoadScript({
@@ -75,23 +75,12 @@ export default function ClientWrapper({ children }) {
         };
     }, []);
 
-    const requestLocationPermission = async () => {
-        if (loading) return;
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setLocationPermission("granted");
-                    setPosition(position.coords);
-                },
-                (error) => {
-                    setLocationPermission("denied");
-                }
-            );
-        } else {
-            console.error("Geolocation no está soportado por este navegador.");
-            setLocationPermission("denied");
-        }
+    const requestLocation = async () => {
+        const { status, coordinates } = await requestLocationPermission()
+        if (status === 'granted') {
+            setPosition(coordinates);
+        } 
+        setLocationPermission(status);
     };
 
     useEffect(() => {
@@ -101,45 +90,23 @@ export default function ClientWrapper({ children }) {
             }
         }
         if (!getLocalData("geolocation")) {
-            requestLocationPermission();
+            requestLocation();
         }
     }, [status, loading]);
 
     useEffect(() => {
         const geolocation = getLocalData('geolocation')
         if (!position || geolocation) return;
-        getHomeDataDirection(position)
+        saveHomeDataDirection(position)
     }, [position]);
 
     const handleAnimationComplete = () => {
         setLoading(false);
     };
 
-    async function getHomeDataDirection(position) {
-        const { latitude: lat, longitude: lng } = position
-        const totalDataAddress = await getTotalDataAddress({ location: {
-            lat,
-            lng
-        }})
-        const { totalAddress: inputAddress, streetNumber, route, city, state, zipCode, country, coordinates } = totalDataAddress
-        const newInputHome = {
-            inputAddress,
-            type: {
-                name: "home",
-                totalName: "Casa: Dirección residencial"
-            },
-            city,
-            postalCode: zipCode,
-            street: {
-                number: streetNumber,
-                streetName: route
-            },
-            state,
-            country,
-            coordinates
-        }
-
-        saveLocalData("geolocation", { ... newInputHome });
+    async function saveHomeDataDirection(position) {
+        const newInputHome = await getHomeDataDirection(position)
+        saveLocalData("geolocation", newInputHome );
     }
 
     return (
