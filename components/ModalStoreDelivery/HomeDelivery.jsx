@@ -14,24 +14,20 @@ import QuoteComponent from "../UberComponents/QuoteComponent";
 import { useEffect, useState } from "react";
 import useGoogleMaps from "@/hooks/useGoogleMaps";
 
-import { getLocalData, saveLocalData } from "@/utils/manageLocalStorage";
+import { getLocalData } from "@/utils/manageLocalStorage";
 import { useSelector } from "react-redux";
 
 export default function HomeDelivery() {
     const { stores } = useSelector(state => state.storeList )
     const [ geolocation, setGeolocation ] = useState(null)
-    const { calculateRoute, requestLocationPermission, getHomeDataDirection } = useGoogleMaps()
+    const { calculateRoute } = useGoogleMaps()
     const {
         inputsHome,
         typeLocation,
         closerStore,
-        changeWithinLimitSaved,
         handleInputsAddress,
-        handleDistanceSaved,
         handleInputsHome,
         handleTypeLocation,
-        handleCloserStore,
-        changeInpusHome,
         updatePlace
     } = useHandlePlace({});
     const { nextStepGuide } = useHandleShoppingGuide();
@@ -48,18 +44,6 @@ export default function HomeDelivery() {
         const { distance: newDistance, closerStore: newCloserStore } = await calculateRoute({ addressCoordinates: coordinates, stores })
         if (!newDistance || !newCloserStore) return
         updatePlace({ inputAddress, distance: newDistance, closerStore: newCloserStore})
-    }
-
-    async function requestLocation() {
-        const { status, coordinates } = await requestLocationPermission()
-        if (status === 'granted') {
-            saveHomeDataDirection(coordinates)
-        } 
-    }
-
-    async function saveHomeDataDirection(position) {
-        const newInputHome = await getHomeDataDirection(position)
-        saveLocalData("geolocation", newInputHome );
     }
 
     return (
@@ -103,27 +87,15 @@ export default function HomeDelivery() {
                             >
                                 Utilizar tu ubicación
                             </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button
-                                variant="outlined"
-                                onClick={requestLocation}
+
+                            <Typography
                                 sx={{
                                     alignSelf: "flex-start"
                                 }}
-                            >
-                                Solicitar ubicación
-                            </Button>
+                            >Ó</Typography>
                         </>
-                    )
+                    ) : null
                 }
-
-                <Typography
-                    sx={{
-                        alignSelf: "flex-start"
-                    }}
-                >Ó</Typography>
 
                 <PlaceFinder
                     handleInputsAddress={handleInputsAddress}
