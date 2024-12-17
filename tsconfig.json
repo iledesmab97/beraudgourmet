@@ -29,7 +29,7 @@
         "**/*.tsx",
         ".next/types/**/*.ts",
         "theme/ThemeRegistry.jsx",
-        "app/[company]/page.jsx"
-    ],
+        "app/[company]/page.jsx",
+        "app/not-found/page.jsx"    ],
     "exclude": ["node_modules"]
 }
