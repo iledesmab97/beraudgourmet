@@ -106,7 +106,7 @@ function PlaceFinder({
                     <TextField
                         {...params}
                         // waitTime={500}
-                        label="Place"
+                        label="Escribe tu dirección..."
                         size="small"
                         margin="dense"
                         error={inputsHome.withinLimitSaved === null ? false : !inputsHome.withinLimitSaved}
