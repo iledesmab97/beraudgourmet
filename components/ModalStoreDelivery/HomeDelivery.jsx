@@ -14,13 +14,13 @@ import QuoteComponent from "../UberComponents/QuoteComponent";
 import { useEffect, useState } from "react";
 import useGoogleMaps from "@/hooks/useGoogleMaps";
 
-import { getLocalData } from "@/utils/manageLocalStorage";
+import { getLocalData, saveLocalData } from "@/utils/manageLocalStorage";
 import { useSelector } from "react-redux";
 
 export default function HomeDelivery() {
     const { stores } = useSelector(state => state.storeList )
     const [ geolocation, setGeolocation ] = useState(null)
-    const { calculateRoute } = useGoogleMaps()
+    const { calculateRoute, requestLocationPermission, getHomeDataDirection } = useGoogleMaps()
     const {
         inputsHome,
         typeLocation,
@@ -48,6 +48,18 @@ export default function HomeDelivery() {
         const { distance: newDistance, closerStore: newCloserStore } = await calculateRoute({ addressCoordinates: coordinates, stores })
         if (!newDistance || !newCloserStore) return
         updatePlace({ inputAddress, distance: newDistance, closerStore: newCloserStore})
+    }
+
+    async function requestLocation() {
+        const { status, coordinates } = await requestLocationPermission()
+        if (status === 'granted') {
+            saveHomeDataDirection(coordinates)
+        } 
+    }
+
+    async function saveHomeDataDirection(position) {
+        const newInputHome = await getHomeDataDirection(position)
+        saveLocalData("geolocation", newInputHome );
     }
 
     return (
@@ -96,8 +108,7 @@ export default function HomeDelivery() {
                         <>
                             <Button
                                 variant="outlined"
-                                // onClick={findMyPlace}
-                                onClick={() => {}}
+                                onClick={requestLocation}
                                 sx={{
                                     alignSelf: "flex-start"
                                 }}
