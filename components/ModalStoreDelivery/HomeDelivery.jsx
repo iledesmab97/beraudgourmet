@@ -81,17 +81,38 @@ export default function HomeDelivery() {
 
                 {
                     geolocation ? (
-                        <Button
-                            variant="outlined"
-                            onClick={findMyPlace}
-                            sx={{
-                                alignSelf: "flex-start"
-                            }}
-                        >
-                            Dirección actual
-                        </Button>
-                    ) : null
+                        <>
+                            <Button
+                                variant="outlined"
+                                onClick={findMyPlace}
+                                sx={{
+                                    alignSelf: "flex-start"
+                                }}
+                            >
+                                Utilizar tu ubicación
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                variant="outlined"
+                                // onClick={findMyPlace}
+                                onClick={() => {}}
+                                sx={{
+                                    alignSelf: "flex-start"
+                                }}
+                            >
+                                Solicitar ubicación
+                            </Button>
+                        </>
+                    )
                 }
+
+                <Typography
+                    sx={{
+                        alignSelf: "flex-start"
+                    }}
+                >Ó</Typography>
 
                 <PlaceFinder
                     handleInputsAddress={handleInputsAddress}
