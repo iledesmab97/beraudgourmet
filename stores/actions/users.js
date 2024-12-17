@@ -12,15 +12,14 @@ import { removeLocalData, saveLocalData } from "@/utils/manageLocalStorage.js";
 
 export const verifyUserAction = createAsyncThunk(
     "user/verifyUser",
-    async (tokenUser, { rejectWithValue }) => {
-        let token = tokenUser;
+    async ({ tokenUser, save }, { rejectWithValue }) => {
         let user;
         try {
-            if (!token) {
-                token = JSON.parse(localStorage.getItem("user"));
+            if (!tokenUser) throw new Error("No user logged in");
+            user = await fetchwhoAmI(tokenUser);
+            if (save) {
+                saveLocalData("user", tokenUser);
             }
-            if (!token) throw new Error("No user logged in");
-            user = await fetchwhoAmI(token);
             return user;
         } catch (error) {
             return rejectWithValue(error.message);
