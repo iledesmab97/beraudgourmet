@@ -101,7 +101,7 @@ function Menu({ params }) {
             dispatch(fetchStoreListThunk({
                 relation: "Schedules",
                 relation2: "Company",
-                available: true,
+                status: "ACTIVE",
                 Company: company.id
             }));
         } catch(error) {
