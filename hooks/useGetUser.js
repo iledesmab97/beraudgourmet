@@ -1,22 +1,21 @@
-import { useAppSelector, useAppDispatch } from '@/hooks/store'
-import { addUser, removeUser, updateUser } from '@/stores/user/slice'
+import { useAppSelector, useAppDispatch } from "@/hooks/store";
+import { addUser, removeUser, updateUser } from "@/stores/user/slice";
 
 export default function useGetUser() {
-
-    const user = useAppSelector(state => state.user)
-    const dispatch = useAppDispatch()
+    const { user } = useAppSelector((state) => state.user);
+    const dispatch = useAppDispatch();
 
     function handleAddUser(newUser) {
-        dispatch(addUser(newUser))
+        dispatch(addUser(newUser));
     }
 
     function handleRemoveUser() {
-        dispatch(removeUser())
+        dispatch(removeUser());
     }
 
     function handleUpdateUser(newData) {
-        dispatch(updateUser(newData))
+        dispatch(updateUser(newData));
     }
 
-    return {user, handleAddUser, handleRemoveUser, handleUpdateUser}
-} 
+    return { user, handleAddUser, handleRemoveUser, handleUpdateUser };
+}

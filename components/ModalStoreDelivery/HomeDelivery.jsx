@@ -25,13 +25,9 @@ export default function HomeDelivery() {
         inputsHome,
         typeLocation,
         closerStore,
-        changeWithinLimitSaved,
         handleInputsAddress,
-        handleDistanceSaved,
         handleInputsHome,
         handleTypeLocation,
-        handleCloserStore,
-        changeInpusHome,
         updatePlace
     } = useHandlePlace({});
     const { nextStepGuide } = useHandleShoppingGuide();
@@ -81,15 +77,23 @@ export default function HomeDelivery() {
 
                 {
                     geolocation ? (
-                        <Button
-                            variant="outlined"
-                            onClick={findMyPlace}
-                            sx={{
-                                alignSelf: "flex-start"
-                            }}
-                        >
-                            Dirección actual
-                        </Button>
+                        <>
+                            <Button
+                                variant="outlined"
+                                onClick={findMyPlace}
+                                sx={{
+                                    alignSelf: "flex-start"
+                                }}
+                            >
+                                Utilizar tu ubicación
+                            </Button>
+
+                            <Typography
+                                sx={{
+                                    alignSelf: "flex-start"
+                                }}
+                            >Ó</Typography>
+                        </>
                     ) : null
                 }
 

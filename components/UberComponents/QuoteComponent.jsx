@@ -6,7 +6,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import CenteredSpinner from "../LoadingComponets/CenteredSpinner";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useHandleTimerDeliveryQuote from "@/hooks/useHandleTimerDeliveryQuote";
 
@@ -36,32 +36,6 @@ const QuoteComponent = ({ text, spinner, helperText, initialize }) => {
                 width: "100%",
             }}
         >
-            {loading && (
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mt={1}
-                >
-                    <Typography
-                        variant="body1"
-                        fontWeight="bold"
-                        style={{
-                            width: "70%",
-                            ...text,
-                        }}
-                    >
-                        Precio de envío:
-                    </Typography>
-                    <CenteredSpinner
-                        width={20}
-                        height={20}
-                        large={"50%"}
-                        justifyContent="flex-end"
-                        {...spinner}
-                    />
-                </Box>
-            )}
             {error && (
                 <Typography color="error" variant="body1" align="center" mt={4}>
                     Error: {error}
@@ -78,15 +52,23 @@ const QuoteComponent = ({ text, spinner, helperText, initialize }) => {
                         <Typography variant="body1" fontWeight="bold">
                             Precio de envío:
                         </Typography>
-                        <Typography variant="body1" color="primary">
-                            ${quote?.fee.feeIVAStripe || ""}
-                            <IconButton
-                                color="primary"
-                                onClick={getNewQuote}
-                            >
-                                <RefreshIcon />
-                            </IconButton>
-                        </Typography>
+                        {
+                            loading ? (
+                                <Box>
+                                    <CenteredSpinner
+                                        width={20}
+                                        height={20}
+                                        large={"50%"}
+                                        justifyContent="flex-end"
+                                        {...spinner}
+                                    />
+                                </Box>
+                            ) : quote?.fee.feeIVAStripe ? (
+                                <Typography variant="body1" color="primary">
+                                    ${quote?.fee.feeIVAStripe || ""}
+                                </Typography>
+                            ) : null
+                        }
                     </Box>
                     <Box>
                         <Typography

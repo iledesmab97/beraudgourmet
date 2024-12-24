@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams, useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 import { verifyUserAction } from "@/stores/actions/users";
+import { getLocalData } from "@/utils/manageLocalStorage";
 
 const possiblePaths = [
     "admin",
@@ -61,14 +62,29 @@ function ProtectedRoute({ children }) {
     const [allowedPath, setAllowedPath] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
+    const { company } = useParams()
+    const searchParams = useSearchParams()
     const { user } = useSelector(state => state.user)
     const firstTime = useRef(true)
     const dispatch = useDispatch()
 
     // Load user in Redux
     useEffect(() => {
-        dispatch(verifyUserAction())
+        let tokenUser = getLocalData('user')
+        let save = false
+        if (!tokenUser) {
+            tokenUser = searchParams.get("tokenUser")
+            save = true
+        }
+        dispatch(verifyUserAction({ tokenUser, save }))
     }, [pathname])
+
+    // Refresh with auth
+    useEffect(() => {
+       const tokenFromURL = searchParams.get("tokenUser")
+       if (!user || !tokenFromURL || !company) return
+       router.push(`/${company}`)
+    }, [company, user])
 
     // Redirect the user
     useEffect(() => {
