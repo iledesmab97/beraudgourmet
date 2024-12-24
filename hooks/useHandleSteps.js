@@ -18,7 +18,7 @@ function useHandleSteps() {
         if (Boolean(orders.length) !== steps.orders) {
             newSteps.order = Boolean(orders.length);
         }
-        if (Boolean(Object.keys(place).length) !== steps.store) {
+        if (Boolean(place.closerStore) !== steps.store) {
             newSteps.store = Boolean(Object.keys(place).length);
         }
         handleSteps(newSteps);

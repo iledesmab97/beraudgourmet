@@ -8,7 +8,7 @@ import useGetPlace from "@/hooks/useGetPlace";
 import useGetOrders from "@/hooks/useGetOrders";
 
 import { lookingForUserLoged } from "@/services/userApi";
-import { getExtraIngredients } from "@/services/productApi";
+import { getExtraIngredients } from "@/services/ingredientApi";
 import { getAllOrders } from "@/services/orderApi";
 import useLocalData from "./useLocalData";
 import { deepEqual, validPlaceLocal } from "@/utils/preparingData";
@@ -37,20 +37,21 @@ function useLoadData() {
 
     const loadData = useCallback(async (rol) => {
         // Cargar usuario
-        if (rol === "admin") {
-            const userLoged = await lookingForUserLoged();
-            if (userLoged) {
-                handleAddUser(userLoged);
-            }
-        } else {
-            const userLoged = await gerUserLoged();
-            const acceptCookies = getLocalData("acceptCookies");
-            if (!acceptCookies && userLoged) {
-                saveLocalData("acceptCookies", true);
-            }
+        // if (rol === "admin") {
+        //     const userLoged = await lookingForUserLoged();
+        //     if (userLoged) {
+        //         handleAddUser(userLoged);
+        //     }
+        // } else {
+        const userLoged = await gerUserLoged();
+        const acceptCookies = getLocalData("acceptCookies");
+        if (!acceptCookies && userLoged) {
+            saveLocalData("acceptCookies", true);
         }
+        // }
+
         // Cargar los ingredientes
-        const ingredientList = await getExtraIngredients();
+        const ingredientList = await getExtraIngredients({ sort: "name:ASC" });
         handleAddExtraIngredinetsList({ extraIngredientsList: ingredientList });
         // Cargar ordenes
         if (rol === "admin") {
@@ -86,11 +87,12 @@ function useLoadData() {
             // update every time the place is modified
             firstTimePlace.current = false;
             if (!Object.keys(place).length) return;
-            const placeToCompare = {
-                ...place,
-                closerStore: place.closerStore.id,
-            };
-            if (!deepEqual(placeLocal, placeToCompare)) {
+            let placeToCompare = { ...place };
+            if (place.closerStore) {
+                placeToCompare.closerStore = place.closerStore.id;
+            }
+            const areThereChanges = !deepEqual(placeLocal, placeToCompare);
+            if (areThereChanges) {
                 saveLocalData("place", placeToCompare);
             }
         }

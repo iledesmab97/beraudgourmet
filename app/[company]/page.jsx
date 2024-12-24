@@ -34,8 +34,10 @@ import useLoadData from "@/hooks/useLoadData";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductsListThunk } from "@/stores/actions/products";
 import { fetchStoreListThunk } from "@/stores/actions/stores";
+import useGetModal from '@/hooks/useGetModal'
 
 import { getAllCompanies } from "@/services/companyApi";
+import { getLocalData } from "@/utils/manageLocalStorage";
 
 function Menu({ params }) {
     const [totalMatches, setTotalMatches] = useState("null");
@@ -47,6 +49,7 @@ function Menu({ params }) {
     const { drawer } = useGetDrawer();
     const [openOrderRewards, setOpenOrderRewards] = useState(false);
     const { loadData } = useLoadData();
+    const { handleOpenModal } = useGetModal({ modalType: 'userOrders' })
 
     const dispatch = useDispatch();
     const { pizzas, salads, status, error } = useSelector(
@@ -75,6 +78,14 @@ function Menu({ params }) {
     useEffect(() => {
         getStores()
     }, [dispatch]);
+
+    // Cargar el modal de ordenes del usuario
+    useEffect(() => {
+        const modalToOpen = getLocalData('modalToOpen')
+        if (!modalToOpen) return
+        handleOpenModal('userOrders')
+    }, [])
+    
 
     function toggleOpenOrderRewards(value) {
         setOpenOrderRewards(value);

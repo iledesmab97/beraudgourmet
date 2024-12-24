@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import useGetPlace from "./useGetPlace";
+import { useDispatch } from "react-redux";
 import useGetStoreList from "@/hooks/useGetStoreList";
 import typeLocations from "@/typePlaces.json";
+import useGoogleMaps from "./useGoogleMaps";
+import { makePlace } from "@/stores/place/slice";
 
 function getInitialInputHome(primaryInputHome) {
     if (primaryInputHome) return primaryInputHome;
@@ -26,7 +28,6 @@ function getInitialInputHome(primaryInputHome) {
 
 function useHandlePlace({ primaryInputHome }) {
     const { storeList } = useGetStoreList();
-    const { place } = useGetPlace();
     const [inputsStore, setInputsStore] = useState(() => {
         return Object.keys(storeList)[0];
     });
@@ -40,6 +41,8 @@ function useHandlePlace({ primaryInputHome }) {
     const [inputsHome, setInputsHome] = useState(
         getInitialInputHome(primaryInputHome)
     );
+    const { getTotalDataAddress } = useGoogleMaps();
+    const dispatch = useDispatch();
 
     // Update inputsHome when primaryInputHome changed
     useEffect(() => {
@@ -153,6 +156,55 @@ function useHandlePlace({ primaryInputHome }) {
         setInputsHome(newInputsHome);
     }
 
+    async function updatePlace({ inputAddress, distance, closerStore }) {
+        handleDistanceSaved(distance);
+        const withinLimitSaved = !distance ? null : distance > 5 ? false : true;
+        changeWithinLimitSaved(withinLimitSaved);
+        if (!withinLimitSaved) return;
+        const {
+            streetNumber,
+            route,
+            city,
+            state,
+            zipCode,
+            country,
+            coordinates,
+        } = await fillDataInputsHome(inputAddress);
+        const newInputHome = {
+            inputAddress,
+            distanceSaved: distance,
+            withinLimitSaved,
+            city,
+            postalCode: zipCode,
+            street: {
+                number: streetNumber,
+                streetName: route,
+            },
+            type: {
+                name: "home",
+                totalName: "Casa: Dirección residencial",
+            },
+            state,
+            country,
+            coordinates,
+        };
+        const newPlace = {
+            inputsHome: newInputHome,
+            closerStore,
+            typeDelivery: {
+                name: "home",
+                totalName: "Entrega a domicilio",
+            },
+        };
+        dispatch(makePlace(newPlace));
+        changeInpusHome(newInputHome);
+        handleCloserStore(closerStore);
+    }
+
+    async function fillDataInputsHome(address) {
+        return await getTotalDataAddress({ address });
+    }
+
     return {
         inputsStore,
         inputsHome,
@@ -166,6 +218,7 @@ function useHandlePlace({ primaryInputHome }) {
         handleTypeLocation,
         handleCloserStore,
         changeInpusHome,
+        updatePlace,
     };
 }
 
