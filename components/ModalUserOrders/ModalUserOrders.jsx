@@ -5,7 +5,7 @@ import OrdersList from "./OrdersList";
 
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -35,9 +35,6 @@ const style = {
         xs: 2,
         sm: 5,
     },
-    display: "flex",
-    flexDirection: "column",
-    alignItem: "center",
 };
 
 function ModalUserOrders() {
@@ -104,17 +101,31 @@ function ModalUserOrders() {
                 localStorage.removeItem("modalToOpen");
             }}
         >
-            <Box sx={style}>
-                <Typography
-                    variant="title"
+            <Grid
+                container
+                wrap="nowrap"
+                direction="column"
+                justifyContent={"flex-start"}
+                alignItems={"stretch"}
+                sx={style}
+            >
+                <Grid
+                    item
                     sx={{
-                        // flexGrow: 1,
-                        mb: 3,
+                        display: "flex",
+                        justifyContent: "center"
                     }}
-                    align="center"
                 >
-                    Historial de Ordenes
-                </Typography>
+                    <Typography
+                        variant="title"
+                        sx={{
+                            mb: 3,
+                        }}
+                        align="center"
+                    >
+                        Historial de Orden
+                    </Typography>
+                </Grid>
                 {isLargeScreen ? (
                     <OrdersTablet
                         orders={orders}
@@ -130,7 +141,7 @@ function ModalUserOrders() {
                 ) : (
                     <OrdersList orders={orders} />
                 )}
-            </Box>
+            </Grid>
         </Modal>
     );
 }
