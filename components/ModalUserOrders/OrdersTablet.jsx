@@ -5,12 +5,17 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import TablePagination from "@mui/material/TablePagination";
+
+import TablePaginationActions from "@/components/TablePaginationActions/TablePaginationActions"
 
 import CenteredSpinner from '../LoadingComponets/CenteredSpinner';
 
 import { extractIngredientsOut } from '@/utils/preparingData'
 
-function OrdersTablet({ orders, loading }) {
+function OrdersTablet({ orders, loading, pagination }) {
+    const { count, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage } = pagination
+
     return (
         <Grid
             item
@@ -79,6 +84,19 @@ function OrdersTablet({ orders, loading }) {
                     ) : null
                 }
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={count}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => {
+                    handleChangePage(newPage);
+                }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={"Filas por página"}
+                ActionsComponent={TablePaginationActions}
+            />
         </Grid>
     )
 }
