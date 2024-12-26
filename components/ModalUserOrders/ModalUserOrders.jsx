@@ -49,6 +49,27 @@ function ModalUserOrders() {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
     const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(0);
+    const [count, setCount] = useState(27)
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    useEffect(() => {
+        if (!open) return
+        handleChangePage(0)
+    }, [open])
+
+    async function handleChangePage(newPage) {
+        const { newOrders, newCount } = await getOrders(user.id);
+        if ( !newOrders || !newCount ) return
+        setPage(newPage);
+        setOrders(newOrders)
+        setCount(newCount)
+    }
+
+    function handleChangeRowsPerPage(event) {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    }
 
     useEffect(() => {
         if (!user || orders.length) return;
@@ -57,14 +78,22 @@ function ModalUserOrders() {
 
     async function getOrders(userId) {
         setLoading(true)
+        let newOrders, newCount
         try {
-            const newOrrders = await getAllOrdersOfUser(userId)
-            setOrders(newOrrders)
+            const { totalOrdersFront, count } = await getAllOrdersOfUser({
+                userId,
+                queries: {
+                    itemsxPage: rowsPerPage, page
+                }
+            })
+            newOrders = totalOrdersFront
+            newCount = count
         } catch(error) {
             alert(error.message)
         } finally {
             setLoading(false)
         }
+        return { newOrders, newCount }
     }
 
     return (
@@ -87,7 +116,17 @@ function ModalUserOrders() {
                     Historial de Ordenes
                 </Typography>
                 {isLargeScreen ? (
-                    <OrdersTablet orders={orders} loading={loading} />
+                    <OrdersTablet
+                        orders={orders}
+                        loading={loading}
+                        pagination={{
+                            count,
+                            rowsPerPage,
+                            page,
+                            handleChangePage,
+                            handleChangeRowsPerPage
+                        }}
+                    />
                 ) : (
                     <OrdersList orders={orders} />
                 )}
