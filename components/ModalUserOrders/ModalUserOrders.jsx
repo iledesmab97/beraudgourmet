@@ -47,7 +47,7 @@ function ModalUserOrders() {
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
     const [loading, setLoading] = useState(false)
     const [page, setPage] = useState(0);
-    const [count, setCount] = useState(27)
+    const [count, setCount] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
@@ -56,7 +56,7 @@ function ModalUserOrders() {
     }, [open])
 
     async function handleChangePage(newPage) {
-        const { newOrders, newCount } = await getOrders(user.id);
+        const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage });
         if ( !newOrders || !newCount ) return
         setPage(newPage);
         setOrders(newOrders)
@@ -70,17 +70,19 @@ function ModalUserOrders() {
 
     useEffect(() => {
         if (!user || orders.length) return;
-        getOrders(user.id)
+        getOrders({ userId: user.id })
     }, [open, user]);
 
-    async function getOrders(userId) {
+    async function getOrders({ userId, page=0 }) {
         setLoading(true)
         let newOrders, newCount
         try {
             const { totalOrdersFront, count } = await getAllOrdersOfUser({
                 userId,
                 queries: {
-                    itemsxPage: rowsPerPage, page
+                    itemsxPage: rowsPerPage,
+                    page,
+                    order1: "id:ASC" 
                 }
             })
             newOrders = totalOrdersFront
