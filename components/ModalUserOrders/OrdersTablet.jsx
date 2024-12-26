@@ -1,4 +1,5 @@
 import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -21,12 +22,18 @@ function OrdersTablet({ orders, loading, pagination }) {
             item
             sx={{
                 flexGrow: 1,
-                overflowY: 'auto'
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
             }}
         >
             <TableContainer
                 sx={{
-                    height: "100%",
+                    flexGrow: 1,
+                    maxHeight: "calc(100% - 52px)",
+                    display: "flex",
+                    flexDirection: "column"
                 }}
             >
                 <Table>
@@ -80,7 +87,13 @@ function OrdersTablet({ orders, loading, pagination }) {
                 </Table>
                 {
                     loading ? (
-                        <CenteredSpinner />
+                        <Box
+                            sx={{
+                                flexGrow: 1
+                            }}
+                        >
+                            <CenteredSpinner />
+                        </Box>
                     ) : null
                 }
             </TableContainer>
