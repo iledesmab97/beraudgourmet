@@ -57,46 +57,48 @@ function OrdersTablet({ orders, loading, pagination }) {
                     </TableHead>
                     <TableBody>
                         {
-                            orders.map( order => (
-                                <TableRow key={order.id}>
-                                    <TableCell align='center'>{order.id}</TableCell>
-                                    <TableCell
-                                        dangerouslySetInnerHTML={{
-                                            __html: order.itemsxOrder.map(item => {
-                                                const ingredinetsOut = extractIngredientsOut(item.description)
-                                                if (!ingredinetsOut.length) return item.description
-                                                const index = item.description.indexOf(', ~')
-                                                return (
-                                                    item.description.slice(0, index) + ingredinetsOut.map( ingredient => `, <span style="text-decoration: line-through">${ingredient}</span>` ).join('')
-                                                )
-                                            }).join('; ')
-                                        }}/>
-                                    <TableCell align='center'>{order.applicationDate}</TableCell>
-                                    <TableCell align='center'>{order.deliveryDate}</TableCell>
-                                    <TableCell align='center'>{order.totalCost}</TableCell>
-                                    <TableCell
-                                        align='center'
-                                        sx={ order.closed ? {color: 'green'} : {color: 'red'} }
-                                    >
-                                        {order.closed ? 'Entregado' : 'Pendiente'}
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                            loading ? null : (
+                                orders.map( order => (
+                                    <TableRow key={order.id}>
+                                        <TableCell align='center'>{order.id}</TableCell>
+                                        <TableCell
+                                            dangerouslySetInnerHTML={{
+                                                __html: order.itemsxOrder.map(item => {
+                                                    const ingredinetsOut = extractIngredientsOut(item.description)
+                                                    if (!ingredinetsOut.length) return item.description
+                                                    const index = item.description.indexOf(', ~')
+                                                    return (
+                                                        item.description.slice(0, index) + ingredinetsOut.map( ingredient => `, <span style="text-decoration: line-through">${ingredient}</span>` ).join('')
+                                                    )
+                                                }).join('; ')
+                                            }}/>
+                                        <TableCell align='center'>{order.applicationDate}</TableCell>
+                                        <TableCell align='center'>{order.deliveryDate}</TableCell>
+                                        <TableCell align='center'>{order.totalCost}</TableCell>
+                                        <TableCell
+                                            align='center'
+                                            sx={ order.closed ? {color: 'green'} : {color: 'red'} }
+                                        >
+                                            {order.closed ? 'Entregado' : 'Pendiente'}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) 
                         }
                     </TableBody>
                 </Table>
-                {
-                    loading ? (
-                        <Box
-                            sx={{
-                                flexGrow: 1
-                            }}
-                        >
-                            <CenteredSpinner />
-                        </Box>
-                    ) : null
-                }
             </TableContainer>
+            {
+                loading ? (
+                    <Box
+                        sx={{
+                            height: 'calc(100% - 56.5px - 52px)',
+                        }}
+                    >
+                        <CenteredSpinner />
+                    </Box>
+                ) : null
+            }
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
