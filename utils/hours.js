@@ -46,14 +46,8 @@ export function isOpen({ openTime, closeTime }) {
 export function dateStringToDate(date) {
     const dateString = date;
     const [dateWithSlash, time] = dateString.split(" - ");
-    const [day, month, year] = dateWithSlash.split("/");
-    const [hour_min, am_pm] = time.split(" ");
-    let [hour, mine] = hour_min.split(":");
-    if (hour === "12") {
-        hour = am_pm === "am" ? "00" : hour;
-    } else {
-        hour = am_pm === "am" ? hour : String(Number(hour) + 12);
-    }
+    const [year, month, day] = dateWithSlash.split("/");
+    let [hour, mine] = time.split(":");
     const totalDateString = `${year}-${month}-${day} ${hour}:${mine}:00`;
     const dateA = dayjs(
         totalDateString,
@@ -64,13 +58,7 @@ export function dateStringToDate(date) {
 }
 
 export function timeStringToObject(time) {
-    const [hour_min, am_pm] = time.split(" ");
-    let [hour, mine] = hour_min.split(":");
-    if (hour === "12") {
-        hour = am_pm === "am" ? "00" : hour;
-    } else {
-        hour = am_pm === "am" ? hour : String(Number(hour) + 12);
-    }
+    let [hour, mine] = time.split(":");
     const date = dayjs().format("YYYY-MM-DD");
     return dayjs(`${date} ${hour}:${mine}`);
 }
@@ -107,6 +95,7 @@ export function getTimeLimitTodaySchedue({
     closerStore,
     deadLine,
     typeDelivery,
+    format,
 }) {
     if (!deadLine)
         return {
@@ -114,7 +103,7 @@ export function getTimeLimitTodaySchedue({
             maxHour: dayjs(),
         };
 
-    const today = dayjs(deadLine.date.realDate, "DD/MM/YYYY");
+    const today = dayjs(deadLine.date.realDate, format);
     const schedule = closerStore.Schedules.find((schedule) => {
         const sameScheduleType =
             schedule.type === typeDeliveryOptions[typeDelivery.name];
@@ -188,8 +177,8 @@ export function dateInRange({ minHour, maxHour, daySelected, typeDelivery }) {
     return { inRange, why };
 }
 
-export function objectDateToString(dateObject) {
-    const dateString = dateObject.format("DD/MM/YYYY - hh:mm a");
+export function objectDateToString(dateObject, format) {
+    const dateString = dateObject.format(format);
     return dateString;
 }
 

@@ -82,7 +82,7 @@ function ModalUserOrders() {
                 queries: {
                     itemsxPage: rowsPerPage,
                     page,
-                    order1: "id:ASC" 
+                    order1: "deliveryDate:DESC" 
                 }
             })
             newOrders = totalOrdersFront

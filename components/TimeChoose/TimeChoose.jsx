@@ -26,9 +26,9 @@ function differenceTime(now, later) {
 export default function TimeChoose() {
 
     const { closerStore, typeDelivery, deadLine } = useSelector( state => state.place )
-    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue({ closerStore, deadLine, typeDelivery }))
+    const [limitHours, setLimitHours] = useState(getTimeLimitTodaySchedue({ closerStore, deadLine, typeDelivery, format: "YYYY/MM/DD" }))
     const [hour, setHour] = useState( deadLine &&  deadLine.time ? timeStringToObject(deadLine.time.realTime) : dayjs().add(90, 'minute'))
-    const { handleDeadLine} = useGetPlace()
+    const { handleDeadLine } = useGetPlace()
     const [textHour, setTextHour] = useState('')
     const [today, setToday] = useState(true)
     const [timeWithinRange, setTimeWithinRange] = useState( () => {
@@ -44,7 +44,7 @@ export default function TimeChoose() {
         if (inRange) {
             if (today) newHelperText = textHour
         } else {
-            if (why === 'past hour') newHelperText = `La hora seleccionada debe ser mayor a la actual (hora actual ${objectDateToString(dayjs()).split(' - ')[1]})`
+            if (why === 'past hour') newHelperText = `La hora seleccionada debe ser mayor a la actual (hora actual ${objectDateToString(dayjs(), "YYYY/MM/DD - hh:mm a").split(' - ')[1]})`
             else if (why === 'too soon') {
                 let minTime
                 if (typeDelivery.name === "home") {
@@ -54,7 +54,7 @@ export default function TimeChoose() {
                 }
                 newHelperText = `Mínimo ${minTime} minutos entre la hora actual y la hora de entrega (${textHour})`
             }
-            else newHelperText = `Fuera del horario de ${typeDelivery.totalName.toLowerCase()} (${objectDateToString(limitHours.minHour).split(' - ')[1]} - ${objectDateToString(limitHours.maxHour).split(' - ')[1]})`
+            else newHelperText = `Fuera del horario de ${typeDelivery.totalName.toLowerCase()} (${objectDateToString(limitHours.minHour, "YYYY/MM/DD - hh:mm a").split(' - ')[1]} - ${objectDateToString(limitHours.maxHour, "YYYY/MM/DD - hh:mm a").split(' - ')[1]})`
         }
         setHelperText(newHelperText)
     }, [timeWithinRange])
@@ -62,7 +62,7 @@ export default function TimeChoose() {
     // Actualizar los límites de horario de la nueva fecha
     useEffect(() => {
         if (!deadLine) return
-        const { minHour, maxHour } = getTimeLimitTodaySchedue({ closerStore, deadLine, typeDelivery })
+        const { minHour, maxHour } = getTimeLimitTodaySchedue({ closerStore, deadLine, typeDelivery, format: "YYYY/MM/DD" })
         setLimitHours({ minHour, maxHour })
     }, [closerStore, typeDelivery, deadLine])
 
@@ -82,13 +82,13 @@ export default function TimeChoose() {
         setTextHour(relativeHour)
         handleDeadLine({
             property: 'time',
-            value: {realTime: hour.format('hh:mm a'), relativeTime: relativeHour}
+            value: {realTime: hour.format('HH:mm'), relativeTime: relativeHour}
         })
     }, [hour])
 
     useEffect(() => {
         if (!deadLine) return
-        const dateSelectedObject = dayjs(deadLine.date.realDate.replaceAll('/', '-'), 'DD-MM-YYYY').hour(hour.hour()).minute(hour.minute())
+        const dateSelectedObject = dayjs(deadLine.date.realDate.replaceAll('/', '-'), 'YYYY-MM-DD').hour(hour.hour()).minute(hour.minute())
         const { inRange, why } = dateInRange({minHour: limitHours.minHour.subtract(1, "minute"), maxHour: limitHours.maxHour, daySelected: dateSelectedObject, typeDelivery})
         setTimeWithinRange({ inRange, why })
     }, [hour, limitHours])
