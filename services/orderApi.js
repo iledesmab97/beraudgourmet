@@ -1,4 +1,4 @@
-import { requestSettings } from "@/utils/preparingData";
+import { requestSettings, generateURLQueries } from "@/utils/preparingData";
 import { mapOrderToBackend, mapOrderFromBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
@@ -27,14 +27,22 @@ export async function getAllOrders(queries) {
     }
 }
 
-export async function getAllOrdersOfUser(userId) {
-    const response = await fetch(`${PATH_BACK}/orders/user/${userId}`, {
-        ...requestSettings(),
-        cache: "no-store",
-    });
+export async function getAllOrdersOfUser({ userId, queries }) {
+    const queriesString = generateURLQueries(queries);
+    const response = await fetch(
+        `${PATH_BACK}/orders/user/${userId}${queriesString}`,
+        {
+            ...requestSettings(),
+            cache: "no-store",
+        }
+    );
     const data = await response.json();
     if (data.message) throw new Error(data.message);
-    return data.map((item) => mapOrderFromBackend(item));
+    const { totalOrders, count } = data;
+    const totalOrdersFront = totalOrders.map((item) =>
+        mapOrderFromBackend(item)
+    );
+    return { totalOrdersFront, count };
 }
 
 export async function getOneOrder(orderId) {

@@ -63,7 +63,7 @@ export default function DateChoose() {
   const { handleDeadLine} = useGetPlace()
   const [date, setDate] = useState(() => {
     if (deadLine) {
-      return dayjs(deadLine.date.realDate, 'DD/MM/YYYY')
+      return dayjs(deadLine.date.realDate, 'YYYY/MM/DD')
     }
     const dayNear = getNearestAvailableDate({ Schedules: closerStore.Schedules, typeDelivery })
     return dayNear
@@ -83,7 +83,7 @@ export default function DateChoose() {
     }
     newTextDate = newTextDate + `, ${date['$D']} de ${monthsES[date.format('MMMM')]} del ${date.format('YYYY')}`
     setTextDate(newTextDate)
-    handleDeadLine({property: 'date', value: {realDate: date.format('DD/MM/YYYY'), relativeDate: newTextDate}})
+    handleDeadLine({property: 'date', value: {realDate: date.format('YYYY/MM/DD'), relativeDate: newTextDate}})
   }, [date])
 
   // Update data

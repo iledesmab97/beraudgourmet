@@ -5,7 +5,7 @@ import OrdersList from "./OrdersList";
 
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -35,9 +35,6 @@ const style = {
         xs: 2,
         sm: 5,
     },
-    display: "flex",
-    flexDirection: "column",
-    alignItem: "center",
 };
 
 function ModalUserOrders() {
@@ -49,22 +46,53 @@ function ModalUserOrders() {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
     const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(0);
+    const [count, setCount] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    useEffect(() => {
+        if (!open) return
+        handleChangePage(0)
+    }, [open])
+
+    async function handleChangePage(newPage) {
+        const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage });
+        if ( !newOrders || !newCount ) return
+        setPage(newPage);
+        setOrders(newOrders)
+        setCount(newCount)
+    }
+
+    function handleChangeRowsPerPage(event) {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    }
 
     useEffect(() => {
         if (!user || orders.length) return;
-        getOrders(user.id)
+        getOrders({ userId: user.id })
     }, [open, user]);
 
-    async function getOrders(userId) {
+    async function getOrders({ userId, page=0 }) {
         setLoading(true)
+        let newOrders, newCount
         try {
-            const newOrrders = await getAllOrdersOfUser(userId)
-            setOrders(newOrrders)
+            const { totalOrdersFront, count } = await getAllOrdersOfUser({
+                userId,
+                queries: {
+                    itemsxPage: rowsPerPage,
+                    page,
+                    order1: "deliveryDate:DESC" 
+                }
+            })
+            newOrders = totalOrdersFront
+            newCount = count
         } catch(error) {
             alert(error.message)
         } finally {
             setLoading(false)
         }
+        return { newOrders, newCount }
     }
 
     return (
@@ -75,23 +103,47 @@ function ModalUserOrders() {
                 localStorage.removeItem("modalToOpen");
             }}
         >
-            <Box sx={style}>
-                <Typography
-                    variant="title"
+            <Grid
+                container
+                wrap="nowrap"
+                direction="column"
+                justifyContent={"flex-start"}
+                alignItems={"stretch"}
+                sx={style}
+            >
+                <Grid
+                    item
                     sx={{
-                        // flexGrow: 1,
-                        mb: 3,
+                        display: "flex",
+                        justifyContent: "center"
                     }}
-                    align="center"
                 >
-                    Historial de Ordenes
-                </Typography>
+                    <Typography
+                        variant="title"
+                        sx={{
+                            mb: 3,
+                        }}
+                        align="center"
+                    >
+                        Historial de Orden
+                    </Typography>
+                </Grid>
                 {isLargeScreen ? (
-                    <OrdersTablet orders={orders} loading={loading} />
+                    <OrdersTablet
+                        orders={orders}
+                        loading={loading}
+                        pagination={{
+                            count,
+                            rowsPerPage,
+                            page,
+                            handleChangePage,
+                            handleChangeRowsPerPage
+                        }}
+                    />
                 ) : (
                     <OrdersList orders={orders} />
                 )}
-            </Box>
+            </Grid>
         </Modal>
     );
 }
