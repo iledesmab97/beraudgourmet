@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
-export default function FooterModalChooseProduct({handleQuantity, quantity, totalPrice, edit, handleAddOrder, currentProduct, handleCloseModalOrder, handleUpdateOrder, nextStep}) {
+export default function FooterModalChooseProduct({handleQuantity, quantity, edit, handleAddOrder, currentProduct, handleCloseModalOrder, handleUpdateOrder, nextStep}) {
     return (
         <Grid
             container
@@ -68,7 +68,7 @@ export default function FooterModalChooseProduct({handleQuantity, quantity, tota
                     +
                 </Button>
                 <Typography id="modal-modal-description" sx={{ ml: 5 }}>
-                    ${totalPrice}
+                    ${currentProduct.totalPrice}
                 </Typography>
             </Grid>
             <Grid

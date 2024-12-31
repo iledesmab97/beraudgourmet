@@ -145,7 +145,6 @@ export default function useGoogleMaps() {
                         });
                     },
                     (error) => {
-                        console.log("recuerdo haber dicho que no...");
                         reject({ status: "denied" });
                     }
                 );
