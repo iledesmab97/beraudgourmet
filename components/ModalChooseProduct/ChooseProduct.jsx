@@ -32,7 +32,6 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
 
     const {
         currentProduct,
-        totalPrice,
         inputs,
         handleSize,
         handleQuantity,
@@ -158,7 +157,6 @@ const ChooseProduct = forwardRef(function ChooseProduct (props, ref) {
                     <FooterModalChooseProduct
                         handleQuantity={handleQuantity}
                         quantity={inputs.quantity}
-                        totalPrice={totalPrice}
                         edit={edit}
                         handleAddOrder={handleAddOrder}
                         currentProduct={currentProduct}
