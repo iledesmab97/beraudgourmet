@@ -26,30 +26,29 @@ function initialInput(productDetails) {
     return totalInput;
 }
 
+function getTotalPrice({ productDetails, inputs }) {
+    if (!productDetails) return 0;
+    let price;
+    if (productDetails.productType === "salad") {
+        price = productDetails.totalPriceByUnity;
+    } else {
+        price =
+            productDetails.price[inputs.size][inputs.mass].totalPriceByUnity;
+    }
+    const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
+        const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0;
+        return acc + quantity * extraIngredients[cur].totalPrice;
+    }, 0);
+    const pizzaWithExtras = Number(price) + totalExtras;
+    const totalPrice = inputs.quantity * pizzaWithExtras;
+    return Math.ceil(totalPrice);
+}
+
 export default function useHandleOrder({ productDetails }) {
     const [currentProduct, setCurrentProduct] = useState(productDetails);
     const { extraIngredients } = useGetExtraIngredients();
     const [inputs, setInputs] = useState({});
     const { handleUpdateModalOrder } = useGetModal({ modalType: "order" });
-
-    const totalPrice = useMemo(() => {
-        if (!productDetails) return 0;
-        let price;
-        if (productDetails.productType === "salad") {
-            price = productDetails.totalPriceByUnity;
-        } else {
-            price =
-                productDetails.price[inputs.size][inputs.mass]
-                    .totalPriceByUnity;
-        }
-        const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
-            const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0;
-            return acc + quantity * extraIngredients[cur].totalPrice;
-        }, 0);
-        const pizzaWithExtras = Number(price) + totalExtras;
-        const totalPrice = inputs.quantity * pizzaWithExtras;
-        return Math.ceil(totalPrice);
-    }, [inputs]);
 
     const updateValue = useRef(null);
 
@@ -62,13 +61,18 @@ export default function useHandleOrder({ productDetails }) {
         if (!productDetails) return;
         const newInput = initialInput(productDetails);
         setInputs(newInput);
+        const totalPrice = getTotalPrice({
+            productDetails,
+            inputs: newInput,
+            extraIngredients,
+        });
         handleCurrentProduct({
             ...productDetails,
-            size: inputs.size,
-            quantity: inputs.quantity,
-            mass: inputs.mass,
-            ingredientsModal: inputs.ingredientsModal,
-            extra: inputs.extra,
+            size: newInput.size,
+            quantity: newInput.quantity,
+            mass: newInput.mass,
+            ingredientsModal: newInput.ingredientsModal,
+            extra: newInput.extra,
             totalPrice,
         });
     }, [productDetails]);
@@ -82,6 +86,11 @@ export default function useHandleOrder({ productDetails }) {
     useEffect(() => {
         if (!updateValue.current) return;
         const { name } = updateValue.current;
+        const totalPrice = getTotalPrice({
+            productDetails,
+            inputs,
+            extraIngredients,
+        });
         const newCurrentProduct = {
             ...currentProduct,
             [name]: inputs[name],
@@ -164,7 +173,6 @@ export default function useHandleOrder({ productDetails }) {
 
     return {
         currentProduct,
-        totalPrice,
         inputs,
         handleSize,
         handleQuantity,
