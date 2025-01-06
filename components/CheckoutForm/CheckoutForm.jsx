@@ -28,6 +28,7 @@ import { updatePaymentRequest } from "@/services/checkoutApi";
 import { registerOrder } from "@/services/orderApi";
 import { getPizzaIngredients, getSaladIngredients } from "@/services/productApi";
 import { mapDeliveryInformationToBackend } from "@/utils/mappers";
+import { dateStringToDate } from "@/utils/hours";
 
 import styles from "./CheckoutForm.module.css";
 
@@ -96,9 +97,8 @@ export default function CheckoutForm({
         totalCostByItems: checkout.totalPriceCar,
         commissions: Number(checkout.commissionStripe) + (quote ? quote.fee.feeIVAStripe : 0),
         totalCost: Number(checkout.totalClient) + (quote ? quote.fee.feeIVAStripe : 0),
-        applicationDate: dayjs().format("YYYY/MM/DD - HH:mm"),
-        deliveryDate:
-            place.deadLine.date.realDate + " - " + place.deadLine.time.realTime,
+        applicationDate: dayjs().toISOString(),
+        deliveryDate: dateStringToDate({ dateString: place.deadLine.date.realDate + " - " + place.deadLine.time.realTime, format: "YYYY/MM/DD - HH:mm"}).toISOString(),
         delivery: place.inputsHome ? true : false,
         itemsList: orderItems,
         deliveryInformation: place.inputsHome ? mapDeliveryInformationToBackend({ ...place.inputsHome, ...quote }) : null
