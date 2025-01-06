@@ -43,18 +43,14 @@ export function isOpen({ openTime, closeTime }) {
     return now.isAfter(openTimeDay) && now.isBefore(closeTimeDay);
 }
 
-export function dateStringToDate(date) {
-    const dateString = date;
-    const [dateWithSlash, time] = dateString.split(" - ");
-    const [year, month, day] = dateWithSlash.split("/");
-    let [hour, mine] = time.split(":");
-    const totalDateString = `${year}-${month}-${day} ${hour}:${mine}:00`;
-    const dateA = dayjs(
-        totalDateString,
-        ["YYYY", "YYYY-MM-DD", "YYYY-MM-DD HH:mm:ss"],
-        true
-    );
-    return dateA;
+export function dateStringToDate({ dateString, format }) {
+    let date;
+    if (format) {
+        date = dayjs(dateString, format);
+    } else {
+        date = dayjs(dateString);
+    }
+    return date;
 }
 
 export function timeStringToObject(time) {
@@ -128,7 +124,10 @@ export function dateInRange({ minHour, maxHour, daySelected, typeDelivery }) {
         daySelected === null
             ? dayjs().subtract(1, "minute")
             : typeof daySelected === "string"
-            ? dateStringToDate(daySelected)
+            ? dateStringToDate({
+                  dateString: daySelected,
+                  format: "YYYY/MM/DD - HH:mm",
+              })
             : daySelected;
     const minTimeObject =
         typeof minHour === "string" ? timeStringToObject(minHour) : minHour;
