@@ -25,7 +25,7 @@ import dayjs from "dayjs";
 import { contactUs } from "@/utils/contact";
 import { descriptionOrder } from "@/utils/preparingData";
 import { updatePaymentRequest } from "@/services/checkoutApi";
-import { registerOrder } from "@/services/orderApi";
+import { registerOrder, updateOrder } from "@/services/orderApi";
 import { getPizzaIngredients, getSaladIngredients } from "@/services/productApi";
 import { mapDeliveryInformationToBackend } from "@/utils/mappers";
 import { dateStringToDate } from "@/utils/hours";
@@ -186,6 +186,15 @@ export default function CheckoutForm({
 
             if (!stripe || !elements) return;
             setIsLoading(true);
+
+            const response = await registerOrder({
+                ...dataOrders,
+                paymentMethod: "stripe",
+                paid: !checked,
+            });
+            if (response.message) {
+                throw new Error(`Error al crear la orden: ${response.message}`)
+            }
     
             const { paymentIntent, error } = await stripe.confirmPayment({
                 elements,
@@ -202,18 +211,17 @@ export default function CheckoutForm({
                     error.type === "validation_error"
                 ) {
                     setMessage(error.message);
+                    throw new Error(`Error al realizar el pago: ${error.message}`)
                 } else {
                     setMessage("An unexpected error ocurred.");
+                    throw new Error(`Error al realizar el pago: ${error.message}`)
                 }
             } else {
-                const response = await registerOrder({
-                    ...dataOrders,
-                    stripeId: paymentIntent.id,
-                    paymentMethod: "stripe",
-                    paid: !checked,
-                });
-                if (response.message) {
-                    setError(response.message);
+                const updateResponse = await updateOrder(response.id, {
+                    StripeId: paymentIntent.id,
+                })
+                if (updateResponse.message) {
+                    throw new Error(`Error al actualizar la orden: ${updateResponse.message}`)
                 }
                 setIsLoading(true);
                 removeLocalData("orders");
