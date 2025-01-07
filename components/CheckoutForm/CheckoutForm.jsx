@@ -163,9 +163,11 @@ export default function CheckoutForm({
                     handleDataStripe({ clientSecret, id, status });
                 } else {
                     console.log("Error:", data.message);
+                    throw new Error(`Error: ${data.message}`)
                 }
             } catch (error) {
                 console.log("Error:", error);
+                alert(error.message)
             }
         };
 
@@ -210,11 +212,9 @@ export default function CheckoutForm({
                     error.type === "card_error" ||
                     error.type === "validation_error"
                 ) {
-                    setMessage(error.message);
                     throw new Error(`Error al realizar el pago: ${error.message}`)
                 } else {
-                    setMessage("An unexpected error ocurred.");
-                    throw new Error(`Error al realizar el pago: ${error.message}`)
+                    throw new Error(`Error inesperado al realizar el pago: ${error.message}`)
                 }
             } else {
                 const updateResponse = await updateOrder(response.id, {
