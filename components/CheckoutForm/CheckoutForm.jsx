@@ -25,7 +25,9 @@ import dayjs from "dayjs";
 import { contactUs } from "@/utils/contact";
 import { descriptionOrder } from "@/utils/preparingData";
 import { updatePaymentRequest } from "@/services/checkoutApi";
-import { registerOrder, updateOrder } from "@/services/orderApi";
+import { registerOrder, verifyDataOrder, updateOrder } from "@/services/orderApi";
+import { createDelivery } from "@/services/deliveryApi"
+import { createUberOrder } from "@/services/uberDirectApi";
 import { getPizzaIngredients, getSaladIngredients } from "@/services/productApi";
 import { mapDeliveryInformationToBackend } from "@/utils/mappers";
 import { dateStringToDate } from "@/utils/hours";
@@ -189,13 +191,31 @@ export default function CheckoutForm({
             if (!stripe || !elements) return;
             setIsLoading(true);
 
-            const response = await registerOrder({
+            const verifyResponse = await verifyDataOrder({
+                ...dataOrders,
+                paymentMethod: "stripe",
+                paid: !checked
+            })
+
+            console.log('Verificación exitosa')
+
+            const orderResponse = await registerOrder({
                 ...dataOrders,
                 paymentMethod: "stripe",
                 paid: !checked,
             });
-            if (response.message) {
-                throw new Error(`Error al crear la orden: ${response.message}`)
+
+            console.log('Orden creada exitosamente')
+
+            if (dataOrders.deliveryInformation) {
+                const deliveryResponse = await createDelivery({
+                    order: orderResponse.id,
+                    store: dataOrders.storeId,
+                    user: dataOrders.userId,
+                    ...dataOrders.deliveryInformation
+                })
+
+                console.log('Delivery añadido exitosamente')
             }
     
             const { paymentIntent, error } = await stripe.confirmPayment({
@@ -217,17 +237,34 @@ export default function CheckoutForm({
                     throw new Error(`Error inesperado al realizar el pago: ${error.message}`)
                 }
             } else {
-                const updateResponse = await updateOrder(response.id, {
-                    StripeId: paymentIntent.id,
-                })
-                if (updateResponse.message) {
-                    throw new Error(`Error al actualizar la orden: ${updateResponse.message}`)
+                if (!checked) {
+                    console.log('El pago se ha realizado exitosamente')
                 }
-                setIsLoading(true);
-                removeLocalData("orders");
-                removeLocalData("place");
-    
-                return router.push(`${pathname}/success`);
+
+                try {
+                    const orderUpdatedResponse = await updateOrder(orderResponse.id, {
+                        StripeId: paymentIntent.id,
+                    })
+
+                    console.log('La orden se ha actualizado exitosamente')
+
+                    if (dataOrders.deliveryInformation) {
+                        const uberResponse = await createUberOrder({
+                            orderId: orderResponse.id
+                        })
+
+                        console.log('Se ha despachado el uber exitosamente')
+                    }
+
+                } catch(error) {
+                    alert(error.message)
+                } finally {
+                    setIsLoading(true);
+                    removeLocalData("orders");
+                    removeLocalData("place");
+        
+                    return router.push(`${pathname}/success`);
+                }
             } 
                 
         } catch(error) {
