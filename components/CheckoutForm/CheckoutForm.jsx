@@ -25,9 +25,12 @@ import dayjs from "dayjs";
 import { contactUs } from "@/utils/contact";
 import { descriptionOrder } from "@/utils/preparingData";
 import { updatePaymentRequest } from "@/services/checkoutApi";
-import { registerOrder } from "@/services/orderApi";
+import { registerOrder, verifyDataOrder, updateOrder } from "@/services/orderApi";
+import { createDelivery } from "@/services/deliveryApi"
+import { createUberOrder } from "@/services/uberDirectApi";
 import { getPizzaIngredients, getSaladIngredients } from "@/services/productApi";
 import { mapDeliveryInformationToBackend } from "@/utils/mappers";
+import { dateStringToDate } from "@/utils/hours";
 
 import styles from "./CheckoutForm.module.css";
 
@@ -96,9 +99,8 @@ export default function CheckoutForm({
         totalCostByItems: checkout.totalPriceCar,
         commissions: Number(checkout.commissionStripe) + (quote ? quote.fee.feeIVAStripe : 0),
         totalCost: Number(checkout.totalClient) + (quote ? quote.fee.feeIVAStripe : 0),
-        applicationDate: dayjs().format("YYYY/MM/DD - HH:mm"),
-        deliveryDate:
-            place.deadLine.date.realDate + " - " + place.deadLine.time.realTime,
+        applicationDate: dayjs().toISOString(),
+        deliveryDate: dateStringToDate({ dateString: place.deadLine.date.realDate + " - " + place.deadLine.time.realTime, format: "YYYY/MM/DD - HH:mm"}).toISOString(),
         delivery: place.inputsHome ? true : false,
         itemsList: orderItems,
         deliveryInformation: place.inputsHome ? mapDeliveryInformationToBackend({ ...place.inputsHome, ...quote }) : null
@@ -163,9 +165,11 @@ export default function CheckoutForm({
                     handleDataStripe({ clientSecret, id, status });
                 } else {
                     console.log("Error:", data.message);
+                    throw new Error(`Error: ${data.message}`)
                 }
             } catch (error) {
                 console.log("Error:", error);
+                alert(error.message)
             }
         };
 
@@ -186,6 +190,33 @@ export default function CheckoutForm({
 
             if (!stripe || !elements) return;
             setIsLoading(true);
+
+            const verifyResponse = await verifyDataOrder({
+                ...dataOrders,
+                paymentMethod: "stripe",
+                paid: !checked
+            })
+
+            console.log('Verificación exitosa')
+
+            const orderResponse = await registerOrder({
+                ...dataOrders,
+                paymentMethod: "stripe",
+                paid: !checked,
+            });
+
+            console.log('Orden creada exitosamente')
+
+            if (dataOrders.deliveryInformation) {
+                const deliveryResponse = await createDelivery({
+                    order: orderResponse.id,
+                    store: dataOrders.storeId,
+                    user: dataOrders.userId,
+                    ...dataOrders.deliveryInformation
+                })
+
+                console.log('Delivery añadido exitosamente')
+            }
     
             const { paymentIntent, error } = await stripe.confirmPayment({
                 elements,
@@ -201,25 +232,39 @@ export default function CheckoutForm({
                     error.type === "card_error" ||
                     error.type === "validation_error"
                 ) {
-                    setMessage(error.message);
+                    throw new Error(`Error al realizar el pago: ${error.message}`)
                 } else {
-                    setMessage("An unexpected error ocurred.");
+                    throw new Error(`Error inesperado al realizar el pago: ${error.message}`)
                 }
             } else {
-                const response = await registerOrder({
-                    ...dataOrders,
-                    stripeId: paymentIntent.id,
-                    paymentMethod: "stripe",
-                    paid: !checked,
-                });
-                if (response.message) {
-                    setError(response.message);
+                if (!checked) {
+                    console.log('El pago se ha realizado exitosamente')
                 }
-                setIsLoading(true);
-                removeLocalData("orders");
-                removeLocalData("place");
-    
-                return router.push(`${pathname}/success`);
+
+                try {
+                    const orderUpdatedResponse = await updateOrder(orderResponse.id, {
+                        StripeId: paymentIntent.id,
+                    })
+
+                    console.log('La orden se ha actualizado exitosamente')
+
+                    if (dataOrders.deliveryInformation) {
+                        const uberResponse = await createUberOrder({
+                            orderId: orderResponse.id
+                        })
+
+                        console.log('Se ha despachado el uber exitosamente')
+                    }
+
+                } catch(error) {
+                    alert(error.message)
+                } finally {
+                    setIsLoading(true);
+                    removeLocalData("orders");
+                    removeLocalData("place");
+        
+                    return router.push(`${pathname}/success`);
+                }
             } 
                 
         } catch(error) {

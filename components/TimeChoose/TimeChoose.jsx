@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import useGetPlace from '@/hooks/useGetPlace'
 
-import { timeStringToObject, dateInRange, getTimeLimitTodaySchedue, objectDateToString } from '@/utils/hours'
+import { timeStringToObject, dateInRange, getTimeLimitTodaySchedue, objectDateToString, dateStringToDate } from '@/utils/hours'
 
 function differenceTime(now, later) {
     let minutes = later.format('m') - now.format('m')
@@ -95,6 +95,7 @@ export default function TimeChoose() {
 
     function handleHour(event) {
         setHour(event)
+        dateStringToDate({ dateString: "2025/01/06 - 18:59", format: "YYYY/MM/DD - HH:mm" })
     }
 
     function getRelativeHour(hour) {

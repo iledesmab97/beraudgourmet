@@ -74,17 +74,14 @@ export async function getItemsOrder(orderId) {
 }
 
 export async function updateOrder(id, body) {
-    try {
-        const res = await fetch(`${PATH_BACK}/orders/${id}`, {
-            ...requestSettings("PUT"),
-            body: JSON.stringify(body),
-        });
-        const data = await res.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const res = await fetch(`${PATH_BACK}/orders/${id}`, {
+        ...requestSettings("PUT"),
+        body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.message)
+        throw new Error(`Error al actualizar la orden: ${data.message}`);
+    return data;
 }
 
 export async function sendImage(id, formData) {
@@ -100,13 +97,24 @@ export async function sendImage(id, formData) {
         .catch((error) => ({ message: error.message }));
 }
 
+export async function verifyDataOrder(body) {
+    const response = await fetch(`${PATH_BACK}/orders/verify`, {
+        ...requestSettings("POST"),
+        body: JSON.stringify(mapOrderToBackend(body)),
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
+}
+
 export async function registerOrder(body) {
     const response = await fetch(`${PATH_BACK}/orders`, {
         ...requestSettings("POST"),
         body: JSON.stringify(mapOrderToBackend(body)),
     });
     const data = await response.json();
-    if (data.message) throw new Error(data.message);
+    if (data.message)
+        throw new Error(`Error al crear la order: ${data.message}`);
     return data;
 }
 

@@ -13,9 +13,15 @@ import TablePaginationActions from "@/components/TablePaginationActions/TablePag
 import CenteredSpinner from '../LoadingComponets/CenteredSpinner';
 
 import { extractIngredientsOut } from '@/utils/preparingData'
+import { dateStringToDate } from '@/utils/hours';
 
 function OrdersTablet({ orders, loading, pagination }) {
     const { count, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage } = pagination
+
+    function getFormatOrderDate(dateString) {
+        const date = dateStringToDate({ dateString }) 
+        return date.format("DD/MM/YYYY - HH:mm")
+    }
 
     return (
         <Grid
@@ -72,8 +78,8 @@ function OrdersTablet({ orders, loading, pagination }) {
                                                     )
                                                 }).join('; ')
                                             }}/>
-                                        <TableCell align='center'>{order.applicationDate}</TableCell>
-                                        <TableCell align='center'>{order.deliveryDate}</TableCell>
+                                        <TableCell align='center'>{getFormatOrderDate(order.applicationDate)}</TableCell>
+                                        <TableCell align='center'>{getFormatOrderDate(order.deliveryDate)}</TableCell>
                                         <TableCell align='center'>{order.totalCost}</TableCell>
                                         <TableCell
                                             align='center'

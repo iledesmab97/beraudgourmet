@@ -26,7 +26,7 @@ function initialInput(productDetails) {
     return totalInput;
 }
 
-function getTotalPrice({ productDetails, inputs }) {
+function getTotalPrice({ productDetails, inputs, extraIngredients }) {
     if (!productDetails) return 0;
     let price;
     if (productDetails.productType === "salad") {
