@@ -3,7 +3,6 @@ import { requestSettings } from "@/utils/preparingData";
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
 export async function createDelivery(body) {
-    console.log("body:", body);
     const res = await fetch(`${PATH_BACK}/deliveries`, {
         ...requestSettings("POST"),
         body: JSON.stringify(body),
