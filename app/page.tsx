@@ -17,6 +17,8 @@ import { Restaurant, EventAvailable } from "@mui/icons-material";
 import Link from "next/link";
 import StoreComponent from "./StoreComponent";
 import ServiciosEstaticos from "./Servicios";
+import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
+
 import logoBeraund from "../public/images/homeimg/homeimgberaud/logoBeraud.png";
 import { getAllCompanies } from "@/services/companyApi"
 
@@ -36,6 +38,7 @@ const ServiceCard = styled(Card)(({ theme }) => ({
 export default function Home() {
 
     const [companieList, setCompanieList] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         getCompanies()
@@ -43,10 +46,13 @@ export default function Home() {
 
     async function getCompanies() {
         try {
+            setLoading(true)
             const newCompanyList = await getAllCompanies({ available: true })
             setCompanieList(newCompanyList)
         } catch(error: any) {
             alert(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -102,115 +108,80 @@ export default function Home() {
 
                     <Grid container spacing={4} justifyContent={"center"}>
                         {
-                            companieList.map((company: any) => (
-                                <Grid item xs={12} md={6}>
-                                    <ServiceCard>
-                                        <CardMedia
-                                            component="div"
-                                            sx={{
-                                                position: "relative",
-                                                height: 140,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                color: "white",
-                                            }}
-                                        >
-                                            <Image
-                                                src={logoBeraund}
-                                                alt={"logoBeraud"}
-                                                fill
-                                            />
-                                        </CardMedia>
-                                        <CardContent
-                                            sx={{
-                                                bgcolor: "primary.main"
-                                            }}
-                                        >
-                                            <Typography
-                                                gutterBottom
-                                                variant="h5"
-                                                component="div"
-                                                // color="primary"
-                                                color="white"
-                                            >
-                                                {company.title}
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                // color="text.secondary"
-                                                color="white"
-                                            >
-                                                {company.text}
-                                            </Typography>
-                                            <Box sx={{ mt: 2 }}>
-                                                <Link href={"/" + company.name}>
-                                                    <Button
-                                                        variant="outlined"
-                                                        sx={{
-                                                            color: "white",
-                                                            borderColor: "white",
-                                                            "&:hover": {
-                                                                backgroundColor: "white",
-                                                                color: "#295386"
-                                                            }
-                                                        }}
-                                                    >
-                                                        Ver Menús
-                                                    </Button>
-                                                </Link>
-                                            </Box>
-                                        </CardContent>
-                                    </ServiceCard>
-                                </Grid>
-                            ))
-                        }
-                        {/* <Grid item xs={12} md={6}>
-                            <ServiceCard>
-                                <CardMedia
-                                    component="div"
-                                    sx={{
-                                        height: 140,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        bgcolor: "primary.main",
-                                        color: "white",
-                                    }}
+                            loading ? (
+                                <Grid
+                                    item
+                                    xs={12}
+                                    // sx={{
+                                    //     width: '100%',
+                                    //     height: '300px'
+                                    // }}
                                 >
-                                    <EventAvailable sx={{ fontSize: 60 }} />
-                                </CardMedia>
-                                <CardContent>
-                                    <Typography
-                                        gutterBottom
-                                        variant="h5"
-                                        component="div"
-                                        color="primary"
-                                    >
-                                        Eventos
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                    >
-                                        Haga de su evento una experiencia
-                                        inolvidable con nuestros servicios de
-                                        catering y organización de eventos a
-                                        medida.
-                                    </Typography>
-                                    <Box sx={{ mt: 2 }}>
-                                        <Link href="/about">
-                                            <Button
-                                                variant="outlined"
-                                                color="primary"
+                                    <CenteredSpinner/>
+                                </Grid>
+                            ) : companieList.map((company: any) => (
+                                    <Grid item xs={12} md={6}>
+                                        <ServiceCard>
+                                            <CardMedia
+                                                component="div"
+                                                sx={{
+                                                    position: "relative",
+                                                    height: 140,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    color: "white",
+                                                }}
                                             >
-                                                Más sobre Eventos
-                                            </Button>
-                                        </Link>
-                                    </Box>
-                                </CardContent>
-                            </ServiceCard>
-                        </Grid> */}
+                                                <Image
+                                                    src={logoBeraund}
+                                                    alt={"logoBeraud"}
+                                                    fill
+                                                />
+                                            </CardMedia>
+                                            <CardContent
+                                                sx={{
+                                                    bgcolor: "primary.main"
+                                                }}
+                                            >
+                                                <Typography
+                                                    gutterBottom
+                                                    variant="h5"
+                                                    component="div"
+                                                    // color="primary"
+                                                    color="white"
+                                                >
+                                                    {company.title}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body2"
+                                                    // color="text.secondary"
+                                                    color="white"
+                                                >
+                                                    {company.text}
+                                                </Typography>
+                                                <Box sx={{ mt: 2 }}>
+                                                    <Link href={"/" + company.name}>
+                                                        <Button
+                                                            variant="outlined"
+                                                            sx={{
+                                                                color: "white",
+                                                                borderColor: "white",
+                                                                "&:hover": {
+                                                                    backgroundColor: "white",
+                                                                    color: "#295386"
+                                                                }
+                                                            }}
+                                                        >
+                                                            Ver Menús
+                                                        </Button>
+                                                    </Link>
+                                                </Box>
+                                            </CardContent>
+                                        </ServiceCard>
+                                    </Grid>
+                                ))
+                        }
                     </Grid>
                 </Container>
                 <ServiciosEstaticos />

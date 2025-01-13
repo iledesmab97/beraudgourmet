@@ -31,23 +31,20 @@ export const getDeliveryQuote = async ({ pickup, dropoff }) => {
 };
 
 // Create a delivery order
-export const createDeliveryOrder = async (orderDetails) => {
-    const orderUrl = `${PATH_BACK}/uber-direct/order`;
+export const createUberOrder = async ({ orderId }) => {
+    const url = `${PATH_BACK}/ubers/${orderId}`;
 
-    try {
-        const response = await fetch(orderUrl, {
-            method: "POST",
-            ...requestSettings("POST"),
-            body: JSON.stringify(orderDetails),
-        });
-        const data = await response.json();
-        if (data.message) {
-            throw new Error(`Error creating delivery order: ${data.message}`);
-        }
-        return data;
-    } catch (error) {
-        throw error;
+    const response = await fetch(url, {
+        method: "POST",
+        ...requestSettings("POST"),
+    });
+    const data = await response.json();
+    if (data.message) {
+        throw new Error(
+            `Error al desapchar el uber de la order: ${data.message}`
+        );
     }
+    return data;
 };
 
 export const trackDelivery = async (deliveryId) => {

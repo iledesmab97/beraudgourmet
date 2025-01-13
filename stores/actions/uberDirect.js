@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
     getDeliveryQuote,
-    createDeliveryOrder,
+    createUberOrder,
     trackDelivery,
     cancelDelivery,
 } from "../../services/uberDirectApi";
@@ -29,7 +29,7 @@ export const createNewDeliveryOrder = createAsyncThunk(
     "uberDirect/createDeliveryOrder",
     async (orderDetails, { rejectWithValue }) => {
         try {
-            const order = await createDeliveryOrder(orderDetails);
+            const order = await createUberOrder(orderDetails);
             return order;
         } catch (error) {
             return rejectWithValue(error.message);
