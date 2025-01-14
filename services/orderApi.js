@@ -103,7 +103,8 @@ export async function verifyDataOrder(body) {
         body: JSON.stringify(mapOrderToBackend(body)),
     });
     const data = await response.json();
-    if (data.message) throw new Error(data.message);
+    if (data.message)
+        throw new Error(`Error en la verificación: ${data.message}`);
     return data;
 }
 
