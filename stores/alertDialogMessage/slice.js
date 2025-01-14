@@ -50,7 +50,6 @@ export const alertDialogMessageSlice = createSlice({
         },
         updateDialogMessage: (state, action) => {
             const newDialogMessage = action.payload;
-            console.log("newDialogMessage:", newDialogMessage);
             return {
                 ...state,
                 [newDialogMessage.name]: newDialogMessage,
