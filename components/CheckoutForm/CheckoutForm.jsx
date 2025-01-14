@@ -9,8 +9,11 @@ import Tooltip from "@mui/material/Tooltip";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useEffect, useState, useMemo, useRef } from "react";
+import { useSelector } from "react-redux";
 import { useRouter, usePathname } from "next/navigation";
 import {
     PaymentElement,
@@ -55,9 +58,10 @@ export default function CheckoutForm({
     const stripe = useStripe();
     const elements = useElements();
     const router = useRouter();
+    const { errorAlert } = useSelector(state => state.alertDialogMessage)
     const firstTime = useRef(true);
     const { removeLocalData } = useLocalData();
-    const { openAlertDialogMessage } = useGetAlertDialogMessage({
+    const { openAlertDialogMessage, updateAlertDialogMessage } = useGetAlertDialogMessage({
         type: "phoneMissing",
     });
     const pathname = usePathname()
@@ -228,11 +232,12 @@ export default function CheckoutForm({
             });
     
             if (error) {
+                console.log('Ha ocurrido un error en el procesador de pagos')
                 if (
                     error.type === "card_error" ||
                     error.type === "validation_error"
                 ) {
-                    throw new Error(`Error al realizar el pago: ${error.message}`)
+                    throw new Error(`${error.message}`)
                 } else {
                     throw new Error(`Error inesperado al realizar el pago: ${error.message}`)
                 }
@@ -257,7 +262,7 @@ export default function CheckoutForm({
                     }
 
                 } catch(error) {
-                    alert(error.message)
+                    // alert(error.message)
                 } finally {
                     setIsLoading(true);
                     removeLocalData("orders");
@@ -268,10 +273,26 @@ export default function CheckoutForm({
             } 
                 
         } catch(error) {
-            alert(error.message)
+            let message
+            if (error.message === "An unexpected error occurred") {
+                message = "Ha surgido un error al crear la orden. Por favor intente nuevamente"
+            } else {
+                message = error.message
+            }
+            const newErrorAlertDialogMessage = {
+                ...errorAlert,
+                open: true,
+                message
+            }
+            if (message === "Ha surgido un error al crear la orden. Por favor intente nuevamente") {
+                newErrorAlertDialogMessage.numberOpened = errorAlert.numberOpened + 1
+                if (errorAlert.numberOpened === 1) {
+                    newErrorAlertDialogMessage.message = "Estamos teniendo problemas en el sistema. Por favor intenta más tarde"
+                }
+            }
+            updateAlertDialogMessage(newErrorAlertDialogMessage)
         } finally {
             setIsLoading(false);
-            setError("Algo salió mal");
         }
     }
 
@@ -461,7 +482,7 @@ export default function CheckoutForm({
                             <Button
                                 variant="contained"
                                 onClick={handleSubmit}
-                                disabled={isLoading}
+                                disabled={isLoading || errorAlert.numberOpened > 1 }
                                 sx={{
                                     mt: "32px",
                                 }}
@@ -493,6 +514,16 @@ export default function CheckoutForm({
                     )}
                 </>
             )}
+            <Backdrop
+                open={isLoading}
+                sx={{
+                    color: "#fff",
+                    zIndex: 1,
+                    borderRadius: 5
+                }}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
         </Box>
     );
 }
