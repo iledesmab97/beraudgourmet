@@ -79,8 +79,7 @@ export async function updateOrder(id, body) {
         body: JSON.stringify(body),
     });
     const data = await res.json();
-    if (data.message)
-        throw new Error(`Error al actualizar la orden: ${data.message}`);
+    if (data.message) throw new Error(data.message);
     return data;
 }
 
@@ -103,8 +102,7 @@ export async function verifyDataOrder(body) {
         body: JSON.stringify(mapOrderToBackend(body)),
     });
     const data = await response.json();
-    if (data.message)
-        throw new Error(`Error en la verificación: ${data.message}`);
+    if (data.message) throw new Error(data.message);
     return data;
 }
 
@@ -114,8 +112,7 @@ export async function registerOrder(body) {
         body: JSON.stringify(mapOrderToBackend(body)),
     });
     const data = await response.json();
-    if (data.message)
-        throw new Error(`Error al crear la order: ${data.message}`);
+    if (data.message) throw new Error(data.message);
     return data;
 }
 
