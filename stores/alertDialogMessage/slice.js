@@ -21,6 +21,7 @@ const initialState = {
         name: "errorAlert",
         open: false,
         numberOpened: 0,
+        message: "",
     },
 };
 
