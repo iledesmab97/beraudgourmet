@@ -1,51 +1,65 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     phoneMissing: {
-        name: 'phoneMissing',
-        open: false
+        name: "phoneMissing",
+        open: false,
     },
     acceptCookies: {
-        name: 'acceptCookies',
-        open: false
+        name: "acceptCookies",
+        open: false,
     },
     recoverPassword: {
-        name: 'recoverPassword',
-        open: false
+        name: "recoverPassword",
+        open: false,
     },
     changePassword: {
-        name: 'changePassword',
-        open: false
+        name: "changePassword",
+        open: false,
     },
-}
+    errorAlert: {
+        name: "errorAlert",
+        open: false,
+        numberOpened: 0,
+    },
+};
 
 export const alertDialogMessageSlice = createSlice({
-    name: 'alertDialogMessage',
+    name: "alertDialogMessage",
     initialState,
     reducers: {
         openDialogMessage: (state, action) => {
-            const dialogMessage = action.payload
+            const dialogMessage = action.payload;
             return {
                 ...state,
                 [dialogMessage.name]: {
                     ...dialogMessage,
-                    open: true
-                }
-            }
+                    open: true,
+                },
+            };
         },
         closeDialogMessage: (state, action) => {
-            const dialogMessage = action.payload
+            const dialogMessage = action.payload;
             return {
                 ...state,
                 [dialogMessage.name]: {
                     ...dialogMessage,
-                    open: false
-                }
-            }
-        }
-    }
-})
+                    open: false,
+                },
+            };
+        },
+        updateDialogMessage: (state, action) => {
+            const newDialogMessage = action.payload;
+            console.log("newDialogMessage:", newDialogMessage);
+            return {
+                ...state,
+                [newDialogMessage.name]: newDialogMessage,
+            };
+        },
+    },
+});
 
-export default alertDialogMessageSlice.reducer
+export default alertDialogMessageSlice.reducer;
 
-export const { openDialogMessage, closeDialogMessage } = alertDialogMessageSlice.actions
+export const { openDialogMessage, closeDialogMessage, updateDialogMessage } =
+    alertDialogMessageSlice.actions;
