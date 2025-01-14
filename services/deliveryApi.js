@@ -8,7 +8,6 @@ export async function createDelivery(body) {
         body: JSON.stringify(body),
     });
     const data = await res.json();
-    if (data.message)
-        throw new Error(`Error creating delivery data: ${data.message}`);
+    if (data.message) throw new Error(data.message);
     return data;
 }
