@@ -40,9 +40,7 @@ export const createUberOrder = async ({ orderId }) => {
     });
     const data = await response.json();
     if (data.message) {
-        throw new Error(
-            `Error al desapchar el uber de la order: ${data.message}`
-        );
+        throw new Error(data.message);
     }
     return data;
 };
