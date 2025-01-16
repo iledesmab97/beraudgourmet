@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
 import {
     Typography,
     Button,
@@ -12,14 +11,18 @@ import {
     CardContent,
     CardMedia,
 } from "@mui/material";
-import { styled } from "@mui/system";
-import { Restaurant, EventAvailable } from "@mui/icons-material";
 import Link from "next/link";
 import StoreComponent from "./StoreComponent";
+import { styled } from "@mui/system";
 import ServiciosEstaticos from "./Servicios";
 import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
 
+import { Restaurant, EventAvailable } from "@mui/icons-material";
 import logoBeraund from "../public/images/homeimg/homeimgberaud/logoBeraud.png";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { getAllCompanies } from "@/services/companyApi"
 
 const ServiceCard = styled(Card)(({ theme }) => ({
@@ -39,6 +42,7 @@ export default function Home() {
 
     const [companieList, setCompanieList] = useState([])
     const [loading, setLoading] = useState(true)
+    const router = useRouter()
 
     useEffect(() => {
         getCompanies()
@@ -77,16 +81,16 @@ export default function Home() {
                                 fontSize: {
                                     xs: "2rem",
                                     sm: "3rem",
-                                    md: "4rem",
-                                    lg: "5rem",
-                                    xl: "6rem",
+                                    md: "3.5rem",
+                                    lg: "4rem",
+                                    xl: "5rem",
                                 },
                                 textAlign: "center",
                             }}
                         >
-                            Bienvenido a Béraud
+                            Tiendas Disponibles
                         </Typography>
-                        <Typography
+                        {/* <Typography
                             variant="h5"
                             component="h2"
                             gutterBottom
@@ -103,7 +107,7 @@ export default function Home() {
                             }}
                         >
                             Experiencia culinaria francesa a su servicio
-                        </Typography>
+                        </Typography> */}
                     </Box>
 
                     <Grid container spacing={4} justifyContent={"center"}>
@@ -121,7 +125,12 @@ export default function Home() {
                                 </Grid>
                             ) : companieList.map((company: any) => (
                                     <Grid item xs={12} md={6}>
-                                        <ServiceCard>
+                                        <ServiceCard
+                                            onClick={() => { router.push(company.name)}}
+                                            sx={{
+                                                cursor: "pointer"
+                                            }}
+                                        >
                                             <CardMedia
                                                 component="div"
                                                 sx={{
@@ -160,7 +169,7 @@ export default function Home() {
                                                 >
                                                     {company.text}
                                                 </Typography>
-                                                <Box sx={{ mt: 2 }}>
+                                                {/* <Box sx={{ mt: 2 }}>
                                                     <Link href={"/" + company.name}>
                                                         <Button
                                                             variant="outlined"
@@ -176,7 +185,7 @@ export default function Home() {
                                                             Ver Menús
                                                         </Button>
                                                     </Link>
-                                                </Box>
+                                                </Box> */}
                                             </CardContent>
                                         </ServiceCard>
                                     </Grid>
