@@ -150,28 +150,29 @@ export default function StoreComponent() {
                     <ModalStoresDetail />
                 </Box>
             ) : (
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        my: 4,
-                        mx: 2,
-                    }}
-                >
-                    <MapPin size={32} color="gray" />
+                null
+                // <Box
+                //     sx={{
+                //         display: "flex",
+                //         flexDirection: "column",
+                //         alignItems: "center",
+                //         justifyContent: "center",
+                //         my: 4,
+                //         mx: 2,
+                //     }}
+                // >
+                //     <MapPin size={32} color="gray" />
 
-                    <Typography
-                        variant="body1"
-                        align="center"
-                        sx={{ mt: 2, color: "text.primary" }}
-                    >
-                        Algunas funciones del sitio web necesitan permisos de
-                        localización. Por favor, habilita la localización en la
-                        configuración de tu navegador.
-                    </Typography>
-                </Box>
+                //     <Typography
+                //         variant="body1"
+                //         align="center"
+                //         sx={{ mt: 2, color: "text.primary" }}
+                //     >
+                //         Algunas funciones del sitio web necesitan permisos de
+                //         localización. Por favor, habilita la localización en la
+                //         configuración de tu navegador.
+                //     </Typography>
+                // </Box>
             )}
         </>
     );
