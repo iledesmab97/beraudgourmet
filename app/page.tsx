@@ -63,7 +63,7 @@ export default function Home() {
                         <Typography
                             variant="h2"
                             component="h1"
-                            gutterBottom
+                            // gutterBottom
                             color="primary"
                             sx={{
                                 fontSize: {
