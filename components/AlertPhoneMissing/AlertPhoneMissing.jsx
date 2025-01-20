@@ -8,11 +8,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import InputPhoneNumber from "../InputPhoneNumber/InputPhoneNumber";
 
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import useGetAlertDialogMessage from "@/hooks/useGetAlertDialogMessage";
-import useGetUser from "@/hooks/useGetUser";
 
 import { isPossiblePhoneNumber } from "libphonenumber-js";
-import { updateMyAccount } from "@/services/userApi";
+
+import useHandlerUserThunk from "@/hooks/useHandlerUserThunk"
 
 function validation(phone) {
     let errors = "";
@@ -35,8 +36,8 @@ function AlertPhoneMissing() {
     );
     const [phone, setPhone] = useState("+52");
     const [errors, setErrors] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { user, handleUpdateUser } = useGetUser();
+    const { status } = useSelector(state => state.user)
+    const { updateUser } = useHandlerUserThunk()
 
     useEffect(() => {
         setOpen(alertDialogMessage.open);
@@ -48,25 +49,14 @@ function AlertPhoneMissing() {
     }
 
     async function handleActionButton() {
-        setLoading(true);
         if (validation(phone)) {
             setErrors(validation(phone));
-            return setLoading(false);
+            return 
         }
-        const response = await updateMyAccount({
-            property: "phoneNumber",
-            value: phone,
-        });
-        if (response.message) {
-            setLoading(false);
-            return alert(response.message);
-        }
-        const newUser = {
-            ...user,
-            numberPhone: phone,
-        };
-        handleUpdateUser(newUser);
-        setLoading(false);
+        updateUser({
+            property: "numberPhone",
+            value: phone
+        })
         closeAlertDialogMessage();
     }
 
@@ -97,7 +87,7 @@ function AlertPhoneMissing() {
                     onClick={() => {
                         handleActionButton();
                     }}
-                    disabled={loading}
+                    disabled={status === "loading"}
                 >
                     Aceptar
                 </Button>
