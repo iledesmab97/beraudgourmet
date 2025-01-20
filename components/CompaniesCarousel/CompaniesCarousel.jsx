@@ -59,7 +59,9 @@ export default function CompaniesCarousel({ companies }) {
     <Slider {...settings}>
         {
             companies.map(( company ) => (
-                <Box>
+                <Box
+                    key={company.name + company.id}
+                >
                     <ServiceCard
                         onClick={() => { router.push(company.name)}}
                         sx={{
