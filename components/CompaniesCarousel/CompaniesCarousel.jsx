@@ -36,13 +36,22 @@ const smallScreen = {
     variableWidth: true
 }
 
-function getSettings(screen) {
+function getSettings({ screen, nCompanies }) {
     switch(screen) {
         case "small": {
-            return smallScreen
+            let newScreen = {...smallScreen}
+            newScreen.dots = false
+            if (nCompanies < 4) {
+                newScreen.infinite = false
+            }
+            return newScreen
         }
         default: {
-            return smallScreen
+            let newScreen = {...smallScreen}
+            if (nCompanies < 4) {
+                newScreen.infinite = false
+            }
+            return newScreen
         }
     }
 }
@@ -53,12 +62,12 @@ export default function CompaniesCarousel({ companies }) {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const router = useRouter()
 
-    const settings = getSettings(isSmallScreen ? "small" : "medium" )
+    const settings = getSettings({ screen: isSmallScreen ? "small" : "medium", nCompanies: companies.length })
 
   return (
     <Slider {...settings}>
         {
-            companies.map(( company ) => (
+            companies.filter(company => company.available).map(( company ) => (
                 <Box
                     key={company.name + company.id}
                 >
