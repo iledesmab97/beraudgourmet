@@ -44,7 +44,6 @@ const wrappersType = {
 }
 
 export default function CheckoutForm({
-    user,
     place,
     orders,
     checkout,
@@ -55,6 +54,7 @@ export default function CheckoutForm({
     handleCloseModal,
     handleDataStripe,
 }) {
+    const { user } = useSelector(state => state.user)
     const stripe = useStripe();
     const elements = useElements();
     const router = useRouter();

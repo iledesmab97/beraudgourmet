@@ -49,9 +49,9 @@ function WhatsappButton() {
                             alignItems: "center",
                         }}
                     >
-                        <IconButton>
-                            <WhatsAppIcon />
-                        </IconButton>
+                        <WhatsAppIcon
+                            fontSize={30}
+                        />
                     </Link>
                 </Fab>
             )}
