@@ -1,39 +1,21 @@
 "use client";
 
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
 import {
     Typography,
-    Button,
     Container,
     Box,
     Grid,
-    Card,
-    CardContent,
-    CardMedia,
 } from "@mui/material";
-import { styled } from "@mui/system";
-import { Restaurant, EventAvailable } from "@mui/icons-material";
-import Link from "next/link";
 import StoreComponent from "./StoreComponent";
 import ServiciosEstaticos from "./Servicios";
 import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
+import CompaniesCarousel from "@/components/CompaniesCarousel/CompaniesCarousel"
 
-import logoBeraund from "../public/images/homeimg/homeimgberaud/logoBeraud.png";
+import { Restaurant, EventAvailable } from "@mui/icons-material";
+
+import React, { useEffect, useState } from "react";
+
 import { getAllCompanies } from "@/services/companyApi"
-
-const ServiceCard = styled(Card)(({ theme }) => ({
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    borderRadius: "8px",
-    transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-    "&:hover": {
-        transform: "translateY(-5px)",
-        boxShadow:
-            "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
-    },
-}));
 
 export default function Home() {
 
@@ -66,121 +48,68 @@ export default function Home() {
                     minHeight: "100vh",
                 }}
             >
-                <Container maxWidth="lg" sx={{ mt: 8, mb: 8 }}>
+                <Container
+                    maxWidth="lg"
+                    sx={{
+                        mt: 8,
+                        mb: 8,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+
+                    }}
+                >
                     <Box sx={{ textAlign: "center", mb: 8 }}>
                         <Typography
                             variant="h2"
                             component="h1"
-                            gutterBottom
+                            // gutterBottom
                             color="primary"
                             sx={{
                                 fontSize: {
                                     xs: "2rem",
                                     sm: "3rem",
-                                    md: "4rem",
-                                    lg: "5rem",
-                                    xl: "6rem",
+                                    md: "3.5rem",
+                                    lg: "4rem",
+                                    xl: "5rem",
                                 },
                                 textAlign: "center",
                             }}
                         >
-                            Bienvenido a Béraud
-                        </Typography>
-                        <Typography
-                            variant="h5"
-                            component="h2"
-                            gutterBottom
-                            color="secondary"
-                            sx={{
-                                fontSize: {
-                                    xs: "1rem",
-                                    sm: "1.25rem",
-                                    md: "1.5rem",
-                                    lg: "2rem",
-                                    xl: "2.5rem",
-                                },
-                                textAlign: "center",
-                            }}
-                        >
-                            Experiencia culinaria francesa a su servicio
+                            Tiendas Disponibles
                         </Typography>
                     </Box>
 
-                    <Grid container spacing={4} justifyContent={"center"}>
+                    {
+                        !loading ? (
+                            <Box
+                                sx={{
+                                    width: "100%"
+                                }}
+                            >
+                                <CompaniesCarousel companies={companieList}/>
+                            </Box>
+                        ) : null
+                    }
+
+                    <Grid
+                        container
+                        spacing={4}
+                        justifyContent={"center"}
+                        sx={{
+                            width: "100%",
+                            height: "100px"
+                        }}
+                    >
                         {
                             loading ? (
                                 <Grid
                                     item
                                     xs={12}
-                                    // sx={{
-                                    //     width: '100%',
-                                    //     height: '300px'
-                                    // }}
                                 >
                                     <CenteredSpinner/>
                                 </Grid>
-                            ) : companieList.map((company: any) => (
-                                    <Grid item xs={12} md={6}>
-                                        <ServiceCard>
-                                            <CardMedia
-                                                component="div"
-                                                sx={{
-                                                    position: "relative",
-                                                    height: 140,
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    color: "white",
-                                                }}
-                                            >
-                                                <Image
-                                                    src={logoBeraund}
-                                                    alt={"logoBeraud"}
-                                                    fill
-                                                />
-                                            </CardMedia>
-                                            <CardContent
-                                                sx={{
-                                                    bgcolor: "primary.main"
-                                                }}
-                                            >
-                                                <Typography
-                                                    gutterBottom
-                                                    variant="h5"
-                                                    component="div"
-                                                    // color="primary"
-                                                    color="white"
-                                                >
-                                                    {company.title}
-                                                </Typography>
-                                                <Typography
-                                                    variant="body2"
-                                                    // color="text.secondary"
-                                                    color="white"
-                                                >
-                                                    {company.text}
-                                                </Typography>
-                                                <Box sx={{ mt: 2 }}>
-                                                    <Link href={"/" + company.name}>
-                                                        <Button
-                                                            variant="outlined"
-                                                            sx={{
-                                                                color: "white",
-                                                                borderColor: "white",
-                                                                "&:hover": {
-                                                                    backgroundColor: "white",
-                                                                    color: "#295386"
-                                                                }
-                                                            }}
-                                                        >
-                                                            Ver Menús
-                                                        </Button>
-                                                    </Link>
-                                                </Box>
-                                            </CardContent>
-                                        </ServiceCard>
-                                    </Grid>
-                                ))
+                            ) : null
                         }
                     </Grid>
                 </Container>

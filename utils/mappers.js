@@ -168,6 +168,8 @@ export function mapDeliveryInformationToBackend(deliveryInformation) {
         state,
         street,
         id: quoteId,
+        type,
+        other,
     } = deliveryInformation;
     return {
         address: inputAddress,
@@ -179,5 +181,22 @@ export function mapDeliveryInformationToBackend(deliveryInformation) {
         notes: note,
         location: coordinates,
         quoteId,
+        typeLocation: type.totalName,
+        building: !other
+            ? null
+            : other.building
+            ? other.building
+            : other.business
+            ? other.business
+            : null,
+        floor: !other
+            ? null
+            : other.room
+            ? other.room
+            : other.department
+            ? other.department
+            : other.floor
+            ? other.floor
+            : null,
     };
 }
