@@ -62,7 +62,7 @@ function DataOrder({ user, place, preMessageDelivery, messageDelivery }) {
                             variant='p'
                             gutterBottom
                         >
-                            {`${place.inputsHome.street.unity}/${place.inputsHome.street.number} ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
+                            {`${place.inputsHome.street.number}/ ${place.inputsHome.street.streetName}, ${place.inputsHome.inputAddress.split(",")[0]}`}
                         </Typography>
                     </Box>
                 ) : (
