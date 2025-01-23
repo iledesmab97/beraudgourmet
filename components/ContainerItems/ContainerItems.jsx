@@ -75,7 +75,7 @@ function ContainerItems({ itemList, title, sectionId }) {
                     nItems={itemList.length}
                     settings={{
                         // dots: true,
-                        arrows: true,
+                        arrows: itemList.length > 1,
                         nextArrow: <NextArrow />,
                         prevArrow: <PrevArrow />,
                     }}
