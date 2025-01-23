@@ -133,7 +133,7 @@ function Menu({ params }) {
                         <Grid container item xs={12} md={8} spacing={3}>
                             {pizzas.length > 0 && (
                                 <ContainerItems
-                                    itemList={pizzas}
+                                    itemList={pizzas.filter(item => item.status === "ACTIVE" && item.type !== "customizable")}
                                     title={"Nuestra selección de Pizzas"}
                                     products={"pizzas"}
                                     sectionId={"pizzasSection"}
@@ -142,7 +142,7 @@ function Menu({ params }) {
 
                             {salads.length > 0 && (
                                 <ContainerItems
-                                    itemList={salads}
+                                    itemList={salads.filter(item => item.status === "ACTIVE" && item.type !== "customizable")}
                                     title={"Nuestra selección de Ensaladas"}
                                     products={"salads"}
                                     sectionId={"saladsSection"}
