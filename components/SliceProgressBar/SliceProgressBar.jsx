@@ -26,7 +26,7 @@ function SliceProgressBar({ section }) {
             sx={{
                 position: 'absolute',
                 top: '0px',
-                right: '230px',
+                right: '205px',
                 height: '100%',
                 width: 'fit-content',
                 display: 'flex',
