@@ -10,8 +10,11 @@ import ClientWrapper from "@/app/ClientWrapper"; // Importa el nuevo componente 
 import "./global.css";
 
 export const metadata = {
-    title: "Berautgourmet",
-    description: "Grupo Béraud",
+    title: {
+        template: "%s | Rows",
+        default: "Rows"
+    },
+    description: "The Ecommerce Rows page",
 };
 
 export default function RootLayout({
