@@ -75,21 +75,22 @@ function ContainerItems({ itemList, title, sectionId }) {
                     nItems={itemList.length}
                     settings={{
                         // dots: true,
-                        arrows: true,
+                        arrows: itemList.length > 1,
                         nextArrow: <NextArrow />,
                         prevArrow: <PrevArrow />,
                     }}
                 >
                     {
-                        itemList.map(product => (
+                        itemList.map((item, index) => (
                             <Box
-                                key={product.productType + product.id}
+                                key={item.productType + item.id}
                                 sx={{
                                     p: 1
                                 }}
                             >
                                 <ProductCard
-                                    product={product}
+                                    item={item}
+                                    index={index}
                                 />
                             </Box>
                         ))
@@ -99,7 +100,7 @@ function ContainerItems({ itemList, title, sectionId }) {
                 <Grid container spacing={2}>
                     {itemList.map((item, index) => (
                         <Grid item key={item.name + index} xs={12} sm={4}>
-                            <ProductCard product={item} />
+                            <ProductCard item={item} index={index} />
                         </Grid>
                     ))}
                 </Grid>

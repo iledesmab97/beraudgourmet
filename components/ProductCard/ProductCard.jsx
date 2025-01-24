@@ -7,14 +7,14 @@ import Typography from "@mui/material/Typography";
 
 import useGetModal from "@/hooks/useGetModal";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ item, index }) {
 
     const { handleOpenModalOrder } = useGetModal({ modalType: "order" });
 
     return (
         <CardActionArea
             onClick={() => {
-                handleOpenModalOrder({ product });
+                handleOpenModalOrder({ item, index });
             }}
             sx={{
                 height: "100%",
@@ -29,8 +29,8 @@ export default function ProductCard({ product }) {
             >
                 <CardMedia
                     component="img"
-                    image={product.image}
-                    alt={product.name}
+                    image={item.image}
+                    alt={item.name}
                     sx={{
                         width: "auto",
                         height: "194px",
@@ -56,7 +56,7 @@ export default function ProductCard({ product }) {
                             },
                         }}
                     >
-                        {product.name}
+                        {item.name}
                     </Typography>
                         <Box
                             sx={{
@@ -69,7 +69,7 @@ export default function ProductCard({ product }) {
                                 component={"p"}
                                 variant="texto"
                             >
-                                {product.text}
+                                {item.text}
                             </Typography>
                             <Box
                                 sx={{
