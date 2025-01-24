@@ -81,15 +81,16 @@ function ContainerItems({ itemList, title, sectionId }) {
                     }}
                 >
                     {
-                        itemList.map(product => (
+                        itemList.map((item, index) => (
                             <Box
-                                key={product.productType + product.id}
+                                key={item.productType + item.id}
                                 sx={{
                                     p: 1
                                 }}
                             >
                                 <ProductCard
-                                    product={product}
+                                    item={item}
+                                    index={index}
                                 />
                             </Box>
                         ))
