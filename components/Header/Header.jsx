@@ -1,29 +1,36 @@
 "use client";
 
-import { styled } from "@mui/system";
-import {
-    AppBar,
-    Toolbar,
-    Button,
-    Container,
-    IconButton,
-    Menu,
-    MenuItem,
-    Box,
-} from "@mui/material";
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
+import AppBar from "@mui/material/AppBar";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 import LocalPizzaIcon from "@mui/icons-material/LocalPizza";
 import MenuIcon from "@mui/icons-material/Menu";
+
 import Link from "next/link";
 import Image from "next/image";
+
 import CurrentSession from "@/components/CurrentSession/CurrentSession";
 import NavBar from "@/components/NavBar/NavBar";
+
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import logoBeraund from "../../public/images/homeimg/homeimgberaud/logoBeraud.png";
-import links from "../NavBar/navbarpaths.json";
-import { scrollToSection } from "@/utils/moveIntoPage";
+
 import { useTheme, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
+
+import { scrollToSection } from "@/utils/moveIntoPage";
+
+import links from "../NavBar/navbarpaths.json";
+import logoBeraund from "../../public/images/homeimg/homeimgberaud/logoBeraud.png";
+
+import { styled } from "@mui/system";
 
 const navImage = {
     Pizzas: <LocalPizzaIcon />,
@@ -84,12 +91,27 @@ function Header() {
                         justifyContent: "space-between",
                     }}
                 >
-                    <Link href={"/"}>
-                        <Image
-                            src={logoBeraund}
-                            alt={"logoBeraund"}
-                            width={130}
-                        />
+                    <Link
+                        href={"/"}
+                        style={{
+                            textDecoration: "none"
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}  
+                        >
+                            <Typography
+                                component={"lable"}
+                                variant="encabezado"
+                                fontWeight= "400"
+                                fontSize= "2.0rem"
+                            >
+                                Rows
+                            </Typography>
+                        </Box>
                     </Link>
                     {isMobile ? (
                         <Box>
