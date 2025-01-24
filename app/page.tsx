@@ -9,11 +9,14 @@ import {
 import StoreComponent from "./StoreComponent";
 import ServiciosEstaticos from "./Servicios";
 import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
-import CompaniesCarousel from "@/components/CompaniesCarousel/CompaniesCarousel"
+import Carousel from "@/components/Carousel/Carousel"
+import CompanyCard from "@/components/CompanyCard/CompanyCard";
 
 import { Restaurant, EventAvailable } from "@mui/icons-material";
 
 import React, { useEffect, useState } from "react";
+
+import { useTheme, useMediaQuery } from "@mui/material";
 
 import { getAllCompanies } from "@/services/companyApi"
 
@@ -87,7 +90,28 @@ export default function Home() {
                                     width: "100%"
                                 }}
                             >
-                                <CompaniesCarousel companies={companieList}/>
+                                <Carousel
+                                    nItems={companieList.length}
+                                    settings={{
+                                        // dots: true,
+                                        // arrows: true,
+                                    }}
+                                >
+                                    {
+                                        companieList.map(( company: any ) => (
+                                            <Box
+                                                key={company.id}
+                                                sx={{
+                                                    p: 1,
+                                                }}
+                                            >
+                                                <CompanyCard
+                                                    company={company}
+                                                /> 
+                                            </Box>
+                                        ))
+                                    }
+                                </Carousel>
                             </Box>
                         ) : null
                     }

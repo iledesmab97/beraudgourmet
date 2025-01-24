@@ -10,8 +10,17 @@ import ClientWrapper from "@/app/ClientWrapper"; // Importa el nuevo componente 
 import "./global.css";
 
 export const metadata = {
-    title: "Berautgourmet",
-    description: "Grupo Béraud",
+    title: {
+        template: "%s | Rows",
+        default: "Rows"
+    },
+    description: "The Ecommerce Rows page",
+    // icons: {
+    //     icon: {
+    //         href: "https://static.vecteezy.com/system/resources/thumbnails/012/634/759/small/art-deco-outline-stroke-in-golden-color-for-classy-and-luxury-style-premium-vintage-line-art-design-element-free-png.png",
+    //         url: "https://static.vecteezy.com/system/resources/thumbnails/012/634/759/small/art-deco-outline-stroke-in-golden-color-for-classy-and-luxury-style-premium-vintage-line-art-design-element-free-png.png"
+    //     }
+    // }
 };
 
 export default function RootLayout({

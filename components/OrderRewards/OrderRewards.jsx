@@ -22,7 +22,15 @@ function OrderRewards() {
     const { typeDelivery } = useSelector((state) => state.place);
 
     return (
-        <Grid item xs={12} md={4}>
+        <Grid
+            item
+            sx={{
+                width: {
+                    xs: "100%",
+                    md: "auto"
+                }
+            }}
+        >
             <Container
                 sx={{
                     position: "relative",
@@ -30,16 +38,13 @@ function OrderRewards() {
                         xs: "100%",
                         md: "auto",
                     },
-                    minWidth: {
-                        xs: "300px",
-                        sm: "315px",
-                        md: "300px",
+                    width: "274px",
+                    p: {
+                        xs: "0px 25px 14px 0px"
                     },
                     bgcolor: "#EAEDF2",
-                    pb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    // alignItems: 'center',
                     alignItems: "flex-end",
                     justifyContent: "flex-start",
                 }}
