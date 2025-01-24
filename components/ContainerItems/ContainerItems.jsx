@@ -99,7 +99,7 @@ function ContainerItems({ itemList, title, sectionId }) {
                 <Grid container spacing={2}>
                     {itemList.map((item, index) => (
                         <Grid item key={item.name + index} xs={12} sm={4}>
-                            <ProductCard product={item} />
+                            <ProductCard item={item} index={index} />
                         </Grid>
                     ))}
                 </Grid>
