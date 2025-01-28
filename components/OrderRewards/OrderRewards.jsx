@@ -25,6 +25,10 @@ function OrderRewards() {
         <Grid
             item
             sx={{
+                height: {
+                    xs: "100%",
+                    md: "auto"
+                },
                 width: {
                     xs: "100%",
                     md: "auto"
