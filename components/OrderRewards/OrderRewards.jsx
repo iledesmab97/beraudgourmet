@@ -26,13 +26,13 @@ function OrderRewards() {
             item
             sx={{
                 height: {
-                    xs: "100%",
-                    md: "auto"
+                    xs: "100vh",
+                    md: "100%"
                 },
                 width: {
                     xs: "100%",
                     md: "auto"
-                }
+                },
             }}
         >
             <Container
@@ -51,6 +51,7 @@ function OrderRewards() {
                     flexDirection: "column",
                     alignItems: "flex-end",
                     justifyContent: "flex-start",
+                    overflow: "auto"
                 }}
             >
                 <Box
