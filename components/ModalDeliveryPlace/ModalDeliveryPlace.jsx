@@ -17,17 +17,27 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 600,
-    height: 700,
+    width: {
+        xs: "324px",
+        sm: "700px",
+        md: "700px",
+    },
+    height: {
+        xs: "80%",
+        sm: "60%",
+        md: "700px",
+    },
     bgcolor: "background.paper",
     boxShadow: 24,
     borderRadius: 5,
-    p: 5,
+    p: {
+        xs: 2,
+        sm: 5,
+    },
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 2,
+    overflow: "hidden"
 };
 
 export default function ModalDeliveryPlace() {
@@ -60,6 +70,14 @@ export default function ModalDeliveryPlace() {
                         alignItems: "center",
                         justifyContent: "flex-start",
                         gap: 2,
+                        overflowY: "auto",
+                        pr: 1,
+                        pl: 1,
+                        mb: {
+                            "xs": "45px",
+                            "sm": "20px",
+                            "md": "20px"
+                        }
                     }}
                 >
                     <Typography
