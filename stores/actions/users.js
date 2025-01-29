@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
     fetchwhoAmI,
+    newAccount,
     requestLogout,
     searchUser,
     verifyUserData,
@@ -8,6 +9,7 @@ import {
 } from "@/services/userApi";
 import { updatePlaceToInitialState } from "../place/slice.js";
 import { updateOrderToInitialState } from "../order/slice.js";
+
 import { removeLocalData, saveLocalData } from "@/utils/manageLocalStorage.js";
 
 export const verifyUserAction = createAsyncThunk(
@@ -46,6 +48,24 @@ export const logOutUserAction = createAsyncThunk(
             return;
         } catch (error) {
             alert(error.message);
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const signupUserAction = createAsyncThunk(
+    "user/signupUser",
+    async ({ email, name, password, numberPhone }, { rejectWithValue }) => {
+        try {
+            const { user, token } = await newAccount({
+                email,
+                name,
+                password,
+                numberPhone,
+            });
+            saveLocalData("user", token);
+            return user;
+        } catch (error) {
             return rejectWithValue(error.message);
         }
     }

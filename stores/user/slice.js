@@ -4,6 +4,7 @@ import {
     updateUserAction,
     logOutUserAction,
     logInUserAction,
+    signupUserAction,
 } from "../actions/users";
 
 const initialState = {};
@@ -68,6 +69,18 @@ export const userSlice = createSlice({
                 delete state.error;
             })
             .addCase(logInUserAction.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(signupUserAction.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(signupUserAction.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.status = "succeeded";
+                delete state.error;
+            })
+            .addCase(signupUserAction.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });

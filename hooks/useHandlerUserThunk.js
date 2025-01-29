@@ -7,6 +7,7 @@ import { updateAlertMessage } from "@/stores/alertMessage/slice";
 
 import {
     updateUserAction,
+    signupUserAction,
     logInUserAction,
     logOutUserAction,
 } from "@/stores/actions/users";
@@ -97,5 +98,13 @@ export default function useHandlerUserThunk() {
         dispatch(logOutUserAction());
     }
 
-    return { updateUser, loginUser, logout };
+    async function signUpUser({ email, name, password, numberPhone }) {
+        alertText.current = {
+            text: "Te has registrado exitosamente",
+            property: null,
+        };
+        dispatch(signupUserAction({ email, name, password, numberPhone }));
+    }
+
+    return { updateUser, loginUser, logout, signUpUser };
 }
