@@ -50,6 +50,7 @@ function ModalUserOrders() {
     const [count, setCount] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
+    // Refresca la lista de ordenes a su estado inical cada vez que se abre el modal
     useEffect(() => {
         if (!open) return
         handleChangePage(0)
@@ -68,11 +69,6 @@ function ModalUserOrders() {
         setPage(0);
     }
 
-    useEffect(() => {
-        if (!user || orders.length) return;
-        getOrders({ userId: user.id })
-    }, [open, user]);
-
     async function getOrders({ userId, page=0 }) {
         setLoading(true)
         let newOrders, newCount
@@ -82,7 +78,8 @@ function ModalUserOrders() {
                 queries: {
                     itemsxPage: rowsPerPage,
                     page,
-                    order1: "deliveryDate:DESC" 
+                    order2: "closed:ASC",
+                    order1: "deliveryDate:ASC"
                 }
             })
             newOrders = totalOrdersFront
@@ -141,7 +138,17 @@ function ModalUserOrders() {
                         }}
                     />
                 ) : (
-                    <OrdersList orders={orders} />
+                    <OrdersList
+                        orders={orders}
+                        loading={loading}
+                        pagination={{
+                            count,
+                            rowsPerPage,
+                            page,
+                            handleChangePage,
+                            handleChangeRowsPerPage
+                        }}
+                    />
                 )}
             </Grid>
         </Modal>
