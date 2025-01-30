@@ -2,8 +2,6 @@
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import PaymentIcon from "@mui/icons-material/Payment";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import FormGroup from "@mui/material/FormGroup";
@@ -11,6 +9,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+
+import PaymentIcon from "@mui/icons-material/Payment";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";

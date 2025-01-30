@@ -187,10 +187,8 @@ function useHandleUser() {
 
     async function verifyError() {
         const newErrors = lastValidation(inputs);
-        if (newErrors.email || newErrors.password) {
-            setErrors(errors);
-            return newErrors;
-        }
+        setErrors(newErrors);
+        return newErrors;
     }
 
     async function changePassword() {
