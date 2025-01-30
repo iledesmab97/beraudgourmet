@@ -57,26 +57,31 @@ function ModalUserOrders() {
     }, [open])
 
     async function handleChangePage(newPage) {
-        const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage });
+        const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage, itemsxPage: rowsPerPage });
         if ( !newOrders || !newCount ) return
         setPage(newPage);
         setOrders(newOrders)
         setCount(newCount)
     }
 
-    function handleChangeRowsPerPage(event) {
-        setRowsPerPage(+event.target.value);
+    async function handleChangeRowsPerPage(event) {
+        const { value } = event.target
         setPage(0);
+        setRowsPerPage(value);
+        const { newOrders, newCount } = await getOrders({ userId: user.id, itemsxPage: value });
+        if ( !newOrders || !newCount ) return
+        setOrders(newOrders)
+        setCount(newCount)
     }
 
-    async function getOrders({ userId, page=0 }) {
+    async function getOrders({ userId, page=0, itemsxPage }) {
         setLoading(true)
         let newOrders, newCount
         try {
             const { totalOrdersFront, count } = await getAllOrdersOfUser({
                 userId,
                 queries: {
-                    itemsxPage: rowsPerPage,
+                    itemsxPage,
                     page,
                     order2: "closed:ASC",
                     order1: "deliveryDate:ASC"
