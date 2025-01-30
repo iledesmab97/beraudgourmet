@@ -2,7 +2,7 @@ import {
     userDataFromBackToFront,
     requestSettings,
 } from "@/utils/preparingData";
-import { mapUserFromBackend } from "@/utils/mappers";
+import { mapUserFromBackend, mapUserToBackend } from "@/utils/mappers";
 
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
@@ -42,14 +42,20 @@ export async function fetchwhoAmI(token) {
     return mapUserFromBackend(data);
 }
 
-export async function newAccount(data) {
+export async function newAccount(userData) {
+    const totalUserData = mapUserToBackend(userData);
     const res = await fetch(`${PATH_BACK}/users/signup`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(totalUserData),
     });
-    const data_1 = await res.json();
-    return data_1;
+    const data = await res.json();
+    if (data.message) throw new Error(data.message);
+    const { user, token } = data;
+    return {
+        user: mapUserFromBackend(user),
+        token,
+    };
 }
 
 export async function updateMyAccount(body) {

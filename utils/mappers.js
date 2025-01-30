@@ -44,6 +44,37 @@ export function mapUserFromBackend(user) {
     };
 }
 
+export function mapUserToBackend(user) {
+    const {
+        id,
+        name,
+        password,
+        email,
+        numberPhone,
+        promotion,
+        verified,
+        state,
+        RoleId,
+        Companies,
+        events,
+        stores,
+    } = user;
+    return {
+        id,
+        name,
+        password,
+        email,
+        phoneNumber: numberPhone,
+        promotion,
+        verified,
+        state,
+        RoleId,
+        Companies,
+        events,
+        stores,
+    };
+}
+
 export function mapStoresFromBackend(stores) {
     return stores.map((store) => {
         const {

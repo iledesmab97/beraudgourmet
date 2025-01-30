@@ -161,7 +161,7 @@ function UserNew({
                     </Typography>
                     <Button
                         variant="contained"
-                        disabled={false}
+                        disabled={!inputs.email || !inputs.password || !inputs.name || !inputs.numberPhone}
                         onClick={signUp}
                     >
                         Registrarse

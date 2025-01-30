@@ -21,8 +21,6 @@ const libraries = ["places"];
 
 export default function ClientWrapper({ children }) {
     const [isMaintenance, setIsMaintenance] = useState(false); // State to manage maintenance mode
-    const { status } = useSelector((state) => state.storeList);
-    const [locationPermission, setLocationPermission] = useState(null);
     const [position, setPosition] = useState(null);
     const [loading, setLoading] = useState(true);
     const { requestLocationPermission, getHomeDataDirection  } = useGoogleMaps()
@@ -33,7 +31,6 @@ export default function ClientWrapper({ children }) {
         libraries,
     });
 
-    // const maintenanceRoutes = ["/menu"];
     const maintenanceRoutes = [];
 
     // Function to update maintenance state based on current path
@@ -80,23 +77,17 @@ export default function ClientWrapper({ children }) {
         if (status === 'granted') {
             setPosition(coordinates);
         } 
-        setLocationPermission(status);
     };
 
     useEffect(() => {
-        if (status !== "succeeded") {
-            if (sessionStorage.getItem("hasAnimated")) {
-                setLoading(false);
-            }
+        if (!loading) return requestLocation()
+        if (sessionStorage.getItem("hasAnimated")) {
+            setLoading(false);
         }
-        if (!getLocalData("geolocation")) {
-            requestLocation();
-        }
-    }, [status, loading]);
+    }, [loading]);
 
     useEffect(() => {
-        const geolocation = getLocalData('geolocation')
-        if (!position || geolocation) return;
+        if (!position) return;
         saveHomeDataDirection(position)
     }, [position]);
 

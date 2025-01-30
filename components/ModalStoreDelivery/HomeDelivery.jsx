@@ -52,21 +52,23 @@ export default function HomeDelivery() {
                 id="HomeDelivery-container"
                 sx={{
                     width: "100%",
-                    maxHeight: {
-                        xs: "335px",
-                        sm: "490px",
-                        md: "430px",
-                    },
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "flex-start",
                     gap: 2,
                     overflowY: "auto",
+                    flex: "1",
                     pr: 1,
+                    mb: {
+                        "xs": "45px",
+                        "sm": "20px",
+                        "md": "20px"
+                    }
                 }}
             >
                 <Typography
+                    component={"h2"}
                     variant="title"
                     sx={{
                         alignSelf: "flex-start",

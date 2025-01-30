@@ -22,15 +22,20 @@ export default function UserSection() {
         editing,
         handleChangeNumberPhone,
         verifyError,
-        signUp,
     } = useHandleUser();
-    const { loginUser } = useHandlerUserThunk("UserNew")
+    const { loginUser, signUpUser } = useHandlerUserThunk("UserNew")
 
     function login() {
         const { email, password } = inputs
-        const newError = verifyError()
-        if (Object.keys(newError).length) return
+        const { email: emailError, password: passwordError } = verifyError()
+        if (emailError || passwordError) return
         loginUser({ email, password })
+    }
+
+    function signUp() {
+        const { email: emailError, name:nameError, password:passwordError, numberPhone:numberPhoneError } = verifyError()
+        if (emailError || nameError || passwordError || numberPhoneError) return
+        signUpUser(inputs)
     }
 
     return (
