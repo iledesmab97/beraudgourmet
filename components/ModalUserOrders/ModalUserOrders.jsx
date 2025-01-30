@@ -138,7 +138,17 @@ function ModalUserOrders() {
                         }}
                     />
                 ) : (
-                    <OrdersList orders={orders} />
+                    <OrdersList
+                        orders={orders}
+                        loading={loading}
+                        pagination={{
+                            count,
+                            rowsPerPage,
+                            page,
+                            handleChangePage,
+                            handleChangeRowsPerPage
+                        }}
+                    />
                 )}
             </Grid>
         </Modal>
