@@ -24,6 +24,7 @@ import PizzaCustomizable from "@/components/PizzaCustomizable/PizzaCustomizable"
 import CenteredSpinner from "@/components/LoadingComponets/CenteredSpinner";
 import AlertMessage from "@/components/AlertMessage/AlertMessage"
 import ErrorAlert from "@/components/ErrorAlert/ErrorAlert"
+import DeliveryTrackingButton from "@/components/DeliveryTrackingButton/DeliveryTrackingButton"
 
 import useHandleSteps from "@/hooks/useHandleSteps";
 
@@ -191,6 +192,7 @@ function Menu({ params }) {
             ) : null}
             <AlertMessage />
             <ErrorAlert/>
+            <DeliveryTrackingButton/> 
         </Container>
     );
 }
