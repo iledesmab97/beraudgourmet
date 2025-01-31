@@ -9,8 +9,8 @@ export default function EmptyOrdersContainer() {
     <Paper
       elevation={3}
       sx={{
-        height: "100%",
-        width: "100%",
+        height: "95%",
+        width: "95%",
         padding: 4,
         display: "flex",
         flexDirection: "column",
@@ -18,7 +18,6 @@ export default function EmptyOrdersContainer() {
         alignItems: "center",
         backgroundColor: "#f5f5f5",
         borderRadius: 2,
-        margin: "auto",
       }}
     >
       <Box
