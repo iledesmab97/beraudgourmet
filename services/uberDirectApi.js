@@ -1,5 +1,14 @@
-import { requestSettings } from "@/utils/preparingData";
+import { requestSettings, generateURLQueries } from "@/utils/preparingData";
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
+
+export async function getUberDeliveries(queries) {
+    const queriesString = generateURLQueries(queries);
+    const url = `${PATH_BACK}/ubers${queriesString}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
+}
 
 // Get a delivery quote
 export const getDeliveryQuote = async ({ pickup, dropoff }) => {

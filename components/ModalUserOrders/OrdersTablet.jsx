@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,7 +16,7 @@ import CenteredSpinner from '../LoadingComponets/CenteredSpinner';
 import { extractIngredientsOut } from '@/utils/preparingData'
 import { dateStringToDate } from '@/utils/hours';
 
-function OrdersTablet({ orders, loading, pagination }) {
+function OrdersTablet({ orders, ubers, loading, pagination }) {
     const { count, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage } = pagination
 
     function getFormatOrderDate(dateString) {
@@ -65,29 +66,68 @@ function OrdersTablet({ orders, loading, pagination }) {
                         {
                             loading ? null : (
                                 orders.map( order => (
-                                    <TableRow key={order.id}>
-                                        <TableCell align='center'>{order.id}</TableCell>
-                                        <TableCell
-                                            dangerouslySetInnerHTML={{
-                                                __html: order.itemsxOrder.map(item => {
-                                                    const ingredinetsOut = extractIngredientsOut(item.description)
-                                                    if (!ingredinetsOut.length) return item.description
-                                                    const index = item.description.indexOf(', ~')
-                                                    return (
-                                                        item.description.slice(0, index) + ingredinetsOut.map( ingredient => `, <span style="text-decoration: line-through">${ingredient}</span>` ).join('')
-                                                    )
-                                                }).join('; ')
-                                            }}/>
-                                        <TableCell align='center'>{getFormatOrderDate(order.applicationDate)}</TableCell>
-                                        <TableCell align='center'>{getFormatOrderDate(order.deliveryDate)}</TableCell>
-                                        <TableCell align='center'>{order.totalCost}</TableCell>
-                                        <TableCell
-                                            align='center'
-                                            sx={ order.closed ? {color: 'green'} : {color: 'red'} }
+                                    <>
+                                        <TableRow
+                                            key={order.id}
+                                            sx={ ubers[order.id] && {
+                                                '& > *': {
+                                                    borderBottom: "none"
+                                                }
+                                            }}
                                         >
-                                            {order.closed ? 'Entregado' : 'Pendiente'}
-                                        </TableCell>
-                                    </TableRow>
+                                            <TableCell align='center'>{order.id}</TableCell>
+                                            <TableCell
+                                                dangerouslySetInnerHTML={{
+                                                    __html: order.itemsxOrder.map(item => {
+                                                        const ingredinetsOut = extractIngredientsOut(item.description)
+                                                        if (!ingredinetsOut.length) return item.description
+                                                        const index = item.description.indexOf(', ~')
+                                                        return (
+                                                            item.description.slice(0, index) + ingredinetsOut.map( ingredient => `, <span style="text-decoration: line-through">${ingredient}</span>` ).join('')
+                                                        )
+                                                    }).join('; ')
+                                                }}/>
+                                            <TableCell align='center'>{getFormatOrderDate(order.applicationDate)}</TableCell>
+                                            <TableCell align='center'>{getFormatOrderDate(order.deliveryDate)}</TableCell>
+                                            <TableCell align='center'>{order.totalCost}</TableCell>
+                                            <TableCell
+                                                align='center'
+                                                sx={ order.closed ? {color: 'green'} : {color: 'red'} }
+                                            >
+                                                {order.closed ? 'Entregado' : 'Pendiente'}
+                                            </TableCell>
+                                        </TableRow>
+                                        {
+                                            ubers[order.id] && !order.closed ? (
+                                                <TableRow>
+                                                    <TableCell
+                                                        colSpan={6}
+                                                        sx={{
+                                                            pt: "0px"
+                                                        }}
+                                                    >
+                                                        <Box
+                                                            sx={{
+                                                                display: "flex",
+                                                                justifyContent: "flex-end",
+                                                                alignItems: "center"
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                component="a"
+                                                                variant="contained"
+                                                                color='primary'
+                                                                href={ubers[order.id]}
+                                                                target='_blank'
+                                                            >
+                                                                Seguimiento
+                                                            </Button>
+                                                        </Box>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ) : null
+                                        }
+                                    </>
                                 ))
                             ) 
                         }
