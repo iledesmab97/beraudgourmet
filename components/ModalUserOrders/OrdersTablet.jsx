@@ -1,3 +1,4 @@
+import React from 'react'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -111,11 +112,11 @@ function OrdersTablet({ orders, ubers, loading, pagination }) {
                                             </Box>
                                         </TableCell>
                                     </TableRow>
-                                ) : (
-                                    orders.map( order => (
-                                        <>
+                                ) : ( 
+                                    orders.map( ( order ) => (
+                                        <React.Fragment key={ "orderId:" + order.id }>
                                             <TableRow
-                                                key={order.id}
+                                                key={ "orderId:" + order.id }
                                                 sx={ ubers[order.id] && {
                                                     '& > *': {
                                                         borderBottom: "none"
@@ -174,7 +175,7 @@ function OrdersTablet({ orders, ubers, loading, pagination }) {
                                                     </TableRow>
                                                 ) : null
                                             }
-                                        </>
+                                        </React.Fragment>
                                     ))
                                 ) 
                             }
