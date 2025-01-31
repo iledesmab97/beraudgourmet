@@ -14,6 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 
 import { getAllOrdersOfUser } from "@/services/orderApi";
+import { getUberDeliveries } from "@/services/uberDirectApi";
 
 const style = {
     position: "absolute",
@@ -43,6 +44,7 @@ function ModalUserOrders() {
     });
     const { user } = useSelector(state => state.user)
     const [orders, setOrders] = useState([]);
+    const [ubers, setUbers] = useState({});
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
     const [loading, setLoading] = useState(false)
@@ -55,6 +57,25 @@ function ModalUserOrders() {
         if (!open) return
         handleChangePage(0)
     }, [open])
+
+    // Update ubers list
+    useEffect(() => {
+        if (!open) return
+        const ordersId = orders.map(item => item.id)
+        updateUberList({ ordersId })
+    }, [orders])
+
+    async function updateUberList({ ordersId }) {
+        const uberDeliveries = await getUberDeliveries({
+            ordersId,
+            relation: "order"
+        })
+        const newUbers = {}
+        uberDeliveries.forEach( item => {
+            newUbers[item.order.id] = item.tracking_url
+        })
+        setUbers(newUbers)
+    }
 
     async function handleChangePage(newPage) {
         const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage, itemsxPage: rowsPerPage });
@@ -133,6 +154,7 @@ function ModalUserOrders() {
                 {isLargeScreen ? (
                     <OrdersTablet
                         orders={orders}
+                        ubers={ubers}
                         loading={loading}
                         pagination={{
                             count,
@@ -145,6 +167,7 @@ function ModalUserOrders() {
                 ) : (
                     <OrdersList
                         orders={orders}
+                        ubers={ubers}
                         loading={loading}
                         pagination={{
                             count,
