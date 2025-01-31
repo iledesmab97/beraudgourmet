@@ -1,11 +1,10 @@
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import TablePagination from "@mui/material/TablePagination";
 
@@ -15,7 +14,7 @@ import TablePaginationActions from "@/components/TablePaginationActions/TablePag
 import { extractIngredientsOut } from '@/utils/preparingData'
 import { dateStringToDate } from '@/utils/hours';
 
-function OrdersList({ orders, loading, pagination }) {
+function OrdersList({ orders, ubers, loading, pagination }) {
     const { count, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage } = pagination
 
     function getFormatOrderDate(dateString) {
@@ -109,6 +108,35 @@ function OrdersList({ orders, loading, pagination }) {
                                             }
                                         />
                                     </ListItem>
+                                        {
+                                            ubers[order.id] && !order.closed ? (
+                                                <ListItem alignItems={'flex-start'}>
+                                                    <ListItemText
+                                                        primary={
+                                                            <>
+                                                                <Box
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        justifyContent: "flex-end",
+                                                                        alignItems: "center"
+                                                                    }}
+                                                                >
+                                                                    <Button
+                                                                        component="a"
+                                                                        variant="contained"
+                                                                        color='primary'
+                                                                        href={ubers[order.id]}
+                                                                        target='_blank'
+                                                                    >
+                                                                        Seguimiento
+                                                                    </Button>
+                                                                </Box>
+                                                            </>
+                                                        }
+                                                    />
+                                                </ListItem>
+                                            ) : null
+                                        }
                                     <Divider />
                                 </>
                             ))
@@ -139,7 +167,7 @@ function OrdersList({ orders, loading, pagination }) {
                         },
                         "& .MuiTablePagination-input": {
                             ml: "0px",
-                            mr: "8px"
+                            mr: "0px"
                         },
                         "& .MuiBox-root": {
                             ml: "0px"
