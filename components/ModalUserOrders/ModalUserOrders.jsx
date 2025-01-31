@@ -14,6 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 
 import { getAllOrdersOfUser } from "@/services/orderApi";
+import { getUberDeliveries } from "@/services/uberDirectApi";
 
 const style = {
     position: "absolute",
@@ -43,6 +44,7 @@ function ModalUserOrders() {
     });
     const { user } = useSelector(state => state.user)
     const [orders, setOrders] = useState([]);
+    const [ubers, setUbers] = useState({});
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
     const [loading, setLoading] = useState(false)
@@ -56,27 +58,51 @@ function ModalUserOrders() {
         handleChangePage(0)
     }, [open])
 
+    // Update ubers list
+    useEffect(() => {
+        if (!open) return
+        const ordersId = orders.map(item => item.id)
+        updateUberList({ ordersId })
+    }, [orders])
+
+    async function updateUberList({ ordersId }) {
+        const uberDeliveries = await getUberDeliveries({
+            ordersId,
+            relation: "order"
+        })
+        const newUbers = {}
+        uberDeliveries.forEach( item => {
+            newUbers[item.order.id] = item.tracking_url
+        })
+        setUbers(newUbers)
+    }
+
     async function handleChangePage(newPage) {
-        const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage });
+        const { newOrders, newCount } = await getOrders({ userId: user.id, page: newPage, itemsxPage: rowsPerPage });
         if ( !newOrders || !newCount ) return
         setPage(newPage);
         setOrders(newOrders)
         setCount(newCount)
     }
 
-    function handleChangeRowsPerPage(event) {
-        setRowsPerPage(+event.target.value);
+    async function handleChangeRowsPerPage(event) {
+        const { value } = event.target
         setPage(0);
+        setRowsPerPage(value);
+        const { newOrders, newCount } = await getOrders({ userId: user.id, itemsxPage: value });
+        if ( !newOrders || !newCount ) return
+        setOrders(newOrders)
+        setCount(newCount)
     }
 
-    async function getOrders({ userId, page=0 }) {
+    async function getOrders({ userId, page=0, itemsxPage }) {
         setLoading(true)
         let newOrders, newCount
         try {
             const { totalOrdersFront, count } = await getAllOrdersOfUser({
                 userId,
                 queries: {
-                    itemsxPage: rowsPerPage,
+                    itemsxPage,
                     page,
                     order2: "closed:ASC",
                     order1: "deliveryDate:ASC"
@@ -128,6 +154,7 @@ function ModalUserOrders() {
                 {isLargeScreen ? (
                     <OrdersTablet
                         orders={orders}
+                        ubers={ubers}
                         loading={loading}
                         pagination={{
                             count,
@@ -140,6 +167,7 @@ function ModalUserOrders() {
                 ) : (
                     <OrdersList
                         orders={orders}
+                        ubers={ubers}
                         loading={loading}
                         pagination={{
                             count,
