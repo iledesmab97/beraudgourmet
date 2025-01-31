@@ -54,7 +54,10 @@ function ModalUserOrders() {
 
     // Refresca la lista de ordenes a su estado inical cada vez que se abre el modal
     useEffect(() => {
-        if (!open) return
+        if (!open) return () => {
+            if (orders.length) setOrders([])
+            if (count !== 0) setCount(0)
+        }
         handleChangePage(0)
     }, [open])
 
@@ -90,7 +93,7 @@ function ModalUserOrders() {
         setPage(0);
         setRowsPerPage(value);
         const { newOrders, newCount } = await getOrders({ userId: user.id, itemsxPage: value });
-        if ( !newOrders || !newCount ) return
+        if (!Array.isArray(newOrders) || typeof newCount !== "number") return
         setOrders(newOrders)
         setCount(newCount)
     }
