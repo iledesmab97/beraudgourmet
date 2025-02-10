@@ -56,6 +56,7 @@ export default function CheckoutForm({
     handleDataStripe,
 }) {
     const { user } = useSelector(state => state.user)
+    const extraIngredientsList = useSelector(state => state.extraIngredients)
     const stripe = useStripe();
     const elements = useElements();
     const router = useRouter();
@@ -91,7 +92,7 @@ export default function CheckoutForm({
             ingredientsOut: ingredientsModal,
             extraIngredients: Object.keys(extra).map((extraIngredient) => ({
                 name: extraIngredient,
-                quantity: extra[extraIngredient],
+                quantity: parseFloat(( extra[extraIngredient] * extraIngredientsList[extraIngredient].defaultPortion[productType] ).toFixed(2)),
             })),
             costItemPerUnit: totalPrice / quantity,
             totalCostByItem: Number(totalPrice),
@@ -191,7 +192,7 @@ export default function CheckoutForm({
 
         try {
             const { name, value } = await checkIngredientsAvailable(orderItems)
-            if (!value) throw new Error(`Lo sentimos, el ingrediente "${name}" acaba de agortarse`)
+            if (!value) throw new Error(`Lo sentimos, no hay suficientes ingredientes para la totalidad de la orden`)
 
             if (!stripe || !elements) return;
             setIsLoading(true);
@@ -324,8 +325,9 @@ export default function CheckoutForm({
     }
 
     async function checkIngredientsAvailable(orderItems) {
+        const ingredientList = []
         for (let item of orderItems) {
-            const { itemType, name } = item
+            const { itemType, name, extraIngredients, ingredientsOut } = item
             let ingredients
             switch (itemType) {
                 case "pizza": {
@@ -337,20 +339,61 @@ export default function CheckoutForm({
                     break
                 }
             }
-            let missingIngredient
-            const allIngredientesAvailable = ingredients.every(({ quantity, count , name }) => {
-                if (quantity <= count) return true
-                missingIngredient = name
-                return false
-            })
-            if (!allIngredientesAvailable) {
-                const response = {
-                    name: missingIngredient,
-                    value: false
+
+            // pizza building ingredients
+            for (let { quantity, count, name } of ingredients) {
+                let index = 0
+                if (ingredientsOut.includes(name)) continue
+                const alreadyExist = ingredientList.find(( item, i ) => {
+                    index = i
+                    return item.name === name
+                })
+                if (!alreadyExist) {
+                    ingredientList.push({quantity: Number( quantity ), count: Number( count ), name})
+                } else {
+                    ingredientList[index] = {
+                        ...alreadyExist,
+                        quantity: Number( alreadyExist.quantity ) + Number( quantity ) 
+                    }
                 }
-                return response
             }
+
+            // pizza extra ingredients
+            for (let {name, quantity} of extraIngredients) {
+                let index = 0
+                const alreadyExist = ingredientList.find(( item, i ) => {
+                    index = i
+                    return item.name === name
+                })
+                if (!alreadyExist) {
+                    const { count } = extraIngredientsList[name]
+                    ingredientList.push({quantity: Number( quantity ), count: Number(count), name})
+                } else {
+                    ingredientList[index] = {
+                        ...alreadyExist,
+                        quantity: Number( alreadyExist.quantity ) + Number( quantity ) 
+                    }
+                }
+
+            }
+
         }
+
+        let missingIngredient
+        const allIngredientesAvailable = ingredientList.every(({ quantity, count , name }) => {
+            if (quantity <= count) return true
+            missingIngredient = name
+            return false
+        })
+
+        if (!allIngredientesAvailable) {
+            const response = {
+                name: missingIngredient,
+                value: false
+            }
+            return response
+        }
+
         return { value: true }
     }
 

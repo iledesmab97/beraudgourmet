@@ -36,30 +36,40 @@ function useLoadData() {
     const firstTimeOrders = useRef(true);
 
     const loadData = useCallback(async (rol) => {
-        // Cargar usuario
-        // if (rol === "admin") {
-        //     const userLoged = await lookingForUserLoged();
-        //     if (userLoged) {
-        //         handleAddUser(userLoged);
-        //     }
-        // } else {
-        const userLoged = await gerUserLoged();
-        const acceptCookies = getLocalData("acceptCookies");
-        if (!acceptCookies && userLoged) {
-            saveLocalData("acceptCookies", true);
-        }
-        // }
+        try {
+            // Cargar usuario
+            // if (rol === "admin") {
+            //     const userLoged = await lookingForUserLoged();
+            //     if (userLoged) {
+            //         handleAddUser(userLoged);
+            //     }
+            // } else {
+            const userLoged = await gerUserLoged();
+            const acceptCookies = getLocalData("acceptCookies");
+            if (!acceptCookies && userLoged) {
+                saveLocalData("acceptCookies", true);
+            }
+            // }
 
-        // Cargar los ingredientes
-        const ingredientList = await getExtraIngredients({ sort: "name:ASC" });
-        handleAddExtraIngredinetsList({ extraIngredientsList: ingredientList });
-        // Cargar ordenes
-        if (rol === "admin") {
-            const newOrderList = await getAllOrders({
-                p: orderList.currentPage,
+            // Cargar los ingredientes
+            const ingredientList = await getExtraIngredients({
+                sort: "name:ASC",
+                relation: "defaultPortion",
+                relation2: "defaultPortion.KindProduct",
             });
-            if (newOrderList.message) alert(newOrderList.message);
-            else handleAddOrderList(newOrderList);
+            handleAddExtraIngredinetsList({
+                extraIngredientsList: ingredientList,
+            });
+            // Cargar ordenes
+            if (rol === "admin") {
+                const newOrderList = await getAllOrders({
+                    p: orderList.currentPage,
+                });
+                if (newOrderList.message) alert(newOrderList.message);
+                else handleAddOrderList(newOrderList);
+            }
+        } catch (error) {
+            alert(error.message);
         }
     }, []);
 

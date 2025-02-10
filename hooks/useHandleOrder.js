@@ -27,6 +27,7 @@ function initialInput(productDetails) {
 }
 
 function getTotalPrice({ productDetails, inputs, extraIngredients }) {
+    const { productType } = productDetails;
     if (!productDetails) return 0;
     let price;
     if (productDetails.productType === "salad") {
@@ -37,11 +38,22 @@ function getTotalPrice({ productDetails, inputs, extraIngredients }) {
     }
     const totalExtras = Object.keys(inputs.extra).reduce((acc, cur) => {
         const quantity = inputs.extra[cur] ? inputs.extra[cur] : 0;
-        return acc + quantity * extraIngredients[cur].totalPrice;
+        return (
+            acc +
+            quantity *
+                extraIngredients[cur].totalPrice *
+                // extraIngredients[cur].defaultPortion.find((item) => {
+                //     return item.KindProduct.name === productType;
+                // }).quantity
+                extraIngredients[cur].defaultPortion[productType]
+        );
     }, 0);
-    const pizzaWithExtras = Number(price) + totalExtras;
+    const pizzaWithExtras = parseFloat(
+        (Number(price) + Number(totalExtras)).toFixed(2)
+    );
     const totalPrice = inputs.quantity * pizzaWithExtras;
-    return Math.ceil(totalPrice);
+    // return Math.ceil(totalPrice);
+    return totalPrice;
 }
 
 export default function useHandleOrder({ productDetails }) {
