@@ -435,7 +435,7 @@ export function generateURLQueries(queries) {
                 : JSON.stringify(queries[query]);
         filtersList.push(query + "=" + value);
     }
-    const queriesString = "?" + filtersList.join("&&");
+    const queriesString = "?" + filtersList.join("&");
     return queriesString;
 }
 

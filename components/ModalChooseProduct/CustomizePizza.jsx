@@ -25,6 +25,25 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import { delay } from "@/utils/wait";
+import { useEffect } from "react";
+
+function unitConverter({unit, amount }) {
+    switch(unit) {
+        case "Kilogramo": {
+            const newAmount = amount * 1000
+            return `${ newAmount } ${amount === 1 ? "gramo": "gramos"}`
+        }
+        case "Litro": {
+            const newAmount = amount * 1000
+            return `${ newAmount } ${amount === 1 ? "mililitro": "mililitros"}`
+        }
+    }
+}
+
+function getTotalPrice({ portion, price }) {
+    const result = portion * price
+    return parseFloat(result.toFixed(2))
+}
 
 export default function CustomizePizza({ customizePizza, currentProduct }) {
     const { extraIngredients } = useGetExtraIngredients();
@@ -188,7 +207,11 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
                             <TableBody>
                                 {Object.values(extraIngredients)
                                     .filter(
-                                        (ingredient) => ingredient.available
+                                        (ingredient) => {
+                                            const condition1 = ingredient.available
+                                            const condition2 = ingredient.defaultPortion[currentProduct.productType]
+                                            return condition1 && condition2
+                                        }
                                     )
                                     .map((ingredient) => {
                                         return (
@@ -289,11 +312,14 @@ export default function CustomizePizza({ customizePizza, currentProduct }) {
                                                         },
                                                     }}
                                                 >
-                                                    {ingredient.name}
+                                                    {`${ingredient.name} (${unitConverter({
+                                                        unit: ingredient.unit,
+                                                        amount: ingredient.defaultPortion[currentProduct.productType]
+                                                    })})`}
                                                 </TableCell>
                                                 <TableCell>
                                                     {"$" +
-                                                        ingredient.totalPrice}
+                                                    getTotalPrice({ portion: ingredient.defaultPortion[currentProduct.productType], price: ingredient.totalPrice})}
                                                 </TableCell>
                                             </TableRow>
                                         );

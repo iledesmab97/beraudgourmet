@@ -10,13 +10,32 @@ export async function getExtraIngredients(queries) {
     if (data.message) throw new Error(data.message);
     const extraIngredinetList = {};
     data.forEach((extraIngredient) => {
-        const { id, name, cost, costIVAStripe, available } = extraIngredient;
+        const {
+            id,
+            name,
+            cost,
+            costIVAStripe,
+            available,
+            unit,
+            extra,
+            count,
+            defaultPortion: defaultPortionBack,
+        } = extraIngredient;
+        const defaultPortion = {};
+        defaultPortionBack.forEach((item) => {
+            const { KindProduct, quantity } = item;
+            defaultPortion[KindProduct.name] = quantity;
+        });
         extraIngredinetList[name] = {
             id,
             name,
             price: cost,
             totalPrice: costIVAStripe ? costIVAStripe : "0",
             available,
+            unit,
+            extra,
+            count,
+            defaultPortion,
         };
     });
     return extraIngredinetList;

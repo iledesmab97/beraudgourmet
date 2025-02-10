@@ -102,7 +102,7 @@ export async function getPizzaCosts({ type }) {
         const newPizzaCost = {
             id,
             cost,
-            costIVA: twoDecimals(costIVA),
+            costIVA: parseFloat(Number(costIVA).toFixed(2)),
             costIVAStripe,
             pizza,
             pizzaCharacteristics,
