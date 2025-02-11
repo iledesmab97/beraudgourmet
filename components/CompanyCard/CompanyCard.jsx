@@ -4,19 +4,7 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-import { styled } from "@mui/system";
-
 import { useRouter } from "next/navigation";
-
-const ServiceCard = styled(Card)(({ theme }) => ({
-    height: "100%",
-    // transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-    // "&:hover": {
-    //     transform: "translateY(-5px)",
-    //     boxShadow:
-    //         "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
-    // },
-}));
 
 export default function CompanyCard({ company }) {
 
@@ -26,7 +14,6 @@ export default function CompanyCard({ company }) {
         <CardActionArea
             onClick={() => { router.push(company.name)}}
             sx={{
-                width: "100%",
                 backgroundColor: "transparent",
                 overflow: "visible",
                 boxShadow: "none",
@@ -40,10 +27,8 @@ export default function CompanyCard({ company }) {
                 alt={company.name}
                 sx={{
                     height: {
-                        xm: "150px",
-                        md: "230px"
+                        xs: "250px"
                     },
-                    width: "100%",
                     padding: 2,
                     objectFit: "contain",
                     borderRadius: "8px",

@@ -429,9 +429,13 @@ export function generateURLQueries(queries) {
     if (!queries) return "";
     const filtersList = [];
     for (let query in queries) {
-        filtersList.push(query + "=" + queries[query]);
+        const value =
+            typeof queries[query] === "string"
+                ? queries[query]
+                : JSON.stringify(queries[query]);
+        filtersList.push(query + "=" + value);
     }
-    const queriesString = "?" + filtersList.join("&&");
+    const queriesString = "?" + filtersList.join("&");
     return queriesString;
 }
 

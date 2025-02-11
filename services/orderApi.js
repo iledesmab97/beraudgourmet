@@ -4,27 +4,14 @@ import { mapOrderToBackend, mapOrderFromBackend } from "@/utils/mappers";
 const PATH_BACK = process.env.NEXT_PUBLIC_PATH_BACK;
 
 export async function getAllOrders(queries) {
-    let lastPath;
-    if (queries) {
-        lastPath = Object.keys(queries)
-            .map((query) => `${query}=${queries[query]}`)
-            .join("&&");
-    }
-
-    try {
-        const response = await fetch(
-            `${PATH_BACK}/orders${lastPath ? "?" + lastPath : ""}`,
-            {
-                ...requestSettings(),
-                cache: "no-store",
-            }
-        );
-        const data = await response.json();
-        if (data.message) throw new Error(data.message);
-        return data;
-    } catch (error) {
-        return { message: error.message };
-    }
+    const queriesString = generateURLQueries(queries);
+    const response = await fetch(`${PATH_BACK}/orders${queriesString}`, {
+        ...requestSettings(),
+        cache: "no-store",
+    });
+    const data = await response.json();
+    if (data.message) throw new Error(data.message);
+    return data;
 }
 
 export async function getAllOrdersOfUser({ userId, queries }) {
